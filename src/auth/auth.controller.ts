@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards, Req, Res } from '@nestjs/common';
 import { AuthService} from './auth.service';
 import { AuthDto } from './dto';
+import { FTUser } from './42dto';
 import { FTAuthGuard } from './guard';
 
 @Controller('auth')
@@ -18,20 +19,21 @@ export class AuthController {
 		console.log({
 			dto,
 		});
-		return this.authService.signup(dto);
 	}
 	
-
+	@Get('route')
+	fun()
+	{
+		return ('to signin');
+	}
 	@Get('signin')
 	@UseGuards(FTAuthGuard)
 	signin() {}
 
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
-	callback(@Req() req, @Res() res)
-	{
-		console.log(req.link);
-		return req.link;
+	callback(@Body() dto: FTUser) {
+		this.authService.signin(dto);
 	}
 	// @Post('signin')
 	// signin(@Body() dto: AuthDto) {

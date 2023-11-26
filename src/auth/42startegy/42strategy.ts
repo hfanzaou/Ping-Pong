@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-import { Strategy } from 'passport-42';
+import { FTUser } from "../42dto";
+const Strategy = require('passport-42').Strategy;
+
 @Injectable()
 export class FTAuth extends PassportStrategy(Strategy, '42') {
     constructor(config: ConfigService) {
@@ -12,7 +14,15 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
         });
     }
     validate(accesToken: string, refreshToken: string, profile: any) {
-        console.log(profile._json.image.link);
-        return profile._json.image.link;
+        const user = {
+            email: profile.emails[0].value,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+            userName: profile.username,
+            avatar: profile._json.image.link,
+            accesToken,
+        }
+        console.log(user);
+        return user;
     }
 }

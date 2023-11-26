@@ -1,8 +1,9 @@
-class Avatar {
-    value: string;
-}
-
 export class FTUser {
-    id: number;
-    avatar: Avatar[];
-}
+    email: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    avatar: string;
+    hash: string;
+    accessToken: string;
+} 
