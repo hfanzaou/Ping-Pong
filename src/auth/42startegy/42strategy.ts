@@ -13,16 +13,16 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
             callbackURL: 'http://localhost:3000/auth/callback',
         });
     }
-    validate(accesToken: string, refreshToken: string, profile: any) {
-        const user = {
+    validate(accessToken: string, refreshToken: string, profile: any) {
+        const user: FTUser = {
             email: profile.emails[0].value,
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
-            userName: profile.username,
+            username: profile.username,
             avatar: profile._json.image.link,
-            accesToken,
+            accessToken,
         }
-        console.log(user);
-        return user;
+        //console.log(user);
+        return (user);
     }
 }

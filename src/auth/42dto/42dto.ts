@@ -4,6 +4,5 @@ export class FTUser {
     lastName: string;
     username: string;
     avatar: string;
-    hash: string;
     accessToken: string;
-} 
+}

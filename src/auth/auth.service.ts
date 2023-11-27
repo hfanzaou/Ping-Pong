@@ -5,10 +5,11 @@ import { AuthDto } from './dto';
 import { FTUser } from './42dto';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt'
-import { fetch } from 'fetch-node';
+import fetch from 'node-fetch';
 import { createWriteStream } from 'fs';
 import { Path } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
+import * as path from 'path';
 
 @Injectable()
 export class AuthService {
@@ -20,28 +21,31 @@ export class AuthService {
 
 	async signup(dto: FTUser)
 	{
+		console.log('------------');
 		try {
 			const input: Prisma.UserCreateInput = dto;
+			console.log(input);
 			const user = await this.prisma.user.create({
 				data: input, 
 			});
 			fetch(user.avatar)
 			  .then((response) => response.buffer())
 			  .then((buffer) => {
-				createWriteStream('/app/src/img/' + user.id + '.png', buffer);
+				createWriteStream(path.join('../img/', user.id + '.png'), buffer);
 			  });
 			  return user;
 		}
 		catch (error) {
+			console.log(error);
 			throw 'error creating user';
 		}
 	}			
-	async signin(dto: FTUser)
+	async signin(user: any)
 	{
 		//find the user by email
-        let user = await this.prisma.user.findUnique({
+        let finduser = await this.prisma.user.findUnique({
 			where: {
-				email: dto.email,
+				email: user.email,
 			},
 		});
         //if does not exist throw an excep
@@ -49,10 +53,10 @@ export class AuthService {
         //if exist compare password
 		//const pass = await argon.verify(user.hash, dto.password);
          //if pass incorrect throw excep
-		if (!user) {
-			user = await this.signup(dto);
+		if (!finduser) {
+			finduser = await this.signup(user);
 		}
-		return this.signToken(user);
+		return {finduser, token: this.signToken(finduser)};
 	}	
 	// async signup(dto: AuthDto) {
 	// 	// generate pass hash
@@ -93,9 +97,10 @@ export class AuthService {
 	// 	return this.signToken(user.id, user.email);
 	// }
 
-	async signToken(dto: FTUser) : Promise<{access_token: string}> {
+	async signToken(user:any) : Promise<string> {
 		const payload = {
-			dto,
+			sub: user.id,
+			email: user.email,
 		}
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
@@ -103,8 +108,6 @@ export class AuthService {
 			secret: secret,
 		});
 		console.log(token);
-		return {
-			access_token: token,
-		};
+		return (token);
 	}
 }

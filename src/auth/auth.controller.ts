@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards, Req, Res } from '@nestjs/common';
 import { AuthService} from './auth.service';
+import { GetUser } from './decorator';
+import { User } from '@prisma/client';
 import { AuthDto } from './dto';
 import { FTUser } from './42dto';
 import { FTAuthGuard } from './guard';
@@ -28,12 +30,13 @@ export class AuthController {
 	}
 	@Get('signin')
 	@UseGuards(FTAuthGuard)
-	signin() {}
+	signin(@Body() user: any) {}
 
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
-	callback(@Body() dto: FTUser) {
-		this.authService.signin(dto);
+	callback(@GetUser() user: User) {
+		console.log(user);
+		return this.authService.signin(user);
 	}
 	// @Post('signin')
 	// signin(@Body() dto: AuthDto) {
