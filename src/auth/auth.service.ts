@@ -28,11 +28,11 @@ export class AuthService {
 			const user = await this.prisma.user.create({
 				data: input, 
 			});
-			fetch(user.avatar)
-			  .then((response) => response.buffer())
-			  .then((buffer) => {
-				createWriteStream(path.join('../img/', user.id + '.png'), buffer);
-			  });
+			// fetch(user.avatar)
+			//   .then((response) => response.buffer())
+			//   .then((buffer) => {
+			// 	createWriteStream(path.join('../img/', user.id + '.png'), buffer);
+			//   });
 			  return user;
 		}
 		catch (error) {

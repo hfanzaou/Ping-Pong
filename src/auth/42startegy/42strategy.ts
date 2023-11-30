@@ -23,6 +23,6 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
             accessToken,
         }
         //console.log(user);
-        return (user);
+        return (user || null);
     }
 }
