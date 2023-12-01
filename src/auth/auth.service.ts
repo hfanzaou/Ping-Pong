@@ -56,7 +56,9 @@ export class AuthService {
 		if (!finduser) {
 			finduser = await this.signup(user);
 		}
-		return {finduser, token: this.signToken(finduser)};
+		const token = await this.signToken(finduser);
+		console.log(token);
+		return {token: token};
 	}	
 	// async signup(dto: AuthDto) {
 	// 	// generate pass hash
@@ -100,11 +102,11 @@ export class AuthService {
 	async signToken(user:any) : Promise<string> {
 		const payload = {
 			sub: user.id,
-			email: user.email,
+			userID: user.id
 		}
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
-			expiresIn: '15m',
+			//expiresIn: '15m',
 			secret: secret,
 		});
 		console.log(token);

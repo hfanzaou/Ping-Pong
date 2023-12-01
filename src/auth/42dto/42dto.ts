@@ -5,4 +5,5 @@ export class FTUser {
     username: string;
     avatar: string;
     accessToken: string;
+    twoFaAuth: boolean;
 }

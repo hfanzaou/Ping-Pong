@@ -10,7 +10,7 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
         super ({
             clientID: config.get('42_CLIENTID'),
             clientSecret: config.get('42_CLIENTSECRET'),
-            callbackURL: 'http://localhost:3000/auth/callback',
+            callbackURL: 'http://localhost:3000/callback',
         });
     }
     validate(accessToken: string, refreshToken: string, profile: any) {
@@ -21,6 +21,7 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
             username: profile.username,
             avatar: profile._json.image.link,
             accessToken,
+            twoFaAuth: false,
         }
         //console.log(user);
         return (user || null);
