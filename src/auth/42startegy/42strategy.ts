@@ -20,7 +20,6 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
             lastName: profile.name.familyName,
             username: profile.username,
             avatar: profile._json.image.link,
-            accessToken,
             twoFaAuth: false,
         }
         //console.log(user);

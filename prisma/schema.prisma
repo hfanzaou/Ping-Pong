@@ -22,6 +22,5 @@ model User {
   lastName    String?
   avatar      String?
   state       Boolean @default(false)
-  accessToken String
   twoFaAuth   Boolean
 }

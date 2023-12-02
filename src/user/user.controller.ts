@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Query } from '@nestjs/common';
 import { GetUser } from '../auth/decorator'
 import { FTAuthGuard, JwtGuard } from '../auth/guard';
 import { User } from '@prisma/client';
@@ -7,12 +7,18 @@ import { UserService } from './user.service';
 @UseGuards(JwtGuard)
 @Controller('user')
 export class UserController {
-    constructor(private userservice: UserService )
+    constructor(private userService: UserService )
     {
     }
     @Get('image')
-    getMe(@Req() req) {
-        console.log(req.user);
-        return this.userservice.getUserById(req.user.userID);
+    getImage(@Req() req) {
+        const toFind: string = 'avatar';
+        return this.userService.getUserAvatar(req.user.userID);
+    }
+    @Get('profile')
+    getProfile(@Req()  req, @Query('id') id: number) {
+        if (id !== 0)
+           return (this.userService.getUserById(id));
+        return (this.userService.getProfile(req.user.userID));
     }
 }
