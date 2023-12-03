@@ -24,12 +24,6 @@ export class AuthController {
 		});
 	}
 	
-	@Get('route')
-	fun()
-	{
-		return ('to signin');
-	}
-	
 	@Get('login')
 	@UseGuards(FTAuthGuard)
 	signin(@Body() user: any) {
@@ -39,21 +33,27 @@ export class AuthController {
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
 	async callback(@GetUser() user: User, @Res() res) {
-		//console.log(user);
 		const token = await this.authService.signin(user);
-		//console.log(token.token);
+		console.log("hello");
 		res.cookie('jwt', token.token);
-		//res.send('done');
-		res.redirect('http://localhost:3001/home');
+		res.send('done');
+		//res.redirect('http://localhost:3001');
 	}
 
-	@Get('pic')
-	async ft_pic(@Req() req: Request, @Res() res)
+	@Get('logout')
+	@UseGuards(FTAuthGuard)
+	async logout(@Req() req, @Res() res)
 	{
-		res.send(req.cookies['jwt']);
-		//const file = await axios.get("https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630");
-		//res.redirect("https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630");
+		await res.clearCookie('jwt');
+		res.redirect('http://localhot:3001')
 	}
+	// @Get('pic')
+	// async ft_pic(@Req() req: Request, @Res() res)
+	// {
+	// 	res.send(req.cookies['jwt']);
+	// 	//const file = await axios.get("https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630");
+	// 	//res.redirect("https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630");
+	// }
 	// @Post('signin')
 	// signin(@Body() dto: AuthDto) {
 	// 	return this.authService.signin(dto);

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -21,10 +21,10 @@ export class UserService {
                 id: id
             }
         })
-        console.log(user);
+        //console.log(user);
         return user;
     }
-    async getUserById(id: number) {
+    async getProfileById(id: number) {
         try {
             let user = await this.prismaservice.user.findUnique({
                 where: {
@@ -33,7 +33,7 @@ export class UserService {
             })
             return (user);
         } catch (error) {
-            throw NotFoundException;
+            throw new HttpException('USER NOT FOUND', HttpStatus.NOT_FOUND);
         }
     }
 }
