@@ -27,6 +27,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
        //console.log(user.email);
         //console.log(payload);
-        return payload;
+        return user;
     }
 }

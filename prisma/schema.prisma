@@ -21,13 +21,7 @@ model User {
   firstName   String?
   lastName    String?
   avatar      String?
-  state       state @default(offline)
+  state       Boolean @default(false)
   twoFaAuth   Boolean
-  friends     User[] @relation("friends")
-}
-
-enums state {
-  offline
-  online
-  ingame
+  twoFaSecret String?
 }

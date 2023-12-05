@@ -3,8 +3,9 @@ import { GetUser } from '../auth/decorator'
 import { FTAuthGuard, JwtGuard } from '../auth/guard';
 import { User } from '@prisma/client';
 import { UserService } from './user.service';
+import JwtTwoFaGuard from 'src/auth/guard/twoFaAuth.guard';
 
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFaGuard)
 @Controller('user')
 export class UserController {
     constructor(private userService: UserService )
