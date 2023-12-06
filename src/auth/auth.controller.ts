@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 import { AuthDto } from './dto';
 import { FTUser } from './42dto';
 import { FTAuthGuard, JwtGuard } from './guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { toFileStream } from 'qrcode';
 import JwtTwoFaGuard from './guard/twoFaAuth.guard';
 
@@ -54,42 +54,23 @@ export class AuthController {
 		await res.clearCookie('jwt');
 		res.redirect('http://localhost:3001')
 	}
-
-	// @Get('generate-qr')
-	// @UseGuards(JwtGuard)
-	// async generateQrCode(@Req() req)
-	// {
-	// 	//const user = this.authService.validateUser(req.user);
-	// 	const otpAuthUrl = await this.authService.generateTwoFaAuth(req.user);
-	// 	//res.setHeader('content-type', 'image/png');
-	// 	return (otpAuthUrl);
-	// }
-
+	
 	@Post('2fa/turnon')
 	@HttpCode(201)
-	@UseGuards(JwtGuard)
-	async turnOnTwoFaAuth(@Req() req, @Body() body) {
-		// const user = this.authService.validateUser(req.user)
-		// const isCodeValid = this.authService.isTwoFaAuthCodeValid(
-		// 	body.twoFaAuthCode,
-		// 	req.user
-		// );
-		// if (!isCodeValid)
-		// 	throw new HttpException('Wrong authentication code', HttpStatus.UNAUTHORIZED);
-		const otpAuthUrl = await this.authService.enableTwoFA(req.user);
-		//const toFile = await toFileStream(res, otpAuthUrl);
-		
-		return (otpAuthUrl)
-		//return ('done');	
+	@UseGuards(JwtTwoFaGuard)
+	async turnOnTwoFaAuth(@Req() req, @Res() res: Response, @Body() body) {
+		const otpAuthUrl = await this.authService.generateTwoFA(req.user);
+		console.log(otpAuthUrl);
+		return (toFileStream(res, otpAuthUrl.oturl));
 	}
 
 	@Post('2fa/auth')
-	@UseGuards(JwtGuard)
-	async autenticate(@Req() req, @Body() body) {
+	@UseGuards(JwtTwoFaGuard)
+	async autenticate(@Req() req, @Res() res, @Body() body) {
+		const user = await this.authService.validateUser(req.user)
 		try {
-			const user = await this.authService.validateUser(req.user)
 			const isCodeValid = await this.authService.verifyTwoFa(
-				req.user,
+				user,
 				body.AuthCode,
 			);
 			console.log("AuthCode = " + body.AuthCode);
@@ -100,7 +81,15 @@ export class AuthController {
 		} catch(error) {
 			throw new HttpException('Wrong authentication code', HttpStatus.UNAUTHORIZED)
 		}
-		console.log('here');
-		return(this.authService.login2fa(req.user)); 	
+		//console.log('here');
+		if (!user.twoFaAuth)
+			await this.authService.enableTwoFa(user);
+		const newToken = await this.authService.login2fa(user);
+		console.log(newToken);
+		res.cookie('jwt', newToken, {
+			path: '/',
+			httpOnly: true,
+		});
+		res.send('done'); 	
 	}
 }

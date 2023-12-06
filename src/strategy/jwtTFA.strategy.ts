@@ -9,7 +9,7 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
     constructor(config: ConfigService, private prisma: PrismaService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([JwtTwoFaStrategy.extractJWT]),
-            secretOrKey: process.env.JWT_ACCESS_TOKEN_SECRET
+            secretOrKey: config.get('JWT_SECRET')
         })
     }
     private static extractJWT(@Req() req: Request): string | null {
@@ -23,16 +23,17 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
                 id: payload.sub,
             },
         });
-
         if (!user) {
+            //console.log('here');
             throw new UnauthorizedException()
         }
-
+        //console.log('im in two fa');
         if (!user.twoFaAuth) {
             return user;
         }
         if (payload.twoFaAuth) {
             return user;
         }
+        //console.log('im in two fa');
     }
 } 

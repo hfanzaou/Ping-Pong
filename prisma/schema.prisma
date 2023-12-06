@@ -23,5 +23,5 @@ model User {
   avatar      String?
   state       Boolean @default(false)
   twoFaAuth   Boolean
-  twoFaSecret String?
+  twoFaSecret Json?
 }

@@ -13,6 +13,7 @@ import * as path from 'path';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import * as speakeasy from 'speakeasy';
+import { IsBase32 } from 'class-validator';
 
 @Injectable()
 export class AuthService {
@@ -52,15 +53,16 @@ export class AuthService {
 		if (!finduser) {
 			finduser = await this.signup(user);
 		}
-		const token = await this.signToken(finduser);
+		const payload = {
+			sub: finduser.id,
+			userID: finduser.id,
+			isTwoFaAuth: finduser.twoFaAuth,
+		}
+		const token = await this.signToken(payload);
 		return {token};
 	}	
 
-	async signToken(user:any) : Promise<string> {
-		const payload = {
-			sub: user.id,
-			userID: user.id
-		}
+	async signToken(payload:any) : Promise<string> {
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
 			//expiresIn: '15m',
@@ -80,7 +82,18 @@ export class AuthService {
 		return (finduser || null);
 	}
 	///////TWO FACTOR AUTH////////
-	async enableTwoFA(user: any) {
+	async enableTwoFa(user: any)
+	{
+		await this.prisma.user.update({
+			where: {
+				id: user.id,
+			},
+			data: {
+				twoFaAuth: true
+			}
+		});
+	}
+	async generateTwoFA(user: any) {
 		const finduser = await this.validateUser(user);
 		if (!finduser)
 			throw new NotFoundException('User not found');
@@ -91,7 +104,6 @@ export class AuthService {
 			},
 			data: {
 				twoFaSecret: secret.base32,
-				twoFaAuth: true,
 			}
 		})
 		const otpauthUrl = await speakeasy.otpauthURL({
@@ -103,6 +115,7 @@ export class AuthService {
 		return ({secret: secret.otpauth_url, oturl: otpauthUrl});
 	}
 
+	
 	async verifyTwoFa(user: any, token: string): Promise<boolean> {
 		const finduser = await this.validateUser(user);
 		if (!finduser) {
@@ -111,8 +124,9 @@ export class AuthService {
 		console.log(user.twoFaSecret);
 		console.log("UserSecret = " + finduser.twoFaSecret);
 		console.log("AuthCode = " + token);
+		const secret = finduser.twoFaSecret;
 		const isItValid = await speakeasy.totp.verify({
-			secret: finduser.twoFaSecret,
+			secret: secret,
 			encoding: 'base32',
 			token: token
 		});
@@ -125,7 +139,7 @@ export class AuthService {
 			isTwoFaAuthEnabled: user.twoFaAuth,
 			isTwoFaAuth: true,
 		}
-		return (this.signToken(payload));
+		return (await this.signToken(payload));
 	}
 
 	// async generateTFAuth(user: any) {
