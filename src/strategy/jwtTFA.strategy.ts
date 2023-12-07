@@ -16,7 +16,7 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
         return req.cookies['jwt'];
     }
     
-    async validate(payload: {sub: number, userID: number, twoFaAuth: Boolean}, @Req() req) {
+    async validate(payload: {sub: number, userID: number, istwoFaAuth: boolean}) {
 
         const user = await this.prisma.user.findUnique({
             where: {
@@ -24,16 +24,20 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
             },
         });
         if (!user) {
-            //console.log('here');
+            console.log('here');
             throw new UnauthorizedException()
         }
-        //console.log('im in two fa');
+        console.log('im in two fa1');
         if (!user.twoFaAuth) {
             return user;
         }
-        if (payload.twoFaAuth) {
+        console.log(payload.istwoFaAuth);
+        console.log(payload.sub);
+        console.log(payload.userID);
+        if (payload.istwoFaAuth) {
             return user;
         }
-        //console.log('im in two fa');
+        //console.log();
+        console.log('im in two fa2');
     }
 } 

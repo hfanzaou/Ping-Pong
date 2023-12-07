@@ -42,7 +42,10 @@ export class AuthController {
 	async callback(@Req() req, @Res() res) {
 		const token = await this.authService.signin(req.user);
 		console.log("hello");
-		res.cookie('jwt', token.token);
+		res.cookie('jwt', token, {
+			path:'/',
+			httpOnly: true,
+		});
 		res.send('done');
 		//res.redirect('http://localhost:3001');
 	}
@@ -84,7 +87,8 @@ export class AuthController {
 		//console.log('here');
 		if (!user.twoFaAuth)
 			await this.authService.enableTwoFa(user);
-		const newToken = await this.authService.login2fa(user);
+		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: true };
+		const newToken = await this.authService.signToken(payload);
 		console.log(newToken);
 		res.cookie('jwt', newToken, {
 			path: '/',

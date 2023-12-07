@@ -59,10 +59,10 @@ export class AuthService {
 			isTwoFaAuth: finduser.twoFaAuth,
 		}
 		const token = await this.signToken(payload);
-		return {token};
+		return (token);
 	}	
 
-	async signToken(payload:any) : Promise<string> {
+	async signToken(payload: {sub: number, userID: number, isTwoFaAuth: boolean}) : Promise<string> {
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
 			//expiresIn: '15m',
@@ -133,12 +133,7 @@ export class AuthService {
 		return isItValid;
 	}
 
-	async login2fa(user: any) {
-		const payload = {
-			sub: user.id,
-			isTwoFaAuthEnabled: user.twoFaAuth,
-			isTwoFaAuth: true,
-		}
+	async login2fa(payload: { sub: number, userID: number, isTwoFaAuth: boolean }) {
 		return (await this.signToken(payload));
 	}
 

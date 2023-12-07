@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private static extractJWT(@Req() req: Request): string | null {
         return req.cookies['jwt'];
       }
-    async validate(payload: {sub: number, userID: number, twoFaAuth: boolean}, @Req() req) {
+    async validate(payload: {sub: number, userID: number, istwoFaAuth: boolean}, @Req() req) {
         //console.log("cookie =" + req.cookie)
         // console.log(payload);
         const user = await this.prisma.user.findUnique({
