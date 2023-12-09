@@ -1,0 +1,37 @@
+[
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
+      "name": "Robert Wolfkisser",
+      "status": "online",
+      "email": "rob_wolf@gmail.com",
+      "rate": 22
+    },
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
+      "name": "Jill Jailbreaker",
+      "status": "offline",
+      "email": "jj@breaker.com",
+      "rate": 45
+    },
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
+      "name": "Henry Silkeater",
+      "status": "online",
+      "email": "henry@silkeater.io",
+      "rate": 76
+    },
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
+      "name": "Bill Horsefighter",
+      "status": "offline",
+      "email": "bhorsefighter@gmail.com",
+      "rate": 15
+    },
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png",
+      "name": "Jeremy Footviewer",
+      "status": "online",
+      "email": "jeremy@foot.dev",
+      "rate": 98
+    }
+]  
