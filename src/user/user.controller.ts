@@ -30,7 +30,7 @@ export class UserController {
     }
     @Get('profile')
     getProfile(@Req()  req) {
-        console.log(req.user.id)
+            console.log(req.user.id)
         return (this.userService.getProfile(req.user.id));
     }
 }
