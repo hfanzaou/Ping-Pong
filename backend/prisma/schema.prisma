@@ -20,6 +20,7 @@ model User {
   username    String  @unique
   firstName   String?
   lastName    String?
+  upAvatar    Boolean @default(false)
   avatar      String?
   state       Boolean @default(false)
   twoFaAuth   Boolean

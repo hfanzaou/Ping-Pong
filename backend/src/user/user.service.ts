@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
+import { createReadStream } from 'fs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -6,16 +7,28 @@ export class UserService {
     constructor(private prismaservice: PrismaService) {}
 
     async getUserAvatar(id: number) {
-        let avatar = await this.prismaservice.user.findUnique({
-            where: {
-                id: id,
-            }, select : {
-                avatar: true,
+        try {
+            const avatar = await this.prismaservice.user.findUnique({
+                where: {
+                    id: id,
+                }, select : {
+                    avatar: true,
+                    upAvatar: true,
+                }
+            })
+            if (!avatar)
+                throw new NotFoundException('USER NOT FOUND');
+            if (avatar.upAvatar)
+            {
+                console.log(avatar.avatar);
+                const file = createReadStream(avatar.avatar, 'binary');
+                //const read = file.read();
+                return "data:image/png;base64,"+file;
             }
-        })
-        if (!avatar)
-            throw new NotFoundException('USER NOT FOUND');
-        return avatar;
+            return avatar;
+        } catch(error) { 
+            throw new InternalServerErrorException('Error fetching avatar');
+        }
     }
     async getProfile(id: number) {
         let user = await this.prismaservice.user.findUnique({

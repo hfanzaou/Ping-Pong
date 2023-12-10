@@ -44,7 +44,7 @@ function NavBar() {
     //// fetching Avatar from backend
     async function getAvatar() {
 
-      await axios.get("http://localhost:3001/user/avatar")
+      await axios.get("http://localhost:3001/user/avatar", {withCredentials: true})
       .then(res => {
         setAvatar(res.data.avatar);
       })

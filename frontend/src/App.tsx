@@ -39,23 +39,6 @@ function Verify()
 }
 
 function App()  {
-  // const { token, setToken } = useToken();
-  // if (!token) {
-  //   return (
-  //     <Login setToken={setToken} />
-  //   );
-  // }
-
-  // const SetCookie = () => {
-    // Cookies.set("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");
-      // expires: 7,
-    // });
-  // };
-
-  // Method to get data from cookies
-  // const GetCookie = () => {
-    // alert(Cookies.get("token"));
-  // };
   const isVerified = Verify();
   if (isVerified === false) {
     // Verification is still in progress
