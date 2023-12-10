@@ -46,6 +46,7 @@ function NavBar() {
 
       await axios.get("http://localhost:3001/user/avatar", {withCredentials: true})
       .then(res => {
+        //console.log(res.data.avatar);
         setAvatar(res.data.avatar);
       })
       .catch(err =>  {

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
-import { createReadStream } from 'fs';
+import { createReadStream, readFileSync } from 'fs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -21,47 +21,58 @@ export class UserService {
             if (avatar.upAvatar)
             {
                 console.log(avatar.avatar);
-                const file = createReadStream(avatar.avatar, 'binary');
-                //const read = file.read();
-                return "data:image/png;base64,"+file;
+                const file = readFileSync(avatar.avatar, 'base64');
+                //console.log(file.toString('base64'));
+                return "data:image/png;base64,"+ file.toString();
             }
             return avatar;
-        } catch(error) { 
-            throw new InternalServerErrorException('Error fetching avatar');
+        } catch(error) {
+            if (error instanceof NotFoundException)
+                throw HttpStatus.NOT_FOUND; 
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
     async getProfile(id: number) {
-        let user = await this.prismaservice.user.findUnique({
-            where: {
-                id: id
-            }, select: {
-                username: true,
-                avatar: true,
-                firstName: true,
-                lastName: true,
-            }
-        })
-        if (!user)
-            throw new NotFoundException('USER NOT FOUND');
-        //console.log(user);
-        return user;
+        try {
+            let user = await this.prismaservice.user.findUnique({
+                where: {
+                    id: id
+                }, select: {
+                    username: true,
+                    avatar: true,
+                    firstName: true,
+                    lastName: true,
+                }
+            })
+            if (!user)
+                throw new NotFoundException('USER NOT FOUND');
+            //console.log(user);
+            return user;
+        } catch(error) {
+            if (error instanceof NotFoundException)
+                throw HttpStatus.NOT_FOUND;
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
     async getProfileById(id: number) {
-       
-        console.log('console is in profilebyid');
-        console.log(id);
-       const user = await this.prismaservice.user.findUnique({
-            where: {
-                id: id
-            }, select: {
-                username: true,
-                avatar: true,
-                firstName: true,
-                lastName: true,
-            }
-        })
-       if (!user)
-            throw new NotFoundException('USER NOT FOUND');
-       return (user);
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                 where: {
+                     id: id
+                 }, select: {
+                     username: true,
+                     avatar: true,
+                     firstName: true,
+                     lastName: true,
+                 }
+             })
+            if (!user)
+                 throw new NotFoundException('USER NOT FOUND');
+            return (user);
+        } catch(error) {
+            if (error instanceof NotFoundException)
+                throw HttpStatus.NOT_FOUND;
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 }

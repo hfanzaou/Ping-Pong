@@ -11,9 +11,9 @@ export class UserController {
     {
     }
     @Get('avatar')
-    getImage(@Req() req) {
+    async getImage(@Req() req) {
         console.log(req.user.id)
-        return {avatar: this.userService.getUserAvatar(req.user.id)};
+        return {avatar: await this.userService.getUserAvatar(req.user.id)};
     }
     @Get('name')
     async getName(@Req() req) {

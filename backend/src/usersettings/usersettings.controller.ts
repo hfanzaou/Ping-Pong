@@ -16,10 +16,10 @@ export class UsersettingsController {
     @Post('name')
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)    
-    editUsername(@Req() req, @Body() Name) {
+    async editUsername(@Req() req, @Body() Name) {
         console.log('im in edit name');
         console.log(Name.uniqueName);
-        this.userSetService.updateUsername(req.user, Name.uniqueName);   
+        await this.userSetService.updateUsername(req.user, Name.uniqueName);   
     }
     @Post('avatar')
     @UseGuards(JwtTwoFaGuard)
