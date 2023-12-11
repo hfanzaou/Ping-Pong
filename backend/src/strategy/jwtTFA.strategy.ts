@@ -23,9 +23,7 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
                 id: payload.sub,
             },
         });
-        console.log(payload);
         if (!user) {
-            console.log('here');
             throw new UnauthorizedException()
         }
         if (!user.twoFaAuth || payload.isTwoFaAuth) {

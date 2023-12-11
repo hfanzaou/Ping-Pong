@@ -10,7 +10,7 @@ function EnableTowFactor() {
 
     useEffect(() => {
         const getFactorState = async () => {
-            await axios.get("http://localhost:3000/2f/state")
+            await axios.get("http://localhost:3001/user/2fa", {withCredentials: true})
             .then((res) => {
                 setTowFactor(res.data);
             })
@@ -26,7 +26,7 @@ function EnableTowFactor() {
 
         if (!towFactor) {
             // handle enable it
-            await axios.get("http://localhost:3000/2fa/auth")
+            await axios.get("http://localhost:3001/2fa/auth")
             .then((res) => {
                 console.log(res.data);
                 setChange(true);
@@ -41,13 +41,14 @@ function EnableTowFactor() {
   const handleSandCode = async () => {
     // alert(e.target.value);
     setInvalidCode(true);
-    await axios.post("http://localhost:3000/2f/code", {code:"123"})
+    await axios.post("http://localhost:3001/2fa/auth", {AuthCode:TextInput.value}, {withCredentials: true})
     .then((res) => {
         console.log(res);
 
     })
     .catch((err) => {
-        console.error("Error in sending 2f code: ", err);
+        console.log(err);
+        console.error("Error in sending 2fa code: ", err);
     })
   };
 
@@ -62,7 +63,7 @@ function EnableTowFactor() {
     <div>
         {!change ?
         <Switch
-            label={!towFactor ? "enable 2f" : "disable 2f"}
+            label={!towFactor ? "enable 2fa" : "disable 2fa"}
             checked={towFactor}
             onChange={handleTowFactor}
         /> :
@@ -70,16 +71,16 @@ function EnableTowFactor() {
             <div>
             <Image src={QuerCode}/>
             <TextInput
-                label="scane Quire Code and set code here"
+                label="scan the QR Code and set your code here"
                 error={invalidCode ? "try again with a valid code" : false}
-                // onChange={savw the code in a state}
+                onChange={{text}}
             />
             <Button onClick={handleSandCode}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
             <Button onClick={handleCancel} >Cancele</Button>
             </div> :
             <div>
             <TextInput
-                label="push your 2f code to disable it"
+                label="push your 2fa code to disable it"
                 error={invalidCode ? "try again with a valid code" : false}
                 // onChange={savw the code in a state}
 

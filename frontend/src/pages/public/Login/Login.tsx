@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 // import Button from '@mui/material/Button'
 import './Login.css'
-import PropTypes from 'prop-types';
-
-import Cookies from 'js-cookie';
+import PropTypes from 'prop-types'
 
 
 
@@ -55,8 +53,8 @@ function Login() {
 
 
     // set cookies for dev mode
-    Cookies.set("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJJRCI6MSwiaWF0IjoxNzAxNTUzNTkxfQ.1vBFZhqlWwKkEadFEOLnC90torC3S87XRM2VtGzROzE");
-    window.location.href = "http://localhost:3000/";
+    //Cookies.set("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJJRCI6MSwiaWF0IjoxNzAxNTUzNTkxfQ.1vBFZhqlWwKkEadFEOLnC90torC3S87XRM2VtGzROzE");
+    window.location.href = "http://localhost:3001/login";
    
 
     // Just redirect to backend /auth

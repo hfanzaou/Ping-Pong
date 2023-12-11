@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import EditAvatar from "react-avatar-edit";
 import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
+import { TrendingUpRounded } from "@mui/icons-material";
+import { Base64 } from "js-base64";
 
 function UpdateAvatar({setUserImage, image, setSave}) {
   const src: any = null;
@@ -42,7 +44,7 @@ function ChangeAvatar() {
   useEffect(() => {
     const getUserInfo = async () => {
       {/* change to get http://localhost:3000/user/avatar*/}
-      await axios.get("http://localhost:3001/user/avatar")
+      await axios.get("http://localhost:3001/user/avatar", {withCredentials: true})
       .then((res) => {
           setUserImage(res.data.avatar);
           setImage(res.data.avatar);
@@ -67,7 +69,10 @@ function ChangeAvatar() {
   {/* Push the Avatar to Api http://localhost:3000/change/avatar/ */}
   const handleSaveAvatar = async () => {
     {userimage !== image ?
-    await axios.post('http://localhost:3001/user/avatr', {avatar: (userimage === image ? null : userimage)})
+    await axios.post('http://localhost:3001/settings/avatar', ({avatar: userimage === image ? null : userimage}), 
+    {
+      withCredentials: true,
+    })
     .then(res => {
       console.log(res.data);
       setSetAvatar(false);
