@@ -75,4 +75,19 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async getTwoFaState(id: number)
+    {
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: {
+                    id: id
+                }, select: {
+                    twoFaAuth: true,
+                }
+            })
+            return user.twoFaAuth;
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
 }

@@ -82,6 +82,7 @@ export class AuthController {
 	@Post('2fa/auth')
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res() res, @Body() body) {
+		console.log(body);
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(
@@ -94,6 +95,7 @@ export class AuthController {
 			if (typeof error === "boolean") {
 				throw new UnauthorizedException('Wrong Verification Code');
 			}
+			//console.log(body.AuthCode);
 		}
 		if (!user.twoFaAuth)
 			await this.authService.enableTwoFa(user);

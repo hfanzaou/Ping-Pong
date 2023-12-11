@@ -18,7 +18,7 @@ export class UserController {
     @Get('name')
     async getName(@Req() req) {
         const user = await this.userService.getProfileById(req.user.id)
-        return ({username: user.username});
+        return ({name: user.username});
     }
     @Get('userid')
     async getProfileById(@Req() req, @Query('id') id: string) {
@@ -28,8 +28,13 @@ export class UserController {
         return (this.userService.getProfileById(userId));
     }
     @Get('profile')
-    getProfile(@Req()  req) {
+    async getProfile(@Req()  req) {
         console.log(req.user.id)
-        return (this.userService.getProfile(req.user.id));
+        return (await this.userService.getProfile(req.user.id));
     }
+    @Get('2fa')
+    async getTwoFaState(@Req() req) {
+        console.log('in 2fa state');
+        return (await this.userService.getTwoFaState(req.user.id));
+    }    
 }

@@ -16,7 +16,7 @@ function ChangeName() {
   useEffect(() => {
     const getUserInfo = async () => {
       {/* change to get http://localhost:3000/user/name*/}
-      await axios.get("http://localhost:3001/user/name")
+      await axios.get("http://localhost:3001/user/name", {withCredentials: true})
       .then((res) => {
           console.log(res.data.name);
           setUserName(res.data.name);
