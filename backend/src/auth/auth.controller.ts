@@ -72,13 +72,13 @@ export class AuthController {
 	@Post('2fa/turnon')
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
-	async turnOnTwoFaAuth(@Req() req, @Res() res: Response, @Body() body) {
+	async turnOnTwoFaAuth(@Req() req, @Res() res: Response) {
 		const otpAuthUrl = await this.authService.generateTwoFA(req.user);
 		console.log(otpAuthUrl);
-		return (toFileStream(res, otpAuthUrl.oturl));
+		return ({qrcode: toFileStream(res, otpAuthUrl.oturl)});
 	}
 
-	@Post('2fa/auth/')
+	@Post('2fa/auth')
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res() res, @Body() body) {
 		console.log(body);
