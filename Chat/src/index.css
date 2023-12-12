@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+	font-family: "Inconsolata";
+	src: url("./fonts/Inconsolata/Inconsolata-VariableFont_wdth\,wght.ttf");
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: black;
+	border-radius: 50px;
+}
