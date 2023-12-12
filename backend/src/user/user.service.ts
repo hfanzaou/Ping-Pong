@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
 import { createReadStream, readFileSync } from 'fs';
+import { userDto } from 'src/auth/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class UserService {
                 console.log(avatar.avatar);
                 const file = readFileSync(avatar.avatar, 'base64');
                 //console.log(file.toString('base64'));
-                return "data:image/png;base64,"+ file.toString();
+                return {avatar: "data:image/png;base64,"+ file.toString()};
             }
             return avatar;
         } catch(error) {
@@ -86,6 +87,34 @@ export class UserService {
                 }
             })
             return user.twoFaAuth;
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+    async getUsersList(id: number) {
+        try {
+            const users = await this.prismaservice.user.findMany({
+                select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                    state: true
+                }
+            });
+            console.log('id = ' + id);
+            const usersre: userDto[] = await Promise.all(users.filter((obj) => {
+                if (obj.id != id) {
+                    return true
+                }
+                return false;
+              }).map(async (obj) => {
+                const avatar = await this.getUserAvatar(obj.id);
+                return { key: obj.id, name: obj.username, avatar: avatar.avatar, state: obj.state };
+              })); 
+           // console.log(usersre);
+           console.log(usersre);
+            return usersre[0] === null ? []: usersre;
+            //return null;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }

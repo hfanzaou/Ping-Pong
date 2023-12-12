@@ -26,7 +26,7 @@ function EnableTowFactor() {
 
         if (!towFactor) {
             // handle enable it
-            await axios.get("http://localhost:3001/2fa/auth")
+            await axios.get("http://localhost:3001/2fa/auth", {withCredentials: true})
             .then((res) => {
                 console.log(res.data);
                 setChange(true);
@@ -41,7 +41,7 @@ function EnableTowFactor() {
   const handleSandCode = async () => {
     // alert(e.target.value);
     setInvalidCode(true);
-    await axios.post("http://localhost:3001/2fa/auth", {AuthCode:TextInput.value}, {withCredentials: true})
+    await axios.post("http://localhost:3001/2fa/auth", {AuthCode:'123'}, {withCredentials: true})
     .then((res) => {
         console.log(res);
 
@@ -73,7 +73,7 @@ function EnableTowFactor() {
             <TextInput
                 label="scan the QR Code and set your code here"
                 error={invalidCode ? "try again with a valid code" : false}
-                onChange={{text}}
+               // onChange={{text}}
             />
             <Button onClick={handleSandCode}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
             <Button onClick={handleCancel} >Cancele</Button>

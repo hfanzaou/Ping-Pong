@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, UseGuards, Req, Res, HttpException, HttpSt
 import { AuthService} from './auth.service';
 import { GetUser } from './decorator';
 import { User } from '@prisma/client';
-import { AuthDto } from './dto';
 import { FTUser } from './42dto';
 import { FTAuthGuard, JwtGuard } from './guard';
 import { Request, Response } from 'express';
@@ -79,7 +78,7 @@ export class AuthController {
 		return (toFileStream(res, otpAuthUrl.oturl));
 	}
 
-	@Post('2fa/auth')
+	@Post('2fa/auth/')
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res() res, @Body() body) {
 		console.log(body);
