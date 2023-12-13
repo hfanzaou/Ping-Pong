@@ -27,9 +27,10 @@ function EnableTowFactor() {
 
         if (!towFactor) {
             // handle enable it
-            await axios.get("http://localhost:3001/2fa/turnon")
+            await axios.post("http://localhost:3001/2fa/turnon")
             .then((res) => {
-                setQrImage(res.data.qrcode);
+                console.log(res.data);
+                setQrImage(res.data);
                 setChange(true);
             })
             .then((err) => {
@@ -39,10 +40,10 @@ function EnableTowFactor() {
         // setTowFactor(!towFactor);
   };
 
-  const handleSandCode = async () => {
+  const handleSendCode = async () => {
     // alert(e.target.value);
     setInvalidCode(true);
-    await axios.post("http://localhost:3001/2fa/auth", {code:"123"})
+    await axios.post("http://localhost:3001/2fa/auth", {code:Text})
     .then((res) => {
         console.log(res);
 
@@ -57,7 +58,7 @@ function EnableTowFactor() {
 //   useEffect(() => {
             setChange(false);
         // }, []);
-        };
+        }
 
   return (
     <div>
@@ -73,9 +74,9 @@ function EnableTowFactor() {
             <TextInput
                 label="scane Quire Code and set code here"
                 error={invalidCode ? "try again with a valid code" : false}
-                // onChange={savw the code in a state}
+                //onChange={handleSetText(Text)}
             />
-            <Button onClick={handleSandCode}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
+            <Button onClick={handleSendCode}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
             <Button onClick={handleCancel} >Cancele</Button>
             </div> :
             <div>
@@ -85,7 +86,7 @@ function EnableTowFactor() {
                 // onChange={savw the code in a state}
 
             />
-            <Button onClick={handleSandCode}>Disable</Button>
+            <Button onClick={handleSendCode}>Disable</Button>
             <Button onClick={handleCancel} >Cancele</Button>
 
         </div>)

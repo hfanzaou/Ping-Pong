@@ -39,8 +39,6 @@ export class UsersettingsService {
                 }
             })
         } catch(error) {
-            if (error instanceof ConflictException)
-                throw HttpStatus.NOT_FOUND;
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return true;
