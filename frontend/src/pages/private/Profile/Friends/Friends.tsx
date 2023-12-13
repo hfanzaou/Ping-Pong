@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote } from '@mantine/core';
-import { IconMessages, IconTrash, IconInfoCircle} from '@tabler/icons-react';
-
+import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl } from '@mantine/core';
+import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
+import FrindsImage from './friends.svg';
 
 import testdata from './test.json';
 import axios from 'axios';
+import BlockedFriendInterface from './BlockedFriendInterface';
+
+
 
 function  Frindes() {
   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
+  const [blockedFriendList, setBlockedFriendList] = useState<FriendInterface[]>([]);
+  const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
+  const [value, setValue] = useState<string>('Friends list');
 
   useEffect(() => {
     const getFriends = async () => {
@@ -19,6 +25,16 @@ function  Frindes() {
         console.error("Error in fetching friend list: ", err);
       })
     };
+    const getBlockedFriends = async () => {
+        // await axios.get("http://localhost:3001/friend/blocked")
+        await axios.get("http://localhost:3001/friend/list")
+        .then((res) => {
+         setBlockedFriendList(res.data);
+        }).catch(err => {
+            console.error("Error in fetching blocked friend list: ", err);
+        })
+    };
+    getBlockedFriends();
     getFriends();
   }, []);
 
@@ -67,42 +83,105 @@ function  Frindes() {
     </Table>
   ));
 
-  const icon = <IconInfoCircle/>
+  const blockedRows = blockedFriendList.map((item) => (  
+    <Table key={item.name}>
+        <Table.Td>
+          <Group gap="sm">
+            <Menu
+              transitionProps={{ transition: 'pop' }}
+              withArrow
+              position="bottom-end"
+              withinPortal
+              >
+              <Menu.Target>
+               <Avatar size={40} src={item.avatar} radius={40} />
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+                  color="red"
+                  >
+                  InBlock friend
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <div>
+              <Text fz="sm" fw={500}>
+                {item.name}
+              </Text>
+              <Text c="dimmed" fz="xs">
+                {item.status}
+              </Text>
+            </div>
+          </Group>
+          <Group gap={0}>
+          </Group>
+        </Table.Td>
+      </Table>
+    ));
+
+  const FriendsIcon = <IconFriends  size={60} strokeWidth={1.5} color={'#4078bf'}/>
+  const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
+
+  const frindesNumber = 5;
+  const blockedFriendsNumbre = 2;
 
   return (
-    <Table>
-      <Table.Thead>
-        <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
-          <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Friend's</h2>
-        </div>
-      </Table.Thead>
-      {Object.keys(rows).length ?
-        (<ScrollArea h={250}>
-          <Table.Tbody>
+    <div className='relative flex '>
+        <Table>
+          <Table.Thead>
+            <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
+                {value === 'Friends list' && 
+                (<div className='flex'>
+                    <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">{frindesNumber}</h2>
+                    {FriendsIcon}
+                    {/* <img className='h-[70px] w-[50px]' src={FrindsImage}/> */}
+                </div>)}
+                
+                {/* {value === 'Friends list' ? FriendsIcon : FriendsOffIcon} */}
+                <SegmentedControl
+                    fullWidth
+                    size='lg'
+                    radius='xl'
+                    value={value}
+                    onChange={setValue}
+                    data={[
+                        { label: 'Friends list', value: 'Friends list' },
+                        // { label: 'Friends list', value: FriendsIcon },  // when make the icone for the blocked users change the value to the icon
+                        { label: 'Blocked Users', value: 'Blocked Users' },
+                    ]}
+                />
+                {value === 'Blocked Users' &&
+                (<div className='flex'>
+                    {FriendsOffIcon}
+                    {/* <img className='h-[70px] w-[50px]' src={FrindsImage}/> */}
+                    <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">{blockedFriendsNumbre}</h2>
+                </div>)}
+            </div>
+          </Table.Thead>
+          {value === 'Friends list' ? 
+          (Object.keys(rows).length ?
+            (<ScrollArea h={200} type='never'>
+            <Table.Tbody>
             {rows}
-          </Table.Tbody>
-        </ScrollArea>) :
-        (<Blockquote color="gray" radius="xl" iconSize={33} cite="transcendence tame" icon={icon} mt="xl">
-          Add Freinds to be more frindly and take an sociale achievements
-        </Blockquote>)
-        // Life is like an npm install – you never know what you are going to get.
-      }
-      <Table.Thead>
-        <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
-          <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Blocked</h2>
-        </div>
-      </Table.Thead>
-      {/* {Object.keys(rows).length ?
-        (<ScrollArea h={250}>
-          <Table.Tbody>
-            {rows}
-          </Table.Tbody>
-        </ScrollArea>) : */}
-        <Blockquote color="gray" radius="xl" iconSize={33} cite="transcendence tame" icon={icon} mt="xl">
-          No one blocked for instance
-        </Blockquote>
-        {/* } */}
-    </Table>
+            </Table.Tbody>
+            </ScrollArea>) :
+            (<Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
+              Add Freinds to shows them here
+            </Blockquote>)
+          )
+          : 
+        (blockedFriendsNumbre ? 
+            <ScrollArea h={200} type='never'>
+            <Table.Tbody>
+            {blockedRows}
+            </Table.Tbody>
+            </ScrollArea>:
+            (<Blockquote color="green" radius="xl" iconSize={33} mt="xl">
+              Non one blocked for now
+            </Blockquote>))}
+        </Table>
+    </div>
   );
 }
 

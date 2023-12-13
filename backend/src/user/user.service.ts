@@ -26,7 +26,7 @@ export class UserService {
                 //console.log(file.toString('base64'));
                 return {avatar: "data:image/png;base64,"+ file.toString()};
             }
-            return avatar;
+            return avatar.avatar;
         } catch(error) {
             if (error instanceof NotFoundException)
                 throw HttpStatus.NOT_FOUND; 
