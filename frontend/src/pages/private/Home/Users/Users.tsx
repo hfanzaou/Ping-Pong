@@ -62,14 +62,14 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               {item.name}
             </Text>
             <Text fz="xs" c="dimmed">
-              {item.state}
+              {item.state}               {/*this state was need to be real time*/}
             </Text>
           </div>
         </Group>
       </Table.Td>
       {/* <Table.Td>{item.lastActive}</Table.Td> */}
       <Table.Td>
-        <Button>Add to friends</Button>
+        <Button radius='lg'>Add to friends</Button>
         {/* {item.active ? (
           <Badge fullWidth variant="light">
             Online
@@ -85,7 +85,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   
   return (
     // <Table.ScrollContainer minWidth={500}>   {/* determin when device larg minWidth larg and when device small minWidth small in media qiuery by talwind*/}
-      <Table verticalSpacing="sm" highlightOnHover={true} >
+      <Table verticalSpacing="md" highlightOnHover={true} className='h=full'>
         <Table.Thead>
           <div className="flex h-10 w-full items-center rounded-md bg-primary p-4">
             <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">
@@ -101,7 +101,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             />
           </div>
         </Table.Thead>
-        <ScrollArea h={250}>
+        <ScrollArea h={500}>
           <Table.Tbody>
             {search}
           </Table.Tbody>
