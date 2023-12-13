@@ -7,7 +7,7 @@ function EnableTowFactor() {
   const [towFactor, setTowFactor] = useState<boolean>(false);
   const [change, setChange] = useState<boolean>(false);
   const [invalidCode, setInvalidCode] = useState<boolean>(true);
-  const [qrImage, setQrImage] = useState<string>();
+  const [qrImage, setQrImage] = useState();
 
     useEffect(() => {
         const getFactorState = async () => {
