@@ -29,6 +29,9 @@ export default {
       },
       fontFamily: {
         Inconsolata: ["Inconsolata", "monospace"]
+      },
+      width: {
+        '99': '99%',
       }
     },
   },
