@@ -1,12 +1,13 @@
 import { Switch, TextInput, Image, Button } from "@mantine/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import QuerCode from '../../../avatarImage/avatar-2.png';
+// import QuerCode from '../../../avatarImage/avatar-2.png';
 
 function EnableTowFactor() {
   const [towFactor, setTowFactor] = useState<boolean>(false);
   const [change, setChange] = useState<boolean>(false);
   const [invalidCode, setInvalidCode] = useState<boolean>(true);
+  const [qrImage, setQrImage] = useState();
 
     useEffect(() => {
         const getFactorState = async () => {
@@ -28,7 +29,7 @@ function EnableTowFactor() {
             // handle enable it
             await axios.get("http://localhost:3001/2fa/turnon")
             .then((res) => {
-                console.log(res.data);
+                setQrImage(res.data.qrcode);
                 setChange(true);
             })
             .then((err) => {
@@ -68,7 +69,7 @@ function EnableTowFactor() {
         /> :
         (!towFactor ?
             <div>
-            <Image src={QuerCode}/>
+            <Image src={qrImage}/>
             <TextInput
                 label="scane Quire Code and set code here"
                 error={invalidCode ? "try again with a valid code" : false}
