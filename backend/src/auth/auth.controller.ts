@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, UseGuards, Req, Res, HttpException, HttpSt
 import { AuthService} from './auth.service';
 import { GetUser } from './decorator';
 import { User } from '@prisma/client';
-import { AuthDto } from './dto';
 import { FTUser } from './42dto';
 import { FTAuthGuard, JwtGuard } from './guard';
 import { Request, Response } from 'express';
@@ -73,10 +72,10 @@ export class AuthController {
 	@Post('2fa/turnon')
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
-	async turnOnTwoFaAuth(@Req() req, @Res() res: Response, @Body() body) {
+	async turnOnTwoFaAuth(@Req() req, @Res() res: Response) {
 		const otpAuthUrl = await this.authService.generateTwoFA(req.user);
 		console.log(otpAuthUrl);
-		return (toFileStream(res, otpAuthUrl.oturl));
+		return ({qrcode: toFileStream(res, otpAuthUrl.oturl)});
 	}
 
 	@Post('2fa/auth')
