@@ -31,8 +31,8 @@ const getToken = (): string | '' => {
   return userToken?.token || "";
 };
 
-function NavBar() {
-  const [avatar, setAvatar] = React.useState();
+function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
+//   const [avatar, setAvatar] = React.useState();
 
       {/* Here set the neded headers in all requeste send to backend  becouse here when the FIRST REQUIEST send */}
   // axios.defaults.withCredentials = true;  // to send token in every requiste

@@ -13,9 +13,8 @@ function UsersRolesTable() {
   
   useEffect(() => {
     const getUsers = async () => {
-      await axios.get("http://localhost:3001/user/list", {withCredentials: true})
+      await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        console.log(res.data)
         setUsersList(res.data);
         setSearchList(res.data);
       }).catch(err => {

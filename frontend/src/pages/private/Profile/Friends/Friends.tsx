@@ -4,7 +4,7 @@ import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/ico
 import FriendInterface from './FriendsInterface';
 import FrindsImage from './friends.svg';
 
-import testdata from './test.json';
+import testdata from './FriendsList.json';
 import axios from 'axios';
 import BlockedFriendInterface from './BlockedFriendInterface';
 
@@ -22,6 +22,7 @@ function  Frindes() {
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
+        setFriendList(testdata);
         console.error("Error in fetching friend list: ", err);
       })
     };
@@ -38,7 +39,9 @@ function  Frindes() {
     getFriends();
   }, []);
 
-  const rows = friendList.map((item) => (  
+  const rows = friendList.map((item) => (
+//   const rows = testdata.map((item) => (
+
   <Table key={item.name}>
       <Table.Td>
         <Group gap="sm">
@@ -124,7 +127,7 @@ function  Frindes() {
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = 5;
-  const blockedFriendsNumbre = 2;
+  const blockedFriendsNumbre = 0;
 
   return (
     <div className='relative flex '>
@@ -137,7 +140,6 @@ function  Frindes() {
                     {FriendsIcon}
                     {/* <img className='h-[70px] w-[50px]' src={FrindsImage}/> */}
                 </div>)}
-                
                 {/* {value === 'Friends list' ? FriendsIcon : FriendsOffIcon} */}
                 <SegmentedControl
                     fullWidth
@@ -148,7 +150,7 @@ function  Frindes() {
                     data={[
                         { label: 'Friends list', value: 'Friends list' },
                         // { label: 'Friends list', value: FriendsIcon },  // when make the icone for the blocked users change the value to the icon
-                        { label: 'Blocked Users', value: 'Blocked Users' },
+                        { label: 'Blocked Users', value: 'Blocked Users', disabled: blockedFriendsNumbre === 0 },
                     ]}
                 />
                 {value === 'Blocked Users' &&
@@ -159,7 +161,7 @@ function  Frindes() {
                 </div>)}
             </div>
           </Table.Thead>
-          {value === 'Friends list' ? 
+          {value === 'Friends list' ?
           (Object.keys(rows).length ?
             (<ScrollArea h={200} type='never'>
             <Table.Tbody>
@@ -170,16 +172,13 @@ function  Frindes() {
               Add Freinds to shows them here
             </Blockquote>)
           )
-          : 
-        (blockedFriendsNumbre ? 
+          :
+        (blockedFriendsNumbre &&
             <ScrollArea h={200} type='never'>
             <Table.Tbody>
             {blockedRows}
             </Table.Tbody>
-            </ScrollArea>:
-            (<Blockquote color="green" radius="xl" iconSize={33} mt="xl">
-              Non one blocked for now
-            </Blockquote>))}
+            </ScrollArea>)}
         </Table>
     </div>
   );

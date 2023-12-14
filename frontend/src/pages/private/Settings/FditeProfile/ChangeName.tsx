@@ -15,7 +15,6 @@ function ChangeName() {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      {/* change to get http://localhost:3001/user/name*/}
       await axios.get("http://localhost:3001/user/name")
       .then((res) => {
           console.log(res.data.name);
@@ -30,6 +29,7 @@ function ChangeName() {
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUniqueNmae(e.target.value);
+    setInvalidName(false);
     e.target.value.length > 4 ? setSave(false) : setSave(true);
   };
 
@@ -38,19 +38,22 @@ function ChangeName() {
     await axios.post('http://localhost:3001/settings/name', {uniqueName: uniqueName})
     .then(res => {
       console.log(res.data);
-      {res.status != 201 ? (setInvalidName(true)) : (setInvalidName(false), setOpenChangeName(!openChangeName))}
+      {res.status != 201 ? (setInvalidName(true)) : (setInvalidName(false), setOpenChangeName(!openChangeName), setUserName(uniqueName))}
     })
     .catch(err => {
-      // setOpenChangeName(!openChangeName); when the name Valide change it and close name setting in then scop
-      console.error("Error in send profile info: ", err);
+        setInvalidName(true);
+        // setOpenChangeName(!openChangeName); when the name Valide change it and close name setting in then scop
+        console.error("Error in send profile info: ", err);
     })
-  };
+};
 
-  const handleOpenChangeName = () => {
+const handleOpenChangeName = () => {
+    setSave(true);
     setOpenChangeName(!openChangeName);
   };
 
   const handleCloseChangeName = () => {
+    setSave(true);
     setOpenChangeName(!openChangeName);
   };
 
@@ -73,8 +76,8 @@ function ChangeName() {
     onChange={handleChangeName}
     error={invalidName ? "alredy used": false}
     />
-    <Button type="button" onClick={handleSaveName} disabled={save} >Save Name</Button>
-    <Button onClick={handleCloseChangeName}>Cancele</Button>
+    <Button type="button" onClick={handleSaveName} disabled={save} >Save Change</Button>
+    <Button onClick={handleCloseChangeName}>Cancel</Button>
     </>
     }
     </>

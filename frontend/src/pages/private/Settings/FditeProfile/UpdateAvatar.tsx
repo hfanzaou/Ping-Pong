@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import EditAvatar from "react-avatar-edit";
 import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
+import { avatarClasses } from "@mui/material";
 
 function UpdateAvatar({setUserImage, image, setSave}) {
   const src: any = null;
@@ -59,9 +60,9 @@ function ChangeAvatar() {
   };
 
   const handleRest = () => {
-    setSetAvatar(false);
-    setSave(true);
-    setUserImage(image);
+        setSetAvatar(false);
+        setSave(true);
+        setUserImage(image);
   };
 
   {/* Push the Avatar to Api http://localhost:3000/change/avatar/ */}
@@ -72,6 +73,7 @@ function ChangeAvatar() {
       console.log(res.data);
       setSetAvatar(false);
       setSave(true);
+      window.location.reload();
     })
     .catch(err => {
       console.error("Error in send profile info: ", err);
@@ -92,8 +94,8 @@ function ChangeAvatar() {
           </div>
         </div>
         {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={image} setSave={setSave} />}
-        {!save && <Button onClick={handleRest} >Reset</Button>}
-        {!save && <Button onClick={handleSaveAvatar}>Use Avatar</Button>}
+        {!save && <Button onClick={handleRest} >Cancel</Button>}
+        {!save && <Button onClick={handleSaveAvatar}>Set new Avatar</Button>}
       </div>
     );
 }

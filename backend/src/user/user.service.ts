@@ -24,7 +24,7 @@ export class UserService {
                 console.log(avatar.avatar);
                 const file = readFileSync(avatar.avatar, 'base64');
                 //console.log(file.toString('base64'));
-                return {avatar: "data:image/png;base64,"+ file.toString()};
+                return ("data:image/png;base64,"+ file.toString());
             }
             return avatar.avatar;
         } catch(error) {
@@ -109,7 +109,7 @@ export class UserService {
                 return false;
               }).map(async (obj) => {
                 const avatar = await this.getUserAvatar(obj.id);
-                return { key: obj.id, name: obj.username, avatar: avatar.avatar, state: obj.state };
+                return { key: obj.id, name: obj.username, avatar: avatar, state: obj.state };
               })); 
            // console.log(usersre);
            console.log(usersre);

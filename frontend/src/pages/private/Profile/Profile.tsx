@@ -6,6 +6,7 @@ import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import './profile.css'
 import cx from 'clsx'
+import Header from '../../../Layout/Header/Header'
 
 const theme = createTheme({
   components: {
@@ -61,15 +62,19 @@ export function ProfileSections() {
   // );
 }
 
-function Profile() {
+function Profile({setAvatar, avatar} : {setAvatar: Function, avatar: string }) {
     return (
       // fluid
     //   <MantineProvider theme={theme}>
     // <Container fluid px={0} size="30rem" bg="var(--mantine-color-blue-1)" className='h-full'>
 
     //   <Container fluid  size="responsive" bg="var(--mantine-color-blue-1)" className='h-full'>
-        <div className='h-full m-8 b-8 bg-neutral-500'>
+        <div>
+
+            <Header setAvatar={setAvatar} avatar={avatar}/>
+        <div className='h-full ml=15 m-8 b-8'>
             <ProfileSections />
+        </div>
         </div>
     //   </Container>
     //   </MantineProvider>

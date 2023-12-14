@@ -3,10 +3,15 @@ import { Container, Flex, SimpleGrid } from '@mantine/core';
 import Users  from './Users/Users'
 import UserCard  from '../Profile/ProfileInfo/UserCard'
 import image from "../../../4304494.jpg"
+import Header from '../../../Layout/Header/Header';
 
-function Home() {
+function Home({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
   return (
+    <div>
+
+            <Header setAvatar={setAvatar} avatar={avatar}/>
     <Container fluid px={0} size="30rem" bg="var(--mantine-color-blue-1)" className='h-full'>
+
      {/* <div className='h-full w-full'> */}
       <SimpleGrid
         cols={{ base: 1, sm: 2, lg: 2 }}
@@ -20,6 +25,7 @@ function Home() {
       </SimpleGrid>
           {/* </div>  */}
       </Container>
+            </div>
   );
 }
 
