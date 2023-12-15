@@ -26,7 +26,7 @@ export class UserService {
                 //console.log(file.toString('base64'));
                 return ("data:image/png;base64,"+ file.toString());
             }
-            return avatar.avatar;
+            return (avatar.avatar);
         } catch(error) {
             if (error instanceof NotFoundException)
                 throw HttpStatus.NOT_FOUND; 
@@ -47,7 +47,6 @@ export class UserService {
             })
             if (!user)
                 throw new NotFoundException('USER NOT FOUND');
-            //console.log(user);
             return user;
         } catch(error) {
             if (error instanceof NotFoundException)
@@ -111,10 +110,31 @@ export class UserService {
                 const avatar = await this.getUserAvatar(obj.id);
                 return { key: obj.id, name: obj.username, avatar: avatar, state: obj.state };
               })); 
-           // console.log(usersre);
-           console.log(usersre);
-            return usersre[0] === null ? []: usersre;
-            //return null;
+            return usersre;
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+    async acceptFriend(id: number, name: string)
+    {   
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: { 
+                    username: name,
+                }
+            });
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {friends: {
+                    connect: {id: user.id}
+                }}
+            })
+            await this.prismaservice.user.update({
+                where: {id: user.id},
+                data: {friends: {
+                    connect: {id: id}
+                }}
+            })
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }

@@ -5,7 +5,6 @@ import { Route, Routes } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 
-import Cookies from 'js-cookie'
 import './index.css'
 
 import Login from './pages/public/Login/Login'

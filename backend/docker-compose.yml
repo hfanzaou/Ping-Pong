@@ -6,7 +6,7 @@ services:
        - 5434:5432
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 2306
+      POSTGRES_PASSWORD: 2306cp 
       POSTGRES_DB: nest
     networks:
       - mynet

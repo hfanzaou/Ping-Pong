@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode } from '@nestjs/common';
 import { GetUser } from '../auth/decorator'
 import { FTAuthGuard, JwtGuard } from '../auth/guard';
 import { UserService } from './user.service';
@@ -40,5 +40,10 @@ export class UserController {
     @Get('list')
     async getUsersList(@Req() req) {
         return (await this.userService.getUsersList(req.user.id));
+    }
+    @Post('acceptfriend')
+    @HttpCode(201)
+    async acceptFriend(@Req() req, @Body() name: string) {
+        return (await this.userService.acceptFriend(req.user.id, name));
     }
 }
