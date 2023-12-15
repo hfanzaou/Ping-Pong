@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import EditAvatar from "react-avatar-edit";
 import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
-import { avatarClasses } from "@mui/material";
 
-function UpdateAvatar({setUserImage, image, setSave}) {
-  const src: any = null;
+function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
+  // const src: any = null;
   // const [preview, setPreview] = useState(null);
 
   const handleClose = () => {
@@ -27,33 +26,18 @@ function UpdateAvatar({setUserImage, image, setSave}) {
         height={100}
         onCrop={handleCrop}
         onClose={handleClose}
-        src={src}
+        // src={src}
       />
       {/* {preview && <img src={preview} />} */}
     </div>
   );
 }
 
-function ChangeAvatar() {
+function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string}) {
   const [setAvatar, setSetAvatar] = useState<boolean>(false);
-  const [userimage, setUserImage] = useState<string | undefined>();
-  const [image, setImage] = useState<string| undefined>();
+  const [userimage, setUserImage] = useState<string | undefined>(avatar);
+  const [image, setImage] = useState<string| undefined>(avatar);
   const [save, setSave] = useState<boolean>(true);
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      {/* change to get http://localhost:3000/user/avatar*/}
-      await axios.get("http://localhost:3001/user/avatar")
-      .then((res) => {
-          setUserImage(res.data.avatar);
-          setImage(res.data.avatar);
-      })
-      .catch((err) => {
-        console.log("Error in geting data in edit profile :", err);
-      })
-    };
-    getUserInfo();
-  }, []);
 
   const handleSetAvatar = () => {
     setSetAvatar(!setAvatar);
@@ -62,18 +46,18 @@ function ChangeAvatar() {
   const handleRest = () => {
         setSetAvatar(false);
         setSave(true);
-        setUserImage(image);
+        setUserImage(avatar);
   };
 
-  {/* Push the Avatar to Api http://localhost:3000/change/avatar/ */}
   const handleSaveAvatar = async () => {
-    {userimage !== image ?
-    await axios.post('http://localhost:3001/settings/avatar', {avatar: (userimage === image ? null : userimage)})
+    {userimage !== avatar ?
+    await axios.post('http://localhost:3001/settings/avatar', {avatar: (userimage === avatar ? null : userimage)})
     .then(res => {
       console.log(res.data);
       setSetAvatar(false);
       setSave(true);
-      window.location.reload();
+      settAvatar(userimage);
+      // window.location.reload();
     })
     .catch(err => {
       console.error("Error in send profile info: ", err);
@@ -93,7 +77,7 @@ function ChangeAvatar() {
             </svg>
           </div>
         </div>
-        {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={image} setSave={setSave} />}
+        {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />}
         {!save && <Button onClick={handleRest} >Cancel</Button>}
         {!save && <Button onClick={handleSaveAvatar}>Set new Avatar</Button>}
       </div>

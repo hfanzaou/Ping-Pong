@@ -28,21 +28,21 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard() {
+function UserCard({avatar} : {avatar: string }) {
 
-    const [image, setImage] = useState<string| undefined>();
+    // const [image, setImage] = useState<string| undefined>();
     const [userName, setUserName] = useState<string| undefined>();
     useEffect(() => {
-        const getUserAvatar = async () => {
-          {/* change to get http://localhost:3000/user/avatar*/}
-          await axios.get("http://localhost:3001/user/avatar")
-          .then((res) => {
-              setImage(res.data.avatar);
-          })
-          .catch((err) => {
-            console.log("Error in geting data in edit profile :", err);
-          })
-        };
+        // const getUserAvatar = async () => {
+        //   {/* change to get http://localhost:3000/user/avatar*/}
+        //   await axios.get("http://localhost:3001/user/avatar")
+        //   .then((res) => {
+        //       setImage(res.data.avatar);
+        //   })
+        //   .catch((err) => {
+        //     console.log("Error in geting data in edit profile :", err);
+        //   })
+        // };
         const getUserNmae = async () => {
             await axios.get("http://localhost:3001/user/name")
             .then((res) => {
@@ -54,7 +54,7 @@ function UserCard() {
             })
           };
           getUserNmae();
-        getUserAvatar();
+        // getUserAvatar();
       }, []);
     
 
@@ -78,7 +78,7 @@ function UserCard() {
             <img className='h-full w-full' src={sectionimage}/>
         </Card.Section>
       <Avatar
-        src={image}
+        src={avatar}
         size={100}
         radius={80}
         mx="auto"

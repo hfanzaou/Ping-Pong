@@ -4,7 +4,7 @@ import UserCard  from './ProfileInfo/UserCard'
 import Friends from './Friends/Friends'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
-import './profile.css'
+import './Profile.css'
 import cx from 'clsx'
 import Header from '../../../Layout/Header/Header'
 
@@ -18,7 +18,7 @@ const theme = createTheme({
   },
 });
 
-export function ProfileSections() {
+export function ProfileSections({avatar}: {avatar: string}) {
     return (
       <div>
         <SimpleGrid
@@ -26,7 +26,7 @@ export function ProfileSections() {
               spacing={{ base: 10, sm: 'xl' }}
               verticalSpacing={{ base: 'md', sm: 'xl' }}
         >
-          <UserCard />
+          <UserCard avatar={avatar} />
           <Achievements />
         </SimpleGrid>
         <SimpleGrid 
@@ -36,33 +36,12 @@ export function ProfileSections() {
         >
           <MatchHistory />
           <Friends />
-          {/* <Friends />
-          <MatchHistory /> */}
         </SimpleGrid>
       </div>
     );
-
-  // return (
-  //     <SimpleGrid>
-  //       <UserCard />
-  //       <Grid gutter="md">
-  //         <Grid.Col>
-  //           <Achievements/>
-  //         </Grid.Col>
-  //         <Grid.Col >
-  //           <MatchHistory />
-  //           {/* <Friends /> */}
-  //         </Grid.Col>
-  //         {/* <Grid.Col >
-  //         <MatchHistory />
-  //         </Grid.Col> */}
-  //       </Grid>
-  //       <Friends />
-  //     </SimpleGrid>
-  // );
 }
 
-function Profile({setAvatar, avatar} : {setAvatar: Function, avatar: string }) {
+function Profile({avatar} : {avatar: string }) {
     return (
       // fluid
     //   <MantineProvider theme={theme}>
@@ -71,9 +50,9 @@ function Profile({setAvatar, avatar} : {setAvatar: Function, avatar: string }) {
     //   <Container fluid  size="responsive" bg="var(--mantine-color-blue-1)" className='h-full'>
         <div>
 
-            <Header setAvatar={setAvatar} avatar={avatar}/>
+            <Header avatar={avatar}/>
         <div className='h-full ml=15 m-8 b-8'>
-            <ProfileSections />
+            <ProfileSections avatar={avatar} />
         </div>
         </div>
     //   </Container>

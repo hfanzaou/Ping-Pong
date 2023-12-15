@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl } from '@mantine/core';
+import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button } from '@mantine/core';
 import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
 import FrindsImage from './friends.svg';
@@ -27,17 +27,39 @@ function  Frindes() {
       })
     };
     const getBlockedFriends = async () => {
-        // await axios.get("http://localhost:3001/friend/blocked")
-        await axios.get("http://localhost:3001/friend/list")
+        await axios.get("http://localhost:3001/friend/blocked")
         .then((res) => {
          setBlockedFriendList(res.data);
         }).catch(err => {
+          setBlockedFriendList(testdata);
             console.error("Error in fetching blocked friend list: ", err);
         })
     };
     getBlockedFriends();
     getFriends();
   }, []);
+
+  const handleBlockFriend = async (name: string) => {
+    console.log("blocked friend name: ", name);
+    await axios.post("http://localhost:3001/block/friend", {name: name})
+    .then((res) => {
+        res.status === 201 && window.location.reload();
+    })
+    .catch((err) => {
+        console.error("error when send post request to block friend: ", err);
+    })
+  };
+
+  const handleInBlockFriend = async (name: string) => {
+    console.log("blocked friend name: ", name);
+    await axios.post("http://localhost:3001/inblock/friend", {name: name})
+    .then((res) => {
+        res.status === 201 && window.location.reload();
+    })
+    .catch((err) => {
+        console.error("error when send post request to In block friend: ", err);
+    })
+  };
 
   const rows = friendList.map((item) => (
 //   const rows = testdata.map((item) => (
@@ -67,7 +89,9 @@ function  Frindes() {
                 leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                 color="red"
                 >
-                Block friend
+                  <button onClick={() => handleBlockFriend(item.name)}>
+                      Block friend
+                  </button>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -79,8 +103,6 @@ function  Frindes() {
               {item.status}
             </Text>
           </div>
-        </Group>
-        <Group gap={0}>
         </Group>
       </Table.Td>
     </Table>
@@ -104,7 +126,9 @@ function  Frindes() {
                   leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                   color="red"
                   >
-                  InBlock friend
+                    <button onClick={() => handleInBlockFriend(item.name)}>
+                      InBlock friend
+                    </button>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -112,12 +136,7 @@ function  Frindes() {
               <Text fz="sm" fw={500}>
                 {item.name}
               </Text>
-              <Text c="dimmed" fz="xs">
-                {item.status}
-              </Text>
             </div>
-          </Group>
-          <Group gap={0}>
           </Group>
         </Table.Td>
       </Table>

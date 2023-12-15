@@ -6,16 +6,12 @@ import EnableTowFactor from '../EnableTowFactor';
 import Header from '../../../../Layout/Header/Header';
 
 function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
-    
-    const handleClick= () => {
-        window.location.reload();
-    };
 
     return (
         <div>
-            <Header setAvatar={setAvatar} avatar={avatar}/>
+            <Header avatar={avatar}/>
             <Box maw={340} mx="auto">
-                <ChangeAvatar />
+                <ChangeAvatar settAvatar={setAvatar} avatar={avatar} />
                 <ChangeName/>
                 <EnableTowFactor/>
                 {/* <Group justify="flex-end" mt="md">

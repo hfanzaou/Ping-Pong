@@ -80,18 +80,17 @@ function App()  {
     );
   }
 
-
     return (
     <MantineProvider>
     <Router>
       {/* <Header setAvatar={setAvatar} avatar={avatar}/> */}
       <Routes>
-          <Route path='/' element={<Home setAvatar={setAvatar} avatar={avatar} />}/>
-            <Route path='/Leaderbord' element={<Leaderbord setAvatar={setAvatar} avatar={avatar} />}/>
-          <Route path='/Profile' element={<Profile setAvatar={setAvatar} avatar={avatar} />}/>
-          <Route path='/Game' element={<Game setAvatar={setAvatar} avatar={avatar}  />}/>
-          <Route path='/Chat' element={<Chat setAvatar={setAvatar} avatar={avatar}  />}/>
-          <Route path='/setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
+          <Route path='/' element={<Home avatar={avatar} />}/>
+            <Route path='/Leaderbord' element={<Leaderbord avatar={avatar} />}/>
+          <Route path='/Profile' element={<Profile avatar={avatar} />}/>
+          <Route path='/Game' element={<Game avatar={avatar} />}/>
+          <Route path='/Chat' element={<Chat avatar={avatar} />}/>
+          <Route path='/setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar} />}/>
       </Routes>
       {/* <Footer/> */}
       </Router>
