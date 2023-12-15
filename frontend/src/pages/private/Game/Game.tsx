@@ -1,8 +1,13 @@
 import React from 'react';
+import Header from '../../../Layout/Header/Header';
 
-function Game() {
+function Game({avatar} : {avatar: string}) {
     return (
-        <h1>I am the Game page ---- </h1>
+        <div>
+            <Header avatar={avatar}/>
+
+            <h1>I am the Game page ---- </h1>
+        </div>
     );
 }
 

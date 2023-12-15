@@ -11,6 +11,7 @@ import Login from './pages/public/Login/Login'
 import Header from './Layout/Header/Header'
 import Footer from './Layout/Footer/Footer'
 import  Home from './pages/private/Home/Home'
+import Leaderbord from './pages/private/Dashbord/Leaderbord'
 import Profile from './pages/private/Profile/Profile'
 import EditeProfile from './pages/private/Settings/FditeProfile/EditeProfail'
 import EnableTowFactor from './pages/private/Settings/EnableTowFactor'
@@ -22,12 +23,13 @@ import axios from 'axios'
 
 
 function App()  {
+    const [avatar, setAvatar] = useState<string>("");
   const [hasToken, setHasToken] = useState<Boolean>(false);
-
+// comonentDidMount
 
   axios.defaults.withCredentials = true;  // to send token in every requiste
 
-// comontarDidMount
+
   // useEffect(() => {
       const getVerify = async () => {
         try {
@@ -51,7 +53,17 @@ function App()  {
         getVerify();
     // }, []);
 
-
+        useEffect(() =>  {
+            const getAvatar = async () => {
+                await axios.get("http://localhost:3001/user/avatar")
+                .then((res) => {
+                setAvatar(res.data.avatar);
+                }).catch(err => {
+                console.error("Error in fetching avatar: ", err);
+                })
+            };
+            getAvatar();
+        }, []);
 
   if (!hasToken) {
     return (
@@ -66,16 +78,18 @@ function App()  {
 
     );
   }
+
     return (
     <MantineProvider>
     <Router>
-      <Header/>
+      {/* <Header setAvatar={setAvatar} avatar={avatar}/> */}
       <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/Profile' element={<Profile />}/>
-          <Route path='/Game' element={<Game />}/>
-          <Route path='/Chat' element={<Chat />}/>
-          <Route path='/setting' element={<EditeProfile />}/>
+          <Route path='/' element={<Home avatar={avatar} />}/>
+            <Route path='/Leaderbord' element={<Leaderbord avatar={avatar} />}/>
+          <Route path='/Profile' element={<Profile avatar={avatar} />}/>
+          <Route path='/Game' element={<Game avatar={avatar} />}/>
+          <Route path='/Chat' element={<Chat avatar={avatar} />}/>
+          <Route path='/setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar} />}/>
       </Routes>
       {/* <Footer/> */}
       </Router>

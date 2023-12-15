@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl } from '@mantine/core';
+import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button } from '@mantine/core';
 import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
 import FrindsImage from './friends.svg';
 
-import testdata from './test.json';
+import testdata from './FriendsList.json';
 import axios from 'axios';
 import BlockedFriendInterface from './BlockedFriendInterface';
 
@@ -22,15 +22,16 @@ function  Frindes() {
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
+        setFriendList(testdata);
         console.error("Error in fetching friend list: ", err);
       })
     };
     const getBlockedFriends = async () => {
-        // await axios.get("http://localhost:3001/friend/blocked")
-        await axios.get("http://localhost:3001/friend/list")
+        await axios.get("http://localhost:3001/friend/blocked")
         .then((res) => {
          setBlockedFriendList(res.data);
         }).catch(err => {
+          setBlockedFriendList(testdata);
             console.error("Error in fetching blocked friend list: ", err);
         })
     };
@@ -38,7 +39,31 @@ function  Frindes() {
     getFriends();
   }, []);
 
-  const rows = friendList.map((item) => (  
+  const handleBlockFriend = async (name: string) => {
+    console.log("blocked friend name: ", name);
+    await axios.post("http://localhost:3001/block/friend", {name: name})
+    .then((res) => {
+        res.status === 201 && window.location.reload();
+    })
+    .catch((err) => {
+        console.error("error when send post request to block friend: ", err);
+    })
+  };
+
+  const handleInBlockFriend = async (name: string) => {
+    console.log("blocked friend name: ", name);
+    await axios.post("http://localhost:3001/inblock/friend", {name: name})
+    .then((res) => {
+        res.status === 201 && window.location.reload();
+    })
+    .catch((err) => {
+        console.error("error when send post request to In block friend: ", err);
+    })
+  };
+
+  const rows = friendList.map((item) => (
+//   const rows = testdata.map((item) => (
+
   <Table key={item.name}>
       <Table.Td>
         <Group gap="sm">
@@ -64,7 +89,9 @@ function  Frindes() {
                 leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                 color="red"
                 >
-                Block friend
+                  <button onClick={() => handleBlockFriend(item.name)}>
+                      Block friend
+                  </button>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -76,8 +103,6 @@ function  Frindes() {
               {item.status}
             </Text>
           </div>
-        </Group>
-        <Group gap={0}>
         </Group>
       </Table.Td>
     </Table>
@@ -101,7 +126,9 @@ function  Frindes() {
                   leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                   color="red"
                   >
-                  InBlock friend
+                    <button onClick={() => handleInBlockFriend(item.name)}>
+                      InBlock friend
+                    </button>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -109,12 +136,7 @@ function  Frindes() {
               <Text fz="sm" fw={500}>
                 {item.name}
               </Text>
-              <Text c="dimmed" fz="xs">
-                {item.status}
-              </Text>
             </div>
-          </Group>
-          <Group gap={0}>
           </Group>
         </Table.Td>
       </Table>
@@ -124,7 +146,7 @@ function  Frindes() {
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = 5;
-  const blockedFriendsNumbre = 2;
+  const blockedFriendsNumbre = 0;
 
   return (
     <div className='relative flex '>
@@ -137,7 +159,6 @@ function  Frindes() {
                     {FriendsIcon}
                     {/* <img className='h-[70px] w-[50px]' src={FrindsImage}/> */}
                 </div>)}
-                
                 {/* {value === 'Friends list' ? FriendsIcon : FriendsOffIcon} */}
                 <SegmentedControl
                     fullWidth
@@ -148,7 +169,7 @@ function  Frindes() {
                     data={[
                         { label: 'Friends list', value: 'Friends list' },
                         // { label: 'Friends list', value: FriendsIcon },  // when make the icone for the blocked users change the value to the icon
-                        { label: 'Blocked Users', value: 'Blocked Users' },
+                        { label: 'Blocked Users', value: 'Blocked Users', disabled: blockedFriendsNumbre === 0 },
                     ]}
                 />
                 {value === 'Blocked Users' &&
@@ -159,7 +180,7 @@ function  Frindes() {
                 </div>)}
             </div>
           </Table.Thead>
-          {value === 'Friends list' ? 
+          {value === 'Friends list' ?
           (Object.keys(rows).length ?
             (<ScrollArea h={200} type='never'>
             <Table.Tbody>
@@ -170,16 +191,13 @@ function  Frindes() {
               Add Freinds to shows them here
             </Blockquote>)
           )
-          : 
-        (blockedFriendsNumbre ? 
+          :
+        (blockedFriendsNumbre &&
             <ScrollArea h={200} type='never'>
             <Table.Tbody>
             {blockedRows}
             </Table.Tbody>
-            </ScrollArea>:
-            (<Blockquote color="green" radius="xl" iconSize={33} mt="xl">
-              Non one blocked for now
-            </Blockquote>))}
+            </ScrollArea>)}
         </Table>
     </div>
   );

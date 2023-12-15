@@ -1,9 +1,4 @@
 [
-  {
-    "friendsNumber": "54"
-  },
-  {
-    "friends":[
       {
         "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "name": "Robert Wolfkisser",
@@ -39,6 +34,4 @@
       "email": "jeremy@foot.dev",
       "rate": 98
       }
-    ]
-  }
 ]

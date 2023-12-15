@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, HoverCard } from '@mantine/core';
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
-import searchBar  from './SearchBar';
+import data from './test.json'
 
 const rolesData = ['Manager', 'Collaborator', 'Contractor'];
 
@@ -13,11 +13,12 @@ function UsersRolesTable() {
   
   useEffect(() => {
     const getUsers = async () => {
-      await axios.get("http://localhost:3001/user/list", {withCredentials: true})
+      await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        console.log(res.data)
-        setUsersList(res.data);
-        setSearchList(res.data);
+        setUsersList(data);
+        setSearchList(data);
+        // setUsersList(res.data);
+        // setSearchList(res.data);
       }).catch(err => {
         console.error("Error in fetching Users list: ", err);
       })
@@ -46,7 +47,19 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
+  const handleAddFriend = async (name: string) => {
+      console.log(name);
+      await axios.post("http://localhost:3001/add/friend", {name: name})
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in send post request to add friend ",err);
+      })
+  };
+
   const search = searchList.map((item) => (
+
     <Table.Tr key={item.name}>
       <Table.Td>
         <Group gap="sm">
@@ -68,22 +81,14 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
         </Group>
       </Table.Td>
-      {/* <Table.Td>{item.lastActive}</Table.Td> */}
       <Table.Td>
-        <Button radius='lg'>Add to friends</Button>
-        {/* {item.active ? (
-          <Badge fullWidth variant="light">
-            Online
-          </Badge>
-        ) : (
-          <Badge color="gray" fullWidth variant="light">
-            Ofline
-          </Badge>
-        )} */}
+        <Button radius='lg' onClick={() => handleAddFriend(item.name)}>
+          Add to friends
+        </Button>
       </Table.Td>
     </Table.Tr>
   ));
-  
+
   return (
     // <Table.ScrollContainer minWidth={500}>   {/* determin when device larg minWidth larg and when device small minWidth small in media qiuery by talwind*/}
       <Table verticalSpacing="md" highlightOnHover={true} className='h=full'>
