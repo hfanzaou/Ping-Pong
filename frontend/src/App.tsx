@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Outlet, BrowserRouter as Router} from 'react-router-dom'
+import { BrowserRouter as Router} from 'react-router-dom'
 import { Route, Routes } from 'react-router-dom'
 
 import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 
+import Cookies from 'js-cookie'
 import './index.css'
 
 import Login from './pages/public/Login/Login'
 import Header from './Layout/Header/Header'
 import Footer from './Layout/Footer/Footer'
 import  Home from './pages/private/Home/Home'
+import Leaderbord from './pages/private/Dashbord/Leaderbord'
 import Profile from './pages/private/Profile/Profile'
 import EditeProfile from './pages/private/Settings/FditeProfile/EditeProfail'
 import EnableTowFactor from './pages/private/Settings/EnableTowFactor'
@@ -19,73 +21,81 @@ import Chat from './pages/private/Chat/Chat'
 
 import useToken from './pages/public/Login/useToken'
 import axios from 'axios'
-import { withCookies } from 'react-cookie'
 
-function Verify()
-{
-  const [isVerified, setIsVerified] = useState(false);
-    useEffect(() => {
-     axios.get("http://localhost:3001/verify", { withCredentials: true })
-    .then((res) => {
-        console.log(res.status);
-        setIsVerified(res.status === 200);
-    })
-    .catch((err) => {
-      console.log('here');
-      setIsVerified(false);
-      //window.location.href = 'http://localhost:3000';
-    }), []})
-    return isVerified;
-}
 
 function App()  {
-  const isVerified = Verify();
-  if (isVerified === false) {
-    // Verification is still in progress
-    return <Login />;
+    const [avatar, setAvatar] = useState<string>("");
+  const [hasToken, setHasToken] = useState<Boolean>(false);
+// comonentDidMount
+
+  axios.defaults.withCredentials = true;  // to send token in every requiste
+
+
+  // useEffect(() => {
+      const getVerify = async () => {
+        try {
+          const res = await axios.get('http://localhost:3001/verify');
+          if (res.status === 200) {
+            setHasToken(true);
+          }
+            // setHasToken(res.status === 200);
+        } catch {
+          console.log("error in fetching /verify");
+        }
+        //   .then((res) => {
+        //       console.log("here-");
+        //       setHasToken(true);
+        //     })
+        //     .catch((err) => {
+        //         setHasToken(false);
+        //         console.log("Error In fetching /verify ", err);
+        //     })
+        };
+        getVerify();
+    // }, []);
+
+        useEffect(() =>  {
+            const getAvatar = async () => {
+                await axios.get("http://localhost:3001/user/avatar")
+                .then((res) => {
+                setAvatar(res.data.avatar);
+                }).catch(err => {
+                console.error("Error in fetching avatar: ", err);
+                })
+            };
+            getAvatar();
+        }, []);
+
+  if (!hasToken) {
+    return (
+     <Login />
+    // <Router>
+    //   <Routes>
+    //   <Route path='/login' element={<Login />}/>
+
+    //   <Route path='/Profile/Edite' element={<EditeProfile />}/>
+    //   </Routes>
+    //   </Router>
+
+    );
   }
 
-  return (
-    isVerified ? (
-      <MantineProvider>
-        <Router>
-          <Header />
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/Profile' element={<Profile />} />
-            <Route path='/Game' element={<Game />} />
-            <Route path='/Chat' element={<Chat />} />
-            <Route path='/setting' element={<EditeProfile />} />
-          </Routes>
-        </Router>
-      </MantineProvider>
-    ) : (
-      <Login />
-    )
+
+    return (
+    <MantineProvider>
+    <Router>
+      {/* <Header setAvatar={setAvatar} avatar={avatar}/> */}
+      <Routes>
+          <Route path='/' element={<Home setAvatar={setAvatar} avatar={avatar} />}/>
+            <Route path='/Leaderbord' element={<Leaderbord setAvatar={setAvatar} avatar={avatar} />}/>
+          <Route path='/Profile' element={<Profile setAvatar={setAvatar} avatar={avatar} />}/>
+          <Route path='/Game' element={<Game setAvatar={setAvatar} avatar={avatar}  />}/>
+          <Route path='/Chat' element={<Chat setAvatar={setAvatar} avatar={avatar}  />}/>
+          <Route path='/setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
+      </Routes>
+      {/* <Footer/> */}
+      </Router>
+    </MantineProvider>
   );
 }
-
-  // if (Verify() == 0) {
-  //   return (
-  //     <Login />
-  //   );
-  // }
-  // return (
-  //   <MantineProvider>
-  //   <Router>
-  //     <Header/>
-  //     <Routes>
-  //         <Route path='/' element={<Home />}/>
-  //         <Route path='/Profile' element={<Profile />}/>
-  //         <Route path='/Game' element={<Game />}/>
-  //         <Route path='/Chat' element={<Chat />}/>
-  //         <Route path='/setting' element={<EditeProfile />}/>
-  //         {/* <Route path='/settings/enable/2f' element={<EnableTowFactor />}/> */}
-  //     </Routes>
-  //     {/* <Footer/> */}
-  //     </Router>
-  //   </MantineProvider>
-  // );
-// }
-
 export default App
