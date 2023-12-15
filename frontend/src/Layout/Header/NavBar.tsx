@@ -18,7 +18,7 @@ import Cookies from 'js-cookie';
 import pongImage from './remote-control_1287390.png';
 import racitImage from './ping-pong_5222084.png';
 
-const pages = ['Home', 'Chat', 'Game', 'Profile'];
+const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
 const settings = ['Setting', 'Logout'];
 
 

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import EditAvatar from "react-avatar-edit";
 import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
-import { avatarClasses } from "@mui/material";
 
-function UpdateAvatar({setUserImage, image, setSave}) {
-  const src: any = null;
+function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
+  // const src: any = null;
   // const [preview, setPreview] = useState(null);
 
   const handleClose = () => {
@@ -27,7 +26,7 @@ function UpdateAvatar({setUserImage, image, setSave}) {
         height={100}
         onCrop={handleCrop}
         onClose={handleClose}
-        src={src}
+        // src={src}
       />
       {/* {preview && <img src={preview} />} */}
     </div>
