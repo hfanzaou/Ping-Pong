@@ -48,7 +48,7 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			res.redirect('http://localhost:3001/2fa/auth');
+			//res.redirect('http://localhost:3001/2fa/auth');
 		}
 		const token = await this.authService.signin(req.user);
 		console.log("hello");
@@ -79,7 +79,34 @@ export class AuthController {
 		const qrfile = await toBuffer(otpAuthUrl.oturl);
 		return ("data:image/png;base64," + qrfile.toString('base64'));
 	}
-
+	@Post('2fa/turnoff')
+	@HttpCode(201)
+	@UseGuards(JwtTwoFaGuard)
+	async turnOffTwoFaAuth(@Req() req, @Res() res, @Body() body) {
+		const user = await this.authService.validateUser(req.user)
+		try {
+			const isCodeValid = await this.authService.verifyTwoFa(
+				user,
+				body.AuthCode,
+			);
+			if (!isCodeValid)
+				throw isCodeValid;
+		} catch(error) {
+			if (typeof error === "boolean") {
+				throw new UnauthorizedException('Wrong Verification Code');
+			}
+			//console.log(body.AuthCode);
+		}
+		if (user.twoFaAuth)
+			await this.authService.disableTwoFa(user);
+		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: false };
+		const newToken = await this.authService.signToken(payload);
+		res.cookie('jwt', newToken, {
+			path: '/',
+			httpOnly: true,
+		});
+		res.send('done');
+	}
 	@Post('2fa/auth')
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res() res, @Body() body) {
