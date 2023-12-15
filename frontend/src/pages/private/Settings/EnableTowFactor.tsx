@@ -53,7 +53,7 @@ function EnableTowFactor() {
 
   const handleSendCode = async () => {
     console.log("this is the code was send: ",code);
-    await axios.post("http://localhost:3001/2fa/auth", {code: code})
+    await axios.post("http://localhost:3001/2fa/turnoff", {code: code})
     .then((res) => {
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
         res.status === 201 && window.location.reload();
