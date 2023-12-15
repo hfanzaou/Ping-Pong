@@ -84,8 +84,7 @@ export class AuthService {
 		return (finduser || null);
 	}
 	///////TWO FACTOR AUTH////////
-	async enableTwoFa(user: any)
-	{
+	async enableTwoFa(user: any) {
 		await this.prisma.user.update({
 			where: {
 				id: user.id,
@@ -94,6 +93,17 @@ export class AuthService {
 				twoFaAuth: true
 			}
 		});
+	}
+	async disableTwoFa(user: any) {
+		await this.prisma.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				twoFaAuth: false,
+				twoFaSecret: null,
+			}
+		})
 	}
 	async generateTwoFA(user: any) {
 		const finduser = await this.validateUser(user);
