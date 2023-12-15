@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 // import QuerCode from '../../../avatarImage/avatar-2.png';
 
 function EnableTowFactor() {
-  const [towFactor, setTowFactor] = useState<boolean>(false);
+  const [towFactor, setTowFactor] = useState<boolean>();
   const [change, setChange] = useState<boolean>(false);
-  const [invalidCode, setInvalidCode] = useState<boolean>(true);
+  const [invalidCode, setInvalidCode] = useState<boolean>(false);
   const [qrImage, setQrImage] = useState();
+  const [code, setCode] = useState<number>();
+  const [disabled, setDisabled] = useState<boolean>(true);
 
     useEffect(() => {
         const getFactorState = async () => {
@@ -33,32 +35,38 @@ function EnableTowFactor() {
                 setQrImage(res.data);
                 setChange(true);
             })
-            .then((err) => {
+            .catch((err) => {
                 console.error(err);
             })
         }
-        // setTowFactor(!towFactor);
+  };
+
+  const handleSaveCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    setInvalidCode(false);
+    if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
+        e.target.value.length === 6 ? (setCode(Number(e.target.value)), setDisabled(false)) : setDisabled(true)
+    } else {
+        setInvalidCode(true);
+    }
   };
 
   const handleSendCode = async () => {
-    // alert(e.target.value);
-    setInvalidCode(true);
-    await axios.post("http://localhost:3001/2fa/auth", {code:Text})
+    console.log("this is the code was send: ",code);
+    await axios.post("http://localhost:3001/2fa/auth", {code: code})
     .then((res) => {
-        console.log(res);
-
+        // make the needed work when the code valid {reload the page to get the correct state of 2fa}
+        res.status === 201 && window.location.reload();
     })
     .catch((err) => {
+        setInvalidCode(true);
         console.error("Error in sending 2f code: ", err);
     })
   };
 
-  
-      const handleCancel = () => {
-//   useEffect(() => {
-            setChange(false);
-        // }, []);
-        }
+    const handleCancel = () => {
+        setChange(false);
+    };
 
   return (
     <div>
@@ -72,23 +80,21 @@ function EnableTowFactor() {
             <div>
             <Image src={qrImage}/>
             <TextInput
+                onChange={handleSaveCode}
                 label="scane Quire Code and set code here"
                 error={invalidCode ? "try again with a valid code" : false}
-                //onChange={handleSetText(Text)}
             />
-            <Button onClick={handleSendCode}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
-            <Button onClick={handleCancel} >Cancele</Button>
+            <Button onClick={handleSendCode} disabled={disabled}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
+            <Button onClick={handleCancel} >Cancel</Button>
             </div> :
             <div>
             <TextInput
+                onChange={handleSaveCode}
                 label="push your 2f code to disable it"
-                error={invalidCode ? "try again with a valid code" : false}
-                // onChange={savw the code in a state}
-
+                error={invalidCode ? "set a valid code" : false}
             />
-            <Button onClick={handleSendCode}>Disable</Button>
-            <Button onClick={handleCancel} >Cancele</Button>
-
+            <Button onClick={handleSendCode} disabled={disabled}>Disable</Button>
+            <Button onClick={handleCancel} >Cancel</Button>
         </div>)
         }
     </div>
