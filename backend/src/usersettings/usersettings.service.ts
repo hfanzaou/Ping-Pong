@@ -39,7 +39,7 @@ export class UsersettingsService {
                 }
             })
         } catch(error) {
-           throw error;
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return true;
     }
