@@ -3,35 +3,30 @@
         "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "name": "Robert Wolfkisser",
         "status": "online",
-        "email": "rob_wolf@gmail.com",
-        "rate": 22
+        "level": 22
       },
       {
         "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
         "name": "Jill Jailbreaker",
         "status": "offline",
-        "email": "jj@breaker.com",
-        "rate": 45
+        "level": 45
       },
       {
         "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
         "name": "Henry Silkeater",
         "status": "online",
-        "email": "henry@silkeater.io",
-        "rate": 76
+        "level": 76
       },
       {
         "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
         "name": "Bill Horsefighter",
         "status": "offline",
-        "email": "bhorsefighter@gmail.com",
-        "rate": 15
+        "level": 15
       },
       {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png",
       "name": "Jeremy Footviewer",
       "status": "online",
-      "email": "jeremy@foot.dev",
-      "rate": 98
+      "level": 98
       }
 ]

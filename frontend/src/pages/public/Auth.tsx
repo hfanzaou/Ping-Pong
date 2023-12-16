@@ -5,7 +5,7 @@ import React, { useState } from "react";
 function Auth() {
     const [code, setCode] = useState<number>();
     const [invalidCode, setInvalidCode] = useState<boolean>(false);
-    const [disabled, setDisabled] = useState<boolean>(false);
+    const [send, setSend] = useState<boolean>(true);
 
     const handleDisableSendCode = async () => {
         console.log("this is the code was send: ",code);
@@ -24,7 +24,7 @@ function Auth() {
         console.log(e.target.value);
         setInvalidCode(false);
         if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
-            e.target.value.length === 6 ? (setCode(Number(e.target.value)), setDisabled(false)) : setDisabled(true)
+            e.target.value.length === 6 ? (setCode(Number(e.target.value)), setSend(false)) : setSend(true)
         } else {
             setInvalidCode(true);
         }
@@ -37,7 +37,7 @@ function Auth() {
                 label="Entre Code of Virification"
                 error={invalidCode ? "set a valid code" : false}
             />
-            <Button onClick={handleDisableSendCode} disabled={disabled}>Disable</Button>
+            <Button onClick={handleDisableSendCode} disabled={send}>Send</Button>
             {/* <Button onClick={handleCancel} >Cancel</Button> */}
         </div>
     );

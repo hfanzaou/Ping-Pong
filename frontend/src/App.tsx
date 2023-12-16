@@ -28,6 +28,7 @@ function App()  {
     const [avatar, setAvatar] = useState<string>("");
   
     const [hasToken, setHasToken] = useState<Boolean>(false);
+    const [hasFirstToken, setHasFirstToken] = useState<boolean>(false);
 
 // comonentDidMount
 
@@ -45,6 +46,21 @@ function App()  {
       }
     }
     getVerify();
+
+    const getFirstVerify = async () => {
+      try {
+        const res = await axios.get('http://localhost:3001/verifyTfa');
+        if (res.status === 200) {
+          setHasFirstToken(true);
+        }
+        // setHasToken(res.status === 200);
+      } catch {
+        console.log("error in fetching /verify");
+      }
+    }
+    getFirstVerify();
+
+
     
     
     useEffect(() =>  {
@@ -69,9 +85,9 @@ function App()  {
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
           <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path='/Creat/Profile' element={hasToken ? <CreatProfile setAvatar={setAvatar} avatar={avatar}/> : <Login/>}/>
+          <Route path='/creat/profile' element={hasFirstToken ? <CreatProfile setAvatar={setAvatar} avatar={avatar}/> : <Login/>}/>
           <Route path='/Login' element={<Login/>}/>
-          <Route path='/Auth' element={<Auth />} />
+          <Route path='/auth' element={ <Auth /> } />
         </Routes>
       {/* <Footer/> */}
       </Router>
