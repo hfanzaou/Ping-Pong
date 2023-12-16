@@ -53,14 +53,15 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			res.redirect('http://localhost:3000/creat/profile');
+			res.redirect('http://localhost:3000/auth');
 		}
 		const token = await this.authService.signin(req.user);
 		res.cookie('jwt', token, {
 			path:'/',
 			httpOnly: true,
 		});
-		//res.send('done');
+		if (!user)
+			res.redirect('http://localhost:3000/creat/profile');
 		res.redirect('http://localhost:3000');
 	}
 
@@ -83,7 +84,7 @@ export class AuthController {
 	@Post('2fa/turnoff')
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
-	async turnOffTwoFaAuth(@Req() req, @Res() res, @Body() body) {
+	async turnOffTwoFaAuth(@Req() req, @Res({passthrough: true}) res, @Body() body) {
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(
