@@ -74,8 +74,6 @@ export class AuthController {
 	@UseGuards(JwtTwoFaGuard)
 	async turnOnTwoFaAuth(@Req() req) {
 		const otpAuthUrl = await this.authService.generateTwoFA(req.user);
-		(otpAuthUrl);
-		// res.setHeader('content-type','image/png');
 		const qrfile = await toBuffer(otpAuthUrl.oturl);
 		return ("data:image/png;base64," + qrfile.toString('base64'));
 	}
@@ -101,6 +99,7 @@ export class AuthController {
 			await this.authService.disableTwoFa(user);
 		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: false };
 		const newToken = await this.authService.signToken(payload);
+		await res.clearCookie('jwt');
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,
@@ -124,14 +123,17 @@ export class AuthController {
 				throw new UnauthorizedException('Wrong Verification Code');
 			}
 		}
-		if (!user.twoFaAuth)
-			await this.authService.enableTwoFa(user);
 		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: true };
 		const newToken = await this.authService.signToken(payload);
+		// await res.clearCookie('jwt');
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,
 		});
+		if (!user.twoFaAuth) {
+			await this.authService.enableTwoFa(user);
+			//res.end();
+		}
 		res.send('done');
 	}
 }
