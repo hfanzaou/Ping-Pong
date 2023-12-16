@@ -24,6 +24,11 @@ export class AuthController {
     	return (true);
   	}
 
+	@Get('verifyTfa')
+	@UseGuards(JwtGuard)
+	verifyTwoFa() {
+		return (true);
+	}
 	// @Post('signup')
 	// signup(@Body() dto: AuthDto) {
 	// 	({
@@ -39,7 +44,7 @@ export class AuthController {
 
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
-	async callback(@Req() req, @Res() res) {
+	async callback(@Req() req, @Res({passthrough: true}) res) {
 		const user = await this.authService.validateUser(req.user);
 		if (user && user.twoFaAuth)
 		{
@@ -48,15 +53,13 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			//res.redirect('http://localhost:3001/2fa/auth');
+			res.redirect('http://localhost:3000/creat/profile');
 		}
 		const token = await this.authService.signin(req.user);
-		("hello");
 		res.cookie('jwt', token, {
 			path:'/',
 			httpOnly: true,
 		});
-
 		//res.send('done');
 		res.redirect('http://localhost:3000');
 	}
@@ -99,7 +102,6 @@ export class AuthController {
 			await this.authService.disableTwoFa(user);
 		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: false };
 		const newToken = await this.authService.signToken(payload);
-		await res.clearCookie('jwt');
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,
@@ -108,7 +110,7 @@ export class AuthController {
 	}
 	@Post('2fa/auth')
 	@UseGuards(JwtGuard)
-	async autenticate(@Req() req, @Res() res, @Body() body) {
+	async autenticate(@Req() req, @Res({passthrough: true}) res, @Body() body) {
 		(body);
 		const user = await this.authService.validateUser(req.user)
 		try {
@@ -132,8 +134,9 @@ export class AuthController {
 		});
 		if (!user.twoFaAuth) {
 			await this.authService.enableTwoFa(user);
-			//res.end();
+			res.end();
+			return;
 		}
-		res.send('done');
+		res.redirect('http://localhost:3000/');
 	}
 }
