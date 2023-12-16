@@ -13,20 +13,19 @@ import { diskStorage } from 'multer';
 export class UsersettingsController {
     constructor(private userSetService: UsersettingsService) {}
 
+
     @Post('name')
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)    
     async editUsername(@Req() req, @Body() Name) {
-        console.log('im in edit name');
-        console.log(Name.uniqueName);
         await this.userSetService.updateUsername(req.user, Name.uniqueName);   
     }
     @Post('avatar')
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)
     async editAvatar(@Req() req, @Body() avatar) {
-        console.log('at edit avatar')
-        if (avatar.avatar.length > 1000 * 1000)
+        ////console.log(avatar.avatar)
+        if (avatar.avatar.length > 100000)
             throw new PayloadTooLargeException('Image to large');
       await this.userSetService.updateAvater(req.user.id, avatar.avatar);
     }

@@ -39,7 +39,7 @@ export class UsersettingsService {
                 }
             })
         } catch(error) {
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
+            throw  error instanceof ConflictException ? error : HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return true;
     }

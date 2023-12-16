@@ -51,9 +51,22 @@ function EnableTowFactor() {
     }
   };
 
-  const handleSendCode = async () => {
+  const handleEnableSendCode = async () => {
     console.log("this is the code was send: ",code);
-    await axios.post("http://localhost:3001/2fa/turnoff", {code: code})
+    await axios.post("http://localhost:3001/2fa/auth", {AuthCode: code})
+    .then((res) => {
+        // make the needed work when the code valid {reload the page to get the correct state of 2fa}
+        res.status === 201 && window.location.reload();
+    })
+    .catch((err) => {
+        setInvalidCode(true);
+        console.error("Error in sending 2f code: ", err);
+    })
+  };
+
+  const handleDisableSendCode = async () => {
+    console.log("this is the code was send: ",code);
+    await axios.post("http://localhost:3001/2fa/turnoff", {AuthCode: code})
     .then((res) => {
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
         res.status === 201 && window.location.reload();
@@ -84,7 +97,7 @@ function EnableTowFactor() {
                 label="scane Quire Code and set code here"
                 error={invalidCode ? "try again with a valid code" : false}
             />
-            <Button onClick={handleSendCode} disabled={disabled}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
+            <Button onClick={handleEnableSendCode} disabled={disabled}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
             <Button onClick={handleCancel} >Cancel</Button>
             </div> :
             <div>
@@ -93,7 +106,7 @@ function EnableTowFactor() {
                 label="push your 2f code to disable it"
                 error={invalidCode ? "set a valid code" : false}
             />
-            <Button onClick={handleSendCode} disabled={disabled}>Disable</Button>
+            <Button onClick={handleDisableSendCode} disabled={disabled}>Disable</Button>
             <Button onClick={handleCancel} >Cancel</Button>
         </div>)
         }

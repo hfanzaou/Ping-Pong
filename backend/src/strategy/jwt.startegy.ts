@@ -12,14 +12,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             // jwtFromRequest: cookieExtractor(),
             secretOrKey: config.get('JWT_SECRET'),
         });
-        //console.log(ExtractJwt.fromExtractors([JwtStrategy.extractJWT]));
+        ////console.log(ExtractJwt.fromExtractors([JwtStrategy.extractJWT]));
     }
     private static extractJWT(@Req() req: Request): string | null {
         return req.cookies['jwt'];
       }
     async validate(payload: {sub: number, userID: number, istwoFaAuth: boolean}, @Req() req) {
-        //console.log("cookie =" + req.cookie)
-        // console.log(payload);
+        ////console.log("cookie =" + req.cookie)
+        // //console.log(payload);
         const user = await this.prisma.user.findUnique({
             where: {
                 id: payload.sub,
@@ -27,8 +27,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
         if (!user)
             throw new UnauthorizedException();
-       //console.log(user.email);
-        //console.log(payload);
+       ////console.log(user.email);
+        ////console.log(payload);
         return user;
     }
 }

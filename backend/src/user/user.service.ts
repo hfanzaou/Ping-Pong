@@ -21,9 +21,9 @@ export class UserService {
                 throw new NotFoundException('USER NOT FOUND');
             if (avatar.upAvatar)
             {
-                console.log(avatar.avatar);
+                ////console.log(avatar.avatar);
                 const file = readFileSync(avatar.avatar, 'base64');
-                //console.log(file.toString('base64'));
+                ////console.log(file.toString('base64'));
                 return ("data:image/png;base64,"+ file.toString());
             }
             return (avatar.avatar);
@@ -100,7 +100,7 @@ export class UserService {
                     state: true
                 }
             });
-            console.log('id = ' + id);
+            ////console.log('id = ' + id);
             const usersre: userDto[] = await Promise.all(users.filter((obj) => {
                 if (obj.id != id) {
                     return true
