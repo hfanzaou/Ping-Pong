@@ -60,7 +60,6 @@ function NavBar({avatar} : {avatar: string}) {
           <Typography   // in futere change this Typographt to div define the same style
             variant="h6"
             noWrap
-            component="a"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -115,7 +114,6 @@ function NavBar({avatar} : {avatar: string}) {
           <Typography   // in futere change this Typographt to div define the same style
             variant="h5"
             noWrap
-            component="a"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
