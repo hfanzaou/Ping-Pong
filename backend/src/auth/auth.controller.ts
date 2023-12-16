@@ -26,7 +26,7 @@ export class AuthController {
 
 	// @Post('signup')
 	// signup(@Body() dto: AuthDto) {
-	// 	console.log({
+	// 	({
 	// 		dto,
 	// 	});
 	// }
@@ -34,7 +34,7 @@ export class AuthController {
 	@Get('login')
 	@UseGuards(FTAuthGuard)
 	signin(@Body() user: any) {
-		//console.log("hello");
+		//("hello");
 	}
 
 	@Get('callback')
@@ -51,7 +51,7 @@ export class AuthController {
 			//res.redirect('http://localhost:3001/2fa/auth');
 		}
 		const token = await this.authService.signin(req.user);
-		console.log("hello");
+		("hello");
 		res.cookie('jwt', token, {
 			path:'/',
 			httpOnly: true,
@@ -74,8 +74,6 @@ export class AuthController {
 	@UseGuards(JwtTwoFaGuard)
 	async turnOnTwoFaAuth(@Req() req) {
 		const otpAuthUrl = await this.authService.generateTwoFA(req.user);
-		console.log(otpAuthUrl);
-		// res.setHeader('content-type','image/png');
 		const qrfile = await toBuffer(otpAuthUrl.oturl);
 		return ("data:image/png;base64," + qrfile.toString('base64'));
 	}
@@ -95,12 +93,13 @@ export class AuthController {
 			if (typeof error === "boolean") {
 				throw new UnauthorizedException('Wrong Verification Code');
 			}
-			//console.log(body.AuthCode);
+			//(body.AuthCode);
 		}
 		if (user.twoFaAuth)
 			await this.authService.disableTwoFa(user);
 		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: false };
 		const newToken = await this.authService.signToken(payload);
+		await res.clearCookie('jwt');
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,
@@ -110,7 +109,7 @@ export class AuthController {
 	@Post('2fa/auth')
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res() res, @Body() body) {
-		console.log(body);
+		(body);
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(
@@ -123,16 +122,18 @@ export class AuthController {
 			if (typeof error === "boolean") {
 				throw new UnauthorizedException('Wrong Verification Code');
 			}
-			//console.log(body.AuthCode);
 		}
-		if (!user.twoFaAuth)
-			await this.authService.enableTwoFa(user);
 		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: true };
 		const newToken = await this.authService.signToken(payload);
+		// await res.clearCookie('jwt');
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,
 		});
+		if (!user.twoFaAuth) {
+			await this.authService.enableTwoFa(user);
+			//res.end();
+		}
 		res.send('done');
 	}
 }

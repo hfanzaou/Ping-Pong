@@ -12,7 +12,7 @@ export class UserController {
     }
     @Get('avatar')
     async getImage(@Req() req) {
-        console.log(req.user.id)
+        ////console.log(req.user.id)
         return  {avatar: await this.userService.getUserAvatar(req.user.id)};
     }
     @Get('name')
@@ -22,19 +22,19 @@ export class UserController {
     }
     @Get('userid')
     async getProfileById(@Req() req, @Query('id') id: string) {
-        console.log('-------------------------------');
-        //console.log(intId);
+        //console.log('-------------------------------');
+        ////console.log(intId);
         const userId: number = +id;
         return (this.userService.getProfileById(userId));
     }
     @Get('profile')
     async getProfile(@Req()  req) {
-        console.log(req.user.id)
+        //console.log(req.user.id)
         return (await this.userService.getProfile(req.user.id));
     }
     @Get('2fa')
     async getTwoFaState(@Req() req) {
-        console.log('in 2fa state');
+        //console.log('in 2fa state');
         return (await this.userService.getTwoFaState(req.user.id));
     }
     @Get('list')

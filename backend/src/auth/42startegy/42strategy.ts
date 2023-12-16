@@ -22,7 +22,7 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
             avatar: profile._json.image.link,
             twoFaAuth: false,
         }
-        //console.log(user);
+        ////console.log(user);
         return (user || null);
     }
 }
