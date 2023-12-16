@@ -26,12 +26,16 @@ export default {
         discord3: "#36393e",
         discord4: "#424549",
         discord5: "#7289da",
+        discord6: "#f1faee"
       },
       fontFamily: {
         Inconsolata: ["Inconsolata", "monospace"]
       },
       width: {
         '99': '99%',
+      },
+      maxHeight: {
+        '90': '90vh'
       }
     },
   },
