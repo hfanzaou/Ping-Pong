@@ -22,7 +22,7 @@ import Chat from './pages/private/Chat/Chat'
 
 import axios from 'axios'
 import Auth from './pages/public/Auth'
-import CreatProfile from './pages/public/CreatProfile/CreatProfile'
+import CreatProfile from './pages/private/CreatProfile/CreatProfile'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>("");
@@ -64,16 +64,16 @@ function App()  {
       <Router>
         <Routes>
           <Route path='/' element={!hasToken ? <Login/> : <Home avatar={avatar}/>}/>
-          <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Navigate to="/"/>}/>
-          <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} />  : <Navigate to="/"/>}/>
-          <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Navigate to="/"/>}/>
-          <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Navigate to="/"/>}/>
-          <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Navigate to="/"/>}/>
-          <Route path={'/Login'} element={<Login/>}/>
+          <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
+          <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} />  : <Login/>}/>
+          <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
+          <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
+          <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
+          <Route path='/Creat/Profile' element={hasToken ? <CreatProfile setAvatar={setAvatar} avatar={avatar}/> : <Login/>}/>
+          <Route path='/Login' element={<Login/>}/>
           <Route path='/Auth' element={<Auth />} />
-          <Route path='/creat/profile' element={ <CreatProfile setAvatar={setAvatar} avatar={avatar} /> }/>
         </Routes>
-      <Footer/>
+      {/* <Footer/> */}
       </Router>
       </MantineProvider>
   );

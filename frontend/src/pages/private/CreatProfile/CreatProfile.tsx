@@ -4,7 +4,7 @@ import ChangeAvatar from './UpdateAvatar';
 import ChangeName from './ChangeName';
 import EnableTowFactor from './EnableTowFactor';
 
-function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
+function CreatProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
 
     return (
         <div className='bg-zinc-500'>
@@ -20,4 +20,4 @@ function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string
   );
 }
 
-export default EditeProfile
+export default CreatProfile
