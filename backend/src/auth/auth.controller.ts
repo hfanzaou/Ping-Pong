@@ -44,16 +44,18 @@ export class AuthController {
 
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
-	async callback(@Req() req, @Res({passthrough: true}) res) {
+	async callback(@Req() req, @Res({passthrough: true}) res: Response) {
 		const user = await this.authService.validateUser(req.user);
+		//console.log(user.twoFaAuth);
 		if (user && user.twoFaAuth)
 		{
-			const token = this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
+			const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
 			res.cookie('jwt', token, {
 				path:'/',
 				httpOnly: true,
 			});
 			res.redirect('http://localhost:3000/auth');
+			return;
 		}
 		const token = await this.authService.signin(req.user);
 		res.cookie('jwt', token, {
@@ -61,7 +63,10 @@ export class AuthController {
 			httpOnly: true,
 		});
 		if (!user)
+		{
 			res.redirect('http://localhost:3000/creat/profile');
+			return;
+		}
 		res.redirect('http://localhost:3000');
 	}
 
@@ -110,9 +115,10 @@ export class AuthController {
 		res.send('done');
 	}
 	@Post('2fa/auth')
+	@HttpCode(201)
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res({passthrough: true}) res, @Body() body) {
-		(body);
+		console.log('AuthCode = ', body.AuthCode)
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(
@@ -135,9 +141,7 @@ export class AuthController {
 		});
 		if (!user.twoFaAuth) {
 			await this.authService.enableTwoFa(user);
-			res.end();
-			return;
-		}
-		res.redirect('http://localhost:3000/');
+		};
+		res.send('done');
 	}
 }

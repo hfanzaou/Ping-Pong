@@ -12,7 +12,7 @@ function Auth() {
         await axios.post("http://localhost:3001/2fa/auth", {AuthCode: code})
         .then((res) => {
             // make the needed work when the code valid {reload the page to get the correct state of 2fa}
-            res.status === 201 && window.location.reload();
+            res.status === 201 && (window.location.href = 'http://localhost:3000');
         })
         .catch((err) => {
             setInvalidCode(true);
