@@ -67,7 +67,7 @@ export class AuthController {
 		});
 		if (!user)
 		{
-			res.redirect('http://localhost:3000/setting');
+			res.redirect('http://localhost:3000/Setting');
 			return;
 		}
 		res.redirect('http://localhost:3000');
