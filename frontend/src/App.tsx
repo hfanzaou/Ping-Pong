@@ -54,9 +54,8 @@ function App()  {
         const res = await axios.get('http://localhost:3001/verifyTfa');
         if (res.status === 200) {
           setHas2fa(res.data);
-        }
-        else
-          setIsLoading(false);
+        } else
+            setIsLoading(false);
         // setHasToken(res.status === 200);
       } catch {
         console.log("error in fetching /verify");

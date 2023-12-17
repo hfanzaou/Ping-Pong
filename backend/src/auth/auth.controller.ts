@@ -27,7 +27,7 @@ export class AuthController {
 	@Get('verifyTfa')
 	@UseGuards(JwtGuard)
 	async verifyTwoFa(@Req() req) {
-		const user = await this.authService.validateUser(req.user);
+        const user = await this.authService.validateUser(req.user);
         if (user && user.twoFaAuth)
             return (true);
         return false;
