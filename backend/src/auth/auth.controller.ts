@@ -26,8 +26,11 @@ export class AuthController {
 
 	@Get('verifyTfa')
 	@UseGuards(JwtGuard)
-	verifyTwoFa() {
-		return (true);
+	async verifyTwoFa(@Req() req) {
+		const user = await this.authService.validateUser(req.user);
+		if (user && user.twoFaAuth)
+			return (true);
+		return false;	
 	}
 	// @Post('signup')
 	// signup(@Body() dto: AuthDto) {
@@ -64,7 +67,7 @@ export class AuthController {
 		});
 		if (!user)
 		{
-			res.redirect('http://localhost:3000/creat/profile');
+			res.redirect('http://localhost:3000/setting');
 			return;
 		}
 		res.redirect('http://localhost:3000');

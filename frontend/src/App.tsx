@@ -53,9 +53,10 @@ function App()  {
       try {
         const res = await axios.get('http://localhost:3001/verifyTfa');
         if (res.status === 200) {
-          setHas2fa(true);
+          setHas2fa(res.data);
         }
-        setIsLoading(false);
+        else
+          setIsLoading(false);
         // setHasToken(res.status === 200);
       } catch {
         console.log("error in fetching /verify");
@@ -77,7 +78,8 @@ function App()  {
       if (token) {
         setHasToken(true);
       }
-      setIsLoading(false);
+      else
+        setIsLoading(false);
     }, []);
 
   return (
@@ -94,7 +96,7 @@ function App()  {
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
           <Route path='/creat/profile' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar}/> : <Login/>}/>
           <Route path='/Login' element={<Login/>}/>
-          <Route path='/auth' element={has2fa ? <Auth /> : <Link to={'/'}></Link>} />
+          <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home avatar={avatar}/>)}/>
         </Routes>
             ) : <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
       {/* <Footer/> */}
