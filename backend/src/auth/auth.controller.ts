@@ -141,7 +141,9 @@ export class AuthController {
 		});
 		if (!user.twoFaAuth) {
 			await this.authService.enableTwoFa(user);
-		};
+		}
+		else
+			res.status(HttpStatus.OK);
 		res.send('done');
 	}
 }
