@@ -41,7 +41,8 @@ function App()  {
         const res = await axios.get('http://localhost:3001/verify');
         if (res.status === 200) {
           setHasToken(true);
-        }
+        } else
+            setIsLoading(false);
         // setHasToken(res.status === 200);
       } catch {
         console.log("error in fetching /verify");
@@ -53,9 +54,9 @@ function App()  {
       try {
         const res = await axios.get('http://localhost:3001/verifyTfa');
         if (res.status === 200) {
-          setHas2fa(true);
-        }
-        setIsLoading(false);
+          setHas2fa(res.data);
+        } else
+            setIsLoading(false);
         // setHasToken(res.status === 200);
       } catch {
         console.log("error in fetching /verify");
@@ -85,16 +86,15 @@ function App()  {
       <Router>
         { !isLoading ?
         (
-            <Routes>
+        <Routes>
           <Route path='/' element={!hasToken ? <Login/> : <Home avatar={avatar}/>}/>
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
           <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path='/creat/profile' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar}/> : <Login/>}/>
           <Route path='/Login' element={<Login/>}/>
-          <Route path='/auth' element={has2fa ? <Auth /> : <Link to={'/'}></Link>} />
+          <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home avatar={avatar}/>)}/>
         </Routes>
             ) : <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
       {/* <Footer/> */}
