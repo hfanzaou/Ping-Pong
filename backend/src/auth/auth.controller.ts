@@ -28,10 +28,10 @@ export class AuthController {
 	@UseGuards(JwtGuard)
 	async verifyTwoFa(@Req() req) {
 		const user = await this.authService.validateUser(req.user);
-		if (user && user.twoFaAuth)
-			return (true);
-		return false;	
-	}
+        if (user && user.twoFaAuth)
+            return (true);
+        return false;
+    }
 	// @Post('signup')
 	// signup(@Body() dto: AuthDto) {
 	// 	({
