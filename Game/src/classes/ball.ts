@@ -7,15 +7,16 @@ export class Ball {
     xdir: number;
     ydir: number;
     speed: number;
-    rad: number;
+    diam: number;
 
-    constructor(x: number, y: number, xdir: number, ydir: number, speed: number, rad: number) {
+    constructor(x: number, y: number, xdir: number, ydir: number, speed: number, diam: number) {
         this.x = x;
         this.y = y;
         this.xdir = xdir;
         this.ydir = ydir;
         this.speed = speed;
-        this.rad = rad;
+        // this.speedY = speed;
+        this.diam = diam;
     }
 }
   

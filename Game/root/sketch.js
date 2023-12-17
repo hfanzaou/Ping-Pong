@@ -7,28 +7,27 @@ class Player {
 }
 
 class Ball {
-  constructor(x, y, xdir, ydir, speed, rad) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.xdir = xdir;
-    this.ydir = ydir;
-    this.speed = speed;
-    this.rad = rad;
   }
 }
 
 const WIDTH = 700;
 const HEIGHT = 450;
 const RACKET_HEIGHT = 100;
-const RACKET_WIDTH = 10;
+const RACKET_WIDTH = 15;
 const RACKET_DY = 10;
+const BALL_DIAMETER = 15;
 
 let player1 = new Player(10, HEIGHT / 2, 0);
 let player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
-let ball = new Ball(WIDTH / 2, HEIGHT / 2, -1, 1, 6, 10);
+let ball = new Ball(WIDTH / 2, HEIGHT / 2, -1, 1, 6, BALL_DIAMETER);
 
 let socket;
-let play = 0, side = 1, mode = 0; // mode: 1 Vs other player, 2 1Vs1 on one device, 3 VSComputer
+let play = 0, side = 1;
+let mode = 0; // mode: 1 Vs other player, 2 1Vs1 on one device, 3 VSComputer
+let difficulty = 1; // 1: Easy, 2: Medium, 3: Hard
 let waitingForPlayer = false;
 let timer = 3;
 let disconnectMessage = null, gameOverMessage = null, winnerMessage = null, playAgain = false, countdownInterval = null, countdown = 0;
@@ -39,35 +38,33 @@ function setup() {
   eventListeners();
   createCanvas(WIDTH, HEIGHT);
   noStroke();
-  frameRate(50);
+  frameRate(60);
   selectMode();
 }
 
 function draw() {
 
   background(0);
-
+  fill('white');
   if (countdown > 0) {
     textSize(32);
+    textAlign(CENTER, CENTER);
     text('Game starts in: ' + countdown, WIDTH / 2, HEIGHT / 2);
-    fill('white');
+    return;
   }
 
   if (waitingForPlayer) {
     textSize(32);
     text('Waiting for second player...', WIDTH / 2, HEIGHT / 2);
-    fill('white');
   }
 
   if (disconnectMessage) {
-    // fill('white');
     textAlign(CENTER, CENTER);
     textSize(20);
     text(disconnectMessage, WIDTH / 2, HEIGHT / 2);
   }
 
   if (gameOverMessage) {
-    // fill('white');
     textAlign(CENTER, CENTER);
     textSize(20);
     text(gameOverMessage, WIDTH / 2, HEIGHT / 2 - 60);
@@ -91,8 +88,7 @@ function draw() {
 
   if (!play)
     return ;
-  
-  fill('white');
+
   textSize(32);
   textStyle(BOLD);
   // textFont('Arial Black');
@@ -101,13 +97,12 @@ function draw() {
 
   checkKeys();
   
-  if (mode == 3)
-  computerPlayer();
+  if (mode == 3) computerPlayer();
   
-  stroke('white');
-  circle(ball.x, ball.y, ball.rad);
+  circle(ball.x, ball.y, BALL_DIAMETER);
   rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
   rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
+  stroke('white');
   strokeWeight(4);
   drawingContext.setLineDash([5, 15]);
   line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
@@ -129,14 +124,12 @@ function checkKeys() {
   // }
     
   if ((keyIsDown(87) || keyIsDown(UP_ARROW)) && player1.racket.y - RACKET_DY > 0) {
-    // if (keyIsReleased(UP_ARROW))
-    socket.emit("updateRacket", side, player1.racket.y - RACKET_DY);
+    socket.emit("updateRacket", {player: side, y: player1.racket.y - RACKET_DY});
     player1.racket.y -= RACKET_DY;
   }
   
   if ((keyIsDown(83) || keyIsDown(DOWN_ARROW)) && player1.racket.y + RACKET_DY < HEIGHT - RACKET_HEIGHT) {
-    // if (keyIsReleased(DOWN_ARROW))
-    socket.emit("updateRacket", side, player1.racket.y + RACKET_DY);
+    socket.emit("updateRacket", {player: side, y: player1.racket.y + RACKET_DY});
     player1.racket.y += RACKET_DY;
   }
 
@@ -149,26 +142,25 @@ function  mouseDragged()
       mouseX >= 0 &&
       mouseY >= 0)
       {
-        socket.emit("updateRacket", side, mouseY);
+        socket.emit("updateRacket", {player: side, y: mouseY});
         player1.racket.y = mouseY;
       }
 }
 
-// function keyIsReleased() {
-//   if (key == UP_ARROW || key == DOWN_ARROW)
-//     socket.emit("updateRacket", side, player1.racket.y);
-// }
+function computerPlayer() {
+  let speed = difficulty * 3; // Adjust this multiplier as needed
 
-function  computerPlayer()
-{
-  if (ball.x >= WIDTH/4) {
+  if (ball.x > WIDTH / 4) {
     if (ball.y >= player2.racket.y && ball.y <= player2.racket.y + RACKET_HEIGHT)
-      return ;
+      return;
+
     let diff = player2.racket.y - ball.y;
-    if (diff < 0 && player2.racket.y + 8 < height)
-      player2.racket.y += 8;
-    else if (diff > 0 && player2.racket.y - 8 > 0)
-        player2.racket.y -= 8;
+    if (diff < 0 && player2.racket.y + speed < HEIGHT)
+      player2.racket.y += speed;
+    else if (diff > 0 && player2.racket.y - speed > 0)
+      player2.racket.y -= speed;
+
+    socket.emit("updateRacket", { player: 2, y: player2.racket.y });
   }
 }
 
@@ -191,9 +183,37 @@ function selectMode() {
   let vsComputerButt = createButton('Vs Computer');
   vsComputerButt.position(WIDTH/2 - 20, HEIGHT/2 + 60);
   vsComputerButt.mousePressed(() => {
-    removeElements();
+    let easyButton = createButton('Easy');
+    easyButton.position(WIDTH / 2 - 60, HEIGHT / 2 + 100); // Adjust these values as needed
+  
+    easyButton.mousePressed(() => {
+      difficulty = 1;
+      removeElements();
+      socket.emit('VsComputer', ball);
+      startCountdown();
+    });
+  
+    let mediumButton = createButton('Medium');
+    mediumButton.position(WIDTH / 2, HEIGHT / 2 + 100); // Adjust these values as needed
+  
+    mediumButton.mousePressed(() => {
+      difficulty = 2;
+      removeElements();
+      socket.emit('VsComputer', ball);
+      startCountdown();
+    });
+  
+    let hardButton = createButton('Hard');
+    hardButton.position(WIDTH / 2 + 80, HEIGHT / 2 + 100); // Adjust these values as needed
+  
+    hardButton.mousePressed(() => {
+      difficulty = 3;
+      removeElements();
+      socket.emit('VsComputer', ball);
+      startCountdown();
+    });
     mode = 3;
-    play = 1;
+    // removeElements();
   });
 
   let vsOtherPlayer2 = createButton('1Vs1 on same device');
@@ -209,15 +229,7 @@ function eventListeners() {
     removeElements();
     loop();
     waitingForPlayer = false;
-    countdown = 3; // Start countdown from 3 seconds
-    countdownInterval = setInterval(() => {
-      countdown--;
-      if (countdown === 0) {
-        clearInterval(countdownInterval);
-        play = 1;
-      }
-    }, 1000);
-    redraw();
+    startCountdown();
   });
 
   socket.on('player1', (_side) => {
@@ -242,8 +254,9 @@ function eventListeners() {
     player2.racket.y = pos;
   });
 
-  socket.on('updateBall', (payload) => {
-    ball = payload;
+  socket.on('updateBall', (ballPos) => {
+    ball.x = ballPos.x;
+    ball.y = ballPos.y;
     redraw();
   });
 
@@ -259,4 +272,17 @@ function eventListeners() {
     winnerMessage = (player1.score > player2.score) ? 'Player1 Won' : 'Player2 Won';
     playAgain = true;
   });
+}
+
+function startCountdown() {
+  countdown = 3;
+  countdownInterval = setInterval(() => {
+    countdown--;
+    if (countdown === 0) {
+      clearInterval(countdownInterval);
+      play = 1;
+      loop();
+    }
+    redraw();
+  }, 1000);
 }
