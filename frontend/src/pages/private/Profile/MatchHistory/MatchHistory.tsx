@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container } from '@mantine/core';
+import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container, SimpleGrid } from '@mantine/core';
 import { IconMessages, IconTrash} from '@tabler/icons-react';
 import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
 import {MdChildFriendly} from 'react-icons/md';
@@ -19,7 +19,9 @@ function  MatchHistory() {
   };
   
   const matches = data.map((item) => (
+    <div key={item.name}>
      <MatchHistoryCard avatar={item.avatar} name={item.name} rate={item.rate} wine={item.wine}/>
+    </div>
    ));
 
   return (
@@ -29,8 +31,8 @@ function  MatchHistory() {
       </div>
     <div className='relative flex items-center'>
       <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderLeft} size={40}/>
-      <div id='match-history-slider' className='w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>
-        {matches}
+      <div id='match-history-slider' className='relative flex items-center w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>
+            {matches}
       </div>
       <MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={40}/>
     </div>

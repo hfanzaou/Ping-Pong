@@ -8,7 +8,7 @@ function EnableTowFactor() {
   const [change, setChange] = useState<boolean>(false);
   const [invalidCode, setInvalidCode] = useState<boolean>(false);
   const [qrImage, setQrImage] = useState();
-  const [code, setCode] = useState<number>();
+  const [code, setCode] = useState<string>();
   const [disabled, setDisabled] = useState<boolean>(true);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ function EnableTowFactor() {
             .then((res) => {
                 console.log(res.data);
                 setQrImage(res.data);
-                setChange(true);
+                // setChange(true);
             })
             .catch((err) => {
                 console.error(err);
@@ -45,7 +45,7 @@ function EnableTowFactor() {
     console.log(e.target.value);
     setInvalidCode(false);
     if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
-        e.target.value.length === 6 ? (setCode(Number(e.target.value)), setDisabled(false)) : setDisabled(true)
+        e.target.value.length === 6 ? (setCode(e.target.value), setDisabled(false)) : setDisabled(true)
     } else {
         setInvalidCode(true);
     }
@@ -55,10 +55,19 @@ function EnableTowFactor() {
     console.log("this is the code was send: ",code);
     await axios.post("http://localhost:3001/2fa/auth", {AuthCode: code})
     .then((res) => {
+        if(res.status == 201)
+        {
+            if (!change)
+            {
+                setChange(true);
+                window.location.href = "http://localhost:3000/";
+            }
+            else
+                window.location.reload();
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
-        res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
+        // res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
         // res.status === 201 && setTowFactor(true); // redirect from backend or make same work when Enable 2fa
-    })
+    }})
     .catch((err) => {
         setInvalidCode(true);
         console.error("Error in sending 2f code: ", err);

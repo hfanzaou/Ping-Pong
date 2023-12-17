@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "../../../Layout/Header/Header";
+import Footer from '../../../Layout/Footer/Footer';
 import LeaderbordCard from "./LeaderBordCard";
 import LeaderbordTable from "./LeaderBordTable";
 
@@ -15,7 +16,9 @@ import {
 
 function Leaderbord({avatar} : {avatar: string}) {
     return (
-        <div className="bg-[url('./4304494.jpg')] h-full items-cente">
+        // <div className="bg-[url('./4304494.jpg')] h-full items-cente">
+        <div className="h-full items-cente">
+
             <Header avatar={avatar}/>
             <div className="flex  space-x-8  items-center justify-center mt-8">
                 <LeaderbordCard />
@@ -27,6 +30,7 @@ function Leaderbord({avatar} : {avatar: string}) {
                 <LeaderbordTable/>
             </div>
             </div>
+            <Footer/>
         </div>
     );
 }

@@ -33,7 +33,7 @@ function BlockedFriends() {
     };
 
     const blockedRows = blockedFriendList.map((item) => (  
-        <Table key={item.name}>
+        <Table.Tr key={item.name}>
             <Table.Td>
               <Group gap="sm">
                 <Menu
@@ -56,20 +56,15 @@ function BlockedFriends() {
                     </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>
-                <div>
                   <Text fz="sm" fw={500}>
                     {item.name}
                   </Text>
-                </div>
               </Group>
             </Table.Td>
-          </Table>
+          </Table.Tr>
         ));
-
     return (
-        <div>
-            {blockedRows}
-        </div>
+        blockedRows
     );
 }
 
