@@ -39,7 +39,7 @@ function  Frindes() {
   };
 
   const rows = friendList.map((item) => (
-  <Table key={item.name}>
+    <Table.Tr key={item.name}>
       <Table.Td>
         <Group gap="sm">
           <Menu
@@ -80,7 +80,7 @@ function  Frindes() {
           </div>
         </Group>
       </Table.Td>
-    </Table>
+    </Table.Tr>
   ));
 
 
@@ -88,12 +88,11 @@ function  Frindes() {
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = rows.length;
-  const blockedFriendsNumbre = 0;
+  const blockedFriendsNumbre = 2;
 
   return (
-    <div className='relative flex '>
-        <Table>
-          <Table.Thead>
+    // <div className='relative flex '>
+    <div>
             <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
                 {value === 'Friends list' && 
                 (<div className='flex'>
@@ -120,28 +119,29 @@ function  Frindes() {
                     <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">{blockedFriendsNumbre}</h2>
                 </div>)}
             </div>
-          </Table.Thead>
+    <ScrollArea h={200} type='never'>
+        <Table >
           {value === 'Friends list' ?
-          (Object.keys(rows).length ?
-            (<ScrollArea h={200} type='never'>
-            <Table.Tbody>
-            {rows}
-            </Table.Tbody>
-            </ScrollArea>) :
-            (<Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
+    ( <Table.Tbody>
+          {Object.keys(rows).length ?
+            rows :  
+            (<Table.Tr><Table.Td>
+            <Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
               Add Freinds to shows them here
-            </Blockquote>)
-          )
+            </Blockquote>
+            </Table.Td></Table.Tr>)}
+            </Table.Tbody>)
           :
-        (blockedFriendsNumbre &&
+          (blockedFriendsNumbre &&
             <ScrollArea h={200} type='never'>
             <Table.Tbody>
               <BlockedFriends /> {/* fetch list of blocked friends here and pass it to this component becouse i need blocked friends number here */}
-            {/* {blockedRows} */}
             </Table.Tbody>
             </ScrollArea>)}
         </Table>
-    </div>
+      </ScrollArea>
+      </div>
+    // </div>
   );
 }
 

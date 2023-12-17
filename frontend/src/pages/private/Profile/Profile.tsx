@@ -7,6 +7,8 @@ import Achievements from './Achievements/Achievement'
 import './Profile.css'
 import cx from 'clsx'
 import Header from '../../../Layout/Header/Header'
+import Footer from '../../../Layout/Footer/Footer';
+
 
 const theme = createTheme({
   components: {
@@ -54,6 +56,7 @@ function Profile({avatar} : {avatar: string }) {
         <div className='h-full ml=15 m-8 b-8'>
             <ProfileSections avatar={avatar} />
         </div>
+        <Footer/>
         </div>
     //   </Container>
     //   </MantineProvider>

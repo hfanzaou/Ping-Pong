@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Card, Avatar, Text, Group, Button, SimpleGrid } from '@mantine/core';
 import classes from './UserCard.module.css';
 import axios from 'axios';
-import sectionimage from '../../../../4304494.jpg'
+// import sectionimage from '../../../../4304494.jpg'
+import sectionimage from '../../Home/assite/bg.gif'
+
 
 const userInfo = {
     userName: 'rarahhal',

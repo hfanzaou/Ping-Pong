@@ -23,13 +23,13 @@ function AchievementCards({isTaked, image, title, name}: OneAchievementInterface
                 />}
             </Card.Section>
             <Text size="xs" ta='center'>
-                <h3>{name}</h3>
+                {name}
             </Text>
         </Card>
     </HoverCard.Target>
     <HoverCard.Dropdown>
         <Text size="lg" ta='center'>
-            <p>{title}</p>
+            {title}
         </Text>
     </HoverCard.Dropdown>
     </HoverCard>
