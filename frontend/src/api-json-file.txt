@@ -1,0 +1,48 @@
+POST  +  GET:  http://localhost:3001/user/name
+
+POST  +  GET:  http://localhost:3001/user/avatar
+
+
+##### START #######
+GET : http://localhost:3001/friend/list  : 
+interface FriendInterface {
+    avatar: string;
+    name: string;
+    status: boolean; [online/ofline]
+}
+
+[
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
+      "name": "Robert Wolfkisser",
+      "status": "online",
+    },
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
+      "name": "Jill Jailbreaker",
+      "status": "offline",
+    }
+]
+###### END ######
+
+###### START ####
+GET : http://localhost:3001/user/list  :
+interface UserInterface {
+    avatar: string;
+    name: string;
+    status: string; [online-ongame/ofline]
+}
+
+[
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
+      "name": "Robert Wolfkisser",
+      "status": "online",
+    },
+    {
+      "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
+      "name": "Jill Jailbreaker",
+      "status": "offline",
+    }
+]
+###### END   ####
