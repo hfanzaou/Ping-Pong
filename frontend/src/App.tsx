@@ -82,7 +82,7 @@ function App()  {
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
           <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path='/creat/profile' element={!hasFirstToken ? <CreatProfile setAvatar={setAvatar} avatar={avatar}/> :<Home avatar={avatar}/>}/>
+          <Route path='/creat/profile' element={hasFirstToken ? <CreatProfile setAvatar={setAvatar} avatar={avatar}/> :<Home avatar={avatar}/>}/>
           <Route path='/Login' element={<Login/>}/>
           <Route path='/auth' element={ <Auth /> } />
         </Routes>
