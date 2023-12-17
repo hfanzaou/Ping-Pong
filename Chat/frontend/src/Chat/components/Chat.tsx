@@ -3,7 +3,7 @@ import { IconPingPong, IconSend2 } from "@tabler/icons-react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
-const	socket = io("http://localhost:3000");
+const	socket = io("http://localhost:3001");
 
 export default function Chat()
 {
@@ -11,10 +11,21 @@ export default function Chat()
 	const	[conversation, setConversation] = useState<string[]>([]);
 	const	Reference = useRef<HTMLInputElement | null>(null);
 
+	function callBack(m: string)
+	{
+		setConversation(prev => [m, ...prev]);
+	}
+	useEffect(() => {
+		socket.on("client", callBack);
+		return (() => {
+			socket.off("client", callBack);
+			console.log("here");
+		})
+	}, [])
 	function submit(event: FormEvent<HTMLFormElement>)
 	{
 		event.preventDefault();
-		setConversation(prev => [message, ...prev]);
+		socket.emit("server", message);
 		setMessage("");
 		if (Reference.current)
 			Reference.current.focus();
@@ -28,7 +39,7 @@ export default function Chat()
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
 					return (
-						<li className="flex hover:bg-discord3 rounded-md m-2 p-3">{x}</li>)
+						<li key={x} className="flex hover:bg-discord3 rounded-md m-2 p-3">{x}</li>)
 				})}
 			</ul>
 			<div className="flex">
