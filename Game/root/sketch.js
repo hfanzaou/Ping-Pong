@@ -124,12 +124,12 @@ function checkKeys() {
   // }
     
   if ((keyIsDown(87) || keyIsDown(UP_ARROW)) && player1.racket.y - RACKET_DY > 0) {
-    socket.emit("updateRacket", {player: side, y: player1.racket.y - RACKET_DY});
+    socket.emit("updateRacket", player1.racket.y - RACKET_DY);
     player1.racket.y -= RACKET_DY;
   }
   
   if ((keyIsDown(83) || keyIsDown(DOWN_ARROW)) && player1.racket.y + RACKET_DY < HEIGHT - RACKET_HEIGHT) {
-    socket.emit("updateRacket", {player: side, y: player1.racket.y + RACKET_DY});
+    socket.emit("updateRacket", player1.racket.y + RACKET_DY);
     player1.racket.y += RACKET_DY;
   }
 
@@ -142,13 +142,13 @@ function  mouseDragged()
       mouseX >= 0 &&
       mouseY >= 0)
       {
-        socket.emit("updateRacket", {player: side, y: mouseY});
+        socket.emit("updateRacket", mouseY);
         player1.racket.y = mouseY;
       }
 }
 
 function computerPlayer() {
-  let speed = difficulty * 3; // Adjust this multiplier as needed
+  let speed = difficulty * 2; // Adjust this multiplier as needed
 
   if (ball.x > WIDTH / 4) {
     if (ball.y >= player2.racket.y && ball.y <= player2.racket.y + RACKET_HEIGHT)
@@ -160,7 +160,7 @@ function computerPlayer() {
     else if (diff > 0 && player2.racket.y - speed > 0)
       player2.racket.y -= speed;
 
-    socket.emit("updateRacket", { player: 2, y: player2.racket.y });
+    socket.emit("updateRacketVsComputer", player2.racket.y);
   }
 }
 
@@ -225,7 +225,7 @@ function selectMode() {
 }
 
 function eventListeners() {
-  socket.on('game start', (_side) => {
+  socket.on('gameStart', (_side) => {
     removeElements();
     loop();
     waitingForPlayer = false;
@@ -243,10 +243,10 @@ function eventListeners() {
     player2.racket = racket;
   });
 
-  socket.on('playerDisconnect', () => {
+  socket.on('opponentDisconnected', () => {
     removeElements();
     play = 0;
-    disconnectMessage = "Player Disconnected :(";
+    disconnectMessage = "Opponent Disconnected :(";
     playAgain = true;
   });
 

@@ -11,7 +11,7 @@ const WIDTH = 700;
 const RACKET_WIDTH = 15;
 const RACKET_HEIGHT = 100;
 const MAX_SPEED = 15;
-const INITIAL_SPEED = 6;
+const INITIAL_SPEED = 8;
 const MAX_SCORE = 10;
 const GAME_START_DELAY = 3100;
 const GAME_INTERVAL = 1000/60;
@@ -20,11 +20,14 @@ const BALL_DIAMETER = 15;
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
-  @WebSocketServer() wss: Server;
   private logger: Logger = new Logger('GameGateway');
-  private players: Player[] = [];
-  private intervalId: any;
 
+  @WebSocketServer() wss: Server;
+
+  private players: Player[] = [];
+  private waitingPlayers: Socket[] = [];
+  private intervalIds: Map<string, NodeJS.Timeout> = new Map();
+  
   afterInit(server: any) {
     this.logger.log("Initialized!");
   }
@@ -33,76 +36,118 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log("Client " + client.id + " Connected!");
   }
 
-  handleDisconnect(client: Socket) {
-    this.logger.log("Client " + client.id + " Disconnected");
-    if (client.rooms['room0']) {
-      this.wss.to('room0').emit('playerDisconnect');
-      client.leave('room0');
-      clearInterval(this.intervalId);
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.logger.log(`Client ${client.id} disconnected`);
+  
+    // Find the room that the client is in
+    const player = this.players.find(p => p.id === client.id);
+    if (player) {
+      // Notify the other player in the room that their opponent has disconnected
+      this.wss.to(player.roomName).emit('opponentDisconnected');
+      
+      // Remove the client from the room
+      client.leave(player.roomName);
+  
+      // End the game
+      const intervalId = this.intervalIds.get(player.roomName);
+      if (intervalId) {
+        clearInterval(intervalId);
+        this.intervalIds.delete(player.roomName);
+      }
     }
+    this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== client.id);
+    this.players = this.players.filter(player => player.id !== client.id && player.id !== 'computer');
   }
+
   
   @SubscribeMessage('join_room')
-  async joinRoom(client: Socket, payload: any)
-  {
-    let sockets = await this.wss.in('room0').fetchSockets();
-    if (sockets.length == 1) {
-      client.join('room0');
-      this.logger.log("client " + client.id + " joined room0");
-      this.wss.to(client.id).emit('player2', 2);
-      this.wss.to('room0').emit("game start", 2);
-      let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
-      let player1 = new Player(10, HEIGHT / 2, 0);
-      let player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
-      this.players.push(player1);
-      this.players.push(player2);
-      setTimeout(() => {
-        this.intervalId = setInterval(() => this.gameStart(ball, player1, player2), GAME_INTERVAL);
-      }, GAME_START_DELAY);
+  async joinRoom(@ConnectedSocket() client: Socket, payload: any) {
+    if (this.waitingPlayers.length > 0) {
+      // If there are players waiting, match the new player with the first one in the queue
+      const opponent = this.waitingPlayers.shift();
+      const roomName = `room${client.id}${opponent.id}`; // Create a unique room name
+  
+      client.join(roomName);
+      opponent.join(roomName);
+  
+      this.logger.log(`Clients ${client.id} and ${opponent.id} joined ${roomName}`);
+      
+      // Initialize the game for these two players
+      this.initGame(opponent, client, roomName);
+    } else {
+      // If there are no players waiting, add the new player to the queue
+      this.waitingPlayers.push(client);
+      this.logger.log(`Client ${client.id} added to the waiting queue`);
     }
-    else {
-      client.join('room0');
-      this.logger.log("Client "+ client.id + " joined room0");
-      this.wss.to('room0').emit("player1", 1);
-    }
+  }
+
+
+  private initGame(player1: Socket, player2: Socket, roomName: string) {
+    this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== player1.id && player.id !== player2.id);
+    this.wss.to(player1.id).emit('player1');
+    this.wss.to(player2.id).emit('player2');
+    this.wss.to(roomName).emit('gameStart');
+    let player1Obj = new Player(player1.id, 10, HEIGHT / 2, 0, roomName);
+    let player2Obj = new Player(player2.id, WIDTH - 30, HEIGHT / 2, 0, roomName);
+    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
+    this.players.push(player1Obj);
+    this.players.push(player2Obj);
+    setTimeout(() => {
+      this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
+    } , GAME_START_DELAY);
   }
 
   @SubscribeMessage('VsComputer')
   VsComputer(client: Socket) {
-    client.join('room0');
-    let player1 = new Player(10, HEIGHT / 2, 0);
-    let player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
+    const roomName = client.id;
+    // client.join(roomName);
+    let player1Obj = new Player(client.id, 10, HEIGHT / 2, 0, roomName);
+    let player2Obj = new Player('computer', WIDTH - 30, HEIGHT / 2, 0, roomName);
     let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
-    this.players.push(player1);
-    this.players.push(player2);
+    this.players.push(player1Obj);
+    this.players.push(player2Obj);
     setTimeout(() => {
-      this.intervalId = setInterval(() => this.gameStart(ball, player1, player2), GAME_INTERVAL);
+      this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
     }, GAME_START_DELAY);
   }
 
   @SubscribeMessage('updateRacket')
-  updateRacketPos(client: Socket, racketPos: {player: number, y: number}) {
-    if (racketPos.player == 1)
-      this.players[0].racket.y = racketPos.y;
-    else if (racketPos.player == 2)
-      this.players[1].racket.y = racketPos.y;
-    if (client.rooms['room0'])
-      client.broadcast.to('room0').emit('updateRacket', racketPos.y);
+  updateRacketPos(client: Socket, racketY: number) {
+    let player = this.players.find(p => p.id === client.id);
+    if (player) {
+      player.racket.y = racketY;
+      if (player.roomName !== client.id)
+        client.broadcast.to(player.roomName).emit('updateRacket', racketY);
+    }
+  }
+
+  @SubscribeMessage('updateRacketVsComputer')
+  updateRacketPosVsComputer(client: Socket, racketY: number) {
+    let player = this.players.find(p => p.id === 'computer');
+    if (player) {
+      player.racket.y = racketY;
+      // client.broadcast.to(player.roomName).emit('updateRacket', racketY);
+    }
   }
 
   private goalScored = false;
 
-  private gameStart(ball: Ball, player1: Player, player2: Player)
+  private gameStart(ball: Ball, player1: Player, player2: Player, roomName: string)
   {
-    ball = this.updateBallPos(ball, this.players[0], this.players[1]);
+    const playersInGame = this.players.filter(player => [player1.id, player2.id].includes(player.id));
+    if (playersInGame.length < 2) {
+      // Both players aren't in the game yet, don't start the game
+      return;
+    }
+    ball = this.updateBallPos(ball, playersInGame[0], playersInGame[1], roomName);
     if (!this.goalScored) {
       ball.x += (ball.speed * ball.xdir);
       ball.y += (ball.speed * ball.ydir);
     }
-    this.wss.to('room0').emit('updateBall', ball);
+    this.wss.to(roomName).emit('updateBall', ball);
   }
 
-  private updateBallPos(ball: Ball, player1: Player, player2: Player) 
+  private updateBallPos(ball: Ball, player1?: Player, player2?: Player, roomName?: string) 
   {
     if (this.checkCollision(ball, player1)) {
       ball.xdir = 1;
@@ -127,13 +172,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       ball.ydir = 1;
       ball.speed = INITIAL_SPEED;
       // ball.speedY = INITIAL_SPEED;
-      this.wss.to('room0').emit('updateScore', {player1Score: player1.score, player2Score: player2.score} );
+      this.wss.to(roomName).emit('updateScore', {player1Score: player1.score, player2Score: player2.score} );
       if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
-        clearInterval(this.intervalId);
-        this.wss.to('room0').emit('gameOver');
-        this.wss.in('room0').socketsLeave('room0');
+        this.wss.to(roomName).emit('gameOver');
+        // End the game
+        const intervalId = this.intervalIds.get(roomName);
+        if (intervalId) {
+          clearInterval(intervalId);
+          this.intervalIds.delete(roomName);
+        }
+        this.wss.in(roomName).socketsLeave(roomName);
         player1.score = 0;
         player2.score = 0;
+        // Remove the players from the players array
+        this.players = this.players.filter(p => p !== player1 && p !== player2);
       } else {
         this.goalScored = true;
         // Delay the re-spawning of the ball by 2 seconds
