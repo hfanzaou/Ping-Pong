@@ -59,8 +59,8 @@ function EnableTowFactor() {
         {
             if (!change)
             {
-                window.location.href = "http://localhost:3000";
                 setChange(true);
+                window.location.href = "http://localhost:3000";
             }
             else
                 window.location.reload();
