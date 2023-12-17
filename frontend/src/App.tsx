@@ -78,7 +78,8 @@ function App()  {
       if (token) {
         setHasToken(true);
       }
-      setIsLoading(false);
+      else
+        setIsLoading(false);
     }, []);
 
   return (
