@@ -17,8 +17,8 @@ export class UserService {
                     upAvatar: true,
                 }
             })
-            if (!avatar)
-                throw new NotFoundException('USER NOT FOUND');
+            if (!avatar || !avatar.avatar)
+                return "";
             if (avatar.upAvatar)
             {
                 ////console.log(avatar.avatar);
@@ -91,6 +91,7 @@ export class UserService {
         }
     }
     async getUsersList(id: number) {
+        console.log(id);
         try {
             const users = await this.prismaservice.user.findMany({
                 select: {
@@ -100,7 +101,7 @@ export class UserService {
                     state: true
                 }
             });
-            ////console.log('id = ' + id);
+            console.log(users);
             const usersre: userDto[] = await Promise.all(users.filter((obj) => {
                 if (obj.id != id) {
                     return true
@@ -110,13 +111,43 @@ export class UserService {
                 const avatar = await this.getUserAvatar(obj.id);
                 return { key: obj.id, name: obj.username, avatar: avatar, state: obj.state };
               })); 
+              console.log(usersre);
             return usersre;
         } catch(error) {
+            console.log(error);
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-    async acceptFriend(id: number, name: string)
-    {   
+    // async checkBlocks(id: number, name: string) 
+    // {
+
+    // }
+    // async addFriend(id: number, name:string) {
+    //     try {
+    //         const user = await this.prismaservice.user.findUnique
+    //         const user = await this.prismaservice.user.findUnique({
+    //             where: { 
+    //                 username: name,
+    //             }
+    //         });
+    //         await this.prismaservice.user.update({
+    //             where: {id: id},
+    //             data: {friends: {
+    //                 connect: {id: user.id}
+    //             }}
+    //         })
+    //         await this.prismaservice.user.update({
+    //             where: {id: user.id},
+    //             data: {friendOf: {
+    //                 connect: {id: id}
+    //             }}
+    //         })
+    //     } catch(error) {
+    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
+    //     }
+    // }
+
+    async acceptFriend(id: number, name: string) {   
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 

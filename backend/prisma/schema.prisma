@@ -27,4 +27,6 @@ model User {
   twoFaSecret Json?
   friends     User[]  @relation("Friends")
   friendOf    User[]  @relation("Friends")
+  blocked     User[] @relation("blocked")
+  blockedFrom User[] @relation("blocked")
 }

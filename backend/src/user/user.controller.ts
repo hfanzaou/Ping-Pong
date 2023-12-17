@@ -39,8 +39,14 @@ export class UserController {
     }
     @Get('list')
     async getUsersList(@Req() req) {
+        console.log('id = ' + req.user.id);
         return (await this.userService.getUsersList(req.user.id));
     }
+    // @Post('add/friend')
+    // @HttpCode(201)
+    // async addFriend(@Req() req, @Body() name: string) {
+    //     await this.userService.addFriend(req.user.id, name);
+    // }
     @Post('acceptfriend')
     @HttpCode(201)
     async acceptFriend(@Req() req, @Body() name: string) {
