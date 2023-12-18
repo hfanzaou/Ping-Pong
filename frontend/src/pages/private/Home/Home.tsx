@@ -17,12 +17,12 @@ function Home({avatar} : {avatar: string}) {
       {/* <Container fluid px={0} size="30rem" bg="var(--mantine-color-blue-1)" > */}
         <div className='h-full ml-15 m-8 b-8'>
           <SimpleGrid
-          cols={{ base: 1, sm: 2, lg: 2 }}
+          cols={{ base: 1, sm: 1, lg: 2 }}
           spacing={{ base: 10, sm: 'xl' }}
           verticalSpacing={{ base: 'md', sm: 'lg' }}
           >
-            <img src={image} />
             <Users />
+            <img src={image} />
           </SimpleGrid>
           </div>
     <Footer/>

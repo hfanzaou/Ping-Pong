@@ -13,7 +13,7 @@ function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, i
       setSave(true);
   };
 
-  const handleCrop = (view: any) => {
+  const handleCrop = (view: string) => {
       // setPreview(view);
       setUserImage(view);
       setSave(false);
