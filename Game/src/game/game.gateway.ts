@@ -10,9 +10,9 @@ const HEIGHT = 450;
 const WIDTH = 700;
 const RACKET_WIDTH = 15;
 const RACKET_HEIGHT = 100;
-const MAX_SPEED = 15;
+const MAX_SPEED = 50;
 const INITIAL_SPEED = 8;
-const MAX_SCORE = 10;
+const MAX_SCORE = 3;
 const GAME_START_DELAY = 3100;
 const GAME_INTERVAL = 1000/60;
 const BALL_DIAMETER = 15;
@@ -24,7 +24,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @WebSocketServer() wss: Server;
 
-  private players: Player[] = [];
+  private players: Map<string, Player> = new Map();
   private waitingPlayers: Socket[] = [];
   private intervalIds: Map<string, NodeJS.Timeout> = new Map();
   
@@ -40,7 +40,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log(`Client ${client.id} disconnected`);
   
     // Find the room that the client is in
-    const player = this.players.find(p => p.id === client.id);
+    const player = this.players.get(client.id);
     if (player) {
       // Notify the other player in the room that their opponent has disconnected
       this.wss.to(player.roomName).emit('opponentDisconnected');
@@ -54,9 +54,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         clearInterval(intervalId);
         this.intervalIds.delete(player.roomName);
       }
+      if (player.id === client.id) {
+        this.players.delete('computer');
+      }
     }
     this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== client.id);
-    this.players = this.players.filter(player => player.id !== client.id && player.id !== 'computer');
+    this.players.delete(client.id);
   }
 
   
@@ -81,31 +84,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
   }
 
-
-  private initGame(player1: Socket, player2: Socket, roomName: string) {
-    this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== player1.id && player.id !== player2.id);
-    this.wss.to(player1.id).emit('player1');
-    this.wss.to(player2.id).emit('player2');
-    this.wss.to(roomName).emit('gameStart');
-    let player1Obj = new Player(player1.id, 10, HEIGHT / 2, 0, roomName);
-    let player2Obj = new Player(player2.id, WIDTH - 30, HEIGHT / 2, 0, roomName);
-    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
-    this.players.push(player1Obj);
-    this.players.push(player2Obj);
-    setTimeout(() => {
-      this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
-    } , GAME_START_DELAY);
-  }
-
   @SubscribeMessage('VsComputer')
   VsComputer(client: Socket) {
     const roomName = client.id;
-    // client.join(roomName);
     let player1Obj = new Player(client.id, 10, HEIGHT / 2, 0, roomName);
     let player2Obj = new Player('computer', WIDTH - 30, HEIGHT / 2, 0, roomName);
     let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
-    this.players.push(player1Obj);
-    this.players.push(player2Obj);
+    this.players.set(client.id, player1Obj);
+    this.players.set('computer', player2Obj);
     setTimeout(() => {
       this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
     }, GAME_START_DELAY);
@@ -113,7 +99,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('updateRacket')
   updateRacketPos(client: Socket, racketY: number) {
-    let player = this.players.find(p => p.id === client.id);
+    let player = this.players.get(client.id);
     if (player) {
       player.racket.y = racketY;
       if (player.roomName !== client.id)
@@ -123,31 +109,47 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('updateRacketVsComputer')
   updateRacketPosVsComputer(client: Socket, racketY: number) {
-    let player = this.players.find(p => p.id === 'computer');
+    let player = this.players.get('computer');
     if (player) {
       player.racket.y = racketY;
-      // client.broadcast.to(player.roomName).emit('updateRacket', racketY);
     }
+  }
+
+  private initGame(player1: Socket, player2: Socket, roomName: string)
+  {
+    this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== player1.id && player.id !== player2.id);
+    this.wss.to(player1.id).emit('player1', 1);
+    this.wss.to(player2.id).emit('player2', 2);
+    this.wss.to(roomName).emit('gameStart');
+    let player1Obj = new Player(player1.id, 10, HEIGHT / 2, 0, roomName);
+    let player2Obj = new Player(player2.id, WIDTH - 30, HEIGHT / 2, 0, roomName);
+    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
+    this.players.set(player1.id, player1Obj);
+    this.players.set(player2.id, player2Obj);
+    setTimeout(() => {
+      this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
+    } , GAME_START_DELAY);
   }
 
   private goalScored = false;
 
   private gameStart(ball: Ball, player1: Player, player2: Player, roomName: string)
   {
-    const playersInGame = this.players.filter(player => [player1.id, player2.id].includes(player.id));
+    const playersInGame = [this.players.get(player1.id), this.players.get(player2.id)];
     if (playersInGame.length < 2) {
       // Both players aren't in the game yet, don't start the game
       return;
     }
     ball = this.updateBallPos(ball, playersInGame[0], playersInGame[1], roomName);
-    if (!this.goalScored) {
-      ball.x += (ball.speed * ball.xdir);
-      ball.y += (ball.speed * ball.ydir);
+    if (this.goalScored) {
+      return;
     }
-    this.wss.to(roomName).emit('updateBall', ball);
+    ball.x += (ball.speed * ball.xdir);
+    ball.y += (ball.speed * ball.ydir);
+    this.wss.to(roomName).emit('updateBall', { x: ball.x , y: ball.y });
   }
 
-  private updateBallPos(ball: Ball, player1?: Player, player2?: Player, roomName?: string) 
+  private updateBallPos(ball: Ball, player1: Player, player2: Player, roomName?: string) 
   {
     if (this.checkCollision(ball, player1)) {
       ball.xdir = 1;
@@ -181,17 +183,17 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
           clearInterval(intervalId);
           this.intervalIds.delete(roomName);
         }
-        this.wss.in(roomName).socketsLeave(roomName);
-        player1.score = 0;
-        player2.score = 0;
-        // Remove the players from the players array
-        this.players = this.players.filter(p => p !== player1 && p !== player2);
+        if (player2.id !== 'computer')
+          this.wss.in(roomName).socketsLeave(roomName);
+        // Remove the players from the players map
+        this.players.delete(player1.id);
+        this.players.delete(player2.id);
       } else {
         this.goalScored = true;
         // Delay the re-spawning of the ball by 2 seconds
+        this.wss.to(roomName).emit('updateBall', {x: ball.x, y: ball.y});
         setTimeout(() => {
           this.goalScored = false;
-          this.wss.to('room0').emit('updateBall', ball);
         }, 500);
       }
     }

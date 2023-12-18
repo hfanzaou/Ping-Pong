@@ -22,10 +22,10 @@ const BALL_DIAMETER = 15;
 
 let player1 = new Player(10, HEIGHT / 2, 0);
 let player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
-let ball = new Ball(WIDTH / 2, HEIGHT / 2, -1, 1, 6, BALL_DIAMETER);
+let ball = new Ball(WIDTH / 2, HEIGHT / 2);
 
 let socket;
-let play = 0, side = 1;
+let play = 0, side = 0;
 let mode = 0; // mode: 1 Vs other player, 2 1Vs1 on one device, 3 VSComputer
 let difficulty = 1; // 1: Easy, 2: Medium, 3: Hard
 let waitingForPlayer = false;
@@ -165,6 +165,10 @@ function computerPlayer() {
 }
 
 function selectMode() {
+
+  player1 = new Player(10, HEIGHT / 2, 0);
+  player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
+  ball = new Ball(WIDTH / 2, HEIGHT / 2);
   let playButton = createButton('Vs other player');
   playButton.position(WIDTH / 2 - 20, HEIGHT / 2 - 60);
   playButton.mousePressed(() => {
@@ -185,7 +189,6 @@ function selectMode() {
   vsComputerButt.mousePressed(() => {
     let easyButton = createButton('Easy');
     easyButton.position(WIDTH / 2 - 60, HEIGHT / 2 + 100); // Adjust these values as needed
-  
     easyButton.mousePressed(() => {
       difficulty = 1;
       removeElements();
@@ -237,10 +240,10 @@ function eventListeners() {
   });
 
   socket.on('player2', (_side) => {
-    side = _side;
-    let racket = player1.racket;
-    player1.racket = player2.racket;
-    player2.racket = racket;
+      side = _side;
+      let racket = player1.racket;
+      player1.racket = player2.racket;
+      player2.racket = racket;
   });
 
   socket.on('opponentDisconnected', () => {
