@@ -4,6 +4,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersettingsModule } from './usersettings/usersettings.module';
+import { GatewayController } from './gateway/gateway.controller';
+import { GatewayService } from './gateway/gateway.service';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -13,7 +16,8 @@ import { UsersettingsModule } from './usersettings/usersettings.module';
             AuthModule,
             PrismaModule,
             UserModule,
-            UsersettingsModule
+            UsersettingsModule,
+            GatewayModule
           ],
 })
 export class AppModule {}

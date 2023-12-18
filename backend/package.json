@@ -32,6 +32,8 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.10",
+    "@nestjs/platform-socket.io": "^10.2.10",
+    "@nestjs/websockets": "^10.2.10",
     "@prisma/client": "^5.7.0",
     "@types/passport-42": "^1.1.1",
     "argon2": "^0.31.2",
@@ -50,6 +52,7 @@
     "react-cookie": "^6.1.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.7.2",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {

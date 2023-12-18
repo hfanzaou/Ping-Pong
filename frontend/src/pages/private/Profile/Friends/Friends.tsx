@@ -16,7 +16,7 @@ function  Frindes() {
 
   useEffect(() => {
     const getFriends = async () => {
-      await axios.get("http://localhost:3001/friend/list")
+      await axios.get("http://localhost:3001/user/friend/list")
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
@@ -29,7 +29,7 @@ function  Frindes() {
 
   const handleBlockFriend = async (name: string) => {
     console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/block/friend", {name: name})
+    await axios.post("http://localhost:3001/user/block/friend", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })

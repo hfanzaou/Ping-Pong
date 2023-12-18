@@ -47,7 +47,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   const handleAddFriend = async (name: string) => {
       console.log(name);
-      await axios.post("http://localhost:3001/add/friend", {name: name})
+      await axios.post("http://localhost:3001/user/add/friend", {name: name})
       .then((res) => {
         console.log(res.data);
       })
