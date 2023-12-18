@@ -59,7 +59,6 @@ function  Frindes() {
                 >
                 Send message
               </Menu.Item>
- 
               <Menu.Item
                 leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                 color="red"
@@ -122,22 +121,22 @@ function  Frindes() {
     <ScrollArea h={200} type='never'>
         <Table >
           {value === 'Friends list' ?
-    ( <Table.Tbody>
+    (<Table.Tbody>
           {Object.keys(rows).length ?
             rows :  
-            (<Table.Tr><Table.Td>
+            <Table.Tr>
+                <Table.Td>
             <Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
               Add Freinds to shows them here
             </Blockquote>
-            </Table.Td></Table.Tr>)}
-            </Table.Tbody>)
-          :
+            </Table.Td>
+            </Table.Tr>}
+            </Table.Tbody>) :
           (blockedFriendsNumbre &&
-            <ScrollArea h={200} type='never'>
             <Table.Tbody>
               <BlockedFriends /> {/* fetch list of blocked friends here and pass it to this component becouse i need blocked friends number here */}
             </Table.Tbody>
-            </ScrollArea>)}
+            )}
         </Table>
       </ScrollArea>
       </div>
