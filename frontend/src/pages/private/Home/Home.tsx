@@ -21,8 +21,8 @@ function Home({avatar} : {avatar: string}) {
           spacing={{ base: 10, sm: 'xl' }}
           verticalSpacing={{ base: 'md', sm: 'lg' }}
           >
-            <Users />
             <img src={image} />
+            <Users />
           </SimpleGrid>
           </div>
     <Footer/>
@@ -32,3 +32,4 @@ function Home({avatar} : {avatar: string}) {
 }
 
 export default Home
+
