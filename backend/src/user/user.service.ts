@@ -103,19 +103,25 @@ export class UserService {
                 const avatar = await this.getUserAvatar(obj.id);
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
               })); 
-              console.log(usersre);
+              //console.log(usersre);
          return (usersre);     
     }
     async getUsersList(id: number) {
         console.log(id);
         try {
             const users = await this.prismaservice.user.findMany({
+                where: {
+                    NOT: {
+                        blockedFrom: {some: {id: id}},
+                        blocked: {some:{id: id}}
+                    }
+                },
                 select: {
                     id: true,
                     username: true,
                     avatar: true,
                     state: true
-                }
+                } 
             });
             return await this.extarctuserinfo(users, id);
         } catch(error) {
@@ -166,12 +172,6 @@ export class UserService {
                     connect: {id: user.id}
                 }}
             })
-            await this.prismaservice.user.update({
-                where: {id: user.id},
-                data: {friendOf: {
-                    connect: {id: id}
-                }}
-            })
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -190,11 +190,42 @@ export class UserService {
                     connect: {id: user.id}
                 }}
             })
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    async addAchievement(id: number, achievement: boolean) {
+        try { 
             await this.prismaservice.user.update({
-                where: {id: user.id},
-                data: {friends: {
-                    connect: {id: id}
-                }}
+                where: {
+                    id: id
+                }, data: {
+                    achievement: { achievement },
+                }
+
+            })
+            const user = await this.prismaservice.user.findUnique({
+                where: {id: id},
+                select: {id: true, achievement: true}
+            })
+            console.log(user);
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    async blockUser(id: number, name: string) {
+        try {
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {
+                    blocked: {
+                        connect: {username: name}
+                    }, friends: {
+                        disconnect: {username: name}
+                    }
+                }
             })
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;

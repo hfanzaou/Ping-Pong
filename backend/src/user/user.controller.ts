@@ -57,4 +57,14 @@ export class UserController {
     async acceptFriend(@Req() req, @Body() body) {
         return (await this.userService.acceptFriend(req.user.id, body.name));
     }
+    @Post('achievements')
+    @HttpCode(201)
+    async addAchievement(@Req() req, @Body() body) {
+        return (await this.userService.addAchievement(req.user.id, body.achievement))
+    }
+    @Post('block')
+    @HttpCode(201)
+    async blockUser(@Req() req, @Body() body) {
+        return (await this.userService.blockUser(req.user.id, body.name));
+    }
 }

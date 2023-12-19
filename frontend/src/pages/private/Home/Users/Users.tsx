@@ -13,10 +13,10 @@ function Users() {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        setUsersList(data);
-        setSearchList(data);
-        // setUsersList(res.data);
-        // setSearchList(res.data);
+        // setUsersList(data);
+        // setSearchList(data);
+        setUsersList(res.data);
+        setSearchList(res.data);
       }).catch(err => {
         console.error("Error in fetching Users list: ", err);
       })
