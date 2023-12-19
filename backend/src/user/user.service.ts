@@ -90,6 +90,22 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async extarctuserinfo(users: any, id: number)
+    {
+        console.log(users);
+            console.log(users[id - 1]);
+            const usersre: userDto[] = await Promise.all(users.filter((obj) => {
+                if (obj.id != id) {
+                    return true
+                }
+                return false;
+              }).map(async (obj) => {
+                const avatar = await this.getUserAvatar(obj.id);
+                return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
+              })); 
+              console.log(usersre);
+         return (usersre);     
+    }
     async getUsersList(id: number) {
         console.log(id);
         try {
@@ -101,51 +117,65 @@ export class UserService {
                     state: true
                 }
             });
-            console.log(users);
-            const usersre: userDto[] = await Promise.all(users.filter((obj) => {
-                if (obj.id != id) {
-                    return true
-                }
-                return false;
-              }).map(async (obj) => {
-                const avatar = await this.getUserAvatar(obj.id);
-                return { key: obj.id, name: obj.username, avatar: avatar, state: obj.state };
-              })); 
-              console.log(usersre);
-            return usersre;
+            return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-    // async checkBlocks(id: number, name: string) 
-    // {
+    async getFriendsList(id: number)
+    {
+        try {
+            const users = await this.prismaservice.user.findMany({
+                where: {
+                    friends: {
+                        some: {
+                            id: id
+                        }
+                    },
+                    friendOf: {
+                        some: {
+                            id: id
+                        }
+                    }
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                    state: true
+                }
+            })
+            return await this.extarctuserinfo(users, id);
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
 
-    // }
-    // async addFriend(id: number, name:string) {
-    //     try {
-    //         const user = await this.prismaservice.user.findUnique
-    //         const user = await this.prismaservice.user.findUnique({
-    //             where: { 
-    //                 username: name,
-    //             }
-    //         });
-    //         await this.prismaservice.user.update({
-    //             where: {id: id},
-    //             data: {friends: {
-    //                 connect: {id: user.id}
-    //             }}
-    //         })
-    //         await this.prismaservice.user.update({
-    //             where: {id: user.id},
-    //             data: {friendOf: {
-    //                 connect: {id: id}
-    //             }}
-    //         })
-    //     } catch(error) {
-    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
-    //     }
-    // }
+    async addFriend(id: number, name:string) {
+        console.log("id = " + id, "name = " + name);
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: { 
+                    username: name,
+                }
+            });
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {friends: {
+                    connect: {id: user.id}
+                }}
+            })
+            await this.prismaservice.user.update({
+                where: {id: user.id},
+                data: {friendOf: {
+                    connect: {id: id}
+                }}
+            })
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
 
     async acceptFriend(id: number, name: string) {   
         try {

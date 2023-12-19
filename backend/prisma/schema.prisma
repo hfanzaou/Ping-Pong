@@ -22,11 +22,11 @@ model User {
   lastName    String?
   upAvatar    Boolean @default(false)
   avatar      String?
-  state      Boolean @default(false)
+  state       String  @default("Offline")
   twoFaAuth   Boolean
   twoFaSecret Json?
   friends     User[]  @relation("Friends")
   friendOf    User[]  @relation("Friends")
-  blocked     User[] @relation("blocked")
-  blockedFrom User[] @relation("blocked")
+  blocked     User[]  @relation("blocked")
+  blockedFrom User[]  @relation("blocked")
 }
