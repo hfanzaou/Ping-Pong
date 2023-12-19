@@ -25,6 +25,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @WebSocketServer() wss: Server;
 
   private players: Map<string, Player> = new Map();
+  private computers: Map<string, Player> = new Map();
   private waitingPlayers: Socket[] = [];
   private intervalIds: Map<string, NodeJS.Timeout> = new Map();
   
@@ -101,7 +102,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('updateRacketVsComputer')
   updateRacketPosVsComputer(client: Socket, racketY: number) {
-    let player = this.players.get('computer');
+    let player = this.computers.get(client.id); 
     if (player) {
       player.racket.y = racketY;
     }
@@ -113,18 +114,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       player.id !== client1Id && player.id !== client2Id
     });
   
-    this.wss.to(client1Id).emit('player1', 1);
-    if (client2Id !== 'computer')
-      this.wss.to(client2Id).emit('player2', 2);
-    this.wss.to(roomName).emit('gameStart');
-
     let player1 = new Player(client1Id, 10, HEIGHT / 2, 0, roomName);
     let player2 = new Player(client2Id, WIDTH - 30, HEIGHT / 2, 0, roomName);
     let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
     
+    this.wss.to(client1Id).emit('player1', 1);
     this.players.set(client1Id, player1);
-    this.players.set(client2Id, player2);
-
+    if (client2Id === 'computer') {
+      this.computers.set(client1Id, player2);
+    }
+    else {
+      this.wss.to(client2Id).emit('player2', 2);
+      this.players.set(client2Id, player2);
+    }
+    this.wss.to(roomName).emit('gameStart');
 
     setTimeout(() => {
       this.intervalIds.set(roomName, setInterval(() => {
@@ -149,7 +152,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private updateBallPos(ball: Ball, player1Id: string, player2Id: string) 
   {
     let player1 = this.players.get(player1Id);
-    let player2 = this.players.get(player2Id);
+    let player2;
+    if (player2Id === 'computer') player2 = this.computers.get(player1Id);
+    else player2 = this.players.get(player2Id);
     const roomName = player1.roomName;
   
     if (this.checkCollision(ball, player1)) {
