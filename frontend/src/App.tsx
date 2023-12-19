@@ -41,7 +41,8 @@ function App()  {
         const res = await axios.get('http://localhost:3001/verify');
         if (res.status === 200) {
           setHasToken(true);
-        }
+        } else
+            setIsLoading(false);
         // setHasToken(res.status === 200);
       } catch {
         console.log("error in fetching /verify");
@@ -86,14 +87,13 @@ function App()  {
       <Router>
         { !isLoading ?
         (
-            <Routes>
+        <Routes>
           <Route path='/' element={!hasToken ? <Login/> : <Home avatar={avatar}/>}/>
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
           <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path='/creat/profile' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar}/> : <Login/>}/>
           <Route path='/Login' element={<Login/>}/>
           <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home avatar={avatar}/>)}/>
         </Routes>

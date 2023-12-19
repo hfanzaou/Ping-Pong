@@ -1,5 +1,29 @@
 [
     {
+    "avatar": "https://cdn.intra.42.fr/users/a20a415122c250b00685308ae3909e21/hfanzaou.jpg",
+    "name": "Hfanzaou",
+    "wine": true,
+    "rate": "45-30"
+    },
+    {
+    "avatar": "https://cdn.intra.42.fr/users/4a7006c8b7336b000e1cfaab5db88538/ebensalt.jpg",
+    "name": "EbenSalt",
+    "wine": true,
+    "rate": "46-10"
+    },
+    {
+    "avatar": "https://cdn.intra.42.fr/users/e309a3cba8f23ed14b44f453ff827085/ajana.jpg",
+    "name": "Ajana",
+    "wine": true,
+    "rate": "46-40"
+    },
+    {
+    "avatar": "https://cdn.intra.42.fr/users/0aab98ac802b6cd5ef94b9c3ea1b0699/rarahhal.jpg",
+    "name": "Rarahhal",
+    "wine": false,
+    "rate": "40-30"
+    },
+    {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
       "name": "Robert Wolfkisser",
       "wine": false,
@@ -29,4 +53,4 @@
       "wine": false,
       "rate": "30-40"
     }
-]  
+]
