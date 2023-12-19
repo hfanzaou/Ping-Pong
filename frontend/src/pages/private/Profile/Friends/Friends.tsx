@@ -40,7 +40,7 @@ function  Frindes() {
 
   const handleBlockFriend = async (name: string) => {
     console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/user/block/friend", {name: name})
+    await axios.post("http://localhost:3001/user/block", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })
@@ -51,7 +51,7 @@ function  Frindes() {
 
   const handleAccepteFriend = async (name: string) => {
     console.log("accepted friend name: ", name);
-    await axios.post("http://localhost:3001/accepte/friend", {name: name})
+    await axios.post("http://localhost:3001/user/accpet/friend", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })
