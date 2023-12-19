@@ -12,7 +12,7 @@ const RACKET_WIDTH = 15;
 const RACKET_HEIGHT = 100;
 const MAX_SPEED = 50;
 const INITIAL_SPEED = 8;
-const MAX_SCORE = 3;
+const MAX_SCORE = 10;
 const GAME_START_DELAY = 3100;
 const GAME_INTERVAL = 1000/60;
 const BALL_DIAMETER = 15;
@@ -76,7 +76,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.logger.log(`Clients ${client.id} and ${opponent.id} joined ${roomName}`);
       
       // Initialize the game for these two players
-      this.initGame(opponent, client, roomName);
+      this.initGame(opponent.id, client.id, roomName);
     } else {
       // If there are no players waiting, add the new player to the queue
       this.waitingPlayers.push(client);
@@ -86,15 +86,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('VsComputer')
   VsComputer(client: Socket) {
-    const roomName = client.id;
-    let player1Obj = new Player(client.id, 10, HEIGHT / 2, 0, roomName);
-    let player2Obj = new Player('computer', WIDTH - 30, HEIGHT / 2, 0, roomName);
-    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
-    this.players.set(client.id, player1Obj);
-    this.players.set('computer', player2Obj);
-    setTimeout(() => {
-      this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
-    }, GAME_START_DELAY);
+    this.initGame(client.id, 'computer', client.id);
   }
 
   @SubscribeMessage('updateRacket')
@@ -115,32 +107,37 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
   }
 
-  private initGame(player1: Socket, player2: Socket, roomName: string)
+  private initGame(client1Id: string, client2Id: string, roomName: string)
   {
-    this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== player1.id && player.id !== player2.id);
-    this.wss.to(player1.id).emit('player1', 1);
-    this.wss.to(player2.id).emit('player2', 2);
+    this.waitingPlayers = this.waitingPlayers.filter(player => {
+      player.id !== client1Id && player.id !== client2Id
+    });
+  
+    this.wss.to(client1Id).emit('player1', 1);
+    if (client2Id !== 'computer')
+      this.wss.to(client2Id).emit('player2', 2);
     this.wss.to(roomName).emit('gameStart');
-    let player1Obj = new Player(player1.id, 10, HEIGHT / 2, 0, roomName);
-    let player2Obj = new Player(player2.id, WIDTH - 30, HEIGHT / 2, 0, roomName);
+
+    let player1 = new Player(client1Id, 10, HEIGHT / 2, 0, roomName);
+    let player2 = new Player(client2Id, WIDTH - 30, HEIGHT / 2, 0, roomName);
     let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED, BALL_DIAMETER);
-    this.players.set(player1.id, player1Obj);
-    this.players.set(player2.id, player2Obj);
+    
+    this.players.set(client1Id, player1);
+    this.players.set(client2Id, player2);
+
+
     setTimeout(() => {
-      this.intervalIds.set(roomName, setInterval(() => this.gameStart(ball, player1Obj, player2Obj, roomName), GAME_INTERVAL));
+      this.intervalIds.set(roomName, setInterval(() => {
+        this.gameStart(ball, client1Id, client2Id, roomName)
+      }, GAME_INTERVAL));
     } , GAME_START_DELAY);
   }
 
   private goalScored = false;
 
-  private gameStart(ball: Ball, player1: Player, player2: Player, roomName: string)
+  private gameStart(ball: Ball, player1Id: string, player2Id: string, roomName: string)
   {
-    const playersInGame = [this.players.get(player1.id), this.players.get(player2.id)];
-    if (playersInGame.length < 2) {
-      // Both players aren't in the game yet, don't start the game
-      return;
-    }
-    ball = this.updateBallPos(ball, playersInGame[0], playersInGame[1], roomName);
+    ball = this.updateBallPos(ball, player1Id, player2Id );
     if (this.goalScored) {
       return;
     }
@@ -149,8 +146,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.wss.to(roomName).emit('updateBall', { x: ball.x , y: ball.y });
   }
 
-  private updateBallPos(ball: Ball, player1: Player, player2: Player, roomName?: string) 
+  private updateBallPos(ball: Ball, player1Id: string, player2Id: string) 
   {
+    let player1 = this.players.get(player1Id);
+    let player2 = this.players.get(player2Id);
+    const roomName = player1.roomName;
+  
     if (this.checkCollision(ball, player1)) {
       ball.xdir = 1;
       ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
