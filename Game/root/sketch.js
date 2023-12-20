@@ -7,9 +7,23 @@ class Player {
 }
 
 class Ball {
-  constructor(x, y) {
+  x;
+  y;
+  xdir;
+  ydir;
+  speed;
+
+  constructor(x, y, xdir, ydir, speed) {
     this.x = x;
     this.y = y;
+    this.xdir = xdir;
+    this.ydir = ydir;
+    this.speed = speed;
+  }
+
+  updatePosition() {
+    this.x += (this.xdir * this.speed);
+    this.y += (this.ydir * this.speed);
   }
 }
 
@@ -18,11 +32,16 @@ const HEIGHT = 450;
 const RACKET_HEIGHT = 100;
 const RACKET_WIDTH = 15;
 const RACKET_DY = 10;
+const INITIAL_SPEED = 8;
+const MAX_SPEED = 50;
 const BALL_DIAMETER = 15;
+const BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER;
+const MAX_SCORE = 10;
+// const FRAME_RATE = 50;
 
 let player1 = new Player(10, HEIGHT / 2, 0);
 let player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
-let ball = new Ball(WIDTH / 2, HEIGHT / 2);
+let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, INITIAL_SPEED);
 
 let socket;
 let play = 0, side = 0;
@@ -31,6 +50,8 @@ let difficulty = 1; // 1: Easy, 2: Medium, 3: Hard
 let waitingForPlayer = false;
 let timer = 3;
 let disconnectMessage = null, gameOverMessage = null, winnerMessage = null, playAgain = false, countdownInterval = null, countdown = 0;
+let playAgainButt = null;
+let goalScored = false;
 
 function setup() {
   
@@ -38,12 +59,12 @@ function setup() {
   eventListeners();
   createCanvas(WIDTH, HEIGHT);
   noStroke();
-  frameRate(60);
+  // frameRate(FRAME_RATE);
   selectMode();
 }
 
 function draw() {
-
+  
   background(0);
   fill('white');
   if (countdown > 0) {
@@ -72,18 +93,23 @@ function draw() {
   }
   
   if (playAgain) {
-    let playAgainButt = createButton('Play Again?');
-    playAgainButt.position(WIDTH / 2 - 40, HEIGHT / 2 + 60);
-    playAgainButt.mousePressed(() => {
-      removeElements();
-      selectMode();
-      player1.score = 0;
-      player2.score = 0;
-      disconnectMessage = null;
-      gameOverMessage = null;
-      winnerMessage = null;
-      playAgain = false;
-    });
+    if (!playAgainButt) {
+      playAgainButt = createButton('Play Again?');
+      playAgainButt.position(WIDTH / 2 - 40, HEIGHT / 2 + 60);
+      playAgainButt.mousePressed(() => {
+        removeElements();
+        selectMode();
+        player1.score = 0;
+        player2.score = 0;
+        disconnectMessage = null;
+        gameOverMessage = null;
+        winnerMessage = null;
+        playAgain = false;
+      });
+    }
+    playAgainButt.show();
+  } else if (playAgainButt) {
+    playAgainButt.hide();
   }
 
   if (!play)
@@ -91,13 +117,14 @@ function draw() {
 
   textSize(32);
   textStyle(BOLD);
-  // textFont('Arial Black');
   text(player1.score.toString(), 40, 60);
   text(player2.score.toString(), WIDTH - 60, 60);
 
   checkKeys();
   
-  if (mode == 3) computerPlayer();
+  if (mode == 3) {
+    computerPlayer();
+  }
   
   circle(ball.x, ball.y, BALL_DIAMETER);
   rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
@@ -124,13 +151,13 @@ function checkKeys() {
   // }
     
   if ((keyIsDown(87) || keyIsDown(UP_ARROW)) && player1.racket.y - RACKET_DY > 0) {
-    socket.emit("updateRacket", player1.racket.y - RACKET_DY);
     player1.racket.y -= RACKET_DY;
+    socket.emit("updateRacket", player1.racket.y - RACKET_DY);
   }
   
   if ((keyIsDown(83) || keyIsDown(DOWN_ARROW)) && player1.racket.y + RACKET_DY < HEIGHT - RACKET_HEIGHT) {
-    socket.emit("updateRacket", player1.racket.y + RACKET_DY);
     player1.racket.y += RACKET_DY;
+    socket.emit("updateRacket", player1.racket.y + RACKET_DY);
   }
 
 }
@@ -151,8 +178,10 @@ function computerPlayer() {
   let speed = difficulty * 2; // Adjust this multiplier as needed
 
   if (ball.x > WIDTH / 4) {
-    if (ball.y >= player2.racket.y && ball.y <= player2.racket.y + RACKET_HEIGHT)
+    if (ball.y >= player2.racket.y && ball.y <= player2.racket.y + RACKET_HEIGHT) {
+      gameLoop(ball, player1, player2);
       return;
+    }
 
     let diff = player2.racket.y - ball.y;
     if (diff < 0 && player2.racket.y + speed < HEIGHT)
@@ -160,15 +189,16 @@ function computerPlayer() {
     else if (diff > 0 && player2.racket.y - speed > 0)
       player2.racket.y -= speed;
 
-    socket.emit("updateRacketVsComputer", player2.racket.y);
+    // socket.emit("updateRacketVsComputer", player2.racket.y);
   }
+  gameLoop(ball, player1, player2);
 }
 
 function selectMode() {
 
   player1 = new Player(10, HEIGHT / 2, 0);
   player2 = new Player(WIDTH - 30, HEIGHT / 2, 0);
-  ball = new Ball(WIDTH / 2, HEIGHT / 2);
+  ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, INITIAL_SPEED);
   let playButton = createButton('Vs other player');
   playButton.position(WIDTH / 2 - 20, HEIGHT / 2 - 60);
   playButton.mousePressed(() => {
@@ -187,6 +217,7 @@ function selectMode() {
   let vsComputerButt = createButton('Vs Computer');
   vsComputerButt.position(WIDTH/2 - 20, HEIGHT/2 + 60);
   vsComputerButt.mousePressed(() => {
+    mode = 3;
     let easyButton = createButton('Easy');
     easyButton.position(WIDTH / 2 - 60, HEIGHT / 2 + 100); // Adjust these values as needed
     easyButton.mousePressed(() => {
@@ -215,7 +246,6 @@ function selectMode() {
       socket.emit('VsComputer', ball);
       startCountdown();
     });
-    mode = 3;
     // removeElements();
   });
 
@@ -228,7 +258,7 @@ function selectMode() {
 }
 
 function eventListeners() {
-  socket.on('gameStart', (_side) => {
+  socket.on('gameStart', () => {
     removeElements();
     loop();
     waitingForPlayer = false;
@@ -288,4 +318,73 @@ function startCountdown() {
     }
     redraw();
   }, 1000);
+}
+
+function  gameLoop()
+{
+  // console.log('in Game loop');
+  if (!goalScored) {
+    updateBallPos();
+    ball.updatePosition();
+    // console.log('in Game loop ball: ', ball);
+  }
+}
+
+function  updateBallPos()
+{
+  if (checkCollision(player1)) {
+    ball.xdir = 1;
+    ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
+    if (ball.speed < MAX_SPEED)
+      ball.speed += 0.5;
+  }
+  else if (checkCollision(player2)) {
+    ball.xdir = -1;
+    ball.ydir = (ball.y - (player2.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
+    if (ball.speed < MAX_SPEED)
+      ball.speed += 0.5;
+  }
+  else if (ball.x > WIDTH || ball.x < (BALL_DIAMETER >> 1)) {
+    if (ball.x > WIDTH)
+      player1.score += 1;
+    else
+      player2.score += 1;
+    ball.x = WIDTH / 2;
+    ball.y = HEIGHT / 2;
+    ball.xdir *= -1;
+    ball.ydir = 1;
+    ball.speed = INITIAL_SPEED;
+    if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
+      socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
+    } else {
+      goalScored = true;
+      setTimeout(() => {
+        goalScored = false;
+      }, 500);
+    }
+  }
+  else if (ball.y > HEIGHT - (BALL_DIAMETER >> 1) || ball.y < (BALL_DIAMETER >> 1)) {
+    ball.ydir *= -1;
+  }
+}
+
+
+function checkCollision(player) {
+  // Find the closest x point from the center of the ball to the racket
+  let closestX = clamp(ball.x, player.racket.x, player.racket.x + RACKET_WIDTH);
+
+  // Find the closest y point from the center of the ball to the racket
+  let closestY = clamp(ball.y, player.racket.y, player.racket.y + RACKET_HEIGHT);
+
+  // Calculate the distance between the ball's center and this closest point
+  let distanceX = ball.x - closestX;
+  let distanceY = ball.y - closestY;
+
+  // If the distance is less than the ball's radius, a collision occurred
+  let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+  return distanceSquared < BALL_DIAMETER_SQUARED;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }
