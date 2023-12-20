@@ -10,6 +10,7 @@ export class UserController {
     constructor(private userService: UserService )
     {
     }
+    ///USER_INFO////
     @Get('avatar')
     async getImage(@Req() req) {
         ////console.log(req.user.id)
@@ -27,16 +28,8 @@ export class UserController {
         const userId: number = +id;
         return (this.userService.getProfileById(userId));
     }
-    @Get('profile')
-    async getProfile(@Req()  req) {
-        //console.log(req.user.id)
-        return (await this.userService.getProfile(req.user.id));
-    }
-    @Get('2fa')
-    async getTwoFaState(@Req() req) {
-        //console.log('in 2fa state');
-        return (await this.userService.getTwoFaState(req.user.id));
-    }
+
+    ///lists (friend, users ...) /////
     @Get('list')
     async getUsersList(@Req() req) {
         return (await this.userService.getUsersList(req.user.id));
@@ -49,6 +42,11 @@ export class UserController {
     async getFriendReq(@Req() req) {
         return (await this.userService.getFriendReq(req.user.id));
     }
+    @Get('blocked')
+    async getBlocks(@Req() req) {
+        return (await this.userService.getBlocks(req.user.id));
+    }
+    ///ADD, ACCEPT AND BLOCK////
     @Post('add/friend')
     @HttpCode(201)
     async addFriend(@Req() req, @Body() body) {
@@ -59,14 +57,27 @@ export class UserController {
     async acceptFriend(@Req() req, @Body() body) {
         return (await this.userService.acceptFriend(req.user.id, body.name));
     }
+    @Post('block')
+    @HttpCode(201)
+    async blockUser(@Req() req, @Body() body) {
+        return (await this.userService.blockUser(req.user.id, body.name));
+    }
+    @Post('inblock')
+    @HttpCode(201)
+    async inblockUser(@Req() req, @Body() body)
+    {
+        return (await this.userService.inblockUser(req.user.id, body.name));
+    }
+    //////ADD_ACHIEVEMENTS///////
     @Post('achievements')
     @HttpCode(201)
     async addAchievement(@Req() req, @Body() body) {
         return (await this.userService.addAchievement(req.user.id, body.achievement))
     }
-    @Post('block')
-    @HttpCode(201)
-    async blockUser(@Req() req, @Body() body) {
-        return (await this.userService.blockUser(req.user.id, body.name));
+    ///2FA_STATE///
+    @Get('2fa')
+    async getTwoFaState(@Req() req) {
+        //console.log('in 2fa state');
+        return (await this.userService.getTwoFaState(req.user.id));
     }
 }

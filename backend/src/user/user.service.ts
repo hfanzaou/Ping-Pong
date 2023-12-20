@@ -179,6 +179,25 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async getBlocks(id: number)
+    {
+        try {
+            const users = await this.prismaservice.user.findUnique({
+                where: {id: id},
+                select: {blocked: 
+                    {select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                    state: true
+                }},
+            }})
+            console.log(users);
+            return await this.extarctuserinfo(users.blocked, id);
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
     async addFriend(id: number, name:string) {
         console.log("id = " + id, "name = " + name);
         try {
@@ -245,8 +264,24 @@ export class UserService {
                         connect: {username: name}
                     }, friends: {
                         disconnect: {username: name}
+                    }, friendOf: {
+                        disconnect: {username: name}
                     }
                 }
+            })
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+    async inblockUser(id: number, name: string) {
+        try {
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {
+                    blocked: {
+                        disconnect: {username: name},
+                    },
+                },
             })
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
