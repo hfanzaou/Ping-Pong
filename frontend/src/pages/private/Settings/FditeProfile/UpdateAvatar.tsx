@@ -91,7 +91,7 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
             </svg>
           </div>
         </div>
-        <UploadImage/>
+        {/* <UploadImage/> */}
         {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />}
         {!save && <Button onClick={handleRest} >Cancel</Button>}
         {!save && <Button onClick={handleSaveAvatar}>Set new Avatar</Button>}
