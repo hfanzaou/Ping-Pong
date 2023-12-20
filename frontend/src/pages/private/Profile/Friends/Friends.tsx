@@ -24,7 +24,7 @@ function  Frindes() {
       })
     };
     const getRequests = async () => {
-        await axios.get("http://localhost:3001/friend/requests")
+        await axios.get("http://localhost:3001/user/friend/requests")
         .then((res) => {
             setRequestFriendList(res.data);
         }).catch(err => {
@@ -51,7 +51,7 @@ function  Frindes() {
 
   const handleAccepteFriend = async (name: string) => {
     console.log("accepted friend name: ", name);
-    await axios.post("http://localhost:3001/user/accpet/friend", {name: name})
+    await axios.post("http://localhost:3001/user/accept/friend", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })
