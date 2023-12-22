@@ -3,18 +3,13 @@ import { Socket, Server } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { Ball } from "../classes/ball";
 import { Player } from "../classes/player";
-import { gameLoop, updateBallPos } from './gameLogic';
+import { gameLoop } from './gameLogic';
 
 const HEIGHT = 450;
 const WIDTH = 700;
-const RACKET_WIDTH = 15;
-const RACKET_HEIGHT = 100;
-const MAX_SPEED = 50;
-const INITIAL_SPEED = 8;
-const MAX_SCORE = 10;
+const INITIAL_SPEED = 6;
 const GAME_START_DELAY = 3000;
 const GAME_INTERVAL = 1000/60;
-const BALL_DIAMETER = 15;
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -31,12 +26,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log("Initialized!");
     setInterval(() => {
       this.games.forEach((game) => {
-        if (gameLoop(this.wss, game.ball, game.player1, game.player2)) {
-          this.wss.to(game.player1.roomName).emit('gameOver');
-          this.games.delete(game.player1.roomName);
-          this.players.delete(game.player1.id);
-          this.players.delete(game.player2.id);
-        }
+        gameLoop(this.wss, game.ball, game.player1, game.player2);
       });
     }, GAME_INTERVAL);
   }
@@ -87,13 +77,33 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('VsComputer')
   VsComputer(client: Socket) {
     this.logger.log(`Client ${client.id} wants to play against computer`);
+    let player1 = new Player(client.id, 10, HEIGHT / 2, 0, client.id);
+    let player2 = new Player('computer', WIDTH - 30, HEIGHT / 2, 0, client.id);
+    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, INITIAL_SPEED);
+    this.wss.to(client.id).emit('initGame', {side: 1, player1: player1, player2: player2, ball: ball});
+  }
+
+  @SubscribeMessage('VsComputerGameOver')
+  gameOverVsComputer(client: Socket) {
+    this.logger.log(`Client ${client.id} Vs Computer game ended`);
+    // this.wss.to(client.id).emit('gameOver');
   }
 
   @SubscribeMessage('gameOver')
   gameOver(client: Socket) {
-    this.logger.log(`Client ${client.id} Vs Computer game over`);
-    this.wss.to(client.id).emit('gameOver');
+    const player = this.players.get(client.id);
+    if (player) {
+      const game = this.games.get(player.roomName);
+      this.logger.log(`Game ${game.player1.id} Vs ${game.player2.id} ended!`);
+      if (game) {
+        this.games.delete(player.roomName);
+        this.players.delete(game.player1.id);
+        this.players.delete(game.player2.id);
+        this.wss.to(player.roomName).socketsLeave(player.roomName);
+      }
+    }
   }
+
 
   @SubscribeMessage('updateRacket')
   updateRacketPos(client: Socket, racketY: number) {
@@ -112,10 +122,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   
     let player1 = new Player(client1Id, 10, HEIGHT / 2, 0, roomName);
     let player2 = new Player(client2Id, WIDTH - 30, HEIGHT / 2, 0, roomName);
-    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 1, INITIAL_SPEED);
+    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, INITIAL_SPEED);
     
-    this.wss.to(client1Id).emit('player1', 1);
-    this.wss.to(client2Id).emit('player2', 2);
+    this.wss.to(client1Id).emit('initGame', {side: 1, player1: player1, player2: player2, ball: ball});
+    this.wss.to(client2Id).emit('initGame', {side: 2, player1: player1, player2: player2, ball: ball});
     this.players.set(client1Id, player1);
     this.players.set(client2Id, player2);
     
