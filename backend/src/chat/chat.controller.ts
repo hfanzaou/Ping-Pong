@@ -1,12 +1,13 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ChatService } from "./chat.service";
+import { USERSOCKET } from "./myTypes";
 
 @Controller()
 export class ChatController {
 	constructor(private chatService: ChatService) {}
-	@Post("chat")
-	getData(@Body() body: any) {
-		console.log(body);
-		return this.chatService.getData();
+	@Post("user")
+	async handleUser(@Body() userSocket: USERSOCKET) {
+		const	user = await this.chatService.getUserData(userSocket);
+		return user;
 	}
 }

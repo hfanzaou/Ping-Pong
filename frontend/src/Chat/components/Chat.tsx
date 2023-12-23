@@ -1,12 +1,9 @@
 import { ActionIcon } from "@mantine/core";
 import { IconPingPong, IconSend2 } from "@tabler/icons-react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { DATA } from "../myTypes";
 
-const	socket = io("http://localhost:3001");
-
-export default function Chat()
-{
+const Chat: React.FC<DATA> = ({ socket }) => {
 	const	[message, setMessage] = useState("");
 	const	[conversation, setConversation] = useState<string[]>([]);
 	const	Reference = useRef<HTMLInputElement | null>(null);
@@ -16,15 +13,15 @@ export default function Chat()
 			setConversation(prev => [m, ...prev]);
 		}
 		useEffect(() => {
-		socket.on("client", callBack);
+		socket?.on("client", callBack);
 		return (() => {
-			socket.off("client", callBack);
+			socket?.off("client", callBack);
 		})
-	}, [])
+	}, [socket])
 	function submit(event: FormEvent<HTMLFormElement>)
 	{
 		event.preventDefault();
-		socket.emit("server", message);
+		socket?.emit("server", message);
 		setMessage("");
 		if (Reference.current)
 			Reference.current.focus();
@@ -58,3 +55,4 @@ export default function Chat()
 		</form>
 	);
 }
+export default Chat;
