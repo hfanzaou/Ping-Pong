@@ -1,49 +1,51 @@
 import React, { useEffect, useState } from "react";
-import EditAvatar from "react-avatar-edit";
+import EditAvatar from "react-avatar-editor";
 import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
+import Uploadd from "./Upload";
 
 
 
 
-function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
-  // const src: any = null;
-  // const [preview, setPreview] = useState(null);
+// function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
+//   // const src: any = null;
+//   // const [preview, setPreview] = useState(null);
 
-  const handleClose = () => {
-      // setPreview(null);
-      setUserImage(image);
-      setSave(true);
-  };
+//   const handleClose = () => {
+//       // setPreview(null);
+//       setUserImage(image);
+//       setSave(true);
+//   };
 
-  const handleCrop = (view: string) => {
-      // setPreview(view);
-      setUserImage(view);
-      setSave(false);
-  };
+//   const handleCrop = (view: string) => {
+//       // setPreview(view);
+//       setUserImage(view);
+//       setSave(false);
+//   };
 
-  const initImage = image;
+//   const initImage = image;
 
-  return (
-    <div className="grid  place-items-center">
-      <EditAvatar
-        width={200}
-        height={100}
-        onCrop={handleCrop}
-        onClose={handleClose}
-        borderStyle={{
-            borderRadius: '10%', 
-            border: '2px solid #ccc', 
-            boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', 
-            background: '#fff', 
-            // overflow: 'hidden',
-        }}
-        // src={src}
-      />
-      {/* {preview && <img src={preview} />} */}
-    </div>
-  );
-}
+//   return (
+//     <div className="grid  place-items-center">
+//       <EditAvatar
+//         width={200}
+//         height={100}
+//         onCrop={handleCrop}
+//         onClose={handleClose}
+//         borderStyle={{
+//             borderRadius: '10%', 
+//             border: '2px solid #ccc', 
+//             boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', 
+//             background: '#fff', 
+//             // overflow: 'hidden',
+//         }}
+//         // src={src}
+//       />
+//       {/* {preview && <img src={preview} />} */}
+//     </div>
+//   );
+// }
+
 
 function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string}) {
   const [setAvatar, setSetAvatar] = useState<boolean>(false);
@@ -91,8 +93,9 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
             </svg>
           </div>
         </div>
-        {/* <UploadImage/> */}
-        {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />}
+        {/* <Uploadd /> */}
+        {setAvatar && <Uploadd setUserImage={setUserImage} image={avatar} setSave={setSave} />}
+        {/* {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />} */}
         {!save && <Button onClick={handleRest} >Cancel</Button>}
         {!save && <Button onClick={handleSaveAvatar}>Set new Avatar</Button>}
       </div>
@@ -100,6 +103,24 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
 }
 
 export default ChangeAvatar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

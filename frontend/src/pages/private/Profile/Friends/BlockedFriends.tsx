@@ -10,7 +10,7 @@ function BlockedFriends() {
 
     useEffect(() => {
         const getBlockedFriends = async () => {
-            await axios.get("http://localhost:3001/friend/blocked")
+            await axios.get("http://localhost:3001/user/blocked")
             .then((res) => {
              setBlockedFriendList(res.data);
             }).catch(err => {

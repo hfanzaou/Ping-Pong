@@ -4,6 +4,8 @@ import classes from './UserCard.module.css';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
 import sectionimage from '../../Home/assite/bg.gif'
+// import { Cookies } from 'react-cookie';
+import Cookies from 'js-cookie'
 
 
 const userInfo = {
@@ -30,7 +32,7 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard({avatar} : {avatar: string }) {
+function UserCard() {
 
     // const [image, setImage] = useState<string| undefined>();
     const [userName, setUserName] = useState<string| undefined>();
@@ -82,7 +84,7 @@ function UserCard({avatar} : {avatar: string }) {
             {/* <img className='h-full w-full' src={sectionimage}/> */}
         </Card.Section>
       <Avatar
-        src={avatar}
+        src={userInfo.avatar}
         size={200}
         radius={160}
         mx="auto"
@@ -90,7 +92,8 @@ function UserCard({avatar} : {avatar: string }) {
         className={classes.avatar}
         />
       <Text ta="center" fz="lg" fw={500} mt="sm">
-        {userName}
+        {/* {userInfo.userName} */}
+        {Cookies.get('userName')}
       </Text>
       <Text ta="center" fz="sm">
       {"level "  + userInfo.level}

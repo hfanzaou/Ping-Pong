@@ -14,6 +14,9 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom'
 import pongImage from './remote-control_1287390.png';
 
+import Cookies from 'js-cookie'
+
+
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
 const settings = ['Setting', 'Logout'];
 
@@ -39,7 +42,7 @@ function NavBar({avatar} : {avatar: string}) {
 
   const handleLogout = () => {
     // alert("test logout");
-
+    Cookies.remove('userName');
     // Just redirect to logout api to remove Cookies token
     window.location.href = "http://localhost:3001/logout";
     
@@ -53,7 +56,8 @@ function NavBar({avatar} : {avatar: string}) {
   };
 
   return (
-    <AppBar position="static" color="primary">
+    // color="primary"
+    <AppBar position='static'>
       <Container maxWidth="lg" >
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}

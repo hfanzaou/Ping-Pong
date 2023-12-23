@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html body {
+    /* background-color: rgb(190, 192, 192); */
+    background-color: rgb(71, 83, 141);
+}
 #root {
-   background-color: rgb(175, 241, 233); 
 }
