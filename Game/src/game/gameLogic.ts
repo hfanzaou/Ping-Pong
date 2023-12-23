@@ -39,14 +39,14 @@ export function updateBallPos(wss: Server, ball: Ball, player1: Player, player2:
     ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
     if (ball.speed < MAX_SPEED)
       ball.speed += INC_SPEED;
-    emitUpdate(wss, ball, roomName);
+    // emitUpdate(wss, ball, roomName);
   }
   else if (checkCollision(ball, player2)) {
     ball.xdir = -1;
     ball.ydir = (ball.y - (player2.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
     if (ball.speed < MAX_SPEED)
       ball.speed += INC_SPEED;
-    emitUpdate(wss, ball, roomName);
+    // emitUpdate(wss, ball, roomName);
   }
   else if (ball.x > WIDTH || ball.x < (BALL_DIAMETER >> 1)) {
     if (ball.x > WIDTH)
