@@ -65,4 +65,4 @@ function BlockedFriends() {
     )));
 }
 
-export default BlockedFriends 
+export default BlockedFriends

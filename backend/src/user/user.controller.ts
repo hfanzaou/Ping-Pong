@@ -18,16 +18,16 @@ export class UserController {
     }
     @Get('name')
     async getName(@Req() req) {
-        const user = await this.userService.getProfileById(req.user.id)
-        return ({name: user.username});
+        const name = await this.userService.getUsername(req.user.id)
+        return ({name: name});
     }
-    @Get('userid')
-    async getProfileById(@Req() req, @Query('id') id: string) {
-        //console.log('-------------------------------');
-        ////console.log(intId);
-        const userId: number = +id;
-        return (this.userService.getProfileById(userId));
-    }
+    // @Get('userid')
+    // async getProfileById(@Req() req, @Query('id') id: string) {
+    //     //console.log('-------------------------------');
+    //     ////console.log(intId);
+    //     const userId: number = +id;
+    //     return (this.userService.getProfileById(userId));
+    // }
 
     ///lists (friend, users ...) /////
     @Get('list')

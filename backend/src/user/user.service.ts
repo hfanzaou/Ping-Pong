@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UserService {
     constructor(private prismaservice: PrismaService) {}
 
+    ///USER INFO///
     async getUserAvatar(id: number) {
         try {
             const avatar = await this.prismaservice.user.findUnique({
@@ -33,48 +34,45 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-    async getProfile(id: number) {
-        try {
-            let user = await this.prismaservice.user.findUnique({
-                where: {
-                    id: id
-                }, select: {
-                    username: true,
-                    avatar: true,
-                    firstName: true,
-                    lastName: true,
-                }
-            })
-            if (!user)
-                throw new NotFoundException('USER NOT FOUND');
-            return user;
-        } catch(error) {
-            if (error instanceof NotFoundException)
-                throw HttpStatus.NOT_FOUND;
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-    }
-    async getProfileById(id: number) {
+    async getUsername(id: number) {
         try {
             const user = await this.prismaservice.user.findUnique({
                  where: {
                      id: id
                  }, select: {
                      username: true,
-                     avatar: true,
-                     firstName: true,
-                     lastName: true,
                  }
              })
             if (!user)
                  throw new NotFoundException('USER NOT FOUND');
-            return (user);
+            return (user.username);
         } catch(error) {
             if (error instanceof NotFoundException)
                 throw HttpStatus.NOT_FOUND;
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    // async getProfile(id: number) {
+    //     try {
+    //         let user = await this.prismaservice.user.findUnique({
+    //             where: {
+    //                 id: id
+    //             }, select: {
+    //                 username: true,
+    //                 avatar: true,
+    //                 firstName: true,
+    //                 lastName: true,
+    //             }
+    //         })
+    //         if (!user)
+    //             throw new NotFoundException('USER NOT FOUND');
+    //         return user;
+    //     } catch(error) {
+    //         if (error instanceof NotFoundException)
+    //             throw HttpStatus.NOT_FOUND;
+    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
+    //     }
+    // }
     async getTwoFaState(id: number)
     {
         try {
@@ -90,21 +88,7 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-    async extarctuserinfo(users: any, id: number)
-    {
-        //console.log(users);
-            //console.log(users[id - 1]);
-            const usersre: userDto[] = await Promise.all(users.filter((obj) => {
-                if (obj.id != id) {
-                    return true
-                }
-                return false;
-              }).map(async (obj) => {
-                const avatar = await this.getUserAvatar(obj.id);
-                return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
-              })); 
-         return (usersre);     
-    }
+    ///friends, request and block lists///////
     async getUsersList(id: number) {
         console.log(id);
         try {
@@ -198,8 +182,8 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    ///ADD, ACCEPT AND BLOCK////
     async addFriend(id: number, name:string) {
-        console.log("id = " + id, "name = " + name);
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
@@ -234,27 +218,6 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-
-    async addAchievement(id: number, achievement: boolean) {
-        try { 
-            await this.prismaservice.user.update({
-                where: {
-                    id: id
-                }, data: {
-                    achievement: { achievement },
-                }
-
-            })
-            const user = await this.prismaservice.user.findUnique({
-                where: {id: id},
-                select: {id: true, achievement: true}
-            })
-            console.log(user);
-        } catch(error) {
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-    }
-
     async blockUser(id: number, name: string) {
         try {
             await this.prismaservice.user.update({
@@ -279,12 +242,46 @@ export class UserService {
                 where: {id: id},
                 data: {
                     blocked: {
-                        disconnect: {username: name},
+                       disconnect: {username: name},
                     },
                 },
             })
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
+    }
+    ///Achievements////
+    async addAchievement(id: number, achievement: boolean) {
+        try { 
+            await this.prismaservice.user.update({
+                where: {
+                    id: id
+                }, data: {
+                    achievement: { achievement },
+                }
+
+            })
+            const user = await this.prismaservice.user.findUnique({
+                where: {id: id},
+                select: {id: true, achievement: true}
+            })
+            console.log(user);
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+    ////extartacting user info functions////
+    async extarctuserinfo(users: any, id: number)
+    {
+            const usersre: userDto[] = await Promise.all(users.filter((obj) => {
+                if (obj.id != id) {
+                    return true
+                }
+                return false;
+              }).map(async (obj) => {
+                const avatar = await this.getUserAvatar(obj.id);
+                return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
+              })); 
+         return (usersre);     
     }
 }
