@@ -8,6 +8,7 @@ function Users() {
   const [userList, setUsersList] = useState<UsersInterface[]>([]);
   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
+  const [addButton, setAddButton] = useState<boolean>(false);
   
   useEffect(() => {
     const getUsers = async () => {
@@ -49,6 +50,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log(name);
       await axios.post("http://localhost:3001/user/add/friend", {name: name})
       .then((res) => {
+        setAddButton(true);
         console.log(res.data);
       })
       .catch((err) => {
@@ -66,7 +68,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <Avatar size={40} src={item.avatar} radius={40}/>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              {item.level}
+              Level {item.level}
             </HoverCard.Dropdown>
           </HoverCard>
           <div>
@@ -78,10 +80,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             </Text>
           </div>
         </Group>
-      {/* </Table.Td>
-       <Table.Td > */}
 
-        <Button radius='lg' onClick={() => handleAddFriend(item.name)}>
+        <Button radius='lg' onClick={() => handleAddFriend(item.name)} disabled={addButton}>
           Add to friends
         </Button>
         </div>

@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button } from '@mantine/core';
+import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button, Container } from '@mantine/core';
 import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
 
 import testdata from './FriendsList.json';
 import axios from 'axios';
 import BlockedFriends from './BlockedFriends';
+import { Link } from 'react-router-dom';
+// import { Cookies } from 'react-cookie';
 
-function  Frindes() {
+import Cookies from 'js-cookie'
+
+
+function  Frindes({setUserName}: {setUserName: any}) {
   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
   const [requestFriendList, setRequestFriendList] = useState<FriendInterface[]>([]); // this is for the request list [not implemented yet]
   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
   const [value, setValue] = useState<string>('Friends list');
 
+  const handelsetname = (name: string) => {
+        Cookies.set('userName', name);
+        window.location.reload();
+  };
+  
   useEffect(() => {
-    const getFriends = async () => {
+      const getFriends = async () => {
       await axios.get("http://localhost:3001/user/friend/list")
       .then((res) => {
        setFriendList(res.data);
@@ -35,8 +45,6 @@ function  Frindes() {
     getFriends();
     getRequests();
 }, []);
-
-
 
   const handleBlockFriend = async (name: string) => {
     console.log("blocked friend name: ", name);
@@ -74,12 +82,20 @@ function  Frindes() {
              <Avatar size={40} src={item.avatar} radius={40} />
             </Menu.Target>
             <Menu.Dropdown>
+            <Menu.Item
+              onClick={() => handelsetname(item.name)}
+                leftSection={
+                  <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                }
+                >
+                <Link to={'/'+item.name+'/public/profile'}>Show Profile</Link>
+              </Menu.Item>
               <Menu.Item
                 leftSection={
                   <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                Send message
+                <Link to={'/Chat'}>Send message</Link>
               </Menu.Item>
               <Menu.Item
                 leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
@@ -131,10 +147,11 @@ function  Frindes() {
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = rows.length;
-  const blockedFriendsNumbre = 1;
+  const blockedFriendsNumbre = 0;
 
   return (
     // <div className='relative flex '>
+    // <Container  className='h-full w-full'>
     <div >
             <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
                 {/* {value === 'Friends list' && 
@@ -196,8 +213,8 @@ function  Frindes() {
         }
         </Table>
       </ScrollArea>
-      </div>
-    // </div>
+      {/* </Container> */}
+  </div>
   );
 }
 

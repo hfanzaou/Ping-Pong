@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import {Container, SimpleGrid} from '@mantine/core'
+import {Container, ScrollArea, SimpleGrid} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
-import Friends from './Friends/Friends'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
 
-export function ProfileSections({avatar, setUserName}: {avatar: string, setUserName: any}) {
+export function ProfileSections() {
     return (
       <div>
         <SimpleGrid
@@ -15,28 +14,21 @@ export function ProfileSections({avatar, setUserName}: {avatar: string, setUserN
               spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
               verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
-          <UserCard avatar={avatar} />
+          <UserCard />
           <Achievements />
-        </SimpleGrid>
-        <SimpleGrid 
-        cols={{ base: 1, sm: 1, lg: 2 }}
-        spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
-        verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
-        >
           <MatchHistory />
-          <Friends setUserName={setUserName} />
         </SimpleGrid>
       </div>
     );
 }
 
-function Profile({avatar, setUserName}: {avatar: string, setUserName: any}) {
+function Profile() {
     return (
         // <div  className='h-full ml-8 mr-8 pr-8 pl-8 '>
             <div>
-            <Header avatar={avatar}/>
+            {/* <Header avatar={avatar}/> */}
              <div className=' ml-4 mr-4 pr-4 pl-4 mb-8 pb-8'> 
-                <ProfileSections avatar={avatar} setUserName={setUserName} />
+                <ProfileSections/>
              </div> 
             <Footer/>
         </div>

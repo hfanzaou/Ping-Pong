@@ -34,7 +34,7 @@ function  Achievement() {
 
 
       <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
-          <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Your Achievement</h2>
+          <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Achievements</h2>
       </div>
       <SimpleGrid 
         cols={{ base: 3, sm: 3, lg: 4 }}

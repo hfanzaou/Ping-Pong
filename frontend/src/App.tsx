@@ -24,18 +24,21 @@ import axios from 'axios'
 import Auth from './pages/public/Auth'
 import CreatProfile from './pages/private/CreatProfile/CreatProfile'
 import { useDisclosure } from '@mantine/hooks'
+import UserProfile from './pages/private/UserProfile/UserProfile'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
-    const [hasToken, setHasToken] = useState<Boolean>(false);
-    const [has2fa, setHas2fa] = useState<boolean>(false);
+    const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
+    const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
+
+    const [userName, setUserName] = useState<string | null>(null);
 
 
 // comonentDidMount
 
   axios.defaults.withCredentials = true;  // to send token in every requiste
-  
+
     const getVerify = async () => {
       try {
         const res = await axios.get('http://localhost:3001/verify');
@@ -63,11 +66,15 @@ function App()  {
       }
     }
     getFirstVerify();
+ 
+    useEffect(() => {
+        setUserName(Cookies.get('userName'));
+    }, [userName]);
     
     useEffect(() =>  {
-      const getAvatar = async () => {
-        await axios.get("http://localhost:3001/user/avatar")
-        .then((res) => {
+        const getAvatar = async () => {
+            await axios.get("http://localhost:3001/user/avatar")
+            .then((res) => {
           setAvatar(res.data.avatar);
         }).catch(err => {
           console.error("Error in fetching avatar: ", err);
@@ -80,7 +87,7 @@ function App()  {
       }
       else
         setIsLoading(false);
-    }, []);
+}, []);
 
   return (
     <MantineProvider>
@@ -90,10 +97,11 @@ function App()  {
         <Routes>
           <Route path='/' element={!hasToken ? <Login/> : <Home avatar={avatar}/>}/>
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
-          <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} />  : <Login/>}/>
+          <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
           <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
+          <Route path={'/'+userName+'/public/profile'} element={hasToken ? <UserProfile setUserName={setUserName} userName={userName} avatar={avatar}/> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
           <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home avatar={avatar}/>)}/>
         </Routes>
