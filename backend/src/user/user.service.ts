@@ -251,21 +251,34 @@ export class UserService {
         }
     }
     ///Achievements////
-    async addAchievement(id: number, achievement: boolean) {
-        try { 
-            await this.prismaservice.user.update({
-                where: {
-                    id: id
-                }, data: {
-                    achievement: { achievement },
-                }
+    // async addAchievement(id: number, achievement: boolean) {
+    //     try { 
+    //         await this.prismaservice.achievement.update({
+    //             where: {
+    //                 userId: id
+    //             }, data: {
+    //                achievement: true,
+    //             }
 
+    //         })
+    //         const user = await this.prismaservice.user.findUnique({
+    //             where: {id: id},
+    //             select: {id: true, achievement: true}
+    //         })
+    //         console.log(user);
+    //     } catch(error) {
+    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
+    //     }
+    // }
+    async getAchievements(id: number)
+    {
+        try {
+            const ach = await this.prismaservice.achievement.findUnique({
+                where : {userId: id},
+                select: {ach1: true, ach2: true, ach3: true, ach4: true, ach5: true}
             })
-            const user = await this.prismaservice.user.findUnique({
-                where: {id: id},
-                select: {id: true, achievement: true}
-            })
-            console.log(user);
+            console.log(ach);
+            return ach;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -283,5 +296,11 @@ export class UserService {
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
               })); 
          return (usersre);     
+    }
+
+    /////match history/////
+    async getMatchHistory(id: number)
+    {
+
     }
 }

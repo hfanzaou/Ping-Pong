@@ -68,16 +68,24 @@ export class UserController {
     {
         return (await this.userService.inblockUser(req.user.id, body.name));
     }
-    //////ADD_ACHIEVEMENTS///////
-    @Post('achievements')
-    @HttpCode(201)
-    async addAchievement(@Req() req, @Body() body) {
-        return (await this.userService.addAchievement(req.user.id, body.achievement))
+    //////ADD_ACHIEVEMENTS, GET_ACHIEVEMENTS///////
+    // @Post('achievements')
+    // @HttpCode(201)
+    // async addAchievement(@Req() req, @Body() body) {
+    //     return (await this.userService.addAchievement(req.user.id, body.achievement));
+    // }
+    @Get('achievements')
+    async getAchievements(@Req() req) {
+        return (await this.userService.getAchievements(req.user.id));
     }
     ///2FA_STATE///
     @Get('2fa')
     async getTwoFaState(@Req() req) {
         //console.log('in 2fa state');
         return (await this.userService.getTwoFaState(req.user.id));
+    }
+    @Get('matchhistory')
+    async getMatchHistory(@Req() req) {
+        return (await this.userService.getMatchHistory(req.user.id));
     }
 }

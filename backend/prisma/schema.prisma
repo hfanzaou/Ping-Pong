@@ -15,19 +15,29 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  email       String  @unique
+  email       String       @unique
   hash        String?
-  username    String  @unique
+  username    String       @unique
   firstName   String?
   lastName    String?
-  upAvatar    Boolean @default(false)
+  upAvatar    Boolean      @default(false)
   avatar      String?
-  state       String  @default("Offline")
+  state       String       @default("Offline")
   twoFaAuth   Boolean
   twoFaSecret Json?
-  friends     User[]  @relation("Friends")
-  friendOf    User[]  @relation("Friends")
-  blocked     User[]  @relation("Blocked")
-  blockedFrom User[]  @relation("Blocked")
-  achievement Json?
+  friends     User[]       @relation("Friends")
+  friendOf    User[]       @relation("Friends")
+  blocked     User[]       @relation("Blocked")
+  blockedFrom User[]       @relation("Blocked")
+  achievement Achievement?
+}
+
+model Achievement {
+  userId Int     @unique
+  user   User    @relation(fields: [userId], references: [id])
+  ach1   Boolean @default(false)
+  ach2   Boolean @default(false)
+  ach3   Boolean @default(false)
+  ach4   Boolean @default(false)
+  ach5   Boolean @default(false)
 }
