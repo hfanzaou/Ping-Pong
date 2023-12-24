@@ -7,9 +7,9 @@ import { gameLoop } from './gameLogic';
 
 const HEIGHT = 450;
 const WIDTH = 700;
-const INITIAL_SPEED = 6;
+const INITIAL_SPEED = 8;
 const GAME_START_DELAY = 3000;
-const GAME_INTERVAL = 1000/60;
+const GAME_INTERVAL = 1000/40;
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {

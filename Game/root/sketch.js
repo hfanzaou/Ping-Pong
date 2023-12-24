@@ -26,6 +26,7 @@ function draw() {
       computerPlayer();
       gameLoop();
     }
+
     circle(ball.x, ball.y, BALL_DIAMETER);
     rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
     rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
@@ -40,7 +41,7 @@ function draw() {
 
 function checkKeys() {
     
-  if ((keyIsDown(87) || keyIsDown(UP_ARROW))) {
+  if (keyIsDown(87) || keyIsDown(UP_ARROW)) {
     if (side == 1 && player1.racket.y - RACKET_DY > 0) {
       socket.emit("updateRacket", player1.racket.y - RACKET_DY);
       player1.racket.y -= RACKET_DY;
@@ -51,7 +52,7 @@ function checkKeys() {
     }
   }
   
-  else if ((keyIsDown(83) || keyIsDown(DOWN_ARROW))) {
+  else if (keyIsDown(83) || keyIsDown(DOWN_ARROW)) {
     if (side == 1 && player1.racket.y + RACKET_DY < HEIGHT - RACKET_HEIGHT) {
       socket.emit("updateRacket", player1.racket.y + RACKET_DY);
       player1.racket.y += RACKET_DY;
@@ -66,10 +67,8 @@ function checkKeys() {
 
 function  mouseDragged()
 {
-  if (mouseY < HEIGHT - RACKET_HEIGHT &&
-      mouseX < WIDTH &&
-      mouseX >= 0 &&
-      mouseY >= 0)
+  if (mouseY < HEIGHT - RACKET_HEIGHT && mouseY >= 0 &&
+      mouseX < WIDTH && mouseX >= 0)
       {
         socket.emit("updateRacket", mouseY);
         if (side == 1) player1.racket.y = mouseY;
@@ -128,18 +127,16 @@ function eventListeners() {
   socket.on('updateBall', (ballPos) => {
     ball.x = ballPos.x;
     ball.y = ballPos.y;
-    ball.xdir = ballPos.xdir;
-    ball.ydir = ballPos.ydir;
-    ball.speed = ballPos.speed;
-    update = true;
-    goalScored = false;
     redraw();
   });
 
   socket.on('updateScore', (payload) => {
-    if (player1.score !== payload.player1Score) player1.score = payload.player1Score;
-    if (player2.score !== payload.player2Score) player2.score = payload.player2Score;
+    player1.score = payload.player1Score;
+    player2.score = payload.player2Score;
+    ball = payload.ball;
     goalScored = true;
+    console.log("Goal Scored");
+    console.log(ball);
     redraw();
   });
 

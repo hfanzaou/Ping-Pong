@@ -3,9 +3,9 @@ const HEIGHT = 450;
 const RACKET_HEIGHT = 100;
 const RACKET_WIDTH = 15;
 const RACKET_DY = 10;
-const INITIAL_SPEED = 6;
+const INITIAL_SPEED = 8;
 const MAX_SPEED = 50;
-const INC_SPEED = 0.5;
+const INC_SPEED = 0.75;
 const BALL_DIAMETER = 15;
 const BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER;
 const MAX_SCORE = 10;
@@ -24,11 +24,10 @@ let update = false;
 
 function  gameLoop()
 {
-  if (!goalScored && !update) {
+  if (!goalScored) {
     updateBallPos();
     updatePosition();
   }
-  update = false;
 }
 
 function  updatePosition() {
@@ -38,6 +37,11 @@ function  updatePosition() {
 
 function  updateBallPos()
 {
+  let nextY = ball.y + (ball.ydir * ball.speed);
+  if (nextY + (BALL_DIAMETER >> 1) >= HEIGHT || nextY - (BALL_DIAMETER >> 1) <= 0) {
+    ball.ydir *= -1;
+  }
+
   if (checkCollision(player1)) {
     ball.xdir = 1;
     ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
@@ -50,16 +54,22 @@ function  updateBallPos()
     if (ball.speed < MAX_SPEED)
       ball.speed += INC_SPEED;
   }
-  else if (ball.x > WIDTH || ball.x < (BALL_DIAMETER >> 1)) {
-    if (ball.x > WIDTH)
-      player1.score += 1;
-    else
-      player2.score += 1;
-    ball.x = WIDTH / 2;
-    ball.y = HEIGHT / 2;
-    ball.xdir *= -1;
-    ball.ydir = 0;
-    ball.speed = INITIAL_SPEED;
+  else if (ball.x > WIDTH) {
+    player1.score += 1;
+    ft_goalScored();
+  }
+  else if (ball.x < (BALL_DIAMETER >> 1)) {
+    player2.score += 1;
+    ft_goalScored();
+  }
+}
+
+function ft_goalScored() {
+    ball = { x: WIDTH / 2,
+             y: HEIGHT / 2,
+             xdir: ball.xdir * -1,
+             ydir: 0,
+             speed: INITIAL_SPEED };
     if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
         socket.emit('VsComputerGameOver', { player1Score: player1.score, player2Score: player2.score });
         gameOver();
@@ -70,12 +80,7 @@ function  updateBallPos()
         goalScored = false;
       }, 500);
     }
-  }
-  else if (ball.y + (BALL_DIAMETER >> 1) >= HEIGHT || ball.y - (BALL_DIAMETER >> 1) <= 0) {
-    ball.ydir *= -1;
-  }
 }
-
 
 function checkCollision(player) {
   // Find the closest x point from the center of the ball to the racket
