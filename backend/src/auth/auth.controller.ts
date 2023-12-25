@@ -17,13 +17,13 @@ export class AuthController {
 	constructor(authService: AuthService) {
 		this.authService = authService;
 	}
-
+	/////to verify user token////
 	@Get('verify')
   	@UseGuards(JwtTwoFaGuard)
   	verify() {
     	return (true);
   	}
-
+	///to verify user in login if 2fa is enabled////
 	@Get('verifyTfa')
 	@UseGuards(JwtGuard)
 	async verifyTwoFa(@Req() req) {
@@ -32,13 +32,7 @@ export class AuthController {
             return (true);
         return false;
     }
-	// @Post('signup')
-	// signup(@Body() dto: AuthDto) {
-	// 	({
-	// 		dto,
-	// 	});
-	// }
-	
+	////// login logout and callback////
 	@Get('login')
 	@UseGuards(FTAuthGuard)
 	signin(@Body() user: any) {
@@ -50,7 +44,7 @@ export class AuthController {
 	async callback(@Req() req, @Res({passthrough: true}) res: Response) {
 		const user = await this.authService.validateUser(req.user);
 		//console.log(user.twoFaAuth);
-		if (user && user.twoFaAuth)
+		if (user && user.twoFaAuth) ///2fa enabled need an access token that only enables to verify code
 		{
 			const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
 			res.cookie('jwt', token, {
@@ -65,7 +59,7 @@ export class AuthController {
 			path:'/',
 			httpOnly: true,
 		});
-		if (!user)
+		if (!user) ///if user first time login
 		{
 			res.redirect('http://localhost:3000/Setting');
 			return;
@@ -80,7 +74,7 @@ export class AuthController {
 		await res.clearCookie('jwt');
 		res.redirect('http://localhost:3000')
 	}
-	
+	///turn on 2fa and genrate qr code/////
 	@Post('2fa/turnon')
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
@@ -89,6 +83,7 @@ export class AuthController {
 		const qrfile = await toBuffer(otpAuthUrl.oturl);
 		return ("data:image/png;base64," + qrfile.toString('base64'));
 	}
+	/////turn off 2fa/////
 	@Post('2fa/turnoff')
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
@@ -105,7 +100,6 @@ export class AuthController {
 			if (typeof error === "boolean") {
 				throw new UnauthorizedException('Wrong Verification Code');
 			}
-			//(body.AuthCode);
 		}
 		if (user.twoFaAuth)
 			await this.authService.disableTwoFa(user);
@@ -117,6 +111,7 @@ export class AuthController {
 		});
 		res.send('done');
 	}
+	////2fa auth code verification////
 	@Post('2fa/auth')
 	@HttpCode(201)
 	@UseGuards(JwtGuard)
@@ -137,7 +132,6 @@ export class AuthController {
 		}
 		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: true };
 		const newToken = await this.authService.signToken(payload);
-		// await res.clearCookie('jwt');
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,

@@ -8,17 +8,6 @@ import { InstanceLoader } from '@nestjs/core/injector/instance-loader';
 export class UsersettingsService {
     constructor(private prisma: PrismaService) {}
 
-    // async validateUser(id: number)
-    // {
-    //     const user = await this.prisma.user.findUnique({
-    //         where: {
-    //             id: id,
-    //         }
-    //     })
-    //     if (!user)
-    //         throw new NotFoundException('USER NOT FOUND');
-    //     return user;
-    // }
     async updateUsername(user: any, newName: string) {
         //const userdb = await this.validateUser(user.id);
         try {
