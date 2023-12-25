@@ -13,7 +13,7 @@ function  MatchHistory() {
 
     useEffect(() => {
         const getMatchHistory = async () => {
-            await axios.get("user/matchhistory")
+            await axios.get("http://localhost:3001/user/matchhistory")
             .then((res) => {
                 setMatchsHistory(res.data);
             })
