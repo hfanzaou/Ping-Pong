@@ -251,21 +251,34 @@ export class UserService {
         }
     }
     ///Achievements////
-    async addAchievement(id: number, achievement: boolean) {
-        try { 
-            await this.prismaservice.user.update({
-                where: {
-                    id: id
-                }, data: {
-                    achievement: { achievement },
-                }
+    // async addAchievement(id: number, achievement: boolean) {
+    //     try { 
+    //         await this.prismaservice.achievement.update({
+    //             where: {
+    //                 userId: id
+    //             }, data: {
+    //                achievement: true,
+    //             }
 
+    //         })
+    //         const user = await this.prismaservice.user.findUnique({
+    //             where: {id: id},
+    //             select: {id: true, achievement: true}
+    //         })
+    //         console.log(user);
+    //     } catch(error) {
+    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
+    //     }
+    // }
+    async getAchievements(id: number)
+    {
+        try {
+            const ach = await this.prismaservice.achievement.findUnique({
+                where : {userId: id},
+                select: {achievement1: true, achievement2: true, achievement3: true, achievement4: true, achievement5: true}
             })
-            const user = await this.prismaservice.user.findUnique({
-                where: {id: id},
-                select: {id: true, achievement: true}
-            })
-            console.log(user);
+            console.log(ach);
+            return ach;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -283,5 +296,36 @@ export class UserService {
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
               })); 
          return (usersre);     
+    }
+
+    /////match history/////
+    async getMatchHistory(id: number)
+    {
+        try {
+            const matchhistory = await this.prismaservice.matchHistory.findMany({
+                where : {
+                    OR: [
+                        {playerId: id},
+                        {player2Id: id},
+                    ]},
+                select : {players: {where: {
+                        NOT: {id: id},
+                }, select: {id: true, username: true }}, playerScore: true, player2Score: true, win: true},
+            })
+            const to_send = await Promise.all(matchhistory.map(async (obj) => {
+                const avatar = await this.getUserAvatar(obj.players[0].id);
+                return { 
+                    playerScore: obj.playerScore, 
+                    player2Score: obj.player2Score, 
+                    win: obj.win,
+                    avatar: avatar,
+                    username: obj.players[0].username
+                };
+              }));
+            console.log(to_send);
+            return matchhistory;
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 }
