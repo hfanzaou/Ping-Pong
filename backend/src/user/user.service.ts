@@ -275,7 +275,7 @@ export class UserService {
         try {
             const ach = await this.prismaservice.achievement.findUnique({
                 where : {userId: id},
-                select: {ach1: true, ach2: true, ach3: true, ach4: true, ach5: true}
+                select: {achievement1: true, achievement2: true, achievement3: true, achievement4: true, achievement5: true}
             })
             console.log(ach);
             return ach;
@@ -301,6 +301,31 @@ export class UserService {
     /////match history/////
     async getMatchHistory(id: number)
     {
-
+        try {
+            const matchhistory = await this.prismaservice.matchHistory.findMany({
+                where : {
+                    OR: [
+                        {playerId: id},
+                        {player2Id: id},
+                    ]},
+                select : {players: {where: {
+                        NOT: {id: id},
+                }, select: {id: true, username: true }}, playerScore: true, player2Score: true, win: true},
+            })
+            const to_send = await Promise.all(matchhistory.map(async (obj) => {
+                const avatar = await this.getUserAvatar(obj.players[0].id);
+                return { 
+                    playerScore: obj.playerScore, 
+                    player2Score: obj.player2Score, 
+                    win: obj.win,
+                    avatar: avatar,
+                    username: obj.players[0].username
+                };
+              }));
+            console.log(to_send);
+            return matchhistory;
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 }
