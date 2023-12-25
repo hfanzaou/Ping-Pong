@@ -313,6 +313,7 @@ export class UserService {
                 }, select: {id: true, username: true }}, playerScore: true, player2Score: true, win: true},
             })
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
+                console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
                 return { 
                     playerScore: obj.playerScore, 
@@ -322,8 +323,8 @@ export class UserService {
                     username: obj.players[0].username
                 };
               }));
-            console.log(to_send);
-            return matchhistory;
+            ///console.log(to_send);
+            return to_send;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }

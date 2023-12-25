@@ -50,6 +50,7 @@ export class AuthService {
 			},
 		});
 		if (!finduser) {
+			///fill the database with user infos if first time logged
 			finduser = await this.signup(user);
 		}
 		const payload = {
@@ -60,7 +61,7 @@ export class AuthService {
 		const token = await this.signToken(payload);
 		return (token);
 	}	
-
+	////sign a token
 	async signToken(payload: {sub: number, userID: number, isTwoFaAuth: boolean}) : Promise<string> {
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
@@ -72,7 +73,7 @@ export class AuthService {
 		////console.log(token);
 		return (token);
 	}
-
+	////check the user if exist in the database
 	async validateUser(user: any)
 	{
         let finduser = await this.prisma.user.findUnique({
@@ -126,8 +127,6 @@ export class AuthService {
 		});
 		return ({secret: secret.otpauth_url, oturl: otpauthUrl});
 	}
-
-	
 	async verifyTwoFa(user: any, token: string): Promise<boolean> {
 		const finduser = await this.validateUser(user);
 		//console.log(user.twoFaSecret);
@@ -146,65 +145,4 @@ export class AuthService {
 		const token = await this.signToken(payload);
 		return (token);
 	}
-
-	// async generateTFAuth(user: any) {
-	// 	const secret = authenticator.generateSecret();
-	// 	const otpUrl = authenticator.keyuri(user.id, 'google_auth', secret);
-	// 	return {
-	// 		secret,
-	// 		otpUrl
-	// 	}
-	// }
-
-	// async setTwoFaAuthSecret(secret: string, userId: number) {
-	// 	const updateUser = await this.prisma.user.update({
-	// 		where: {
-	// 			id: userId,
-	// 		},
-	// 		data: {
-	// 			twoFaSecret: secret,
-	// 		}
-	// 	})
-	// }
-
-	// async generateQrCode(otpUrl: string) {
-	// 	return toDataURL(otpUrl);
-	// }
-	// async generateTwoFaAuth(user: any)
-	// {
-	// 	const secretandotp = await this.generateTFAuth(user);
-	// 	const otpAuthUrl = await this.generateQrCode(secretandotp.otpUrl);
-	// 	await this.setTwoFaAuthSecret(secretandotp.secret, user.id);
-	// 	return(otpAuthUrl);
-	// } 
-
-	// async turnOnTwoFaAuth(userId: number)
-	// {
-	// 	const updateUser = await this.prisma.user.findUnique({
-	// 		where: {
-	// 			id: userId,
-	// 		}
-	// 	})
-	// 	let ONorOFF = true;
-
-	// 	if (updateUser.twoFaAuth)
-	// 		ONorOFF = false;
-
-	// 	await this.prisma.user.update({
-	// 		where: {
-	// 			id: userId,
-	// 		},
-	// 		data: {
-	// 			twoFaAuth: ONorOFF,
-	// 		}
-	// 	})
-	// }
-	// async isTwoFaAuthCodeValid(twoFaAuthCode: string, user: any)
-	// {
-	// 	//console.log(user.twoFaSecret);
-	// 	return authenticator.verify({
-	// 		token: twoFaAuthCode,
-	// 		secret: user.twoFaSecret
-	// 	})
-	// }
 }
