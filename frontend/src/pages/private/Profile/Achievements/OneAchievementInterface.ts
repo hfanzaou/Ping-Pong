@@ -1,5 +1,7 @@
-interface Achievement {
-    isTaked: boolean;
+import AchievementInterface from "./AchievementInterface";
+interface Achievement{
+    // type: AchievementInterface;
+    type: boolean;
     name: string;
     image: string;
     title: string;
