@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
+import { isInstance } from 'class-validator';
 import { createReadStream, readFileSync } from 'fs';
+import { of } from 'rxjs';
 import { userDto } from 'src/auth/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -106,7 +108,7 @@ export class UserService {
                     state: true
                 } 
             });
-            console.log(users);
+            
             return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
@@ -186,7 +188,8 @@ export class UserService {
     async addFriend(id: number, name:string) {
         try {
             const user = await this.prismaservice.user.findUnique({
-                where: { 
+                where: {
+                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
                     username: name,
                 }
             });
@@ -205,6 +208,7 @@ export class UserService {
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
+                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
                     username: name,
                 }
             });
@@ -273,15 +277,24 @@ export class UserService {
     async getAchievements(id: number)
     {
         try {
-            const ach = await this.prismaservice.achievement.findUnique({
-                where : {userId: id},
-                select: {achievement1: true, achievement2: true, achievement3: true, achievement4: true, achievement5: true}
+            const ach = await this.prismaservice.user.findUnique({
+                where : {id: id},
+                select: {achievement: true}
             })
-            console.log(ach);
-            return ach;
+            return ach.achievement;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
+    }
+    async addAchievement(id: number, achievement: any)
+    {
+        try {
+            await this.prismaservice.user.update({
+                where : {id: id}, data : {achievement: achievement}
+            })
+        } catch(error){
+
+        }    
     }
     ////extartacting user info functions////
     async extarctuserinfo(users: any, id: number)
@@ -326,7 +339,20 @@ export class UserService {
             ///console.log(to_send);
             return to_send;
         } catch(error) {
+            //if (error.instanceof(this.prismaservice))
+                
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    // async addMatchHistory(id: number, name: string) {
+    //     try {
+    //         const user = await this.prismaservice.matchHistory.update({
+    //             data: {
+    //                 player
+    //         })
+    //     } catch(error)
+    //     {
+
+    //     }
+    // }
 }

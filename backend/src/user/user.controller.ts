@@ -69,11 +69,11 @@ export class UserController {
         return (await this.userService.inblockUser(req.user.id, body.name));
     }
     //////ADD_ACHIEVEMENTS, GET_ACHIEVEMENTS///////
-    // @Post('achievements')
-    // @HttpCode(201)
-    // async addAchievement(@Req() req, @Body() body) {
-    //     return (await this.userService.addAchievement(req.user.id, body.achievement));
-    // }
+    @Post('achievements')
+    @HttpCode(201)
+    async addAchievement(@Req() req, @Body() body) {
+        return (await this.userService.addAchievement(req.user.id, body.achievement));
+    }
     @Get('achievements')
     async getAchievements(@Req() req) {
         return (await this.userService.getAchievements(req.user.id));
@@ -88,4 +88,8 @@ export class UserController {
     async getMatchHistory(@Req() req) {
         return (await this.userService.getMatchHistory(req.user.id));
     }
+    // @Post('matchhistory')
+    // async addMatchHistoy(@Req() req, @Body() body) {
+    //     return (await this.userService.addMatchHistory(req.user.id, body.username));
+    // }
 }
