@@ -20,7 +20,7 @@ function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: Ma
                 {playerScore} - {player2Score}
             </Text>
             <Text ta="center" fw={700}>
-                {!win ? "losse" : "wine"}
+                {!win ? "loss" : "win"}
                 {/* {!wine ? <p className="text-red-600">losse</p> : <p className="text-green-600">wine</p>} */}
             </Text>
         </Card>
