@@ -1,37 +1,51 @@
 import React, { useEffect, useState } from "react";
-import EditAvatar from "react-avatar-edit";
+import EditAvatar from "react-avatar-editor";
 import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
+import Uploadd from "./Upload";
 
-function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
-  // const src: any = null;
-  // const [preview, setPreview] = useState(null);
 
-  const handleClose = () => {
-      // setPreview(null);
-      setUserImage(image);
-      setSave(true);
-  };
 
-  const handleCrop = (view: any) => {
-      // setPreview(view);
-      setUserImage(view);
-      setSave(false);
-  };
 
-  return (
-    <div className="grid  place-items-center">
-      <EditAvatar
-        width={200}
-        height={100}
-        onCrop={handleCrop}
-        onClose={handleClose}
-        // src={src}
-      />
-      {/* {preview && <img src={preview} />} */}
-    </div>
-  );
-}
+// function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
+//   // const src: any = null;
+//   // const [preview, setPreview] = useState(null);
+
+//   const handleClose = () => {
+//       // setPreview(null);
+//       setUserImage(image);
+//       setSave(true);
+//   };
+
+//   const handleCrop = (view: string) => {
+//       // setPreview(view);
+//       setUserImage(view);
+//       setSave(false);
+//   };
+
+//   const initImage = image;
+
+//   return (
+//     <div className="grid  place-items-center">
+//       <EditAvatar
+//         width={200}
+//         height={100}
+//         onCrop={handleCrop}
+//         onClose={handleClose}
+//         borderStyle={{
+//             borderRadius: '10%', 
+//             border: '2px solid #ccc', 
+//             boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', 
+//             background: '#fff', 
+//             // overflow: 'hidden',
+//         }}
+//         // src={src}
+//       />
+//       {/* {preview && <img src={preview} />} */}
+//     </div>
+//   );
+// }
+
 
 function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string}) {
   const [setAvatar, setSetAvatar] = useState<boolean>(false);
@@ -50,7 +64,7 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
   };
 
   const handleSaveAvatar = async () => {
-    {userimage !== avatar ?
+      {userimage !== avatar ?
     await axios.post('http://localhost:3001/settings/avatar', {avatar: (userimage === avatar ? null : userimage)})
     .then(res => {
       console.log(res.data);
@@ -62,11 +76,11 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
     .catch(err => {
       console.error("Error in send profile info: ", err);
     }) :
-      setSetAvatar(false);
-      setSave(true);}
+    setSetAvatar(false);
+    setSave(true);}
   };
 
-    return (
+  return (
       <div className='grid  place-items-center'>
         <div dir="rtl" className="relative h-32 w-32" onClick={handleSetAvatar}>
           <Avatar size='xl' src={avatar} />
@@ -79,7 +93,9 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
             </svg>
           </div>
         </div>
-        {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />}
+        {/* <Uploadd /> */}
+        {setAvatar && <Uploadd setUserImage={setUserImage} image={avatar} setSave={setSave} />}
+        {/* {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />} */}
         {!save && <Button onClick={handleRest} >Cancel</Button>}
         {!save && <Button onClick={handleSaveAvatar}>Set new Avatar</Button>}
       </div>
@@ -87,3 +103,56 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
 }
 
 export default ChangeAvatar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const UploadImage = () => {
+  const [selectedFile, setSelectedFile] = useState();
+
+  const handleFileChange = (event: any) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+    console.log("formData: ", formData.get('image'));
+
+    try {
+      const response = await axios.post('http://localhost:3001/settings/avatar', formData.get('image'), {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error in send profile info: ", error);
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+    </div>
+  );
+};

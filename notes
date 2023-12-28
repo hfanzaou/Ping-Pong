@@ -1,0 +1,9 @@
+tch_history {
+  id        Int  @id @default(autoincrement())
+    author1   User @relation(fields: [authorId1], references: [id])
+      author2   User @relation(fields: [authorId2], references: [id])
+        score1 Int
+	  score2 Int
+	    userScore1 Int
+	      userScore2 Int
+	      }

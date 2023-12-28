@@ -35,15 +35,37 @@ function Auth() {
     };
 
     return (
-        <div>
+        <div className="h-[605px] space-y-8 items-center">
+
+            {/* <Header avatar={avatar}/> */}
+            <div className="flex items-center justify-center  pt-20">
             <TextInput
                 onChange={handleSaveCode}
                 label="Entre Code of Virification"
                 error={invalidCode ? "set a valid code" : false}
             />
-            <Button onClick={handleDisableSendCode} disabled={send}>Send</Button>
-            {/* <Button onClick={handleCancel} >Cancel</Button> */}
+            </div>
+            <div className="flex items-center justify-center">
+
+                <Button onClick={handleDisableSendCode} disabled={send}>Send</Button>
+
+            </div>
         </div>
+
+
+
+
+        // <div className="flex items-center h-[605px]">
+        //     <div className="space-y-4 ml-40">
+        //     <TextInput
+        //         onChange={handleSaveCode}
+        //         label="Entre Code of Virification"
+        //         error={invalidCode ? "set a valid code" : false}
+        //     />
+        //     <Button onClick={handleDisableSendCode} disabled={send}>Send</Button>
+        //         </div>
+        //     {/* <Button onClick={handleCancel} >Cancel</Button> */}
+        // </div>
     );
 }
 

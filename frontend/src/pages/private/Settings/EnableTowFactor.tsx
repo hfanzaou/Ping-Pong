@@ -47,6 +47,7 @@ function EnableTowFactor() {
     if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
         e.target.value.length === 6 ? (setCode(e.target.value), setDisabled(false)) : setDisabled(true)
     } else {
+        setDisabled(true)
         setInvalidCode(true);
     }
   };
@@ -90,6 +91,8 @@ function EnableTowFactor() {
   };
 
     const handleCancel = () => {
+        setInvalidCode(false);
+        setDisabled(true);
         setChange(false);
     };
 

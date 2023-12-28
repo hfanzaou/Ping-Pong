@@ -1,31 +1,36 @@
 [
     {
+        "id": 1,
         "name": "Achievement1",
-        "type": true,
+        "type": false,
         "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "title": "win in 3 game and go to level 1"
     },
     {
+        "id": 2,
         "name": "Achievement2",
         "type": false,
         "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "title": "win in 3 game and go to level 1"
     },
     {
+        "id": 3,
         "name": "Achievement3",
-        "type": true,
+        "type": false,
         "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "title": "win in 3 game and go to level 1"
     },
     {
+        "id": 4,
         "name": "Achievement4",
         "type": false,
         "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "title": "win in 3 game and go to level 1"
     },
     {
+        "id": 5,
         "name": "Achievement5",
-        "type": true,
+        "type": false,
         "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
         "title": "win in 3 game and go to level 1"
     }

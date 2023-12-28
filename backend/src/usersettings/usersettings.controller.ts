@@ -23,10 +23,11 @@ export class UsersettingsController {
     @Post('avatar')
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)
-    async editAvatar(@Req() req, @Body() avatar) {
-        ////console.log(avatar.avatar)
-        if (avatar.avatar.length > 100000)
-            throw new PayloadTooLargeException('Image to large');
-      await this.userSetService.updateAvater(req.user.id, avatar.avatar);
+    async editAvatar(@Req() req, @Body() body) {
+        const avatar: string = body.avatar;
+        console.log(avatar.length);
+        // if (avatar.length > 100000)
+        //    throw HttpStatus.PAYLOAD_TOO_LARGE;
+      await this.userSetService.updateAvater(req.user.id, body.avatar);
     }
 }

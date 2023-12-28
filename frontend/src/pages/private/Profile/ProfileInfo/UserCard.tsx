@@ -73,16 +73,18 @@ function UserCard({avatar} : {avatar: string }) {
   ));
 
   return (
-  <Card style={{backgroundColor: 'transparent'}}  padding="md" radius="md" className={classes.card}>
+    <div>
+
+  <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
       <Card.Section
-        h={150}
+        h={50}
         >
-            <img className='h-full w-full' src={sectionimage}/>
+            {/* <img className='h-full w-full' src={sectionimage}/> */}
         </Card.Section>
       <Avatar
         src={avatar}
-        size={100}
-        radius={80}
+        size={200}
+        radius={160}
         mx="auto"
         mt={-30}
         className={classes.avatar}
@@ -98,8 +100,9 @@ function UserCard({avatar} : {avatar: string }) {
       </Group>
       {/* <Button fullWidth radius="md" mt="xl" size="md" variant="default">
         Life is like an npm install – you never know what you are going to get.
-      </Button> */}
+    </Button> */}
   </Card>
+    </div>
   );
 }
 

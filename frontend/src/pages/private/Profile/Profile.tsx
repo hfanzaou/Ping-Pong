@@ -1,65 +1,45 @@
 import React, { useState } from 'react'
-import { Container, MantineProvider, SimpleGrid, createTheme} from '@mantine/core'
+import {Container, SimpleGrid} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import Friends from './Friends/Friends'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
-import './Profile.css'
-import cx from 'clsx'
 import Header from '../../../Layout/Header/Header'
-import Footer from '../../../Layout/Footer/Footer';
+import Footer from '../../../Layout/Footer/Footer'
 
-
-const theme = createTheme({
-  components: {
-    Container: Container.extend({
-      classNames: (_, { size }) => ({
-        root: cx({ ["responsiveContainer"]: size === 'responsive' }),
-      }),
-    }),
-  },
-});
-
-export function ProfileSections({avatar}: {avatar: string}) {
+export function ProfileSections({avatar, setUserName}: {avatar: string, setUserName: any}) {
     return (
       <div>
         <SimpleGrid
               cols={{ base: 1, sm: 1, lg: 2 }}
-              spacing={{ base: 10, sm: 'xl' }}
-              verticalSpacing={{ base: 'md', sm: 'xl' }}
+              spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+              verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
           <UserCard avatar={avatar} />
           <Achievements />
         </SimpleGrid>
         <SimpleGrid 
-        cols={{ base: 1, sm: 2, lg: 2 }}
-        spacing={{ base: 10, sm: 'xl' }}
-        verticalSpacing={{ base: 'md', sm: 'xl' }}
+        cols={{ base: 1, sm: 1, lg: 2 }}
+        spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+        verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >
           <MatchHistory />
-          <Friends />
+          <Friends setUserName={setUserName} />
         </SimpleGrid>
       </div>
     );
 }
 
-function Profile({avatar} : {avatar: string }) {
+function Profile({avatar, setUserName}: {avatar: string, setUserName: any}) {
     return (
-      // fluid
-    //   <MantineProvider theme={theme}>
-    // <Container fluid px={0} size="30rem" bg="var(--mantine-color-blue-1)" className='h-full'>
-
-    //   <Container fluid  size="responsive" bg="var(--mantine-color-blue-1)" className='h-full'>
-        <div>
-
+        // <div  className='h-full ml-8 mr-8 pr-8 pl-8 '>
+            <div>
             <Header avatar={avatar}/>
-        <div className='h-full ml=15 m-8 b-8'>
-            <ProfileSections avatar={avatar} />
+             <div className=' ml-4 mr-4 pr-4 pl-4 mb-8 pb-8'> 
+                <ProfileSections avatar={avatar} setUserName={setUserName} />
+             </div> 
+            <Footer/>
         </div>
-        <Footer/>
-        </div>
-    //   </Container>
-    //   </MantineProvider>
     );
 }
 

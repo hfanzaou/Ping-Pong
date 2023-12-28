@@ -1,43 +1,63 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container, SimpleGrid } from '@mantine/core';
 import { IconMessages, IconTrash} from '@tabler/icons-react';
 import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
 import {MdChildFriendly} from 'react-icons/md';
 import MatchHistoryCard from './MatchHistoryCard';
 import data from './test.json'
+import MatchHistoryInterface from './MatchHistoryInterface';
+import axios from 'axios';
 
 function  MatchHistory() {
+    const [matchsHistory, setMatchsHistory] = useState<MatchHistoryInterface[]>([]);
+
+    useEffect(() => {
+        const getMatchHistory = async () => {
+            await axios.get("http://localhost:3001/user/matchhistory")
+            .then((res) => {
+                setMatchsHistory(res.data);
+            })
+            .catch((err) => {
+                console.error("error in fetching Matchs History: ", err );
+            })
+        };
+        getMatchHistory();
+    }, []);
 
   const sliderLeft = () => {
     var slider: any = document.getElementById('match-history-slider');
-    slider.scrollLeft = slider.scrollLeft - 500;
+    slider.scrollLeft = slider.scrollLeft - 400;
   };
 
   const sliderRight = () => {
     var slider: any = document.getElementById('match-history-slider');
-    slider.scrollLeft = slider.scrollLeft + 500;
+    slider.scrollLeft = slider.scrollLeft + 400;
   };
   
-  const matches = data.map((item) => (
-    <div key={item.name}>
-     <MatchHistoryCard avatar={item.avatar} name={item.name} rate={item.rate} wine={item.wine}/>
+  const matches = matchsHistory.map((item) => (
+    <div key={item.username}>
+     <MatchHistoryCard avatar={item.avatar} username={item.username} playerScore={item.playerScore} player2Score={item.player2Score} win={item.win}/>
     </div>
    ));
 
   return (
-    <Container className='w-full h-full'>
+    // <Container className='w-full h-full'>
+        <div className='mb-4 pb-4'>
+
+
       <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
           <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Match History</h2>
       </div>
-    <div className='relative flex items-center'>
+    <div className='relative h-full flex items-center'>
       <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderLeft} size={40}/>
       <div id='match-history-slider' className='relative flex items-center w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>
             {matches}
       </div>
       <MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={40}/>
     </div>
-    </Container>
+        </div>
   );
+  {/* </Container> */}
 }
 
 export default MatchHistory

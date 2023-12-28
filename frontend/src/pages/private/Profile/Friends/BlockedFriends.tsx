@@ -10,7 +10,7 @@ function BlockedFriends() {
 
     useEffect(() => {
         const getBlockedFriends = async () => {
-            await axios.get("http://localhost:3001/friend/blocked")
+            await axios.get("http://localhost:3001/user/blocked")
             .then((res) => {
              setBlockedFriendList(res.data);
             }).catch(err => {
@@ -23,7 +23,7 @@ function BlockedFriends() {
 
     const handleInBlockFriend = async (name: string) => {
         console.log("blocked friend name: ", name);
-        await axios.post("http://localhost:3001/inblock/friend", {name: name})
+        await axios.post("http://localhost:3001/user/inblock", {name: name})
         .then((res) => {
             res.status === 201 && window.location.reload();
         })
@@ -32,40 +32,37 @@ function BlockedFriends() {
         })
     };
 
-    const blockedRows = blockedFriendList.map((item) => (  
+    return (blockedFriendList.map((item) => (
         <Table.Tr key={item.name}>
             <Table.Td>
-              <Group gap="sm">
-                <Menu
-                  transitionProps={{ transition: 'pop' }}
-                  withArrow
-                  position="bottom-end"
-                  withinPortal
-                  >
-                  <Menu.Target>
-                   <Avatar size={40} src={item.avatar} radius={40} />
-                  </Menu.Target>
-                  <Menu.Dropdown>
+                <Group gap="sm">
+                    <Menu
+                        transitionProps={{ transition: 'pop' }}
+                        withArrow
+                        position="bottom-end"
+                        withinPortal
+                    >
+                    <Menu.Target>
+                        <Avatar size={40} src={item.avatar} radius={40} />
+                    </Menu.Target>
+                    <Menu.Dropdown>
                     <Menu.Item
                       leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                       color="red"
-                      >
+                    >
                         <button onClick={() => handleInBlockFriend(item.name)}>
                           InBlock friend
                         </button>
                     </Menu.Item>
-                  </Menu.Dropdown>
-                </Menu>
-                  <Text fz="sm" fw={500}>
-                    {item.name}
-                  </Text>
-              </Group>
+                    </Menu.Dropdown>
+                    </Menu>
+                    <Text fz="sm" fw={500}>
+                        {item.name}
+                    </Text>
+                </Group>
             </Table.Td>
-          </Table.Tr>
-        ));
-    return (
-        blockedRows
-    );
+        </Table.Tr>
+    )));
 }
 
-export default BlockedFriends 
+export default BlockedFriends

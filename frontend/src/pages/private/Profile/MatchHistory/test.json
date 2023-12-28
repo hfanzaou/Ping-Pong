@@ -1,32 +1,65 @@
 [
     {
+    "avatar": "https://cdn.intra.42.fr/users/a20a415122c250b00685308ae3909e21/hfanzaou.jpg",
+    "username": "Hfanzaou",
+    "wine": true,
+    "playerScore": "45",
+    "player2Score": "30"
+    },
+    {
+    "avatar": "https://cdn.intra.42.fr/users/4a7006c8b7336b000e1cfaab5db88538/ebensalt.jpg",
+    "username": "EbenSalt",
+    "wine": true,
+    "playerScore": "45",
+    "player2Score": "30"
+    },
+    {
+    "avatar": "https://cdn.intra.42.fr/users/e309a3cba8f23ed14b44f453ff827085/ajana.jpg",
+    "username": "Ajana",
+    "wine": true,
+    "playerScore": "45",
+    "player2Score": "30"
+    },
+    {
+    "avatar": "https://cdn.intra.42.fr/users/0aab98ac802b6cd5ef94b9c3ea1b0699/rarahhal.jpg",
+    "username": "Rarahhal",
+    "wine": false,
+    "playerScore": "45",
+    "player2Score": "30"
+    },
+    {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-      "name": "Robert Wolfkisser",
+      "username": "Robert Wolfkisser",
       "wine": false,
-      "rate": "22-45"
+      "playerScore": "45",
+      "player2Score": "30"
     },
     {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
-      "name": "Jill Jailbreaker",
+      "username": "Jill Jailbreaker",
       "wine": true,
-      "rate": "45-30"
+      "playerScore": "45",
+      "player2Score": "30"
     },
     {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
-      "name": "Henry Silkeater",
+      "username": "Henry Silkeater",
       "wine": true,
-      "rate": "46-10"
+      "playerScore": "45",
+      "player2Score": "30"
     },
     {
         "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
-        "name": "Jelly Silkeater",
+        "username": "Jelly Silkeater",
         "wine": true,
-        "rate": "46-40"
+        "playerScore": "45",
+        "player2Score": "30"
     },
     {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png",
-      "name": "Jeremy Footviewer",
+      "username": "Jeremy Footviewer",
       "wine": false,
-      "rate": "30-40"
+      "playerScore": "45",
+      "player2Score": "30"
     }
-]  
+]
