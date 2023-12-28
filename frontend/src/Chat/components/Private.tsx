@@ -1,11 +1,11 @@
-import { DATA } from "../myTypes";
+import { DATA, NEWCHAT } from "../myTypes";
 
-interface Users {
+interface Props {
 	data:		DATA,
 	setData:	React.Dispatch<React.SetStateAction<DATA>>
 }
 
-const Private: React.FC<Users> = ({ data, setData }) => {
+const Private: React.FC<Props> = ({ data, setData }) => {
 	function click(event: React.MouseEvent<HTMLButtonElement>)
 	{
 		const tmp = event.currentTarget.name;
@@ -14,6 +14,11 @@ const Private: React.FC<Users> = ({ data, setData }) => {
 			...prev,
 			talkingTo: tmp
 		}))
+		const	newChat: NEWCHAT = {
+			sender: data.userData ? data.userData.userName : "",
+			recver: tmp
+		}
+		data.socket?.emit("newChat", newChat);
 	}
 	return (
 		<ul

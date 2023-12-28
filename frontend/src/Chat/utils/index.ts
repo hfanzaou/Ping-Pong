@@ -15,3 +15,10 @@ export function setUserData(prev: DATA, data: USERDATA):DATA {
 		userData: data
 	}
 }
+
+export function setMessageData(prev: DATA, message: string):DATA {
+	return {
+		...prev,
+		message: message
+	}
+}

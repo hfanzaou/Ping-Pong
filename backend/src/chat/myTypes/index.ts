@@ -11,3 +11,12 @@ export interface USERDATA {
 	userName: string,
 	chatUsers: User[]
 }
+
+export interface MESSAGE extends NEWCHAT {
+	message: string
+}
+
+export interface NEWCHAT {
+	sender: string
+	recver: string
+}

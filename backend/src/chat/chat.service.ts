@@ -1,11 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { USERDATA, USERSOCKET } from "./myTypes";
+import { NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
 import { Socket } from "socket.io"
 
 @Injectable()
 export class ChatService {
-	constructor(private prisma: PrismaService) {}
+	private rooms: string[];
+
+	constructor(private prisma: PrismaService) {
+		this.rooms = [];
+	}
 	async getUserData(userSocket: USERSOCKET) {
 		const	user = await this.prisma.user.findFirst({
 			where: {
@@ -51,6 +55,21 @@ export class ChatService {
 					socket: null
 				}
 			});
+		}
+	}
+	getRoom(data: NEWCHAT) {
+		const room = this.rooms.find(room => {
+			if (room.indexOf(data.sender) == -1
+				|| room.indexOf(data.recver) == -1)
+				return false;
+			else
+				return true;
+		});
+		if (room)
+			return room;
+		else {
+			this.rooms.push(data.sender+data.recver);
+			return data.sender+data.recver;
 		}
 	}
 }

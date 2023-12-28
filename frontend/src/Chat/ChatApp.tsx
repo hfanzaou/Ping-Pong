@@ -9,10 +9,10 @@ import { setSocket, setUserData } from "./utils";
 
 export default function ChatApp()
 {
-	const	[data, setData] = useState<DATA>({});
+	const	[data, setData] = useState<DATA>({
+		message: ""
+	});
 	const	[option, setOption] = useState("Private");
-	// const	[users, setUsers] = useState<User[]>([]);
-	// const	[user, setUser] = useState("");
 	
 	async function callBack(socket: Socket) {
 		setData(prev => setSocket(prev, socket));
@@ -45,7 +45,10 @@ export default function ChatApp()
 				data={data}
 				setData={setData}
 			/>
-			<Chat socket={data.socket}/>
+			<Chat
+				data={data}
+				setData={setData}
+			/>
 		</div>
 	)
 }
