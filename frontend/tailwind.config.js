@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -28,9 +28,9 @@ export default {
         discord5: "#7289da",
         discord6: "#f1faee"
       },
-      fontFamily: {
-        Inconsolata: ["Inconsolata", "monospace"]
-      },
+      // fontFamily: {
+      //   Inconsolata: ["Inconsolata", "monospace"]
+      // },
       width: {
         '99': '99%',
       },
@@ -39,6 +39,8 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
 }
 

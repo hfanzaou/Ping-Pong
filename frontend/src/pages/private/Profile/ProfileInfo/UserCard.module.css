@@ -1,0 +1,12 @@
+.card {
+    background-color: var(--mantine-color-body);
+    /* height: 100vh; */
+    /* margin-top: auto 0; */
+  }
+  
+  .avatar {
+    border: rem(2px) solid var(--mantine-color-body);
+    /* margin: auto 0;
+    padding: auto; */
+  }
+
