@@ -32,6 +32,9 @@ model User {
   achievement    Json?
   MatchHistory   MatchHistory? @relation(fields: [matchHistoryId], references: [id])
   matchHistoryId Int?
+  socket         String? @unique
+  chatUsers      User[]  @relation("ChatUsers")
+  chatUsersOf    User[]  @relation("ChatUsers")
 }
 
 model MatchHistory {
