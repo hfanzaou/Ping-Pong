@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button } from '@mantine/core';
+import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button, Container } from '@mantine/core';
 import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
 
