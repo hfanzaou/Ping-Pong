@@ -5,6 +5,7 @@ import Chat from "./components/Chat";
 import { DATA } from "./myTypes";
 import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
+import Header from "../../../Layout/Header/Header";
 
 
 export default function ChatApp()
@@ -39,16 +40,19 @@ export default function ChatApp()
 		}
 	}, []);
 	return (
-		<div className="flex">
-			<Nav option={option} setOption={setOption}/>
-			<Private
-				data={data}
-				setData={setData}
-			/>
-			<Chat
-				data={data}
-				setData={setData}
-			/>
+		<div>
+			<Header avatar={""}/>
+			<div className="flex">
+				<Nav option={option} setOption={setOption}/>
+				<Private
+					data={data}
+					setData={setData}
+					/>
+				<Chat
+					data={data}
+					setData={setData}
+					/>
+			</div>
 		</div>
 	)
 }
