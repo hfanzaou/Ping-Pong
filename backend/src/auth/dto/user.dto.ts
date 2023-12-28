@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator"; 
 
 export class userDto {
-	key: number;
+	level: number;
 	name: string;
 	avatar: string;
-	state: boolean;
+	state: string;
 }

@@ -9,7 +9,7 @@ const INC_SPEED = 0.75;
 const BALL_DIAMETER = 15;
 const BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER;
 const MAX_SCORE = 10;
-const FRAME_RATE = 10;
+const FRAME_RATE = 60;
 
 let player1, player2, ball;
 
@@ -24,7 +24,7 @@ let update = false;
 
 function  gameLoop()
 {
-  if (!goalScored) {
+  if (!goalScored && !update) {
     updateBallPos();
     updatePosition();
   }
@@ -37,6 +37,7 @@ function  updatePosition() {
 
 function  updateBallPos()
 {
+  if (update) return;
   let nextY = ball.y + (ball.ydir * ball.speed);
   if (nextY + (BALL_DIAMETER >> 1) >= HEIGHT || nextY - (BALL_DIAMETER >> 1) <= 0) {
     ball.ydir *= -1;
@@ -47,18 +48,22 @@ function  updateBallPos()
     ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
     if (ball.speed < MAX_SPEED)
       ball.speed += INC_SPEED;
+    if (side === 1)
+      socket.emit('updateBall', { xdir: ball.xdir, ydir: ball.ydir });
   }
   else if (checkCollision(player2)) {
     ball.xdir = -1;
     ball.ydir = (ball.y - (player2.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
     if (ball.speed < MAX_SPEED)
       ball.speed += INC_SPEED;
+    if (side === 2)
+      socket.emit('updateBall', { xdir: ball.xdir, ydir: ball.ydir });
   }
-  else if (ball.x > WIDTH) {
+  else if (side == 2 && ball.x > WIDTH) {
     player1.score += 1;
     ft_goalScored();
   }
-  else if (ball.x < (BALL_DIAMETER >> 1)) {
+  else if (side == 1 && ball.x < (BALL_DIAMETER >> 1)) {
     player2.score += 1;
     ft_goalScored();
   }
@@ -71,10 +76,11 @@ function ft_goalScored() {
              ydir: 0,
              speed: INITIAL_SPEED };
     if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
-        socket.emit('VsComputerGameOver', { player1Score: player1.score, player2Score: player2.score });
+        socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
         gameOver();
     }
     else {
+      socket.emit('goalScored', { player1Score: player1.score, player2Score: player2.score });
       goalScored = true;
       setTimeout(() => {
         goalScored = false;

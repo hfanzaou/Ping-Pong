@@ -23,10 +23,10 @@ export class AuthService {
 	//42 api
 	async signup(dto: FTUser)
 	{
-		console.log('------------');
+		//console.log('------------');
 		try {
 			const input: Prisma.UserCreateInput = dto;
-			console.log(input);
+			//console.log(input);
 			const user = await this.prisma.user.create({
 				data: input, 
 			});
@@ -38,7 +38,7 @@ export class AuthService {
 			return user;
 		}
 		catch (error) {
-			console.log(error);
+			//console.log(error);
 			throw 'error creating user';
 		}
 	}			
@@ -67,9 +67,9 @@ export class AuthService {
 			//expiresIn: '15m',
 			secret: secret,
 		});
-		console.log('console in signToken');
-		console.log(token);
+		//console.log('console in signToken');
 		//console.log(token);
+		////console.log(token);
 		return (token);
 	}
 
@@ -84,8 +84,7 @@ export class AuthService {
 		return (finduser || null);
 	}
 	///////TWO FACTOR AUTH////////
-	async enableTwoFa(user: any)
-	{
+	async enableTwoFa(user: any) {
 		await this.prisma.user.update({
 			where: {
 				id: user.id,
@@ -94,6 +93,17 @@ export class AuthService {
 				twoFaAuth: true
 			}
 		});
+	}
+	async disableTwoFa(user: any) {
+		await this.prisma.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				twoFaAuth: false,
+				twoFaSecret: null,
+			}
+		})
 	}
 	async generateTwoFA(user: any) {
 		const finduser = await this.validateUser(user);
@@ -120,9 +130,9 @@ export class AuthService {
 	
 	async verifyTwoFa(user: any, token: string): Promise<boolean> {
 		const finduser = await this.validateUser(user);
-		console.log(user.twoFaSecret);
-		console.log("UserSecret = " + finduser.twoFaSecret);
-		console.log("AuthCode = " + token);
+		//console.log(user.twoFaSecret);
+		//console.log("UserSecret = " + finduser.twoFaSecret);
+		//console.log("AuthCode = " + token);
 		const secret = finduser.twoFaSecret;
 		const isItValid = await speakeasy.totp.verify({
 			secret: secret,
@@ -191,7 +201,7 @@ export class AuthService {
 	// }
 	// async isTwoFaAuthCodeValid(twoFaAuthCode: string, user: any)
 	// {
-	// 	console.log(user.twoFaSecret);
+	// 	//console.log(user.twoFaSecret);
 	// 	return authenticator.verify({
 	// 		token: twoFaAuthCode,
 	// 		secret: user.twoFaSecret

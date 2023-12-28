@@ -94,6 +94,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const player = this.players.get(client.id);
     if (player) {
       const game = this.games.get(player.roomName);
+      client.to(player.roomName).emit('gameOver');
       this.logger.log(`Game ${game.player1.id} Vs ${game.player2.id} ended!`);
       if (game) {
         this.games.delete(player.roomName);
@@ -111,6 +112,22 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (player) {
       client.broadcast.to(player.roomName).emit('updateRacket', racketY);
       player.racket.y = racketY;
+    }
+  }
+
+  @SubscribeMessage('updateBall')
+  updateBall(client: Socket, ballPos: any)
+  {
+    let player = this.players.get(client.id);
+    if (player)
+      client.to(player.roomName).emit('updateBall', ballPos);
+  }
+
+  @SubscribeMessage('goalScored')
+  goal(client: Socket, score: any) {
+    let player = this.players.get(client.id);
+    if (player) {
+      client.to(player.roomName).emit('updateScore', score);
     }
   }
 

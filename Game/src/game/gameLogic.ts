@@ -25,7 +25,7 @@ export function gameLoop(wss: Server, ball: Ball, player1: Player, player2: Play
 }
 
 function emitUpdate(wss: Server, ball: Ball, roomName: string) {
-  wss.to(roomName).emit('updateBall', { x: ball.x, y: ball.y });
+  wss.to(roomName).emit('updateBall', ball);
 }
 
 function updateBallPos(wss: Server, ball: Ball, player1: Player, player2: Player) 

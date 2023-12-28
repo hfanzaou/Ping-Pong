@@ -14,13 +14,14 @@ function MatchHistoryCard({avatar, name, rate, wine}: MatchHistoryInterface) {
                 />
             </Card.Section>
             <Text size="xs" ta='center'>
-                <h3>{name}</h3>
+                {name}
             </Text>
             <Text ta='center'>
-                <h3>{rate}</h3>
+                {rate}
             </Text>
             <Text ta="center" fw={700}>
-                {!wine ? <p className="text-red-600">losse</p> : <p className="text-green-600">wine</p>}
+                {!wine ? "losse" : "wine"}
+                {/* {!wine ? <p className="text-red-600">losse</p> : <p className="text-green-600">wine</p>} */}
             </Text>
         </Card>
     </div>

@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 import { FTUser } from './42dto';
 import { FTAuthGuard, JwtGuard } from './guard';
 import { Request, Response } from 'express';
-import { toFileStream } from 'qrcode';
+import { toBuffer, toFileStream } from 'qrcode';
 import JwtTwoFaGuard from './guard/twoFaAuth.guard';
 import { throwError } from 'rxjs';
 
@@ -24,9 +24,17 @@ export class AuthController {
     	return (true);
   	}
 
+	@Get('verifyTfa')
+	@UseGuards(JwtGuard)
+	async verifyTwoFa(@Req() req) {
+        const user = await this.authService.validateUser(req.user);
+        if (user && user.twoFaAuth)
+            return (true);
+        return false;
+    }
 	// @Post('signup')
 	// signup(@Body() dto: AuthDto) {
-	// 	console.log({
+	// 	({
 	// 		dto,
 	// 	});
 	// }
@@ -34,30 +42,34 @@ export class AuthController {
 	@Get('login')
 	@UseGuards(FTAuthGuard)
 	signin(@Body() user: any) {
-		//console.log("hello");
+		//("hello");
 	}
 
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
-	async callback(@Req() req, @Res() res) {
+	async callback(@Req() req, @Res({passthrough: true}) res: Response) {
 		const user = await this.authService.validateUser(req.user);
+		//console.log(user.twoFaAuth);
 		if (user && user.twoFaAuth)
 		{
-			const token = this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
+			const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
 			res.cookie('jwt', token, {
 				path:'/',
 				httpOnly: true,
 			});
-			res.redirect('http://localhost:3001/2fa/auth');
+			res.redirect('http://localhost:3000/auth');
+			return;
 		}
 		const token = await this.authService.signin(req.user);
-		console.log("hello");
 		res.cookie('jwt', token, {
 			path:'/',
 			httpOnly: true,
 		});
-
-		//res.send('done');
+		if (!user)
+		{
+			res.redirect('http://localhost:3000/Setting');
+			return;
+		}
 		res.redirect('http://localhost:3000');
 	}
 
@@ -72,16 +84,15 @@ export class AuthController {
 	@Post('2fa/turnon')
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
-	async turnOnTwoFaAuth(@Req() req, @Res() res: Response) {
+	async turnOnTwoFaAuth(@Req() req) {
 		const otpAuthUrl = await this.authService.generateTwoFA(req.user);
-		console.log(otpAuthUrl);
-		return ({qrcode: toFileStream(res, otpAuthUrl.oturl)});
+		const qrfile = await toBuffer(otpAuthUrl.oturl);
+		return ("data:image/png;base64," + qrfile.toString('base64'));
 	}
-
-	@Post('2fa/auth')
-	@UseGuards(JwtGuard)
-	async autenticate(@Req() req, @Res() res, @Body() body) {
-		console.log(body);
+	@Post('2fa/turnoff')
+	@HttpCode(201)
+	@UseGuards(JwtTwoFaGuard)
+	async turnOffTwoFaAuth(@Req() req, @Res({passthrough: true}) res, @Body() body) {
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(
@@ -94,16 +105,46 @@ export class AuthController {
 			if (typeof error === "boolean") {
 				throw new UnauthorizedException('Wrong Verification Code');
 			}
-			//console.log(body.AuthCode);
+			//(body.AuthCode);
 		}
-		if (!user.twoFaAuth)
-			await this.authService.enableTwoFa(user);
-		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: true };
+		if (user.twoFaAuth)
+			await this.authService.disableTwoFa(user);
+		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: false };
 		const newToken = await this.authService.signToken(payload);
 		res.cookie('jwt', newToken, {
 			path: '/',
 			httpOnly: true,
 		});
+		res.send('done');
+	}
+	@Post('2fa/auth')
+	@HttpCode(201)
+	@UseGuards(JwtGuard)
+	async autenticate(@Req() req, @Res({passthrough: true}) res, @Body() body) {
+		console.log('AuthCode = ', body.AuthCode)
+		const user = await this.authService.validateUser(req.user)
+		try {
+			const isCodeValid = await this.authService.verifyTwoFa(
+				user,
+				body.AuthCode,
+			);
+			if (!isCodeValid)
+				throw isCodeValid;
+		} catch(error) {
+			if (typeof error === "boolean") {
+				throw new UnauthorizedException('Wrong Verification Code');
+			}
+		}
+		const payload = { sub: user.id, userID: user.id, isTwoFaAuth: true };
+		const newToken = await this.authService.signToken(payload);
+		// await res.clearCookie('jwt');
+		res.cookie('jwt', newToken, {
+			path: '/',
+			httpOnly: true,
+		});
+		if (!user.twoFaAuth) {
+			await this.authService.enableTwoFa(user);
+		}
 		res.send('done');
 	}
 }

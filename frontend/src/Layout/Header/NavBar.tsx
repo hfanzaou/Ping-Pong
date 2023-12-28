@@ -11,51 +11,13 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom'
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import pongImage from './remote-control_1287390.png';
-import racitImage from './ping-pong_5222084.png';
 
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
 const settings = ['Setting', 'Logout'];
 
-
-const getToken = (): string | '' => {
-  const tokenString = localStorage.getItem('token');
-  const userToken = JSON.parse(tokenString ?? '""');
-
-  // console.log("From LocalStorage", userToken);
-
-  return userToken?.token || "";
-};
-
-function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
-//   const [avatar, setAvatar] = React.useState();
-
-      {/* Here set the neded headers in all requeste send to backend  becouse here when the FIRST REQUIEST send */}
-  // axios.defaults.withCredentials = true;  // to send token in every requiste
-
-  // axios.defaults.headers.common['Authorization'] = getToken();
-  // axios.defaults.headers.post['Authorization'] = getToken();
-
-  React.useEffect(() => {
-
-    //// fetching Avatar from backend
-    async function getAvatar() {
-
-      await axios.get("http://localhost:3001/user/avatar")
-      .then(res => {
-        setAvatar(res.data.avatar);
-      })
-      .catch(err =>  {
-        console.error("error in fetching Avatar", err);
-      })
-    }
-    getAvatar();
-  }, []);
-
+function NavBar({avatar} : {avatar: string}) {
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -88,12 +50,7 @@ function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
 
   const handleSetting = () => {
     <Link to={'/setting'}></Link>
-    // window.location.href = "http://localhost:3000/setting";
   };
-
-  // const handle2F = () => {
-  //   window.location.href = "http://localhost:3001/settings/enable/2f";
-  // };
 
   return (
     <AppBar position="static" color="primary">
@@ -103,8 +60,6 @@ function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
           <Typography   // in futere change this Typographt to div define the same style
             variant="h6"
             noWrap
-            component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -115,8 +70,7 @@ function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
               // textDecoration: 'none',
             }}
             >
-              {/* <img className='h-10' src={racitImage}/> */}
-          <img className='h-10 ' src={pongImage}/>
+              <Link to={'/LeaderBord'}><img className='h-10 ' src={pongImage}/></Link>
             {/* Pong Game */}
           </Typography>
 
@@ -160,8 +114,6 @@ function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
           <Typography   // in futere change this Typographt to div define the same style
             variant="h5"
             noWrap
-            component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -173,8 +125,7 @@ function NavBar({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
               // textDecoration: 'none',
             }}
             >
-              <img className='h-10' src={racitImage}/>
-            {/* <img className='h-10 ' src={pongImage}/> */}
+              <Link to={'/LeaderBord'}><img className='h-10 ' src={pongImage}/></Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (

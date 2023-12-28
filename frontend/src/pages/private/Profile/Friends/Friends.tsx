@@ -2,23 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button } from '@mantine/core';
 import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
-import FrindsImage from './friends.svg';
 
 import testdata from './FriendsList.json';
 import axios from 'axios';
-import BlockedFriendInterface from './BlockedFriendInterface';
+import BlockedFriends from './BlockedFriends';
 
 
 
 function  Frindes() {
   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
-  const [blockedFriendList, setBlockedFriendList] = useState<FriendInterface[]>([]);
   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
   const [value, setValue] = useState<string>('Friends list');
 
   useEffect(() => {
     const getFriends = async () => {
-      await axios.get("http://localhost:3001/friend/list")
+      await axios.get("http://localhost:3001/user/friend/list")
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
@@ -26,22 +24,12 @@ function  Frindes() {
         console.error("Error in fetching friend list: ", err);
       })
     };
-    const getBlockedFriends = async () => {
-        await axios.get("http://localhost:3001/friend/blocked")
-        .then((res) => {
-         setBlockedFriendList(res.data);
-        }).catch(err => {
-          setBlockedFriendList(testdata);
-            console.error("Error in fetching blocked friend list: ", err);
-        })
-    };
-    getBlockedFriends();
     getFriends();
   }, []);
 
   const handleBlockFriend = async (name: string) => {
     console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/block/friend", {name: name})
+    await axios.post("http://localhost:3001/user/block/friend", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })
@@ -50,22 +38,8 @@ function  Frindes() {
     })
   };
 
-  const handleInBlockFriend = async (name: string) => {
-    console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/inblock/friend", {name: name})
-    .then((res) => {
-        res.status === 201 && window.location.reload();
-    })
-    .catch((err) => {
-        console.error("error when send post request to In block friend: ", err);
-    })
-  };
-
-
   const rows = friendList.map((item) => (
-//   const rows = testdata.map((item) => (
-
-  <Table key={item.name}>
+    <Table.Tr key={item.name}>
       <Table.Td>
         <Group gap="sm">
           <Menu
@@ -106,53 +80,19 @@ function  Frindes() {
           </div>
         </Group>
       </Table.Td>
-    </Table>
+    </Table.Tr>
   ));
 
-  const blockedRows = blockedFriendList.map((item) => (  
-    <Table key={item.name}>
-        <Table.Td>
-          <Group gap="sm">
-            <Menu
-              transitionProps={{ transition: 'pop' }}
-              withArrow
-              position="bottom-end"
-              withinPortal
-              >
-              <Menu.Target>
-               <Avatar size={40} src={item.avatar} radius={40} />
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item
-                  leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                  color="red"
-                  >
-                    <button onClick={() => handleInBlockFriend(item.name)}>
-                      InBlock friend
-                    </button>
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-            <div>
-              <Text fz="sm" fw={500}>
-                {item.name}
-              </Text>
-            </div>
-          </Group>
-        </Table.Td>
-      </Table>
-    ));
 
   const FriendsIcon = <IconFriends  size={60} strokeWidth={1.5} color={'#4078bf'}/>
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
-  const frindesNumber = 5;
+  const frindesNumber = rows.length;
   const blockedFriendsNumbre = 2;
 
   return (
-    <div className='relative flex '>
-        <Table>
-          <Table.Thead>
+    // <div className='relative flex '>
+    <div>
             <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
                 {value === 'Friends list' && 
                 (<div className='flex'>
@@ -176,31 +116,32 @@ function  Frindes() {
                 {value === 'Blocked Users' &&
                 (<div className='flex'>
                     {FriendsOffIcon}
-                    {/* <img className='h-[70px] w-[50px]' src={FrindsImage}/> */}
                     <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">{blockedFriendsNumbre}</h2>
                 </div>)}
             </div>
-          </Table.Thead>
+    <ScrollArea h={200} type='never'>
+        <Table >
           {value === 'Friends list' ?
-          (Object.keys(rows).length ?
-            (<ScrollArea h={200} type='never'>
-            <Table.Tbody>
-            {rows}
-            </Table.Tbody>
-            </ScrollArea>) :
-            (<Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
+    ( <Table.Tbody>
+          {Object.keys(rows).length ?
+            rows :  
+            (<Table.Tr><Table.Td>
+            <Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
               Add Freinds to shows them here
-            </Blockquote>)
-          )
+            </Blockquote>
+            </Table.Td></Table.Tr>)}
+            </Table.Tbody>)
           :
-        (blockedFriendsNumbre &&
+          (blockedFriendsNumbre &&
             <ScrollArea h={200} type='never'>
             <Table.Tbody>
-            {blockedRows}
+              <BlockedFriends /> {/* fetch list of blocked friends here and pass it to this component becouse i need blocked friends number here */}
             </Table.Tbody>
             </ScrollArea>)}
         </Table>
-    </div>
+      </ScrollArea>
+      </div>
+    // </div>
   );
 }
 

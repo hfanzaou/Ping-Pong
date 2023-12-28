@@ -1,4 +1,5 @@
 
+
 function setup() {
   
   socket = io();
@@ -27,6 +28,7 @@ function draw() {
       gameLoop();
     }
 
+    
     circle(ball.x, ball.y, BALL_DIAMETER);
     rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
     rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
@@ -36,6 +38,7 @@ function draw() {
     line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
     drawingContext.setLineDash([0, 0]);
     noStroke();
+    update = false;
   }
 }
 
@@ -125,18 +128,31 @@ function eventListeners() {
   });
 
   socket.on('updateBall', (ballPos) => {
-    ball.x = ballPos.x;
-    ball.y = ballPos.y;
-    redraw();
+    // if (ball.xdir !== ballPos.xdir || ball.ydir !== ballPos.ydir) {
+      // ball.ydir = ballPos.ydir;
+      // ball.xdir = ballPos.xdir;
+      // ball.speed += INC_SPEED;
+      // ball.x += (ball.xdir * ball.speed);
+      // ball.y += (ball.ydir * ball.speed);
+      // update = true;
+      ball.x = ballPos.x;
+      ball.y = ballPos.y;
+      redraw();
+    // }
   });
 
   socket.on('updateScore', (payload) => {
     player1.score = payload.player1Score;
     player2.score = payload.player2Score;
-    ball = payload.ball;
+    ball.x = WIDTH / 2;
+    ball.y = HEIGHT / 2;
+    ball.xdir *= -1;
+    ball.ydir = 0;
+    ball.speed = INITIAL_SPEED;
     goalScored = true;
-    console.log("Goal Scored");
-    console.log(ball);
+      setTimeout(() => {
+        goalScored = false;
+      }, 500);
     redraw();
   });
 

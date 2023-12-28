@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode } from '@nestjs/common';
 import { GetUser } from '../auth/decorator'
 import { FTAuthGuard, JwtGuard } from '../auth/guard';
 import { UserService } from './user.service';
@@ -12,7 +12,7 @@ export class UserController {
     }
     @Get('avatar')
     async getImage(@Req() req) {
-        console.log(req.user.id)
+        ////console.log(req.user.id)
         return  {avatar: await this.userService.getUserAvatar(req.user.id)};
     }
     @Get('name')
@@ -22,23 +22,39 @@ export class UserController {
     }
     @Get('userid')
     async getProfileById(@Req() req, @Query('id') id: string) {
-        console.log('-------------------------------');
-        //console.log(intId);
+        //console.log('-------------------------------');
+        ////console.log(intId);
         const userId: number = +id;
         return (this.userService.getProfileById(userId));
     }
     @Get('profile')
     async getProfile(@Req()  req) {
-        console.log(req.user.id)
+        //console.log(req.user.id)
         return (await this.userService.getProfile(req.user.id));
     }
     @Get('2fa')
     async getTwoFaState(@Req() req) {
-        console.log('in 2fa state');
+        //console.log('in 2fa state');
         return (await this.userService.getTwoFaState(req.user.id));
     }
     @Get('list')
     async getUsersList(@Req() req) {
+        console.log('id = ' + req.user.id);
+        console.log(req.user.id.state);
         return (await this.userService.getUsersList(req.user.id));
+    }
+    @Get('friend/list')
+    async getFriendsList(@Req() req) {
+        return (await this.userService.getFriendsList(req.user.id));
+    }
+    @Post('add/friend')
+    @HttpCode(201)
+    async addFriend(@Req() req, @Body() body) {
+        await this.userService.addFriend(req.user.id, body.name);
+    }
+    @Post('acceptfriend')
+    @HttpCode(201)
+    async acceptFriend(@Req() req, @Body() body) {
+        return (await this.userService.acceptFriend(req.user.id, body.name));
     }
 }

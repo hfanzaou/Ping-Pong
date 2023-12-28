@@ -1,12 +1,8 @@
 interface FriendInterface {
-    friendsNumber: number;
-    friends: [
-        avatar: string,
-        name: string,
-        status: string,
-        email: string,
-        rate: number,
-    ]
+    avatar: string;
+    name: string;
+    status: string;
+    level: number;
 }
 
 export default FriendInterface
