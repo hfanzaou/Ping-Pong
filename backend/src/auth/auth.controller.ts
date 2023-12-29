@@ -17,7 +17,43 @@ export class AuthController {
 	constructor(authService: AuthService) {
 		this.authService = authService;
 	}
+
+	@Post('signup/pass')
+	@HttpCode(201)
+	async signupPass(@Res() res, @Body() body) {	
+		console.log(body);
+		const token = await this.authService.signupPass(body);
+		res.cookie('jwt', token, {
+			path:'/',
+			httpOnly: true,
+		});
+		res.redirect('http://localhost:3000/settings');
+	}
+	@Post('login/pass')
+	@HttpCode(201)
+	async loginPass(@Res() res, @Body() body) {
+
+		const user = await this.authService.validateUserWithPass(body);
+		if (user && user.twoFaAuth) ///2fa enabled need an access token that only enables to verify code
+		{
+			const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
+			res.cookie('jwt', token, {
+				path:'/',
+				httpOnly: true,
+			});
+			res.redirect('http://localhost:3000/auth');
+			return;
+		}
+		const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
+		res.cookie('jwt', token, {
+			path:'/',
+			httpOnly: true,
+		});
+		//res.redirect('http://localhost:3000');
+		res.send('done');
+	}
 	/////to verify user token////
+	
 	@Get('verify')
   	@UseGuards(JwtTwoFaGuard)
   	verify() {

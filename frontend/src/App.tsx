@@ -20,7 +20,7 @@ import Profile from './pages/private/Profile/Profile'
 import EditeProfile from './pages/private/Settings/FditeProfile/EditeProfail'
 import EnableTowFactor from './pages/private/Settings/EnableTowFactor'
 import Game from './pages/private/Game/Game'
-import Chat from './pages/private/Chat/Chat'
+import ChatApp from './pages/private/Chat/ChatApp'
 
 import axios from 'axios'
 import Auth from './pages/public/Auth'
@@ -101,7 +101,7 @@ function App()  {
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-          <Route path='/Chat' element={hasToken ? <Chat avatar={avatar} />  : <Login/>}/>
+          <Route path='/Chat' element={hasToken ? <ChatApp />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
           <Route path={'/'+userName+'/public/profile'} element={hasToken ? <UserProfile setUserName={setUserName} userName={userName} avatar={avatar}/> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
