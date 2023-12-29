@@ -133,7 +133,7 @@ function Authentication(props: PaperProps) {
           <div>
 
             <Login/>
-          <Button color='gray' type="submit" radius="xl">
+          <Button onClick={handelSubmit} color='gray' type="submit" radius="xl">
             {upperFirst(type)}
           </Button>
           </div>
