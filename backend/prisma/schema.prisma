@@ -24,7 +24,7 @@ model User {
   avatar         String?
   state          String        @default("Offline")
   twoFaAuth      Boolean
-  twoFaSecret    Json?
+  twoFaSecret    Json?         
   friends        User[]        @relation("Friends")
   friendOf       User[]        @relation("Friends")
   blocked        User[]        @relation("Blocked")
