@@ -21,13 +21,13 @@ export class AuthController {
 	@Post('signup/pass')
 	@HttpCode(201)
 	async signupPass(@Res() res, @Body() body) {	
-		console.log(body);
+		//console.log(body);
 		const token = await this.authService.signupPass(body);
 		res.cookie('jwt', token, {
 			path:'/',
 			httpOnly: true,
 		});
-		res.redirect('http://localhost:3000/settings');
+		res.send('done');
 	}
 	@Post('login/pass')
 	@HttpCode(201)
@@ -41,7 +41,7 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			res.redirect('http://localhost:3000/auth');
+			res.send({"2fa": true});
 			return;
 		}
 		const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
@@ -50,7 +50,7 @@ export class AuthController {
 			httpOnly: true,
 		});
 		//res.redirect('http://localhost:3000');
-		res.send('done');
+		res.send({"2fa": false});
 	}
 	/////to verify user token////
 	
