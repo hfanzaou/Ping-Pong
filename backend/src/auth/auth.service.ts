@@ -13,6 +13,7 @@ import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import * as speakeasy from 'speakeasy';
 import { IsBase32 } from 'class-validator';
+import { AuthDto, FAuthDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,53 @@ export class AuthService {
 				private jwt: JwtService,
 				private config: ConfigService) {}
 	
+	
+	
+	async signupPass(body: FAuthDto)
+	{
+		const hash = await argon.hash(body.password);
+		//save the new user int the db
+		try {
+			const user = await this.prisma.user.create({
+				data: {
+				 username: body.name,
+				 email: body.email,
+				 twoFaAuth: false,
+				 hash
+				},
+			});
+			//return saved user
+			const payload = {
+				sub: user.id,
+				userID: user.id,
+				isTwoFaAuth: user.twoFaAuth,
+			}
+			const token = await this.signToken(payload);
+			return token;
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === 'P2002')
+					throw new ForbiddenException('Already taken');
+			}
+			throw error;
+		}
+	}
+	async validateUserWithPass(body: AuthDto)
+	{
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					email: body.email,
+				},
+			});
+			if (!user) throw new ForbiddenException('incorret credentials');
+			const pass = await argon.verify(user.hash, body.password);
+			if (!pass) throw new ForbiddenException('incorret credentials');
+			return (user);
+		} catch(error) {
+			throw error;
+		}
+	}
 	//42 api
 	async signup(dto: FTUser)
 	{
@@ -65,7 +113,7 @@ export class AuthService {
 	async signToken(payload: {sub: number, userID: number, isTwoFaAuth: boolean}) : Promise<string> {
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
-			//expiresIn: '15m',
+			expiresIn: '60m',
 			secret: secret,
 		});
 		//console.log('console in signToken');
