@@ -76,8 +76,11 @@ const Uploadd = ({setUserImage, image, setSave}: {setUserImage: Function, image:
                 accept="image/png,image/jpeg,image/gif"
               />
               <Button
+                        radius={'xl'}
+                        color='gray'
+                        mb={10}
                 onClick={() => fileRef.current?.click()}
-              >Upload something!
+              >Upload Avatar
               </Button>
             </>}
       </div>

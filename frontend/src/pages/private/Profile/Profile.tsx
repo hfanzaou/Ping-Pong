@@ -11,7 +11,7 @@ export function ProfileSections({avatar, setUserName}: {avatar: string, setUserN
     return (
       <div>
         <SimpleGrid
-              cols={{ base: 1, sm: 1, lg: 2 }}
+              cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
               spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
               verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
@@ -19,7 +19,7 @@ export function ProfileSections({avatar, setUserName}: {avatar: string, setUserN
           <Achievements />
         </SimpleGrid>
         <SimpleGrid 
-        cols={{ base: 1, sm: 1, lg: 2 }}
+        cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
         spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
         verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >

@@ -5,7 +5,9 @@ function Chat({avatar} : {avatar: string}) {
     return (
         <div>
             <Header avatar={avatar}/>
-            <h1>I am the Chat page ---- </h1>
+            <div className=''>
+                <h1>I am the Chat page ---- </h1>
+            </div>
         </div>
     );
 }
