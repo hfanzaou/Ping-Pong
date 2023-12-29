@@ -5,6 +5,7 @@ import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
 import {MdChildFriendly} from 'react-icons/md';
 import AchievementsCards from './AchievementCards';
 import data from './AllAchievement.json';
+// import testDataAchievement from './testDataAchievement.json';
 import AchievementsInterface from './AchievementInterface';
 import axios from 'axios';
 
@@ -22,6 +23,7 @@ import axios from 'axios';
 
 function  Achievement() {
     const [achievements, setAchievements] = useState<any>([]);
+
     useEffect(() => {
         const getAchievements = async () => {
             await axios.get("http://localhost:3001/user/achievements")
@@ -36,15 +38,15 @@ function  Achievement() {
     getAchievements();
 }, []);
 
-data[0].type = achievements['achievement1'];
-data[1].type = achievements['achievement2'];
-data[2].type = achievements['achievement3'];
-data[3].type = achievements['achievement4'];
-data[4].type = achievements['achievement5'];
+// data[0].type = achievements['achievement1'];
+// data[1].type = achievements['achievement2'];
+// data[2].type = achievements['achievement3'];
+// data[3].type = achievements['achievement4'];
+// data[4].type = achievements['achievement5'];
 
     const matches = data.map((item) => (
         <div key={item.name}>
-            <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.image}/>        
+            <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.id}/>        
         </div>
   ));
   

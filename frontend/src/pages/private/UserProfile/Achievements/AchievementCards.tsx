@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Group, HoverCard, Image, Text } from "@mantine/core";
 import OneAchievementInterface from "./OneAchievementInterface";
-import imagge from "./4304494.jpg"
+import imagge from "./4640282_award_first_medal_place_premium_icon.png"
 
 function AchievementCards({isTaked, image, title, name}: OneAchievementInterface) {
     return (

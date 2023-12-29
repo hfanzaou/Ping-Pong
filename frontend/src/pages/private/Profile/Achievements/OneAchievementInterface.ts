@@ -3,7 +3,7 @@ interface Achievement{
     // type: AchievementInterface;
     type: boolean;
     name: string;
-    image: string;
+    image: number;
     title: string;
 }
 

@@ -97,7 +97,7 @@ function EnableTowFactor() {
     };
 
   return (
-    <div>
+    <div className="static">
         {!change ?
         <Switch
             label={!towFactor ? "enable 2f" : "disable 2f"}
@@ -112,8 +112,18 @@ function EnableTowFactor() {
                 label="scane Quire Code and set code here"
                 error={invalidCode ? "try again with a valid code" : false}
             />
-            <Button onClick={handleEnableSendCode} disabled={disabled}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
-            <Button onClick={handleCancel} >Cancel</Button>
+            <Button
+                ml={170}
+
+                mt={10}
+                    radius={'xl'}
+                    color='gray'
+            onClick={handleEnableSendCode} disabled={disabled}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
+            <Button 
+                mt={10}
+                    radius={'xl'}
+                    color='gray'
+            onClick={handleCancel} >Cancel</Button>
             </div> :
             <div>
             <TextInput
@@ -121,8 +131,16 @@ function EnableTowFactor() {
                 label="push your 2f code to disable it"
                 error={invalidCode ? "set a valid code" : false}
             />
-            <Button onClick={handleDisableSendCode} disabled={disabled}>Disable</Button>
-            <Button onClick={handleCancel} >Cancel</Button>
+            <Button 
+                mt={10}
+                    radius={'xl'}
+                    color='gray'
+            onClick={handleDisableSendCode} disabled={disabled}>Disable</Button>
+            <Button 
+                mt={10}
+                    radius={'xl'}
+                    color='gray'
+            onClick={handleCancel} >Cancel</Button>
         </div>)
         }
     </div>

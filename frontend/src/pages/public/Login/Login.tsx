@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Login.css'
 import axios from 'axios';
+import { Button } from '@mantine/core';
+
 
 function Login() {
 
@@ -15,16 +17,14 @@ function Login() {
   };
 
   return (
-    <div className='bg-yellow-900'>
-    <div className='h-screen flex items-center justify-center'>
-      <h1 className="text-1xl font-bold text-blue-50">
-        Login with 42 intranet to Play Pong game with others
-      </h1>
-      <button className="bg-sky-500" onClick={handleClick}>
-        Play game
-      </button>
-    </div>
-    </div>
+    // <div className='h-screen flex items-center justify-center'>
+    //   <h1 className="text-1xl font-bold text-blue-50">
+    //     Login with 42 intranet to Play Pong game with others
+    //   </h1>
+      <Button className="bg-gray-500 rounded-full" color='gray' m={5} radius='xl' onClick={handleClick}>
+        login whith 42
+      </Button>
+    // </div>
   );
 }
 

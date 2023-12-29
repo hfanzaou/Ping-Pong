@@ -9,7 +9,9 @@ import '@mantine/core/styles.css'
 import Cookies from 'js-cookie'
 import './index.css'
 
-import Login from './pages/public/Login/Login'
+import Login from './pages/public/Login/Authentication';
+// import Login from './pages/public/Login/Login'
+
 import Header from './Layout/Header/Header'
 import Footer from './Layout/Footer/Footer'
 import  Home from './pages/private/Home/Home'
