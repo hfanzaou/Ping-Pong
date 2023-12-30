@@ -105,7 +105,9 @@ export class UserService {
                     id: true,
                     username: true,
                     avatar: true,
-                    state: true
+                    state: true,
+                    friends: {where: {id: id}, select: {id: true}},
+                    friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
             
@@ -306,7 +308,9 @@ export class UserService {
                 return false;
               }).map(async (obj) => {
                 const avatar = await this.getUserAvatar(obj.id);
-                return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state };
+                const friendship: string = obj.friends && obj.friendOf ? "friends"
+                : !obj.friends && obj.friendsOf ? "pending": "notfriends";
+                return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
               })); 
          return (usersre);     
     }
