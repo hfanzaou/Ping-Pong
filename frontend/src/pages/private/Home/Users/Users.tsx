@@ -10,6 +10,8 @@ function Users() {
   const [searchInput, setSearchInput] = useState("");
   const [addButton, setAddButton] = useState<boolean>(false);
   
+    const [friendship, setFriendship] = useState<string>("notfriends");
+
   useEffect(() => {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
@@ -81,9 +83,15 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
         </Group>
 
+        {friendship === 'notfriends' ?
         <Button radius='lg' onClick={() => handleAddFriend(item.name)} disabled={addButton}>
           Add to friends
+        
+        </Button> :
+        <Button radius='lg' onClick={() => handleAddFriend(item.name)} disabled={addButton}>
+          Remove Friend request
         </Button>
+        }
         </div>
       </Table.Td>
     </Table.Tr>
