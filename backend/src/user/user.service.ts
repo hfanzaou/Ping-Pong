@@ -350,8 +350,12 @@ export class UserService {
                 return false;
               }).map(async (obj) => {
                 const avatar = await this.getUserAvatar(obj.id);
-                const friendship: string = obj.friends[0] && obj.friendOf[0] ? "remove friend"
-                : !obj.friends[0] && obj.friendOf[0] ? "pending request": "add friend";
+                let friendship: string;
+                if (obj.friends && obj.friendOf)
+                {
+                    friendship = obj.friends[0] && obj.friendOf[0] ? "remove friend"
+                    : !obj.friends[0] && obj.friendOf[0] ? "remove request": "add friend";
+                }
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
               }));
             //    const to_cons = usersre;
