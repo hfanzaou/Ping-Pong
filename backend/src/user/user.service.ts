@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { isInstance } from 'class-validator';
 import { createReadStream, readFileSync } from 'fs';
 import { of } from 'rxjs';
-import { userDto } from 'src/auth/dto';
+import { listDto, userDto } from 'src/auth/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -131,7 +131,6 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
-            
             return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
@@ -201,7 +200,6 @@ export class UserService {
                     state: true
                 }},
             }})
-            console.log(users);
             return await this.extarctuserinfo(users.blocked, id);
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
@@ -277,6 +275,29 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async removeReq(id: number, name: string)
+    {
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: { 
+                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
+                    username: name,
+                }
+            });
+            if(!user)
+                throw HttpStatus.NOT_FOUND;
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {friends: {
+                    disconnect: {id: user.id}
+                }}
+            })
+        } catch(error) {
+            if (error.isInstanceOf(HttpStatus.NOT_FOUND))
+                throw HttpStatus.NOT_FOUND;
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
     ///Achievements////
     // async addAchievement(id: number, achievement: boolean) {
     //     try { 
@@ -320,7 +341,7 @@ export class UserService {
         }    
     }
     ////extartacting user info functions////
-    async extarctuserinfo(users: any, id: number)
+    async extarctuserinfo(users: listDto[], id: number)
     {
             const usersre: userDto[] = await Promise.all(users.filter((obj) => {
                 if (obj.id != id) {
@@ -329,10 +350,10 @@ export class UserService {
                 return false;
               }).map(async (obj) => {
                 const avatar = await this.getUserAvatar(obj.id);
-                const friendship: string = obj.friends.id && obj.friendOf.id ? "friends"
-                : !obj.friends.id && obj.friendsOf.id ? "pending": "add friend";
+                const friendship: string = obj.friends[0] && obj.friendOf[0] ? "remove friend"
+                : !obj.friends[0] && obj.friendOf[0] ? "pending request": "add friend";
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
-              })); 
+              }));
             //    const to_cons = usersre;
             //    let i = 0;
             //   while (to_cons[i])

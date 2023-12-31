@@ -3,6 +3,7 @@ import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, Hover
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
 import data from './test.json'
+import { IconTent } from '@tabler/icons-react';
 
 function Users() {
   const [userList, setUsersList] = useState<UsersInterface[]>([]);
@@ -50,36 +51,18 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-  const handleAddFriend = async (name: string) => {
-      console.log("this name: ",name);
-      const updatedUserList = userList.map(user => 
-          user.name === name 
-          ? {...user, friendship: 'pending'}
-          : user
-      );
-      
-      setUsersList(updatedUserList);
-      
-      console.log("user List: ", userList);
-      console.log("Update List: ", updatedUserList);
-      
-      useEffect(() => {
-        console.log("Updated user List: ", userList);
-    }, [userList]);
-
-    //   await axios.post("http://localhost:3001/user/add/friend", {name: name})
-    //   .then((res) => {
-    //     console.log(res.data);
-    // })
-    // .catch((err) => {
-    //     console.log("Error in send post request to add friend ",err);
-    // })
-  };
 
 const handleRequest = async (name: string, friendship: string) => {
     console.log(name);
 
-    if (friendship === 'pending') {
+    if (friendship === 'add friend') {
+      const updatedUserList = searchList.map(user => 
+          user.name === name 
+          ? {...user, friendship: 'pending'}
+          : user
+      );
+      setUsersList(updatedUserList);
+      setSearchList(updatedUserList);
               await axios.post("http://localhost:3001/user/add/friend", {name: name})
       .then((res) => {
         console.log(res.data);
@@ -87,15 +70,8 @@ const handleRequest = async (name: string, friendship: string) => {
     .catch((err) => {
         console.log("Error in send post request to add friend ",err);
     })
-        const updatedUserList = searchList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'notfriends'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
 
-    }else if (friendship === 'notfriends') {
+    }else if (friendship === 'pending') {
         const updatedUserList = userList.map(user => 
             user.name === name 
             ? {...user, friendship: 'pending'}
@@ -103,7 +79,7 @@ const handleRequest = async (name: string, friendship: string) => {
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/remove/friend/request", {name: name})
+        await axios.post("http://localhost:3001/user/remove/request", {name: name})
         .then((res) => {
           console.log(res.data);
         })
@@ -139,18 +115,17 @@ const handleRequest = async (name: string, friendship: string) => {
         </Group>
 <div className='mr-6'>
 
-          {item.friendship === 'friends' ?
-           <p> friend </p> :
-           <Button  radius='xl' color='gray' onClick={() => handleRequest(item.name, item.friendship)}>
-            {item.friendship === 'pending' ?
-                <p>Remove request </p>:
-                <p>Add to Friends </p>
+          {/* {item.friendship === 'friends' ?
+           <p> friend </p> : */}
+           <Button  radius='xl' color='gray' onClick={() => handleRequest(item.name, item.friendship)} disabled={item.friendship === 'friends' ? true: false}>
+            {item.friendship &&
+                item.friendship 
   }
         </Button>
-        //  <Button radius='xl' color='gray' onClick={() => handleAddFriend(item.name)}>
+        {/* //  <Button radius='xl' color='gray' onClick={() => handleAddFriend(item.name)}>
         //  Add to friends
-        //  </Button>
-        }
+        //  </Button> */}
+        {/* } */}
         </div>
     </div>
       </Table.Td>
