@@ -14,7 +14,7 @@ function BlockedFriends() {
             .then((res) => {
              setBlockedFriendList(res.data);
             }).catch(err => {
-              setBlockedFriendList(testdata);
+            //   setBlockedFriendList(testdata);
                 console.error("Error in fetching blocked friend list: ", err);
             })
         };

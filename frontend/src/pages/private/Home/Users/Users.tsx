@@ -69,7 +69,7 @@ const handleRequest = async (name: string, friendship: string) => {
      .catch((err) => {
         console.log("Error in send post request to add friend ",err);
      })
-    }else if (friendship === 'pending request') {
+    }else if (friendship === 'remove request') {
         const updatedUserList = userList.map(user => 
             user.name === name 
             ? {...user, friendship: 'add friend'}
