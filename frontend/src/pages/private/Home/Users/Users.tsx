@@ -8,17 +8,21 @@ function Users() {
   const [userList, setUsersList] = useState<UsersInterface[]>([]);
   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
-  const [addButton, setAddButton] = useState<boolean>(false);
+//   const [addButton, setAddButton] = useState<boolean>(false);
   
+
   useEffect(() => {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        // setUsersList(data);
-        // setSearchList(data);
-        setUsersList(res.data);
-        setSearchList(res.data);
+        setUsersList(data);
+        setSearchList(data);
+        // setUsersList(res.data);
+        // setSearchList(res.data);
+        console.log("Users list00000-->: ", res.data);
       }).catch(err => {
+        setUsersList(data);
+        setSearchList(data);
         console.error("Error in fetching Users list: ", err);
       })
     };
@@ -46,16 +50,57 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-  const handleAddFriend = async (name: string) => {
-      console.log(name);
+const handleRequest = async (name: string, friendship: string) => {
+    console.log("Name from handle Request: ", name);
+
+    if (friendship === 'add friend') {
+        const updatedUserList = searchList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'pending'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
       await axios.post("http://localhost:3001/user/add/friend", {name: name})
       .then((res) => {
-        setAddButton(true);
         console.log(res.data);
-      })
-      .catch((err) => {
+     })
+     .catch((err) => {
         console.log("Error in send post request to add friend ",err);
-      })
+     })
+    }else if (friendship === 'pending request') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'add friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/remove/request", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to remove request ",err);
+        })
+    } else if (friendship === 'remove friend') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'add friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/remove/friend", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to remove friend ",err);
+        })
+    }
+    // window.location.reload();
+
   };
 
   const search = searchList.map((item) => (
@@ -72,19 +117,22 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             </HoverCard.Dropdown>
           </HoverCard>
           <div>
-            <Text fz="sm" fw={500}>
+            <Text fz="md" fw={800}>
               {item.name}
             </Text>
-            <Text fz="xs" c="dimmed">
+            <Text fz="sm" fw={500} c="dimmed">
               {item.state}        {/*this state was need to be real time*/}
             </Text>
           </div>
         </Group>
+<div className='mr-6'>
+{/* item.name + ' sent you a friend request'  */}
 
-        <Button radius='lg' onClick={() => handleAddFriend(item.name)} disabled={addButton}>
-          Add to friends
+           <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
+                {item.friendship}
         </Button>
         </div>
+    </div>
       </Table.Td>
     </Table.Tr>
   ));
