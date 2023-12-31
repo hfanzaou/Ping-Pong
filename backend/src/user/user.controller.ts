@@ -21,6 +21,10 @@ export class UserController {
         const name = await this.userService.getUsername(req.user.id)
         return ({name: name});
     }
+    @Get('profile')
+    async getProfile(@Req() req, @Body() body) {
+        return (await this.userService.getProfile(req.user.id, body.name));
+    }
     // @Get('userid')
     // async getProfileById(@Req() req, @Query('id') id: string) {
     //     //console.log('-------------------------------');

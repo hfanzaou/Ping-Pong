@@ -5,4 +5,5 @@ export class userDto {
 	name: string;
 	avatar: string;
 	state: string;
+	friendship: string;
 }

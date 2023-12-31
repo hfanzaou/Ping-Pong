@@ -8,6 +8,8 @@ import { Request, Response } from 'express';
 import { toBuffer, toFileStream } from 'qrcode';
 import JwtTwoFaGuard from './guard/twoFaAuth.guard';
 import { throwError } from 'rxjs';
+import { FTAuth } from './42startegy';
+import { FAuthDto } from './dto';
 
 @Controller('')
 export class AuthController {
@@ -20,8 +22,8 @@ export class AuthController {
 
 	@Post('signup/pass')
 	@HttpCode(201)
-	async signupPass(@Res() res, @Body() body) {	
-		//console.log(body);
+	async signupPass(@Res() res, @Body() body: FAuthDto) {	
+		console.log(body);
 		const token = await this.authService.signupPass(body);
 		res.cookie('jwt', token, {
 			path:'/',

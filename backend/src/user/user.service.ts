@@ -1,8 +1,9 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { isInstance } from 'class-validator';
 import { createReadStream, readFileSync } from 'fs';
 import { of } from 'rxjs';
-import { userDto } from 'src/auth/dto';
+import { listDto, userDto } from 'src/auth/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -54,27 +55,47 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-    // async getProfile(id: number) {
-    //     try {
-    //         let user = await this.prismaservice.user.findUnique({
-    //             where: {
-    //                 id: id
-    //             }, select: {
-    //                 username: true,
-    //                 avatar: true,
-    //                 firstName: true,
-    //                 lastName: true,
-    //             }
-    //         })
-    //         if (!user)
-    //             throw new NotFoundException('USER NOT FOUND');
-    //         return user;
-    //     } catch(error) {
-    //         if (error instanceof NotFoundException)
-    //             throw HttpStatus.NOT_FOUND;
-    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
-    //     }
-    // }
+    async getProfile(id: number, name: string) {
+        try {
+            console.log(name);
+            if (!name)
+            throw new NotFoundException('USER NOT FOUND');
+            let user = await this.prismaservice.user.findUnique({
+                where: {
+                    username: name,
+                    NOT: {
+                        blockedFrom: {some: {id: id}},
+                        blocked: {some: {id: id}}
+                    },
+                }, select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                    achievement: true,
+                    state: true
+                }
+            })
+            if (!user)
+                throw new NotFoundException('USER NOT FOUND');
+            const avatar = await this.getUserAvatar(user.id);
+            const matchhistory = await this.getMatchHistory(user.id);
+            const retuser = {
+                username: user.username, 
+                avatar,
+                matchhistory,
+                state: user.state,
+                level: user.id,
+                achievements: user.achievement
+            }
+            return retuser;
+        } catch(error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				//if (error.code === 'P2015')
+					throw new NotFoundException('USER NOT FOUND');
+            }
+            throw error;
+        }
+    }
     async getTwoFaState(id: number)
     {
         try {
@@ -110,7 +131,6 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
-            
             return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
@@ -180,7 +200,6 @@ export class UserService {
                     state: true
                 }},
             }})
-            console.log(users);
             return await this.extarctuserinfo(users.blocked, id);
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
@@ -256,6 +275,29 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async removeReq(id: number, name: string)
+    {
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: { 
+                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
+                    username: name,
+                }
+            });
+            if(!user)
+                throw HttpStatus.NOT_FOUND;
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {friends: {
+                    disconnect: {id: user.id}
+                }}
+            })
+        } catch(error) {
+            if (error.isInstanceOf(HttpStatus.NOT_FOUND))
+                throw HttpStatus.NOT_FOUND;
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
     ///Achievements////
     // async addAchievement(id: number, achievement: boolean) {
     //     try { 
@@ -299,7 +341,7 @@ export class UserService {
         }    
     }
     ////extartacting user info functions////
-    async extarctuserinfo(users: any, id: number)
+    async extarctuserinfo(users: listDto[], id: number)
     {
             const usersre: userDto[] = await Promise.all(users.filter((obj) => {
                 if (obj.id != id) {
@@ -308,11 +350,19 @@ export class UserService {
                 return false;
               }).map(async (obj) => {
                 const avatar = await this.getUserAvatar(obj.id);
-                const friendship: string = obj.friends && obj.friendOf ? "friends"
-                : !obj.friends && obj.friendsOf ? "pending": "notfriends";
+                const friendship: string = obj.friends[0] && obj.friendOf[0] ? "remove friend"
+                : !obj.friends[0] && obj.friendOf[0] ? "pending request": "add friend";
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
-              })); 
-         return (usersre);     
+              }));
+            //    const to_cons = usersre;
+            //    let i = 0;
+            //   while (to_cons[i])
+            //   {
+            //     delete to_cons[i].avatar;
+            //     console.log(to_cons[i]);
+            //     i++;
+            //   }
+                return (usersre);     
     }
 
     /////match history/////
@@ -323,12 +373,15 @@ export class UserService {
                 where : {
                     OR: [
                         {playerId: id},
-                        {player2Id: id},
+                        {player2Id: id}
                     ]},
                 select : {players: {where: {
                         NOT: {id: id},
                 }, select: {id: true, username: true }}, playerScore: true, player2Score: true, win: true},
             })
+            if (!matchhistory)
+                return [];
+            console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
                 console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
