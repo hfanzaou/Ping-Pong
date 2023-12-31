@@ -137,7 +137,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
     </Table.Td>
      <Table.Td>
       <Button radius='lg' onClick={() => handleAccepteFriend(item.name)}>
-        Accepte friend
+        Accept friend
       </Button>
     </Table.Td>
   </Table.Tr>
@@ -147,7 +147,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = rows.length;
-  const blockedFriendsNumbre = 0;
+  const blockedFriendsNumbre = 1;
 
   return (
     // <div className='relative flex '>

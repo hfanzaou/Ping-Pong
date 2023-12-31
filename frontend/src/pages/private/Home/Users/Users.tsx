@@ -82,7 +82,7 @@ const handleRequest = async (name: string, friendship: string) => {
           console.log(res.data);
         })
         .catch((err) => {
-          console.log("Error in send post request to remove request ",err);
+          console.log("Error in send post request to remove request",err);
         })
     } else if (friendship === 'remove friend') {
         const updatedUserList = userList.map(user => 
@@ -98,6 +98,21 @@ const handleRequest = async (name: string, friendship: string) => {
         })
         .catch((err) => {
           console.log("Error in send post request to remove friend ",err);
+        })
+    }else if (friendship === 'accept friend') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'remove friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/accept/friend", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to accept friend ",err);
         })
     }
     // window.location.reload();
