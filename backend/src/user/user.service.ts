@@ -117,10 +117,8 @@ export class UserService {
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
-                    NOT: {
-                        blockedFrom: {some: {id: id}},
-                        blocked: {some: {id: id}}
-                    }
+                    blockedFrom: {every: {id: {not: id}}},
+                    blocked: {every: {id: {not: id}}},
                 },
                 select: {
                     id: true,
@@ -131,6 +129,7 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
+            console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
@@ -142,6 +141,8 @@ export class UserService {
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
+                    blockedFrom: {every: {id: {not: id}}},
+                    blocked: {every: {id: {not: id}}},
                     friends: {
                         some: {
                             id: id
