@@ -8,8 +8,9 @@ function Users() {
   const [userList, setUsersList] = useState<UsersInterface[]>([]);
   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
-  const [addButton, setAddButton] = useState<boolean>(false);
+//   const [addButton, setAddButton] = useState<boolean>(false);
   
+
   useEffect(() => {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
@@ -18,7 +19,10 @@ function Users() {
         // setSearchList(data);
         setUsersList(res.data);
         setSearchList(res.data);
+        console.log("Users list00000-->: ", res.data);
       }).catch(err => {
+        setUsersList(data);
+        setSearchList(data);
         console.error("Error in fetching Users list: ", err);
       })
     };
@@ -47,15 +51,68 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
   const handleAddFriend = async (name: string) => {
-      console.log(name);
-      await axios.post("http://localhost:3001/user/add/friend", {name: name})
+      console.log("this name: ",name);
+      const updatedUserList = userList.map(user => 
+          user.name === name 
+          ? {...user, friendship: 'pending'}
+          : user
+      );
+      
+      setUsersList(updatedUserList);
+      
+      console.log("user List: ", userList);
+      console.log("Update List: ", updatedUserList);
+      
+      useEffect(() => {
+        console.log("Updated user List: ", userList);
+    }, [userList]);
+
+    //   await axios.post("http://localhost:3001/user/add/friend", {name: name})
+    //   .then((res) => {
+    //     console.log(res.data);
+    // })
+    // .catch((err) => {
+    //     console.log("Error in send post request to add friend ",err);
+    // })
+  };
+
+const handleRequest = async (name: string, friendship: string) => {
+    console.log(name);
+
+    if (friendship === 'pending') {
+              await axios.post("http://localhost:3001/user/add/friend", {name: name})
       .then((res) => {
-        setAddButton(true);
         console.log(res.data);
-      })
-      .catch((err) => {
+    })
+    .catch((err) => {
         console.log("Error in send post request to add friend ",err);
-      })
+    })
+        const updatedUserList = searchList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'notfriends'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+
+    }else if (friendship === 'notfriends') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'pending'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/remove/friend/request", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to remove friend ",err);
+        })
+    }
+    // window.location.reload();
+
   };
 
   const search = searchList.map((item) => (
@@ -72,19 +129,30 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             </HoverCard.Dropdown>
           </HoverCard>
           <div>
-            <Text fz="sm" fw={500}>
+            <Text fz="md" fw={800}>
               {item.name}
             </Text>
-            <Text fz="xs" c="dimmed">
+            <Text fz="sm" fw={500} c="dimmed">
               {item.state}        {/*this state was need to be real time*/}
             </Text>
           </div>
         </Group>
+<div className='mr-6'>
 
-        <Button radius='lg' onClick={() => handleAddFriend(item.name)} disabled={addButton}>
-          Add to friends
+          {item.friendship === 'friends' ?
+           <p> friend </p> :
+           <Button  radius='xl' color='gray' onClick={() => handleRequest(item.name, item.friendship)}>
+            {item.friendship === 'pending' ?
+                <p>Remove request </p>:
+                <p>Add to Friends </p>
+  }
         </Button>
+        //  <Button radius='xl' color='gray' onClick={() => handleAddFriend(item.name)}>
+        //  Add to friends
+        //  </Button>
+        }
         </div>
+    </div>
       </Table.Td>
     </Table.Tr>
   ));

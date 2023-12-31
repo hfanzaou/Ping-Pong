@@ -3,6 +3,7 @@ interface UsersInterface {
     name: string;
     level: string;
     state: string;
+    friendship: string;
 }
 
 export default UsersInterface
