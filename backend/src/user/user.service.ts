@@ -353,8 +353,9 @@ export class UserService {
                 let friendship: string;
                 if (obj.friends && obj.friendOf)
                 {
-                    friendship = obj.friends[0] && obj.friendOf[0] ? "remove friend"
-                    : !obj.friends[0] && obj.friendOf[0] ? "remove request": "add friend";
+                    friendship = obj.friends[0] && obj.friendOf[0] ? "remove friend":
+                    !obj.friends[0] && obj.friendOf[0] ? "remove request": 
+                    obj.friends[0] && !obj.friendOf[0] ? "accept friend": "add friend";
                 }
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
               }));
