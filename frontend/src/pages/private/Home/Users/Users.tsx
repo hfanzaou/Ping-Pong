@@ -50,55 +50,28 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-  const handleAddFriend = async (name: string) => {
-      console.log("this name: ",name);
-      const updatedUserList = userList.map(user => 
-          user.name === name 
-          ? {...user, friendship: 'pending'}
-          : user
-      );
-      
-      setUsersList(updatedUserList);
-      
-      console.log("user List: ", userList);
-      console.log("Update List: ", updatedUserList);
-      
-      useEffect(() => {
-        console.log("Updated user List: ", userList);
-    }, [userList]);
-
-    //   await axios.post("http://localhost:3001/user/add/friend", {name: name})
-    //   .then((res) => {
-    //     console.log(res.data);
-    // })
-    // .catch((err) => {
-    //     console.log("Error in send post request to add friend ",err);
-    // })
-  };
-
 const handleRequest = async (name: string, friendship: string) => {
-    console.log(name);
+    console.log("Name from handle Request: ", name);
 
-    if (friendship === 'pending') {
-              await axios.post("http://localhost:3001/user/add/friend", {name: name})
-      .then((res) => {
-        console.log(res.data);
-    })
-    .catch((err) => {
-        console.log("Error in send post request to add friend ",err);
-    })
+    if (friendship === 'add friend') {
         const updatedUserList = searchList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'notfriends'}
+            ? {...user, friendship: 'pending'}
             : user
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-
-    }else if (friendship === 'notfriends') {
+      await axios.post("http://localhost:3001/user/add/friend", {name: name})
+      .then((res) => {
+        console.log(res.data);
+     })
+     .catch((err) => {
+        console.log("Error in send post request to add friend ",err);
+     })
+    }else if (friendship === 'pending') {
         const updatedUserList = userList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'pending'}
+            ? {...user, friendship: 'add friend'}
             : user
         );
         setUsersList(updatedUserList);
