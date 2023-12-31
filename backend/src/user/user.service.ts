@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { isInstance } from 'class-validator';
 import { createReadStream, readFileSync } from 'fs';
 import { of } from 'rxjs';
@@ -54,27 +55,47 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
-    // async getProfile(id: number) {
-    //     try {
-    //         let user = await this.prismaservice.user.findUnique({
-    //             where: {
-    //                 id: id
-    //             }, select: {
-    //                 username: true,
-    //                 avatar: true,
-    //                 firstName: true,
-    //                 lastName: true,
-    //             }
-    //         })
-    //         if (!user)
-    //             throw new NotFoundException('USER NOT FOUND');
-    //         return user;
-    //     } catch(error) {
-    //         if (error instanceof NotFoundException)
-    //             throw HttpStatus.NOT_FOUND;
-    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
-    //     }
-    // }
+    async getProfile(id: number, name: string) {
+        try {
+            console.log(name);
+            if (!name)
+            throw new NotFoundException('USER NOT FOUND');
+            let user = await this.prismaservice.user.findUnique({
+                where: {
+                    username: name,
+                    NOT: {
+                        blockedFrom: {some: {id: id}},
+                        blocked: {some: {id: id}}
+                    },
+                }, select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                    achievement: true,
+                    state: true
+                }
+            })
+            if (!user)
+                throw new NotFoundException('USER NOT FOUND');
+            const avatar = await this.getUserAvatar(user.id);
+            const matchhistory = await this.getMatchHistory(user.id);
+            const retuser = {
+                username: user.username, 
+                avatar,
+                matchhistory,
+                state: user.state,
+                level: user.id,
+                achievements: user.achievement
+            }
+            return retuser;
+        } catch(error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				//if (error.code === 'P2015')
+					throw new NotFoundException('USER NOT FOUND');
+            }
+            throw error;
+        }
+    }
     async getTwoFaState(id: number)
     {
         try {
@@ -323,12 +344,15 @@ export class UserService {
                 where : {
                     OR: [
                         {playerId: id},
-                        {player2Id: id},
+                        {player2Id: id}
                     ]},
                 select : {players: {where: {
                         NOT: {id: id},
                 }, select: {id: true, username: true }}, playerScore: true, player2Score: true, win: true},
             })
+            if (!matchhistory)
+                return [];
+            console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
                 console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
