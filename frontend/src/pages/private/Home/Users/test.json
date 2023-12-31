@@ -4,21 +4,21 @@
       "name": "Robert Wolfkisser",
       "level": "level 2",
       "state": "ofline",
-      "friendship": "friends"
+      "friendship": "remove friend"
     },
     {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-6.png",
       "name": "Jill Jailbreaker",
       "level": "level 2",
       "state": "ongame",
-      "friendship": "notfriends"
+      "friendship": "add friend"
     },
     {
       "avatar": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png",
       "name": "Henry Silkeater",
       "level": "level 2",
       "state": "ofline",
-      "friendship": "friends"
+      "friendship": "remove friend"
 
     },
     {
@@ -26,7 +26,7 @@
       "name": "Bill Horsefighter",
       "level": "level 2",
       "state": "online",
-      "friendship": "notfriends"
+      "friendship": "add friend"
 
     },
     {
@@ -34,7 +34,7 @@
       "name": "Jeremy Footviewer",
       "level": "level 2",
       "state": "ongame",
-      "friendship": "pending"
+      "friendship": "pending request"
 
     }
 ]

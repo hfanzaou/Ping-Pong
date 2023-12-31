@@ -16,10 +16,10 @@ function Users() {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        // setUsersList(data);
-        // setSearchList(data);
-        setUsersList(res.data);
-        setSearchList(res.data);
+        setUsersList(data);
+        setSearchList(data);
+        // setUsersList(res.data);
+        // setSearchList(res.data);
         console.log("Users list00000-->: ", res.data);
       }).catch(err => {
         setUsersList(data);
@@ -51,35 +51,48 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-
 const handleRequest = async (name: string, friendship: string) => {
-    console.log(name);
+    console.log("Name from handle Request: ", name);
 
     if (friendship === 'add friend') {
-      const updatedUserList = searchList.map(user => 
-          user.name === name 
-          ? {...user, friendship: 'pending'}
-          : user
-      );
-      setUsersList(updatedUserList);
-      setSearchList(updatedUserList);
-              await axios.post("http://localhost:3001/user/add/friend", {name: name})
-      .then((res) => {
-        console.log(res.data);
-    })
-    .catch((err) => {
-        console.log("Error in send post request to add friend ",err);
-    })
-
-    }else if (friendship === 'pending') {
-        const updatedUserList = userList.map(user => 
+        const updatedUserList = searchList.map(user => 
             user.name === name 
             ? {...user, friendship: 'pending'}
             : user
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
+      await axios.post("http://localhost:3001/user/add/friend", {name: name})
+      .then((res) => {
+        console.log(res.data);
+     })
+     .catch((err) => {
+        console.log("Error in send post request to add friend ",err);
+     })
+    }else if (friendship === 'pending request') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'add friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
         await axios.post("http://localhost:3001/user/remove/request", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to remove request ",err);
+        })
+    } else if (friendship === 'remove friend') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'add friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/remove/friend", {name: name})
         .then((res) => {
           console.log(res.data);
         })
@@ -114,18 +127,11 @@ const handleRequest = async (name: string, friendship: string) => {
           </div>
         </Group>
 <div className='mr-6'>
+{/* item.name + ' sent you a friend request'  */}
 
-          {/* {item.friendship === 'friends' ?
-           <p> friend </p> : */}
-           <Button  radius='xl' color='gray' onClick={() => handleRequest(item.name, item.friendship)} disabled={item.friendship === 'friends' ? true: false}>
-            {item.friendship &&
-                item.friendship 
-  }
+           <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
+                {item.friendship}
         </Button>
-        {/* //  <Button radius='xl' color='gray' onClick={() => handleAddFriend(item.name)}>
-        //  Add to friends
-        //  </Button> */}
-        {/* } */}
         </div>
     </div>
       </Table.Td>
