@@ -29,7 +29,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
-        setFriendList(testdata);
+        // setFriendList(testdata);
         console.error("Error in fetching friend list: ", err);
       })
     };
@@ -38,7 +38,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
         .then((res) => {
             setRequestFriendList(res.data);
         }).catch(err => {
-            setRequestFriendList(testdata);
+            // setRequestFriendList(testdata);
             console.error("Error in fetching friend requests: ", err);
         })
     };

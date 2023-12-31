@@ -16,10 +16,10 @@ function Users() {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        setUsersList(data);
-        setSearchList(data);
-        // setUsersList(res.data);
-        // setSearchList(res.data);
+        // setUsersList(data);
+        // setSearchList(data);
+        setUsersList(res.data);
+        setSearchList(res.data);
         console.log("Users list00000-->: ", res.data);
       }).catch(err => {
         setUsersList(data);
@@ -57,7 +57,7 @@ const handleRequest = async (name: string, friendship: string) => {
     if (friendship === 'add friend') {
         const updatedUserList = searchList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'pending'}
+            ? {...user, friendship: 'remove request'}
             : user
         );
         setUsersList(updatedUserList);
@@ -69,7 +69,7 @@ const handleRequest = async (name: string, friendship: string) => {
      .catch((err) => {
         console.log("Error in send post request to add friend ",err);
      })
-    }else if (friendship === 'pending request') {
+    }else if (friendship === 'remove request') {
         const updatedUserList = userList.map(user => 
             user.name === name 
             ? {...user, friendship: 'add friend'}
