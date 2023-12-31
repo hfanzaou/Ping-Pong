@@ -329,11 +329,19 @@ export class UserService {
                 return false;
               }).map(async (obj) => {
                 const avatar = await this.getUserAvatar(obj.id);
-                const friendship: string = obj.friends && obj.friendOf ? "friends"
-                : !obj.friends && obj.friendsOf ? "pending": "notfriends";
+                const friendship: string = obj.friends.id && obj.friendOf.id ? "friends"
+                : !obj.friends.id && obj.friendsOf.id ? "pending": "add friend";
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
               })); 
-         return (usersre);     
+            //    const to_cons = usersre;
+            //    let i = 0;
+            //   while (to_cons[i])
+            //   {
+            //     delete to_cons[i].avatar;
+            //     console.log(to_cons[i]);
+            //     i++;
+            //   }
+                return (usersre);     
     }
 
     /////match history/////
