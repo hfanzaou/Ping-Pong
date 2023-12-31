@@ -16,10 +16,10 @@ function Users() {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        setUsersList(data);
-        setSearchList(data);
-        // setUsersList(res.data);
-        // setSearchList(res.data);
+        // setUsersList(data);
+        // setSearchList(data);
+        setUsersList(res.data);
+        setSearchList(res.data);
         console.log("Users list00000-->: ", res.data);
       }).catch(err => {
         setUsersList(data);
@@ -57,7 +57,7 @@ const handleRequest = async (name: string, friendship: string) => {
     if (friendship === 'add friend') {
         const updatedUserList = searchList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'pending'}
+            ? {...user, friendship: 'pending request'}
             : user
         );
         setUsersList(updatedUserList);
