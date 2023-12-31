@@ -57,7 +57,7 @@ const handleRequest = async (name: string, friendship: string) => {
     if (friendship === 'add friend') {
         const updatedUserList = searchList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'pending request'}
+            ? {...user, friendship: 'remove request'}
             : user
         );
         setUsersList(updatedUserList);
