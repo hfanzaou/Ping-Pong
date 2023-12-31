@@ -17,6 +17,7 @@ import {
   Stack,
 } from '@mantine/core';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 // import { GoogleButton } from './GoogleButton';
 // import { TwitterButton } from './TwitterButton';
 
@@ -39,15 +40,21 @@ function Authentication(props: PaperProps) {
 
   const handelSubmit = async () => {
     console.log("handelSubmit");
+    console.log("form.values: ", form.values);
     type === 'login' ? await axios.post('http://localhost:3001/login/pass', {
         email: form.values.email,
         password: form.values.password,
         })
         .then((res) => {
-            if (res.status === 200) {
+            if (res.status === 201) {
                 console.log("res: ", res);
+                if(res.data.twofa === true)
+                    window.location.href = "http://localhost:3000/Auth";
+                else
+                    window.location.href = "http://localhost:3000/";
                 // setSingup(true);
             }
+
         })
         .catch((err) => {
             console.error("err in loging in: ", err);
@@ -58,8 +65,9 @@ function Authentication(props: PaperProps) {
         password: form.values.password,
         })
         .then((res) => {
-            if (res.status === 200) {
+            if (res.status === 201) {
                 console.log("res: ", res);
+                window.location.href = "http://localhost:3000/Setting";
                 // setSingup(true);
             }
         })
@@ -98,7 +106,7 @@ function Authentication(props: PaperProps) {
           <TextInput
             required
             label="Email"
-            placeholder="hello@mantine.dev"
+            placeholder="Your email"
             value={form.values.email}
             onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
             error={form.errors.email && 'Invalid email'}
