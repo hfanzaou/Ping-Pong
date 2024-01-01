@@ -5,8 +5,6 @@ import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
 import sectionimage from '../../Home/assite/bg.gif'
 // import { Cookies } from 'react-cookie';
-import Cookies from 'js-cookie'
-
 
 const userInfo = {
     userName: 'rarahhal',
@@ -20,7 +18,6 @@ const userInfo = {
 interface UserCardProps {
     userName: string;
     avatar: string;
-    email: string;
     level: string;
     win: number;
     losses: number;
@@ -32,36 +29,7 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard() {
-
-    // const [image, setImage] = useState<string| undefined>();
-    const [userName, setUserName] = useState<string| undefined>();
-    useEffect(() => {
-        // const getUserAvatar = async () => {
-        //   {/* change to get http://localhost:3000/user/avatar*/}
-        //   await axios.get("http://localhost:3001/user/avatar")
-        //   .then((res) => {
-        //       setImage(res.data.avatar);
-        //   })
-        //   .catch((err) => {
-        //     console.log("Error in geting data in edit profile :", err);
-        //   })
-        // };
-        const getUserNmae = async () => {
-            await axios.get("http://localhost:3001/user/name")
-            .then((res) => {
-                console.log(res.data.name);
-                setUserName(res.data.name);
-            })
-            .catch((err) => {
-              console.log("Error in geting data in edit profile :", err);
-            })
-          };
-          getUserNmae();
-        // getUserAvatar();
-      }, []);
-    
-
+function UserCard({userName, avatar, level, win, losses}: UserCardProps) {
 
   const items = stats.map((stat) => (
     <div key={stat.label}>
@@ -84,7 +52,7 @@ function UserCard() {
             {/* <img className='h-full w-full' src={sectionimage}/> */}
         </Card.Section>
       <Avatar
-        src={userInfo.avatar}
+        src={avatar}
         size={200}
         radius={160}
         mx="auto"
@@ -92,11 +60,10 @@ function UserCard() {
         className={classes.avatar}
         />
       <Text ta="center" fz="lg" fw={500} mt="sm">
-        {/* {userInfo.userName} */}
-        {Cookies.get('userName')}
+        {userName}
       </Text>
       <Text ta="center" fz="sm">
-      {"level "  + userInfo.level}
+      {"level "  + level}
       </Text>
       <Group mt="md" justify="center" gap={30}>
         {items}

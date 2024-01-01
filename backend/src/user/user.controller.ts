@@ -22,8 +22,8 @@ export class UserController {
         return ({name: name});
     }
     @Get('profile')
-    async getProfile(@Req() req, @Body() body) {
-        return (await this.userService.getProfile(req.user.id, body.name));
+    async getProfile(@Req() req, @Query() query) {
+        return (await this.userService.getProfile(req.user.id, query.name));
     }
     // @Get('userid')
     // async getProfileById(@Req() req, @Query('id') id: string) {
