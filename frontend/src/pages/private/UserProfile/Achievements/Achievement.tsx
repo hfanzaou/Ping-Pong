@@ -22,7 +22,6 @@ import axios from 'axios';
 
 
 function  Achievement({achievement}: {achievement: AchievementsInterface}) {
-// const [achievementt, setAchievement] = useState<AchievementsInterface[]>(achievement);
 
 data[0].type = achievement?.achievement1;
 data[1].type = achievement?.achievement2;

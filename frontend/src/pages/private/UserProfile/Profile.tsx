@@ -17,6 +17,7 @@ export function ProfileSections() {
             await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
             .then((res) => {
                 setProfile(res.data);
+                console.log("user profile: ", res.data);
             })
             .catch((err) => {
                 console.error("error when send get request to get user profile: ", err);
@@ -26,7 +27,7 @@ export function ProfileSections() {
     }, []);
 
     
-    // console.log("user profile: ", profile?.matchhistory);
+    // console.log("user profile: ", profile?.achievements);
 
     return (
       <div>
@@ -35,7 +36,8 @@ export function ProfileSections() {
               spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
               verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
-          <UserCard userName={profile?.username} avatar={profile?.avatar} level={profile?.level} win={5} losses={6} />
+          <UserCard usercard={profile?.usercard} />
+          {/* <UserCard userName={profile?.username} avatar={profile?.avatar} level={profile?.level} win={5} losses={6} /> */}
           <Achievements achievement={profile?.achievements} />
           <MatchHistory matchhistory={profile?.matchhistory}/>
         </SimpleGrid>
