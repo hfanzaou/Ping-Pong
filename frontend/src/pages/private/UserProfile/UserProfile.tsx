@@ -13,4 +13,4 @@ function UserProfile({avatar}: {avatar: string}) {
     );
 }
 
-export default UserProfile
+export default UserProfile;

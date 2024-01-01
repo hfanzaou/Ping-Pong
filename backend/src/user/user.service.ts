@@ -57,15 +57,16 @@ export class UserService {
     }
     async getProfile(id: number, name: string) {
         try {
-           // console.log(name);
+           //console.log(name);
             if (!name)
             throw new NotFoundException('USER NOT FOUND');
             let user = await this.prismaservice.user.findUnique({
                 where: {
                     username: name,
                     NOT: {
-                        blockedFrom: {some: {id: id}},
-                        blocked: {some: {id: id}}
+                        blockedFrom: {every: {id: id}},
+                        blocked: {every
+                            : {id: id}}
                     },
                 }, select: {
                     id: true,
@@ -79,12 +80,15 @@ export class UserService {
                 throw new NotFoundException('USER NOT FOUND');
             const avatar = await this.getUserAvatar(user.id);
             const matchhistory = await this.getMatchHistory(user.id);
+            //console.log(matchhistory);
             const retuser = {
-                username: user.username, 
-                avatar,
+                usercard: {
+                    username: user.username, 
+                    avatar,
+                    state: user.state,
+                    level: user.id,
+                },
                 matchhistory,
-                state: user.state,
-                level: user.id,
                 achievements: user.achievement
             }
             return retuser;
@@ -413,7 +417,7 @@ export class UserService {
             })
             if (!matchhistory)
                 return [];
-            //console.log(matchhistory);
+            console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
                // console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
