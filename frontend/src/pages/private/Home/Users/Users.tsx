@@ -22,8 +22,8 @@ function Users() {
         setSearchList(res.data);
         console.log("Users list00000-->: ", res.data);
       }).catch(err => {
-        setUsersList(data);
-        setSearchList(data);
+        // setUsersList(data);
+        // setSearchList(data);
         console.error("Error in fetching Users list: ", err);
       })
     };
@@ -120,7 +120,7 @@ const handleRequest = async (name: string, friendship: string) => {
   };
 
   const search = searchList.map((item) => (
-      <Table.Tr key={item.name}>
+      <Table.Tr key={item.name} m={6}>
       <Table.Td>
         <div className='flex justify-between'>
         <Group gap="sm">
@@ -141,7 +141,7 @@ const handleRequest = async (name: string, friendship: string) => {
             </Text>
           </div>
         </Group>
-<div className='mr-6'>
+<div className=''>
 {/* item.name + ' sent you a friend request'  */}
 
            <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
@@ -167,7 +167,7 @@ const handleRequest = async (name: string, friendship: string) => {
               />
           {/* </div> */}
     <ScrollArea h={300}>
-    <Table verticalSpacing="md" highlightOnHover={true} stickyHeader={true} className='h-full w-full'>
+    <Table verticalSpacing="md" highlightOnHover={true} color='gray' stickyHeader={true} className='h-full w-full'>
           <Table.Tbody>
             {search}
           </Table.Tbody>
