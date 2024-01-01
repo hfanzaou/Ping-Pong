@@ -136,7 +136,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
       </Group>
     </Table.Td>
      <Table.Td>
-      <Button radius='lg' onClick={() => handleAccepteFriend(item.name)}>
+      <Button radius='xl' color='gray' onClick={() => handleAccepteFriend(item.name)}>
         Accept friend
       </Button>
     </Table.Td>
