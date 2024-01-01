@@ -25,6 +25,7 @@ export default function ChatApp()
 			body: JSON.stringify({ socket: socket.id })
 		});
 		const Data = await res.json();
+        console.log("From chat: ", Data);
 		setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {

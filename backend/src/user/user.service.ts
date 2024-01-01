@@ -117,10 +117,8 @@ export class UserService {
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
-                    NOT: {
-                        blockedFrom: {some: {id: id}},
-                        blocked: {some: {id: id}}
-                    }
+                    blockedFrom: {every: {id: {not: id}}},
+                    blocked: {every: {id: {not: id}}},
                 },
                 select: {
                     id: true,
@@ -131,6 +129,7 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
+            console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
@@ -142,6 +141,8 @@ export class UserService {
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
+                    blockedFrom: {every: {id: {not: id}}},
+                    blocked: {every: {id: {not: id}}},
                     friends: {
                         some: {
                             id: id
@@ -353,8 +354,9 @@ export class UserService {
                 let friendship: string;
                 if (obj.friends && obj.friendOf)
                 {
-                    friendship = obj.friends[0] && obj.friendOf[0] ? "remove friend"
-                    : !obj.friends[0] && obj.friendOf[0] ? "remove request": "add friend";
+                    friendship = obj.friends[0] && obj.friendOf[0] ? "remove friend":
+                    !obj.friends[0] && obj.friendOf[0] ? "remove request": 
+                    obj.friends[0] && !obj.friendOf[0] ? "accept friend": "add friend";
                 }
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
               }));
