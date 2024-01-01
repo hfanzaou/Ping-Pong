@@ -65,7 +65,7 @@ export class UserService {
                     username: name,
                     NOT: {
                         blockedFrom: {every: {id: id}},
-                        blocked: {every
+                        blocked: {some
                             : {id: id}}
                     },
                 }, select: {

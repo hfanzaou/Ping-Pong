@@ -17,6 +17,7 @@ export function ProfileSections() {
             await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
             .then((res) => {
                 setProfile(res.data);
+                console.log(res.data);
             })
             .catch((err) => {
                 console.error("error when send get request to get user profile: ", err);
