@@ -16,11 +16,11 @@ const userInfo = {
 }
 
 interface UserCardProps {
-    userName: string;
-    avatar: string;
-    level: string;
-    win: number;
-    losses: number;
+        username: string;
+        avatar: string;
+        level: number;
+        win: number;
+        losses: number;
 }
 
 const stats = [
@@ -29,7 +29,7 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard({userName, avatar, level, win, losses}: UserCardProps) {
+function UserCard({usercard}: {usercard: UserCardProps}) {
 
   const items = stats.map((stat) => (
     <div key={stat.label}>
@@ -52,7 +52,7 @@ function UserCard({userName, avatar, level, win, losses}: UserCardProps) {
             {/* <img className='h-full w-full' src={sectionimage}/> */}
         </Card.Section>
       <Avatar
-        src={avatar}
+        src={usercard?.avatar}
         size={200}
         radius={160}
         mx="auto"
@@ -60,10 +60,10 @@ function UserCard({userName, avatar, level, win, losses}: UserCardProps) {
         className={classes.avatar}
         />
       <Text ta="center" fz="lg" fw={500} mt="sm">
-        {userName}
+        {usercard?.userName}
       </Text>
       <Text ta="center" fz="sm">
-      {"level "  + level}
+      {"level "  + usercard?.level}
       </Text>
       <Group mt="md" justify="center" gap={30}>
         {items}
