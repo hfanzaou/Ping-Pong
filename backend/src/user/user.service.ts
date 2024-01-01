@@ -57,7 +57,7 @@ export class UserService {
     }
     async getProfile(id: number, name: string) {
         try {
-           // console.log(name);
+           //console.log(name);
             if (!name)
             throw new NotFoundException('USER NOT FOUND');
             let user = await this.prismaservice.user.findUnique({
