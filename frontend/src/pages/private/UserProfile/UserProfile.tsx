@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../../Layout/Header/Header";
 import Profile from "./Profile";
+import axios from "axios";
 
-function UserProfile({setUserName, userName, avatar}: {setUserName: any, userName: string | null, avatar: string}) {
+
+function UserProfile({avatar}: {avatar: string}) {
     return (
         <div>
             <Header avatar={avatar}/>
             <Profile/>
-            <h1>User Profile {userName}</h1>
         </div>
     );
 }
