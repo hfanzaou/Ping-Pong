@@ -57,7 +57,7 @@ export class UserService {
     }
     async getProfile(id: number, name: string) {
         try {
-            console.log(name);
+           // console.log(name);
             if (!name)
             throw new NotFoundException('USER NOT FOUND');
             let user = await this.prismaservice.user.findUnique({
@@ -113,7 +113,7 @@ export class UserService {
     }
     ///friends, request and block lists///////
     async getUsersList(id: number) {
-        console.log(id);
+       // console.log(id);
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
@@ -129,7 +129,7 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
-            console.log(users);
+           // console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
             console.log(error);
@@ -299,6 +299,32 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async removeFriend(id: number, name: string) {
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: { 
+                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
+                    username: name,
+                }
+            });
+            if(!user)
+                throw HttpStatus.NOT_FOUND;
+            await this.prismaservice.user.update({
+                where: {id: id},
+                data: {friends: {
+                    disconnect: {id: user.id}
+                    },
+                    friendOf: {
+                        disconnect: {id: user.id}
+                    }
+                }
+            })
+        } catch(error) {
+            if (error.isInstanceOf(HttpStatus.NOT_FOUND))
+                throw HttpStatus.NOT_FOUND;
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
     ///Achievements////
     // async addAchievement(id: number, achievement: boolean) {
     //     try { 
@@ -387,9 +413,9 @@ export class UserService {
             })
             if (!matchhistory)
                 return [];
-            console.log(matchhistory);
+            //console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
-                console.log(obj.players[0].id);
+               // console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
                 return { 
                     playerScore: obj.playerScore, 

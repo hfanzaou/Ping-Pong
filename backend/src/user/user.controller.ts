@@ -68,9 +68,18 @@ export class UserController {
     }
     @Post('inblock')
     @HttpCode(201)
-    async inblockUser(@Req() req, @Body() body)
-    {
+    async inblockUser(@Req() req, @Body() body) {
         return (await this.userService.inblockUser(req.user.id, body.name));
+    }
+    @Post('remove/request')
+    @HttpCode(201)
+    async removeReq(@Req() req, @Body() body) {
+        return (await this.userService.removeReq(req.user.id, body.name));
+    }
+    @Post('remove/friend')
+    @HttpCode(201)
+    async removeFriend(@Req() req, @Body() body) {
+        return (await this.userService.removeFriend(req.user.id, body.name));    
     }
     //////ADD_ACHIEVEMENTS, GET_ACHIEVEMENTS///////
     @Post('achievements')
