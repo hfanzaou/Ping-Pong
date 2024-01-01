@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, Param } from '@nestjs/common';
 import { GetUser } from '../auth/decorator'
 import { FTAuthGuard, JwtGuard } from '../auth/guard';
 import { UserService } from './user.service';
@@ -22,18 +22,9 @@ export class UserController {
         return ({name: name});
     }
     @Get('profile')
-    async getProfile(@Req() req, @Body() body) {
-        return (await this.userService.getProfile(req.user.id, body.name));
+    async getProfile(@Req() req, @Query() query) {
+        return (await this.userService.getProfile(req.user.id, query.name));
     }
-    // @Get('userid')
-    // async getProfileById(@Req() req, @Query('id') id: string) {
-    //     //console.log('-------------------------------');
-    //     ////console.log(intId);
-    //     const userId: number = +id;
-    //     return (this.userService.getProfileById(userId));
-    // }
-
-    ///lists (friend, users ...) /////
     @Get('list')
     async getUsersList(@Req() req) {
         return (await this.userService.getUsersList(req.user.id));
@@ -68,9 +59,18 @@ export class UserController {
     }
     @Post('inblock')
     @HttpCode(201)
-    async inblockUser(@Req() req, @Body() body)
-    {
+    async inblockUser(@Req() req, @Body() body) {
         return (await this.userService.inblockUser(req.user.id, body.name));
+    }
+    @Post('remove/request')
+    @HttpCode(201)
+    async removeReq(@Req() req, @Body() body) {
+        return (await this.userService.removeReq(req.user.id, body.name));
+    }
+    @Post('remove/friend')
+    @HttpCode(201)
+    async removeFriend(@Req() req, @Body() body) {
+        return (await this.userService.removeFriend(req.user.id, body.name));    
     }
     //////ADD_ACHIEVEMENTS, GET_ACHIEVEMENTS///////
     @Post('achievements')

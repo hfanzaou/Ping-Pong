@@ -9,7 +9,7 @@ import BlockedFriends from './BlockedFriends';
 import { Link } from 'react-router-dom';
 // import { Cookies } from 'react-cookie';
 
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 
 function  Frindes({setUserName}: {setUserName: any}) {
@@ -19,7 +19,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
   const [value, setValue] = useState<string>('Friends list');
 
   const handelsetname = (name: string) => {
-        Cookies.set('userName', name);
+        // Cookies.set('userName', name);
         window.location.reload();
   };
   

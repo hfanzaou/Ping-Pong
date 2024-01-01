@@ -22,7 +22,7 @@ import axios from 'axios';
 
 
 function  Achievement() {
-    const [achievements, setAchievements] = useState<any>([]);
+    const [achievements, setAchievements] = useState<AchievementsInterface>([]);
 
     useEffect(() => {
         const getAchievements = async () => {
@@ -38,11 +38,11 @@ function  Achievement() {
     getAchievements();
 }, []);
 
-// data[0].type = achievements['achievement1'];
-// data[1].type = achievements['achievement2'];
-// data[2].type = achievements['achievement3'];
-// data[3].type = achievements['achievement4'];
-// data[4].type = achievements['achievement5'];
+data[0].type = achievements['achievement1'];
+data[1].type = achievements['achievement2'];
+data[2].type = achievements['achievement3'];
+data[3].type = achievements['achievement4'];
+data[4].type = achievements['achievement5'];
 
     const matches = data.map((item) => (
         <div key={item.name}>

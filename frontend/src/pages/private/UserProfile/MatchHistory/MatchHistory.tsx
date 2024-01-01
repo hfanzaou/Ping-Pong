@@ -1,12 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container, SimpleGrid } from '@mantine/core';
 import { IconMessages, IconTrash} from '@tabler/icons-react';
 import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
 import {MdChildFriendly} from 'react-icons/md';
 import MatchHistoryCard from './MatchHistoryCard';
 import data from './test.json'
+import MatchHistoryInterface from './MatchHistoryInterface';
+import axios from 'axios';
 
-function  MatchHistory() {
+function  MatchHistory({matchhistory}: {matchhistory: MatchHistoryInterface[]}) {
+
+    // console.log("match history: ", matchhistory);
+    // const [matchsHistory, setMatchsHistory] = useState<MatchHistoryInterface[]>([]);
 
   const sliderLeft = () => {
     var slider: any = document.getElementById('match-history-slider');
@@ -16,11 +21,12 @@ function  MatchHistory() {
   const sliderRight = () => {
     var slider: any = document.getElementById('match-history-slider');
     slider.scrollLeft = slider.scrollLeft + 400;
-  };
+    };
   
-  const matches = data.map((item) => (
-    <div key={item.name}>
-     <MatchHistoryCard avatar={item.avatar} name={item.name} rate={item.rate} wine={item.wine}/>
+
+  const matches = matchhistory?.map((item) => (
+    <div key={item.username}>
+     <MatchHistoryCard avatar={item.avatar} username={item.username} playerScore={item.playerScore} player2Score={item.player2Score} win={item.win}/>
     </div>
    ));
 
@@ -45,7 +51,6 @@ function  MatchHistory() {
 }
 
 export default MatchHistory
-
 
 
 
