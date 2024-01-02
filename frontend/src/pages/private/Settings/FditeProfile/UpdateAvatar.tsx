@@ -6,46 +6,6 @@ import Uploadd from "./Upload";
 
 import imageavatar from './avatar-3.png'
 
-
-// function UpdateAvatar({setUserImage, image, setSave}: {setUserImage: Function, image: string | undefined, setSave: Function}) {
-//   // const src: any = null;
-//   // const [preview, setPreview] = useState(null);
-
-//   const handleClose = () => {
-//       // setPreview(null);
-//       setUserImage(image);
-//       setSave(true);
-//   };
-
-//   const handleCrop = (view: string) => {
-//       // setPreview(view);
-//       setUserImage(view);
-//       setSave(false);
-//   };
-
-//   const initImage = image;
-
-//   return (
-//     <div className="grid  place-items-center">
-//       <EditAvatar
-//         width={200}
-//         height={100}
-//         onCrop={handleCrop}
-//         onClose={handleClose}
-//         borderStyle={{
-//             borderRadius: '10%', 
-//             border: '2px solid #ccc', 
-//             boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)', 
-//             background: '#fff', 
-//             // overflow: 'hidden',
-//         }}
-//         // src={src}
-//       />
-//       {/* {preview && <img src={preview} />} */}
-//     </div>
-//   );
-// }
-
 const file2Base64 = (file: File): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -59,7 +19,7 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
 {
 
   const [setAvatar, setSetAvatar] = useState<boolean>(false);
-  const [userimage, setUserImage] = useState(null as string | null);
+  const [userimage, setUserImage] = useState(avatar as string | null);
 //   const [image, setImage] = useState<string| undefined>(avatar);
   const [save, setSave] = useState<boolean>(true);
 
@@ -70,8 +30,7 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
     const file = e.target?.files?.[0];
     const formData = new FormData();
     formData.append('File', file as Blob);
-    console.log("formData------->: ", formData.get('File'));
-
+    // console.log("formData------->: ", formData.get('File'));
 
     setUploaded(formData);
     if (file) {
@@ -79,46 +38,26 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
         setUserImage(base64);
       })};
 
-    await axios.post('http://localhost:3001/settings/avatar',  {File: formData})
-
     setSave(false);
   };
 
-
-  const handleSetAvatar: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    // fileRef.current?.click()
-    setSetAvatar(!setAvatar);
-  };
-
   const handleRest = () => {
-        setSetAvatar(false);
         setSave(true);
         setUserImage(avatar);
   };
 
   const handleSaveAvatar = async () => {
-
-    // const formData = new FormData();
-    // formData.append('File', uploaded as Blob);
-    // file2Base64(uploaded).then((base64) =>{
-    //     setUserImage(base64);
-    //   });
-      
-      
-      setSave(false);
-    console.log("userimage: ", uploaded);
-    //   {userimage !== avatar ?
-    await axios.post('http://localhost:3001/settings/avatar',  {File: uploaded})
+    // console.log("userimage: ", uploaded);
+    
+    await axios.post('http://localhost:3001/settings/avatar',  uploaded)
     .then(res => {
       console.log(res.data);
-      setSetAvatar(false);
       setSave(true);
       settAvatar(userimage);
     })
     .catch(err => {
-        setSetAvatar(false);
         setSave(true);
-        settAvatar(userimage);
+        settAvatar(avatar);
 
       console.error("Error in send profile info: ", err);
     }) 
