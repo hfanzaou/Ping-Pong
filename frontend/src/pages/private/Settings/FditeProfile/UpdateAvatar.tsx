@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import EditAvatar from "react-avatar-editor";
 import { Avatar, Button, Menu } from '@mantine/core';
 import axios from "axios";
@@ -49,45 +49,79 @@ import imageavatar from './avatar-3.png'
 
 function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string}) {
   const [setAvatar, setSetAvatar] = useState<boolean>(false);
-  const [userimage, setUserImage] = useState<string | undefined>(avatar);
-  const [image, setImage] = useState<string| undefined>(avatar);
+  const [userimage, setUserImage] = useState<FormData>();
+//   const [image, setImage] = useState<string| undefined>(avatar);
   const [save, setSave] = useState<boolean>(true);
 
-  const handleSetAvatar = () => {
+  const [uploaded, setUploaded] = useState<File | null>();
+  const fileRef = createRef<HTMLInputElement>();
+
+  const onFileInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const file = e.target?.files?.[0];
+    setUploaded(file as File);
+    setSave(false);
+  }
+
+
+  const handleSetAvatar: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    // fileRef.current?.click()
     setSetAvatar(!setAvatar);
-  };
+};
 
   const handleRest = () => {
         setSetAvatar(false);
         setSave(true);
-        setUserImage(avatar);
+        // setUserImage(null);
+        setUploaded(null);
   };
 
   const handleSaveAvatar = async () => {
-      {userimage !== avatar ?
-    await axios.post('http://localhost:3001/settings/avatar', {avatar: (userimage === avatar ? null : userimage)})
+
+    const File = new FormData();
+    File.append('file', uploaded as File);
+    setUserImage(File);
+    setSave(false);
+
+
+    console.log("userimage: ", userimage);
+    //   {userimage !== avatar ?
+    await axios.post('http://localhost:3001/settings/avatar', {data: File,  headers: { "Content-Type": "multipart/form-data" }})
     .then(res => {
       console.log(res.data);
       setSetAvatar(false);
       setSave(true);
       settAvatar(userimage);
+      setUploaded(null);
       // window.location.reload();
     })
     .catch(err => {
+
+        setUploaded(null);
+        setSetAvatar(false);
+        setSave(true);
+        settAvatar(userimage);
+
       console.error("Error in send profile info: ", err);
-    }) :
-    setSetAvatar(false);
-    setSave(true);}
+    }) 
+    // :
+    // setSetAvatar(false);
+    // setSave(true);}
   };
 
   return (
       <div className='grid  place-items-center'>
-        {/* <Menu>
-<Menu.Target> */}
 
-        <div dir="rtl" className="relative h-32 w-32" onClick={handleSetAvatar}>
-          {/* <Avatar size='xl' src={userimage} /> */}
-          <button type="button" className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-600 hover:bg-gray-900 hover:text-white">
+{!uploaded &&
+            <input
+                type="file"
+                style={{display: 'none'}}
+                ref={fileRef}
+                onChange={onFileInputChange}
+                accept="image/png,image/jpeg,image/gif"
+              />
+}
+<div dir="rtl" className="relative h-32 w-32"  onClick={() => fileRef.current?.click()}>
+        <button   type="button" className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-600 hover:bg-gray-900 hover:text-white">
           <Avatar size='xl' src={avatar} />
           <div className="absolute h-14 w-14 top-1 start-0">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -95,18 +129,16 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
             </svg>
           </div>
-                </button>
+        </button>
         </div>
-{/* </Menu.Target> */}
-        {/* <Uploadd /> */}
-
-        {/* <Menu.Item > */}
-        {setAvatar && <Uploadd setUserImage={setUserImage} image={avatar} setSave={setSave} />}
-        {/* {setAvatar && <UpdateAvatar setUserImage={setUserImage} image={avatar} setSave={setSave} />} */}
-        {!save && <Button onClick={handleRest} >Cancel</Button>}
-        {!save && <Button onClick={handleSaveAvatar}>Set new Avatar</Button>}
-        {/* </Menu.Item>
-        </Menu> */}
+            {/* //  <Uploadd setUploaded={setUploaded} /> */}
+{uploaded &&
+                    (!save && 
+                        <div>
+                        <Button color="gray" radius='xl' onClick={handleSaveAvatar}>Set new Avatar</Button>
+                        <Button color="gray" radius='xl' onClick={handleRest} >Cancel</Button>
+                        </div>
+  )}
       </div>
     );
 }

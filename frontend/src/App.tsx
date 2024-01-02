@@ -28,6 +28,7 @@ import CreatProfile from './pages/private/CreatProfile/CreatProfile'
 import { useDisclosure } from '@mantine/hooks'
 import UserProfile from './pages/private/UserProfile/UserProfile'
 import { Socket, io } from 'socket.io-client'
+import UsersInterface from './pages/private/Home/Users/UsersInterface'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>("");
@@ -112,6 +113,31 @@ function App()  {
     //     setUserName(Cookies.get('userName'));
     // }, [userName]);
     
+
+    const [userList, setUsersList] = useState<UsersInterface[]>([]);
+    const [searchList, setSearchList] = useState<UsersInterface[]>([]);
+  
+    useEffect(() => {
+      const getUsers = async () => {
+        await axios.get("http://localhost:3001/user/list")
+        .then((res) => {
+          // setUsersList(data);
+          // setSearchList(data);
+          setUsersList(res.data);
+          setSearchList(res.data);
+        //   console.log("Users list00000-->: ", res.data);
+        }).catch(err => {
+          // setUsersList(data);
+          // setSearchList(data);
+          console.error("Error in fetching Users list: ", err);
+        })
+      };
+      getUsers();
+  }, []);
+  
+
+
+
     useEffect(() =>  {
         const getAvatar = async () => {
             await axios.get("http://localhost:3001/user/avatar")
@@ -136,7 +162,7 @@ function App()  {
         { !isLoading ?
         (
         <Routes>
-          <Route path='/' element={!hasToken ? <Login/> : <Home avatar={avatar}/>}/>
+          <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} avatar={avatar}/>}/>
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
@@ -144,7 +170,7 @@ function App()  {
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
           <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar}/> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
-          <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home avatar={avatar}/>)}/>
+          <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} avatar={avatar}/>)}/>
         </Routes>
             ) : <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
       {/* <Footer/> */}
