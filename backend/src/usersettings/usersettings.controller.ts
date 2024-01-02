@@ -1,4 +1,4 @@
-import { Controller, UseFilters, UseGuards, Req, Post, Body, HttpCode, UseInterceptors, UploadedFile, HttpStatus, ParseFilePipeBuilder, PayloadTooLargeException } from '@nestjs/common';
+import { Controller, UseFilters, UseGuards, Req, Post, Body, HttpCode, UseInterceptors, UploadedFile, HttpStatus, ParseFilePipeBuilder, PayloadTooLargeException, ParseFilePipe, FileTypeValidator, MaxFileSizeValidator } from '@nestjs/common';
 import JwtTwoFaGuard from 'src/auth/guard/twoFaAuth.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersettingsService } from './usersettings.service';
@@ -23,11 +23,20 @@ export class UsersettingsController {
     @Post('avatar')
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)
-    async editAvatar(@Req() req, @Body() body) {
-        const avatar: string = body.avatar;
-        console.log(avatar.length);
+    @UseInterceptors(FileInterceptor('File'))
+    async editAvatar(@Req() req, @UploadedFile(
+        new ParseFilePipe({
+            validators: [
+              new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+              new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+            ],
+          }),
+    ) file: Express.Multer.File) {
+        console.log(file);
+        //const avatar: string = body.avatar;
+        //console.log(avatar.length);
         // if (avatar.length > 100000)
         //    throw HttpStatus.PAYLOAD_TOO_LARGE;
-      await this.userSetService.updateAvater(req.user.id, body.avatar);
+      await this.userSetService.updateAvater(req.user.id, file.path);
     }
 }

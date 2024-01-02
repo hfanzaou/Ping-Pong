@@ -60,7 +60,7 @@ function UserCard({usercard}: {usercard: UserCardProps}) {
         className={classes.avatar}
         />
       <Text ta="center" fz="lg" fw={500} mt="sm">
-        {usercard?.userName}
+        {usercard?.username}
       </Text>
       <Text ta="center" fz="sm">
       {"level "  + usercard?.level}
