@@ -17,15 +17,20 @@ export default function ChatApp()
 	
 	async function callBack(socket: Socket) {
 		setData(prev => setSocket(prev, socket));
-		const res = await fetch("http://localhost:3001/user", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ socket: socket.id })
-		});
-		const Data = await res.json();
-		setData(prev => setUserData(prev, Data));
+		try {
+			const res = await fetch("http://localhost:3001/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ socket: socket.id })
+			});
+			const Data = await res.json();
+			setData(prev => setUserData(prev, Data));
+		}
+		catch {
+			return;
+		}
 	}
 	useEffect(() => {
 		const	socket = io("http://localhost:3001");
@@ -40,9 +45,9 @@ export default function ChatApp()
 		}
 	}, []);
 	return (
-		<div>
+		<div className="">
 			<Header avatar={""}/>
-			<div className="flex">
+			<div className="flex h-96">
 				<Nav option={option} setOption={setOption}/>
 				<Private
 					data={data}

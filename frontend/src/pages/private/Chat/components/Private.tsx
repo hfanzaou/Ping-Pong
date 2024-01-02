@@ -24,7 +24,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	return (
 		<ul
 			className="bg-discord3 w-1/6 text-center p-2 text-white
-				font-Inconsolata font-bold min-h-screen overflow-auto"
+				font-Inconsolata font-bold h-full overflow-auto"
 		>
 			{
 				data.userData?.chatUsers.map(x => {

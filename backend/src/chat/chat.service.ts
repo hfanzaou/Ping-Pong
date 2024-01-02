@@ -29,15 +29,17 @@ export class ChatService {
 					socket: userSocket.socket
 				}
 			});
+			const data: USERDATA = {
+				userName: user.username,
+				chatUsers: user.chatUsers.map(x => ({
+					id: x.id,
+					login: x.username
+				}))
+			}
+			return data;
 		}
-		const data: USERDATA = {
-			userName: user.username,
-			chatUsers: user.chatUsers.map(x => ({
-				id: x.id,
-				login: x.username
-			}))
-		}
-		return data;
+		else
+			return null 
 	}
 	async dropUser(client: Socket) {
 		const	user = await this.prisma.user.findUnique({

@@ -14,7 +14,7 @@ export default function Nav(props: {option: string, setOption: React.Dispatch<Re
 	}
 	return (
 		<nav>
-			<ul className="bg-discord1 min-h-screen flex flex-col justify-center">
+			<ul className="bg-discord1 h-full flex flex-col justify-center">
 				<li>
 					<ActionIcon onClick={clickPrivate} className={`${props.option == "Private" ? "animate-in bg-discord5" : "bg-discord3 animate-out hover:animate-in hover:bg-discord5"} w-14 h-14 m-2`} >
 						<IconMessages />
