@@ -2,40 +2,46 @@ import React from "react";
 import { Card, Group, HoverCard, Image, Text } from "@mantine/core";
 import OneAchievementInterface from "./OneAchievementInterface";
 import imagge from "./4640282_award_first_medal_place_premium_icon.png"
+import firstGameImage from "./4640282_award_first_medal_place_premium_icon.png"
+import images from "./AllAchievement.json"
 
-function AchievementCards({isTaked, image, title, name}: OneAchievementInterface) {
+function AchievementCards({type, image, title, name}: OneAchievementInterface) {
+
+    const source = images.find((item) => item.id === image);
+    console.log("Type: ", type);
     return (
-    <div onTouchMove={() => console.log("test")} className='inline-block w-[150px] h-full p-2 cursor-pointer hover:scale-110 ease-in-out duration-300'>
-    <Group justify="center">
+    <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
+            <Group justify="center">
     <HoverCard width={200} openDelay={500}>
     <HoverCard.Target>
-        <Card shadow="sm" padding="mg" radius="md" withBorder>
-            <Card.Section>
-                {isTaked ? 
+    <Card shadow="sm" padding="mg" radius="md" withBorder>
+    <Card.Section>
+    {type ?
                 <Image
                     src={imagge}
-                    height={100}
+                    height={300}
                     alt="Norway"
-                /> :
-                <Image
-                    src={"" + imagge}
-                    height={100}
+                    /> :
+                <Image className="blur-sm"
+                src={imagge}
+                    height={300}
                     alt="Norway"
-                />}
+                    />
+                }
             </Card.Section>
-            <Text size="xs" ta='center'>
-                {name}
-            </Text>
+            {/* <Text size="xs" ta='center'>
+            {name}
+            </Text> */}
         </Card>
     </HoverCard.Target>
     <HoverCard.Dropdown>
-        <Text size="lg" ta='center'>
+    <Text size="lg" ta='center'>
             {title}
-        </Text>
-    </HoverCard.Dropdown>
-    </HoverCard>
-    </Group>
-    </div>
+            </Text>
+            </HoverCard.Dropdown>
+            </HoverCard>
+            </Group>
+            </div>
     );
 }
 

@@ -3,6 +3,7 @@ import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, Hover
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
 import data from './test.json'
+import { IconTent } from '@tabler/icons-react';
 
 function Users() {
   const [userList, setUsersList] = useState<UsersInterface[]>([]);
@@ -21,8 +22,8 @@ function Users() {
         setSearchList(res.data);
         console.log("Users list00000-->: ", res.data);
       }).catch(err => {
-        setUsersList(data);
-        setSearchList(data);
+        // setUsersList(data);
+        // setSearchList(data);
         console.error("Error in fetching Users list: ", err);
       })
     };
@@ -50,65 +51,68 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-  const handleAddFriend = async (name: string) => {
-      console.log("this name: ",name);
-      const updatedUserList = userList.map(user => 
-          user.name === name 
-          ? {...user, friendship: 'pending'}
-          : user
-      );
-      
-      setUsersList(updatedUserList);
-      
-      console.log("user List: ", userList);
-      console.log("Update List: ", updatedUserList);
-      
-      useEffect(() => {
-        console.log("Updated user List: ", userList);
-    }, [userList]);
-
-    //   await axios.post("http://localhost:3001/user/add/friend", {name: name})
-    //   .then((res) => {
-    //     console.log(res.data);
-    // })
-    // .catch((err) => {
-    //     console.log("Error in send post request to add friend ",err);
-    // })
-  };
-
 const handleRequest = async (name: string, friendship: string) => {
-    console.log(name);
+    console.log("Name from handle Request: ", name);
 
-    if (friendship === 'pending') {
-              await axios.post("http://localhost:3001/user/add/friend", {name: name})
-      .then((res) => {
-        console.log(res.data);
-    })
-    .catch((err) => {
-        console.log("Error in send post request to add friend ",err);
-    })
+    if (friendship === 'add friend') {
         const updatedUserList = searchList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'notfriends'}
+            ? {...user, friendship: 'remove request'}
             : user
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-
-    }else if (friendship === 'notfriends') {
+      await axios.post("http://localhost:3001/user/add/friend", {name: name})
+      .then((res) => {
+        console.log(res.data);
+     })
+     .catch((err) => {
+        console.log("Error in send post request to add friend ",err);
+     })
+    }else if (friendship === 'remove request') {
         const updatedUserList = userList.map(user => 
             user.name === name 
-            ? {...user, friendship: 'pending'}
+            ? {...user, friendship: 'add friend'}
             : user
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/remove/friend/request", {name: name})
+        await axios.post("http://localhost:3001/user/remove/request", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to remove request",err);
+        })
+    } else if (friendship === 'remove friend') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'add friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/remove/friend", {name: name})
         .then((res) => {
           console.log(res.data);
         })
         .catch((err) => {
           console.log("Error in send post request to remove friend ",err);
+        })
+    }else if (friendship === 'accept friend') {
+        const updatedUserList = userList.map(user => 
+            user.name === name 
+            ? {...user, friendship: 'remove friend'}
+            : user
+        );
+        setUsersList(updatedUserList);
+        setSearchList(updatedUserList);
+        await axios.post("http://localhost:3001/user/accept/friend", {name: name})
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("Error in send post request to accept friend ",err);
         })
     }
     // window.location.reload();
@@ -116,7 +120,7 @@ const handleRequest = async (name: string, friendship: string) => {
   };
 
   const search = searchList.map((item) => (
-      <Table.Tr key={item.name}>
+      <Table.Tr key={item.name} m={6}>
       <Table.Td>
         <div className='flex justify-between'>
         <Group gap="sm">
@@ -137,20 +141,12 @@ const handleRequest = async (name: string, friendship: string) => {
             </Text>
           </div>
         </Group>
-<div className='mr-6'>
+<div className=''>
+{/* item.name + ' sent you a friend request'  */}
 
-          {item.friendship === 'friends' ?
-           <p> friend </p> :
-           <Button  radius='xl' color='gray' onClick={() => handleRequest(item.name, item.friendship)}>
-            {item.friendship === 'pending' ?
-                <p>Remove request </p>:
-                <p>Add to Friends </p>
-  }
+           <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
+                {item.friendship}
         </Button>
-        //  <Button radius='xl' color='gray' onClick={() => handleAddFriend(item.name)}>
-        //  Add to friends
-        //  </Button>
-        }
         </div>
     </div>
       </Table.Td>
@@ -171,7 +167,7 @@ const handleRequest = async (name: string, friendship: string) => {
               />
           {/* </div> */}
     <ScrollArea h={300}>
-    <Table verticalSpacing="md" highlightOnHover={true} stickyHeader={true} className='h-full w-full'>
+    <Table verticalSpacing="md" highlightOnHover={true} color='gray' stickyHeader={true} className='h-full w-full'>
           <Table.Tbody>
             {search}
           </Table.Tbody>

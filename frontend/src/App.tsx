@@ -27,6 +27,7 @@ import Auth from './pages/public/Auth'
 import CreatProfile from './pages/private/CreatProfile/CreatProfile'
 import { useDisclosure } from '@mantine/hooks'
 import UserProfile from './pages/private/UserProfile/UserProfile'
+import { Socket, io } from 'socket.io-client'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>("");
@@ -36,10 +37,48 @@ function App()  {
 
     const [userName, setUserName] = useState<string | null>(null);
 
-
 // comonentDidMount
 
   axios.defaults.withCredentials = true;  // to send token in every requiste
+
+    // useEffect(() => {
+
+//         async function callBack(socket: Socket) {
+//             // setData(prev => setSocket(prev, socket));
+//     const res = await fetch("http://localhost:3001/user", {
+//         method: "POST",
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ socket: socket.id })
+//     });
+//     const Data = await res.json();
+//     // setData(prev => setUserData(prev, Data));
+// }
+
+// useEffect(() => {
+
+//         const	socket = io("http://localhost:3001");
+//         socket.on("connect", async () => {
+//             await callBack(socket);
+//         })
+//         return () => {
+//             socket.disconnect();
+//             socket.off("connect", async () => {
+//                 await callBack(socket);
+//             })
+//         }
+
+// }, []);
+
+
+
+
+
+
+
+
+
 
     const getVerify = async () => {
       try {
@@ -69,9 +108,9 @@ function App()  {
     }
     getFirstVerify();
  
-    useEffect(() => {
-        setUserName(Cookies.get('userName'));
-    }, [userName]);
+    // useEffect(() => {
+    //     setUserName(Cookies.get('userName'));
+    // }, [userName]);
     
     useEffect(() =>  {
         const getAvatar = async () => {
@@ -103,7 +142,7 @@ function App()  {
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
           <Route path='/Chat' element={hasToken ? <ChatApp />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path={'/'+userName+'/public/profile'} element={hasToken ? <UserProfile setUserName={setUserName} userName={userName} avatar={avatar}/> : <Login/>} />
+          <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar}/> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
           <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home avatar={avatar}/>)}/>
         </Routes>

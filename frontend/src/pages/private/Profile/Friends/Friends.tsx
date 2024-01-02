@@ -9,7 +9,7 @@ import BlockedFriends from './BlockedFriends';
 import { Link } from 'react-router-dom';
 // import { Cookies } from 'react-cookie';
 
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 
 function  Frindes({setUserName}: {setUserName: any}) {
@@ -19,7 +19,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
   const [value, setValue] = useState<string>('Friends list');
 
   const handelsetname = (name: string) => {
-        Cookies.set('userName', name);
+        // Cookies.set('userName', name);
         window.location.reload();
   };
   
@@ -29,7 +29,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
-        setFriendList(testdata);
+        // setFriendList(testdata);
         console.error("Error in fetching friend list: ", err);
       })
     };
@@ -38,7 +38,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
         .then((res) => {
             setRequestFriendList(res.data);
         }).catch(err => {
-            setRequestFriendList(testdata);
+            // setRequestFriendList(testdata);
             console.error("Error in fetching friend requests: ", err);
         })
     };
@@ -136,8 +136,8 @@ function  Frindes({setUserName}: {setUserName: any}) {
       </Group>
     </Table.Td>
      <Table.Td>
-      <Button radius='lg' onClick={() => handleAccepteFriend(item.name)}>
-        Accepte friend
+      <Button radius='xl' color='gray' onClick={() => handleAccepteFriend(item.name)}>
+        Accept friend
       </Button>
     </Table.Td>
   </Table.Tr>
@@ -147,7 +147,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
   const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = rows.length;
-  const blockedFriendsNumbre = 0;
+  const blockedFriendsNumbre = 1;
 
   return (
     // <div className='relative flex '>

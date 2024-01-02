@@ -1,12 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Container, ScrollArea, SimpleGrid} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
+import axios from 'axios'
 
 export function ProfileSections() {
+    const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
+    const [profile, setProfile] = useState<any>(null);
+
+    useEffect(() => {
+        // console.log("name: in public profile fitcheng data", name);
+        const getUserProfile = async () => {
+            await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
+            .then((res) => {
+                setProfile(res.data);
+                console.log("user profile: ", res.data);
+            })
+            .catch((err) => {
+                console.error("error when send get request to get user profile: ", err);
+            })
+        };
+        getUserProfile();
+    }, []);
+
+    
+    // console.log("user profile: ", profile?.achievements);
+
     return (
       <div>
         <SimpleGrid
@@ -14,9 +36,10 @@ export function ProfileSections() {
               spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
               verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
-          <UserCard />
-          <Achievements />
-          <MatchHistory />
+          <UserCard usercard={profile?.usercard} />
+          {/* <UserCard userName={profile?.username} avatar={profile?.avatar} level={profile?.level} win={5} losses={6} /> */}
+          <Achievements achievement={profile?.achievements} />
+          <MatchHistory matchhistory={profile?.matchhistory}/>
         </SimpleGrid>
       </div>
     );

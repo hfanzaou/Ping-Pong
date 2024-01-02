@@ -16,6 +16,7 @@ function  MatchHistory() {
             await axios.get("http://localhost:3001/user/matchhistory")
             .then((res) => {
                 setMatchsHistory(res.data);
+                // console.log("match history data: ", res.data);
             })
             .catch((err) => {
                 console.error("error in fetching Matchs History: ", err );
