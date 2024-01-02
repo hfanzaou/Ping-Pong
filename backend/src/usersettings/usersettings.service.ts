@@ -32,13 +32,13 @@ export class UsersettingsService {
         }
         return true;
     }
-    async updateAvater(id: number, avatar: string) {
+    async updateAvater(id: number, path: string) {
         try {
-            const base64Data = avatar.replace(/^data:image\/png;base64,/,"");
-            const binaryData = Buffer.from(base64Data, 'base64').toString('binary');
-            const path = "./uploads/avatar/" + id.toString() + '.png';
-            const writestream = createWriteStream(path, 'binary');
-            writestream.write(binaryData);
+            // const base64Data = avatar.replace(/^data:image\/png;base64,/,"");
+            // const binaryData = Buffer.from(base64Data, 'base64').toString('binary');
+            // const path = "./uploads/avatar/" + id.toString() + '.png';
+            // const writestream = createWriteStream(path, 'binary');
+            // writestream.write(avatar);
             await this.prisma.user.update({
                 where: {
                     id: id,
