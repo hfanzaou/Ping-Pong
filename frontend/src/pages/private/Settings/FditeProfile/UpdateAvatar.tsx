@@ -46,72 +46,87 @@ import imageavatar from './avatar-3.png'
 //   );
 // }
 
+const file2Base64 = (file: File): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result?.toString() || '');
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
-function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string}) {
+function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string})
+{
+
   const [setAvatar, setSetAvatar] = useState<boolean>(false);
-  const [userimage, setUserImage] = useState<FormData>();
+  const [userimage, setUserImage] = useState(null as string | null);
 //   const [image, setImage] = useState<string| undefined>(avatar);
   const [save, setSave] = useState<boolean>(true);
 
-  const [uploaded, setUploaded] = useState<File | null>();
+const [uploaded, setUploaded] = useState<FormData | undefined>();
   const fileRef = createRef<HTMLInputElement>();
 
-  const onFileInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const onFileInputChange: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
     const file = e.target?.files?.[0];
-    setUploaded(file as File);
+    const formData = new FormData();
+    formData.append('File', file as Blob);
+    console.log("formData------->: ", formData.get('File'));
+
+
+    setUploaded(formData);
+    if (file) {
+      file2Base64(file).then((base64) => {
+        setUserImage(base64);
+      })};
+
+    await axios.post('http://localhost:3001/settings/avatar',  {File: formData})
+
     setSave(false);
-  }
+  };
 
 
   const handleSetAvatar: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     // fileRef.current?.click()
     setSetAvatar(!setAvatar);
-};
+  };
 
   const handleRest = () => {
         setSetAvatar(false);
         setSave(true);
-        // setUserImage(null);
-        setUploaded(null);
+        setUserImage(avatar);
   };
 
   const handleSaveAvatar = async () => {
 
-    const File = new FormData();
-    File.append('file', uploaded as File);
-    setUserImage(File);
-    setSave(false);
-
-
-    console.log("userimage: ", userimage);
+    // const formData = new FormData();
+    // formData.append('File', uploaded as Blob);
+    // file2Base64(uploaded).then((base64) =>{
+    //     setUserImage(base64);
+    //   });
+      
+      
+      setSave(false);
+    console.log("userimage: ", uploaded);
     //   {userimage !== avatar ?
-    await axios.post('http://localhost:3001/settings/avatar', {data: File,  headers: { "Content-Type": "multipart/form-data" }})
+    await axios.post('http://localhost:3001/settings/avatar',  {File: uploaded})
     .then(res => {
       console.log(res.data);
       setSetAvatar(false);
       setSave(true);
       settAvatar(userimage);
-      setUploaded(null);
-      // window.location.reload();
     })
     .catch(err => {
-
-        setUploaded(null);
         setSetAvatar(false);
         setSave(true);
         settAvatar(userimage);
 
       console.error("Error in send profile info: ", err);
     }) 
-    // :
-    // setSetAvatar(false);
-    // setSave(true);}
-  };
+  };        
 
   return (
       <div className='grid  place-items-center'>
 
-{!uploaded &&
             <input
                 type="file"
                 style={{display: 'none'}}
@@ -119,10 +134,9 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
                 onChange={onFileInputChange}
                 accept="image/png,image/jpeg,image/gif"
               />
-}
 <div dir="rtl" className="relative h-32 w-32"  onClick={() => fileRef.current?.click()}>
         <button   type="button" className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-600 hover:bg-gray-900 hover:text-white">
-          <Avatar size='xl' src={avatar} />
+          <Avatar size='xl' src={userimage} />
           <div className="absolute h-14 w-14 top-1 start-0">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -131,18 +145,15 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
           </div>
         </button>
         </div>
-            {/* //  <Uploadd setUploaded={setUploaded} /> */}
-{uploaded &&
-                    (!save && 
+                    {!save && 
                         <div>
                         <Button color="gray" radius='xl' onClick={handleSaveAvatar}>Set new Avatar</Button>
                         <Button color="gray" radius='xl' onClick={handleRest} >Cancel</Button>
-                        </div>
-  )}
+                        </div>}
       </div>
     );
 }
-
+                    
 export default ChangeAvatar
 
 
@@ -163,37 +174,35 @@ export default ChangeAvatar
 
 
 
+// const UploadImage = () => {
+//   const [selectedFile, setSelectedFile] = useState();
 
+//   const handleFileChange = (event: any) => {
+//     setSelectedFile(event.target.files[0]);
+//   };
 
-const UploadImage = () => {
-  const [selectedFile, setSelectedFile] = useState();
+//   const handleUpload = async () => {
+//     if (!selectedFile) return;
+//     const formData = new FormData();
+//     formData.append('image', selectedFile);
+//     console.log("formData: ", formData.get('image'));
 
-  const handleFileChange = (event: any) => {
-    setSelectedFile(event.target.files[0]);
-  };
+//     try {
+//       const response = await axios.post('http://localhost:3001/settings/avatar', formData.get('image'), {
+//         headers: {
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       });
+//       console.log(response.data);
+//     } catch (error) {
+//       console.error("Error in send profile info: ", error);
+//     }
+//   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) return;
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-    console.log("formData: ", formData.get('image'));
-
-    try {
-      const response = await axios.post('http://localhost:3001/settings/avatar', formData.get('image'), {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error in send profile info: ", error);
-    }
-  };
-
-  return (
-    <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <input type="file" onChange={handleFileChange} />
+//       <button onClick={handleUpload}>Upload</button>
+//     </div>
+//   );
+// };
