@@ -59,9 +59,13 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 					autoFocus
 					ref={Reference}
 				/>
-				<ActionIcon className="bg-discord1 w-10 h-10 rounded-md" type="submit">
+				<button
+					className="bg-discord1 w-10 h-10 rounded-md flex
+						justify-center items-center"
+					type="submit"
+				>
 					{ data.message.length ? <IconSend2 /> : <IconPingPong/>}
-				</ActionIcon>
+				</button>
 			</div>
 		</form>
 	);

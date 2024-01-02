@@ -34,9 +34,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 								onClick={click}
 								name={x.login}
 								className={`w-full px-7 py-3 rounded-md
-									select-none ${data.talkingTo == x.login ?
-									"bg-discord5" :
-									"hover:bg-discord4"}`}
+									select-none ${data.talkingTo == x.login
+									? "bg-discord5"
+									: "hover:bg-discord4"}`}
 							>
 								{x.login}
 							</button>

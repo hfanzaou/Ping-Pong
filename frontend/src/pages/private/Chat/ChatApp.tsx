@@ -7,9 +7,11 @@ import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
 import Header from "../../../Layout/Header/Header";
 
+interface Props {
+	username:string | null
+}
 
-export default function ChatApp()
-{
+const ChatApp = () => {
 	const	[data, setData] = useState<DATA>({
 		message: ""
 	});
@@ -18,18 +20,35 @@ export default function ChatApp()
 	async function callBack(socket: Socket) {
 		setData(prev => setSocket(prev, socket));
 		try {
-			const res = await fetch("http://localhost:3001/chatUser", {
-				method: "POST",
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ socket: socket.id })
+			const res0 = await fetch("http://localhost:3001/user/name", {
+				credentials: "include"
 			});
-			const Data = await res.json();
-			setData(prev => setUserData(prev, Data));
+			const Data0 = await res0.json();
+			console.log(Data0.name);
+
+			if (Data0.name)
+			{
+				try {
+					const res = await fetch("http://localhost:3001/chatUser", {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							socket: socket.id,
+							username: Data0.name
+						})
+					});
+					const Data = await res.json();
+					setData(prev => setUserData(prev, Data));
+				}
+				catch {
+					throw new Error("error");
+				}
+			}
 		}
 		catch {
-			return;
+			return ;
 		}
 	}
 	useEffect(() => {
@@ -45,9 +64,10 @@ export default function ChatApp()
 		}
 	}, []);
 	return (
-		<div className="">
+		<div className="h-screen">
 			<Header avatar={""}/>
-			<div className="flex h-96">
+			<div className="h-[80%]">
+			<div className="flex h-full">
 				<Nav option={option} setOption={setOption}/>
 				<Private
 					data={data}
@@ -58,6 +78,10 @@ export default function ChatApp()
 					setData={setData}
 					/>
 			</div>
+
+			</div>
 		</div>
 	)
 }
+
+export default ChatApp;

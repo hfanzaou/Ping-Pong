@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
+import { MESSAGE, NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
 import { Socket } from "socket.io"
 
 @Injectable()
@@ -11,9 +11,10 @@ export class ChatService {
 		this.rooms = [];
 	}
 	async getUserData(userSocket: USERSOCKET) {
-		const	user = await this.prisma.user.findFirst({
+		const	user = await this.prisma.user.findUnique({
 			where: {
-				state: "Offline"
+				username: userSocket.username,
+				// state: "Offline"
 			},
 			include: {
 				chatUsers: true
@@ -39,7 +40,7 @@ export class ChatService {
 			return data;
 		}
 		else
-			return null 
+			return null
 	}
 	async dropUser(client: Socket) {
 		const	user = await this.prisma.user.findUnique({
@@ -72,6 +73,20 @@ export class ChatService {
 		else {
 			this.rooms.push(data.sender+data.recver);
 			return data.sender+data.recver;
+		}
+	}
+	async addMessage(data: MESSAGE) {
+		const user1 = await this.prisma.user.findUnique({
+			where: {
+				username: data.sender
+			}
+		});
+		const user2 = await this.prisma.user.findUnique({
+			where: {
+				username: data.recver
+			}
+		});
+		if (user1 && user2) {
 		}
 	}
 }

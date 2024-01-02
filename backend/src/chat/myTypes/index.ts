@@ -1,5 +1,6 @@
 export interface USERSOCKET {
 	socket: string
+	username: string | null
 }
 
 export interface User {
