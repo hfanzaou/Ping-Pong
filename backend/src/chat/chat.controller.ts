@@ -5,7 +5,7 @@ import { USERSOCKET } from "./myTypes";
 @Controller()
 export class ChatController {
 	constructor(private chatService: ChatService) {}
-	@Post("user")
+	@Post("chatUser")
 	async handleUser(@Body() userSocket: USERSOCKET) {
 		const	user = await this.chatService.getUserData(userSocket);
 		return user;

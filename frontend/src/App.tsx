@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Link, BrowserRouter as Router} from 'react-router-dom'
+import { BrowserRouter as Router} from 'react-router-dom'
 import { Route, Routes } from 'react-router-dom'
-import { Outlet, Navigate } from 'react-router-dom'
-
 import { LoadingOverlay, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
-
-import Cookies from 'js-cookie'
 import './index.css'
-
 import Login from './pages/public/Login/Authentication';
-// import Login from './pages/public/Login/Login'
-
-import Header from './Layout/Header/Header'
-import Footer from './Layout/Footer/Footer'
 import  Home from './pages/private/Home/Home'
 import Leaderbord from './pages/private/Dashbord/Leaderbord'
 import Profile from './pages/private/Profile/Profile'
 import EditeProfile from './pages/private/Settings/FditeProfile/EditeProfail'
-import EnableTowFactor from './pages/private/Settings/EnableTowFactor'
 import Game from './pages/private/Game/Game'
 import ChatApp from './pages/private/Chat/ChatApp'
-
 import axios from 'axios'
 import Auth from './pages/public/Auth'
-import CreatProfile from './pages/private/CreatProfile/CreatProfile'
-import { useDisclosure } from '@mantine/hooks'
 import UserProfile from './pages/private/UserProfile/UserProfile'
-import { Socket, io } from 'socket.io-client'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>("");
@@ -140,7 +126,7 @@ function App()  {
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-          <Route path='/Chat' element={hasToken ? <ChatApp />  : <Login/>}/>
+          <Route path='/Chat' element={hasToken ? <ChatApp username={userName} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
           <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar}/> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
