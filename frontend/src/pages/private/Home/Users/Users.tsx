@@ -5,30 +5,29 @@ import axios from 'axios';
 import data from './test.json'
 import { IconTent } from '@tabler/icons-react';
 
-function Users() {
-  const [userList, setUsersList] = useState<UsersInterface[]>([]);
-  const [searchList, setSearchList] = useState<UsersInterface[]>([]);
+function Users({userList, setUsersList, searchList, setSearchList}: {userList: UsersInterface[], setUsersList: any, searchList: UsersInterface[], setSearchList: any}) {
+//   const [userList, setUsersList] = useState<UsersInterface[]>([]);
+//   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
 //   const [addButton, setAddButton] = useState<boolean>(false);
   
-
-  useEffect(() => {
-    const getUsers = async () => {
-      await axios.get("http://localhost:3001/user/list")
-      .then((res) => {
-        // setUsersList(data);
-        // setSearchList(data);
-        setUsersList(res.data);
-        setSearchList(res.data);
-        console.log("Users list00000-->: ", res.data);
-      }).catch(err => {
-        // setUsersList(data);
-        // setSearchList(data);
-        console.error("Error in fetching Users list: ", err);
-      })
-    };
-    getUsers();
-}, []);
+//   useEffect(() => {
+//     const getUsers = async () => {
+//       await axios.get("http://localhost:3001/user/list")
+//       .then((res) => {
+//         // setUsersList(data);
+//         // setSearchList(data);
+//         setUsersList(res.data);
+//         setSearchList(res.data);
+//         console.log("Users list00000-->: ", res.data);
+//       }).catch(err => {
+//         // setUsersList(data);
+//         // setSearchList(data);
+//         console.error("Error in fetching Users list: ", err);
+//       })
+//     };
+//     getUsers();
+// }, []);
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   e.preventDefault();

@@ -5,9 +5,10 @@ import UserCard  from '../Profile/ProfileInfo/UserCard'
 import image from "./assite/bg.gif"
 import Header from '../../../Layout/Header/Header';
 import Footer from '../../../Layout/Footer/Footer';
+import UsersInterface from './Users/UsersInterface';
 
 
-function Home({avatar} : {avatar: string}) {
+function Home({userList, setUsersList, searchList, setSearchList, avatar}: {userList: UsersInterface[], setUsersList: any, searchList: UsersInterface[], setSearchList: any, avatar: string}) {
   return (
     <div className='h-full' >
         {/* <div className='h-full  ml-8 bl-8 mr-8 pr-8 raduis-5 rounded-full'> */}
@@ -21,7 +22,7 @@ function Home({avatar} : {avatar: string}) {
           spacing={{ base: 10, sm: 'xl' }}
           verticalSpacing={{ base: 'md', sm: 'lg' }}
           >
-            <Users />
+            <Users userList={userList} searchList={searchList} setUsersList={setUsersList} setSearchList={setSearchList}/>
             <img src={image} />
           </SimpleGrid>
           </div>

@@ -429,7 +429,7 @@ export class UserService {
                     username: obj.players[0].username
                 };
               }));
-            ///console.log(to_send);
+            //console.log(to_send);
             return to_send;
         } catch(error) {
             //if (error.instanceof(this.prismaservice))
