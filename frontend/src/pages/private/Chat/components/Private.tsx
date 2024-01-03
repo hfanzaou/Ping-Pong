@@ -23,7 +23,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	return (
 		<ul
-			className="bg-discord3 w-1/6 text-center p-2 text-white
+			className="bg-discord3 w-2/6 text-center p-2 text-white
 				font-Inconsolata font-bold h-full overflow-auto"
 		>
 			{
@@ -36,8 +36,13 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 								className={`w-full px-7 py-3 rounded-md
 									select-none ${data.talkingTo == x.login
 									? "bg-discord5"
-									: "hover:bg-discord4"}`}
+									: "hover:bg-discord4"}
+									flex justify-center items-center`}
 							>
+								<img
+									src={x.avatar}
+									className="w-10 h-10 mr-3 rounded-full"
+								/>
 								{x.login}
 							</button>
 						</li>);

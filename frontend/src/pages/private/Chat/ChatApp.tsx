@@ -7,7 +7,7 @@ import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
 import Header from "../../../Layout/Header/Header";
 
-const ChatApp = () => {
+const ChatApp = ({avatar}: {avatar: string}) => {
 	const	[data, setData] = useState<DATA>({
 		message: ""
 	});
@@ -60,7 +60,7 @@ const ChatApp = () => {
 	}, []);
 	return (
 		<div className="h-screen">
-			<Header avatar={""}/>
+			<Header avatar={avatar}/>
 			<div className="h-[80%]">
 			<div className="flex h-full">
 				<Nav option={option} setOption={setOption}/>
@@ -71,6 +71,7 @@ const ChatApp = () => {
 				<Chat
 					data={data}
 					setData={setData}
+					avatar={avatar}
 					/>
 			</div>
 

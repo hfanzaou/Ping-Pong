@@ -7,12 +7,15 @@ import { setMessageData } from "../utils";
 interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
+	avatar: string
 }
 
-const Chat: React.FC<Props> = ({ data, setData }) => {
+const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
-		message: string
+		message: string,
+		sender: string,
+		avatar: string
 	}>>([]);
 	const	Reference = useRef<HTMLInputElement | null>(null);
 	
@@ -42,7 +45,12 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 		}
 		fetchData();
 	}, [data])
-	function callBack(m: {id: number, message: string})
+	function callBack(m: {
+		id: number,
+		message: string,
+		sender: string,
+		avatar: string
+	})
 	{
 		setConversation(prev => [m, ...prev]);
 	}
@@ -75,7 +83,19 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
 					return (
-						<li key={x.id} className="flex hover:bg-discord3 rounded-md m-2 p-3">{x.message}</li>)
+						<li
+							key={x.id}
+							className="flex hover:bg-discord3 rounded-md m-2 p-3"
+						>
+							<img
+								src={x.avatar}
+								className="h-12 w-12 rounded-full mr-3"
+							/>
+							<div>
+								<div className="font-extrabold">{x.sender}</div>
+								<div className="w-96 break-words">{x.message}</div>
+							</div>
+						</li>)
 				})}
 			</ul>
 			<div className="flex">

@@ -9,7 +9,8 @@ export interface DATA {
 
 export interface User {
 	id:		number,
-	login:	string
+	login:	string,
+	avatar?: string
 }
 
 export interface USERDATA {

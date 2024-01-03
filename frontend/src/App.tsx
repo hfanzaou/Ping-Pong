@@ -126,7 +126,7 @@ function App()  {
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-          <Route path='/Chat' element={hasToken ? <ChatApp />  : <Login/>}/>
+          <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
           <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar}/> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
