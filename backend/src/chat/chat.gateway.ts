@@ -16,12 +16,13 @@ OnGatewayDisconnect {
 	constructor(private chatService: ChatService) {}
 	@WebSocketServer() server: Server
 	@SubscribeMessage("server")
-	handelMessage(client: Socket, data: MESSAGE) {
+	async handelMessage(client: Socket, data: MESSAGE) {
 		// console.log(Array.from(client.rooms).slice(1));
 		const room = this.chatService.getRoom(data);
+		const message = await this.chatService.addMessage(data);
 		this.server
 			.to(room)
-			.emit("client", data.message);
+			.emit("client", message);
 	}
 	@SubscribeMessage("newChat")
 	handelNewChat(client: Socket, data: NEWCHAT) {

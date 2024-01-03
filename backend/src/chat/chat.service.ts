@@ -76,17 +76,111 @@ export class ChatService {
 		}
 	}
 	async addMessage(data: MESSAGE) {
-		const user1 = await this.prisma.user.findUnique({
+		let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 			where: {
-				username: data.sender
+				AND: [
+					{
+						users: {
+							some: {
+								user: {
+									username: data.sender
+								}
+							}
+						}
+					},
+					{
+						users: {
+							some: {
+								user: {
+									username: data.recver
+								}
+							}
+						}
+					}
+				]
 			}
-		});
-		const user2 = await this.prisma.user.findUnique({
-			where: {
-				username: data.recver
-			}
-		});
-		if (user1 && user2) {
+		})
+		if (!chatHistorie) {
+			chatHistorie = await this.prisma.cHATHISTORY.create({
+				data: {
+					users: {
+						create: [
+							{
+								user: {
+									connect: {
+										username: data.sender
+									}
+								}
+							},
+							{
+								user: {
+									connect: {
+										username: data.recver
+									}
+								}
+							}
+						]
+					}
+				}
+			});
 		}
+		const message = await this.prisma.mESSAGE.create({
+			data: {
+				sender: data.sender,
+				message: data.message,
+				chathistory: {
+					connect: {
+						id: chatHistorie.id
+					}
+				}
+			}
+		});
+		return {
+			id: message.id,
+			message: `${data.sender}   ${data.message}`
+		}
+	}
+	async getUserHistory(data: NEWCHAT) {
+		if (data.sender && data.recver) {
+			const history = await this.prisma.cHATHISTORY.findFirst({
+				where: {
+					AND: [
+						{
+							users: {
+								some: {
+									user: {
+										username: data.sender
+									}
+								}
+							}
+						},
+						{
+							users: {
+								some: {
+									user: {
+										username: data.recver
+									}
+								}
+							}
+						}
+					]
+				},
+				include: {
+					messages: true
+				}
+			});
+			if (history) {
+				const chatHistory = [...history.messages.map(x => {
+					return {
+						id: x.id,
+						message: `${x.sender}   ${x.message}`
+					}
+				})].reverse();
+				return chatHistory;
+			}
+			else
+				return null;
+		}
+		return null;
 	}
 }

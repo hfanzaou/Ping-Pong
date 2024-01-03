@@ -7,10 +7,6 @@ import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
 import Header from "../../../Layout/Header/Header";
 
-interface Props {
-	username:string | null
-}
-
 const ChatApp = () => {
 	const	[data, setData] = useState<DATA>({
 		message: ""
@@ -24,7 +20,6 @@ const ChatApp = () => {
 				credentials: "include"
 			});
 			const Data0 = await res0.json();
-			console.log(Data0.name);
 
 			if (Data0.name)
 			{
