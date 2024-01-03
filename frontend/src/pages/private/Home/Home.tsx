@@ -11,24 +11,6 @@ import axios from 'axios';
 
 function Home({userList, setUsersList, searchList, setSearchList, handleRequest, avatar}: {userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any, avatar: string}) {
   
-    // useEffect(() => {
-    //     const getUsers = async () => {
-    //       await axios.get("http://localhost:3001/user/list")
-    //       .then((res) => {
-    //         // setUsersList(data);
-    //         // setSearchList(data);
-    //         setUsersList(res.data);
-    //         setSearchList(res.data);
-    //       //   console.log("Users list00000-->: ", res.data);
-    //       }).catch(err => {
-    //         // setUsersList(data);
-    //         // setSearchList(data);
-    //         console.error("Error in fetching Users list: ", err);
-    //       })
-    //     };
-    //     getUsers();
-    // }, []);
-  
     return (
     <div className='h-full' >
         {/* <div className='h-full  ml-8 bl-8 mr-8 pr-8 raduis-5 rounded-full'> */}
