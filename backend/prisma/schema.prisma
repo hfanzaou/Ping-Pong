@@ -15,26 +15,27 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  email          String        @unique
-  hash           String?
-  username       String        @unique
-  firstName      String?
-  lastName       String?
-  upAvatar       Boolean       @default(false)
-  avatar         String?
-  state          String        @default("Offline")
-  twoFaAuth      Boolean
-  twoFaSecret    Json?         
-  friends        User[]        @relation("Friends")
-  friendOf       User[]        @relation("Friends")
-  blocked        User[]        @relation("Blocked")
-  blockedFrom    User[]        @relation("Blocked")
-  achievement    Json?
-  MatchHistory   MatchHistory? @relation(fields: [matchHistoryId], references: [id])
-  matchHistoryId Int?
-  socket         String? @unique
-  chatUsers      User[]  @relation("ChatUsers")
-  chatUsersOf    User[]  @relation("ChatUsers")
+  email           String        @unique
+  hash            String?
+  username        String        @unique
+  firstName       String?
+  lastName        String?
+  upAvatar        Boolean       @default(false)
+  avatar          String?
+  state           String        @default("Offline")
+  twoFaAuth       Boolean
+  twoFaSecret     Json?         
+  friends         User[]        @relation("Friends")
+  friendOf        User[]        @relation("Friends")
+  blocked         User[]        @relation("Blocked")
+  blockedFrom     User[]        @relation("Blocked")
+  achievement     Json?
+  MatchHistory    MatchHistory? @relation(fields: [matchHistoryId], references: [id])
+  matchHistoryId  Int?
+  socket          String? @unique
+  chatUsers       User[]  @relation("ChatUsers")
+  chatUsersOf     User[]  @relation("ChatUsers")
+  chatHistorys    UserCHATHISTORY[]
 }
 
 model MatchHistory {
@@ -45,4 +46,29 @@ model MatchHistory {
   playerScore  Int
   player2Score Int
   win          Boolean @default(false)
+}
+
+model CHATHISTORY {
+  id  Int      @id @unique @default(autoincrement())
+
+  messages  MESSAGE[]
+  users     UserCHATHISTORY[]
+}
+
+model MESSAGE {
+  id            Int      @id @unique @default(autoincrement())
+
+  sender        String
+  message       String
+  avatar        String?
+  chathistoryid Int
+  chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
+}
+
+model UserCHATHISTORY {
+  userid        Int
+  user          User  @relation(fields: [userid], references: [id])
+  chathistoryid Int
+  chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
+  @@id([userid, chathistoryid])
 }
