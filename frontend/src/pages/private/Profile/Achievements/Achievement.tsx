@@ -28,7 +28,7 @@ function  Achievement() {
         const getAchievements = async () => {
             await axios.get("http://localhost:3001/user/achievements")
             .then((res) => {
-            console.log("Achievement from res: ", res.data.achievement1);
+            // console.log("Achievement from res: ", res.data.achievement1);
             setAchievements(res.data);
         })
         .catch((err) => {

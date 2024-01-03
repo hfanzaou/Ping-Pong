@@ -9,18 +9,17 @@ import Footer from '../../../../Layout/Footer/Footer';
 function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
 
     return (
-        <div className='h-full'>
+        <div className=''>
             <Header avatar={avatar}/>
-            <Box maw={340} mx="auto" className='h-[100%]'>
-                <div className='h-full mb-15'>
-
-                <ChangeAvatar settAvatar={setAvatar} avatar={avatar} />
+            <Box maw={340} mx="auto" className='h-[800px]'>
+                <div className=''>
+                    <ChangeAvatar settAvatar={setAvatar} avatar={avatar} />
                 </div>
-                <div className='h-full'>
+                <div className=''>
 
                 <ChangeName/>
                 </div>
-                <div className='h-full'>
+                <div className=''>
 
                 <EnableTowFactor/>
                 </div>
