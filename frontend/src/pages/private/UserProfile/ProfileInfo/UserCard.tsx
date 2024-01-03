@@ -4,6 +4,7 @@ import classes from './UserCard.module.css';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
 import sectionimage from '../../Home/assite/bg.gif'
+import FriendshipButton from '../../Home/Users/FriendshipButton';
 // import { Cookies } from 'react-cookie';
 
 const userInfo = {
@@ -29,7 +30,7 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard({usercard}: {usercard: UserCardProps}) {
+function UserCard({usercard, handleRequest}: {usercard: UserCardProps, handleRequest: any}) {
 
   const items = stats.map((stat) => (
     <div key={stat.label}>
@@ -68,9 +69,10 @@ function UserCard({usercard}: {usercard: UserCardProps}) {
       <Group mt="md" justify="center" gap={30}>
         {items}
       </Group>
-      {/* <Button fullWidth radius="md" mt="xl" size="md" variant="default">
-        Life is like an npm install – you never know what you are going to get.
-    </Button> */}
+      <div  className='rounded-md mt-xl size-md'>
+            <FriendshipButton name={window.location.pathname.split("/")[1]} friendship='add friend' handleRequest={handleRequest}/>
+        {/* Life is like an npm install – you never know what you are going to get. */}
+      </div>
   </Card>
     </div>
   );
