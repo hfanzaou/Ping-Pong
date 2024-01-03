@@ -4,6 +4,7 @@ import classes from './UserCard.module.css';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
 import sectionimage from '../../Home/assite/bg.gif'
+import { Link } from 'react-router-dom';
 
 
 const userInfo = {
@@ -32,19 +33,8 @@ const stats = [
 
 function UserCard({avatar} : {avatar: string }) {
 
-    // const [image, setImage] = useState<string| undefined>();
     const [userName, setUserName] = useState<string| undefined>();
     useEffect(() => {
-        // const getUserAvatar = async () => {
-        //   {/* change to get http://localhost:3000/user/avatar*/}
-        //   await axios.get("http://localhost:3001/user/avatar")
-        //   .then((res) => {
-        //       setImage(res.data.avatar);
-        //   })
-        //   .catch((err) => {
-        //     console.log("Error in geting data in edit profile :", err);
-        //   })
-        // };
         const getUserNmae = async () => {
             await axios.get("http://localhost:3001/user/name")
             .then((res) => {
@@ -56,10 +46,7 @@ function UserCard({avatar} : {avatar: string }) {
             })
           };
           getUserNmae();
-        // getUserAvatar();
       }, []);
-    
-
 
   const items = stats.map((stat) => (
     <div key={stat.label}>
@@ -72,10 +59,14 @@ function UserCard({avatar} : {avatar: string }) {
     </div>
   ));
 
+    const handleClick = () => {
+        window.location.href = '/'+userName+'/public/profile';
+    }
+
   return (
     <div>
 
-  <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
+    <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
       <Card.Section
         h={50}
         >
@@ -98,10 +89,12 @@ function UserCard({avatar} : {avatar: string }) {
       <Group mt="md" justify="center" gap={30}>
         {items}
       </Group>
-      {/* <Button fullWidth radius="md" mt="xl" size="md" variant="default">
-        Life is like an npm install – you never know what you are going to get.
-    </Button> */}
-  </Card>
+    </Card>
+      <div className='flex justify-center items-centerw-12'>
+        <Button radius="md" size="md" color='gray' onClick={handleClick}>
+            show your public profile
+        </Button>
+      </div>
     </div>
   );
 }

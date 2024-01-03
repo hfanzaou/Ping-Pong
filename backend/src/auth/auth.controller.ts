@@ -9,7 +9,7 @@ import { toBuffer, toFileStream } from 'qrcode';
 import JwtTwoFaGuard from './guard/twoFaAuth.guard';
 import { throwError } from 'rxjs';
 import { FTAuth } from './42startegy';
-import { FAuthDto } from './dto';
+import { AuthDto, FAuthDto } from './dto';
 
 @Controller('')
 export class AuthController {
@@ -22,8 +22,7 @@ export class AuthController {
 
 	@Post('signup/pass')
 	@HttpCode(201)
-	async signupPass(@Res() res, @Body() body: FAuthDto) {	
-		console.log(body);
+	async signupPass(@Res() res, @Body() body: FAuthDto) {
 		const token = await this.authService.signupPass(body);
 		res.cookie('jwt', token, {
 			path:'/',
@@ -33,7 +32,7 @@ export class AuthController {
 	}
 	@Post('login/pass')
 	@HttpCode(201)
-	async loginPass(@Res() res, @Body() body) {
+	async loginPass(@Res() res, @Body() body: AuthDto) {
 
 		const user = await this.authService.validateUserWithPass(body);
 		if (user && user.twoFaAuth) ///2fa enabled need an access token that only enables to verify code
@@ -73,7 +72,7 @@ export class AuthController {
 	////// login logout and callback////
 	@Get('login')
 	@UseGuards(FTAuthGuard)
-	signin(@Body() user: any) {
+	signin() {
 		//("hello");
 	}
 

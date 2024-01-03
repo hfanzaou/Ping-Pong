@@ -30,9 +30,23 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard({usercard, handleRequest}: {usercard: UserCardProps, handleRequest: any}) {
+function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
+    const [userName, setUserName] = useState<string>();
+    useEffect(() => {
 
-  const items = stats.map((stat) => (
+        const getUserNmae = async () => {
+            await axios.get("http://localhost:3001/user/name")
+            .then((res) => {
+                console.log(res.data.name);
+                setUserName(res.data.name);
+            })
+            .catch((err) => {
+                console.log("Error in geting data in edit profile :", err);
+            })
+        };
+        getUserNmae();
+    }, []);
+    const items = stats.map((stat) => (
     <div key={stat.label}>
       <Text ta="center" fz="lg" fw={500}>
         {stat.value}
@@ -43,12 +57,14 @@ function UserCard({usercard, handleRequest}: {usercard: UserCardProps, handleReq
     </div>
   ));
 
-  return (
-    <div>
+        // const name = window.location.pathname.split("/")[1];
 
-  <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
+  return (
+    <div >
+
+  <Card style={{backgroundColor: 'transparent'}} radius="md" className={classes.card}>
       <Card.Section
-        h={50}
+        h={40}
         >
             {/* <img className='h-full w-full' src={sectionimage}/> */}
         </Card.Section>
@@ -69,11 +85,12 @@ function UserCard({usercard, handleRequest}: {usercard: UserCardProps, handleReq
       <Group mt="md" justify="center" gap={30}>
         {items}
       </Group>
-      <div  className='rounded-md mt-xl size-md'>
-            <FriendshipButton name={window.location.pathname.split("/")[1]} friendship='add friend' handleRequest={handleRequest}/>
-        {/* Life is like an npm install – you never know what you are going to get. */}
-      </div>
   </Card>
+    {usercard?.username !== userName &&
+      <div className='flex justify-center items-center mt-2'>
+            <FriendshipButton name={window.location.pathname.split("/")[1]} friendship={friendShip} handleRequest={handleRequest}/>
+      </div>
+    }
     </div>
   );
 }
