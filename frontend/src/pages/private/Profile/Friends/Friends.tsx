@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Table, Group, Text, Menu, rem, ScrollArea, Blockquote, SegmentedControl, Button, Container } from '@mantine/core';
-import { IconMessages, IconTrash, IconFriends, IconFriendsOff} from '@tabler/icons-react';
+import { IconMessages, IconTrash, IconFriends, IconFriendsOff, IconUserCircle} from '@tabler/icons-react';
 import FriendInterface from './FriendsInterface';
 
 import testdata from './FriendsList.json';
@@ -46,7 +46,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
     getRequests();
 }, []);
 
-  const handleBlockFriend = async (name: string) => {
+  const handleBlockUser = async (name: string) => {
     console.log("blocked friend name: ", name);
     await axios.post("http://localhost:3001/user/block", {name: name})
     .then((res) => {
@@ -73,10 +73,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
       <Table.Td>
         <Group gap="sm">
           <Menu
-            transitionProps={{ transition: 'pop' }}
-            withArrow
-            position="bottom-end"
-            withinPortal
+            position="bottom-start"
             >
             <Menu.Target>
              <Avatar size={40} src={item.avatar} radius={40} />
@@ -85,12 +82,10 @@ function  Frindes({setUserName}: {setUserName: any}) {
             <Menu.Item
               onClick={() => handelShowProfile(item.name)}
                 leftSection={
-                  <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                  <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                {/* <Link to={'/'+item.name+'/public/profile'}> */}
                     Show Profile
-                    {/* </Link> */}
               </Menu.Item>
               <Menu.Item
                 leftSection={
@@ -100,12 +95,10 @@ function  Frindes({setUserName}: {setUserName: any}) {
                 <Link to={'/Chat'}>Send message</Link>
               </Menu.Item>
               <Menu.Item
+                onClick={() => handleBlockUser(item.name)}
                 leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                color="red"
                 >
-                  <button onClick={() => handleBlockFriend(item.name)}>
-                      Block friend
-                  </button>
+                      Block user
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -144,9 +137,6 @@ function  Frindes({setUserName}: {setUserName: any}) {
     </Table.Td>
   </Table.Tr>
   ));
-
-  const FriendsIcon = <IconFriends  size={60} strokeWidth={1.5} color={'#4078bf'}/>
-  const FriendsOffIcon = <IconFriendsOff size={60} strokeWidth={1.5} color={'#4078bf'}/>
 
   const frindesNumber = rows.length;
   const blockedFriendsNumbre = 1;

@@ -1,10 +1,11 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
-import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, HoverCard } from '@mantine/core';
+import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, HoverCard, Menu, rem } from '@mantine/core';
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
 import testdata from './test.json'
-import { IconTent } from '@tabler/icons-react';
+import { IconMessages, IconTent, IconTrash, IconUserCircle } from '@tabler/icons-react';
 import FriendshipButton from './FriendshipButton';
+import { Link } from 'react-router-dom';
 
 function Users({userList, setUsersList, searchList, setSearchList, handleRequest}: {userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
@@ -12,7 +13,9 @@ function Users({userList, setUsersList, searchList, setSearchList, handleRequest
   const [searchInput, setSearchInput] = useState("");
 //   const [addButton, setAddButton] = useState<boolean>(false);
   
-  useEffect(() => {
+
+
+useEffect(() => {
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
@@ -27,6 +30,23 @@ function Users({userList, setUsersList, searchList, setSearchList, handleRequest
     };
     getUsers();
 }, []);
+
+const handelShowProfile = (name: string) => {
+    window.location.href = '/'+name+'/public/profile';
+    // window.location.reload();
+};
+
+const handleBlockUser = async (name: string) => {
+    console.log("blocked friend name: ", name);
+    await axios.post("http://localhost:3001/user/block", {name: name})
+    .then((res) => {
+        res.status === 201 && window.location.reload();
+    })
+    .catch((err) => {
+        console.error("error when send post request to block friend: ", err);
+    })
+  };
+
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   e.preventDefault();
@@ -52,21 +72,50 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       <Table.Td>
         <div className='flex justify-between'>
         <Group gap="sm">
-          <HoverCard>
-            <HoverCard.Target>
+            <Menu position='bottom-start'>
+            <Menu.Target>
               <Avatar size={40} src={item.avatar} radius={40}/>
-            </HoverCard.Target>
-            <HoverCard.Dropdown>
-              Level {item.level}
-            </HoverCard.Dropdown>
-          </HoverCard>
+            </Menu.Target>
+            <Menu.Dropdown>
+            <Menu.Item
+              onClick={() => handelShowProfile(item.name)}
+                leftSection={
+                  <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                }
+                >
+                    Show Profile
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                }
+                >
+                <Link to={'/Chat'}>Send message</Link>
+              </Menu.Item>
+              <Menu.Item
+              onClick={() => handleBlockUser(item.name)}
+              leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+              >
+              Block user
+              </Menu.Item>
+            </Menu.Dropdown>
+            </Menu>
           <div>
             <Text fz="md" fw={800}>
               {item.name}
             </Text>
+            <Text >
+            {/* <Text fz="sm" fw={300} >
+               Level {item.level}
+            </Text> */}
             <Text fz="sm" fw={500} c="dimmed">
-              {item.state}        {/*this state was need to be real time*/}
+              {item.state}         {/*this state was need to be real time*/}
+              </Text>
             </Text>
+            {/* <Text>
+                  Level {item.level}
+
+            </Text> */}
           </div>
         </Group>
 <div className=''>
