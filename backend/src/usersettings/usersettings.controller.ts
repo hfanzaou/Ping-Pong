@@ -33,10 +33,6 @@ export class UsersettingsController {
           }),
     ) file: Express.Multer.File) {
         console.log(file);
-        //const avatar: string = body.avatar;
-        //console.log(avatar.length);
-        // if (avatar.length > 100000)
-        //    throw HttpStatus.PAYLOAD_TOO_LARGE;
       await this.userSetService.updateAvater(req.user.id, file.path);
     }
 }
