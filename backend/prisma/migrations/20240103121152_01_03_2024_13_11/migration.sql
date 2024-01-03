@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "MESSAGE" ALTER COLUMN "avatar" DROP NOT NULL;

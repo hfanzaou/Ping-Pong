@@ -5,7 +5,8 @@ export interface USERSOCKET {
 
 export interface User {
 	id:		number,
-	login:	string
+	login:	string,
+	avatar?: string
 }
 
 export interface USERDATA {

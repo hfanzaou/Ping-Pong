@@ -34,7 +34,8 @@ export class ChatService {
 				userName: user.username,
 				chatUsers: user.chatUsers.map(x => ({
 					id: x.id,
-					login: x.username
+					login: x.username,
+					avatar: x.avatar
 				}))
 			}
 			return data;
@@ -124,10 +125,16 @@ export class ChatService {
 				}
 			});
 		}
+		const avatar = await this.prisma.user.findUnique({
+			where: {
+				username: data.sender
+			}
+		})
 		const message = await this.prisma.mESSAGE.create({
 			data: {
 				sender: data.sender,
 				message: data.message,
+				avatar: avatar.avatar,
 				chathistory: {
 					connect: {
 						id: chatHistorie.id
@@ -137,7 +144,9 @@ export class ChatService {
 		});
 		return {
 			id: message.id,
-			message: `${data.sender}   ${data.message}`
+			message: data.message,
+			sender: data.sender,
+			avatar: avatar.avatar
 		}
 	}
 	async getUserHistory(data: NEWCHAT) {
@@ -173,7 +182,9 @@ export class ChatService {
 				const chatHistory = [...history.messages.map(x => {
 					return {
 						id: x.id,
-						message: `${x.sender}   ${x.message}`
+						message: x.message,
+						sender: x.sender,
+						avatar: x.avatar
 					}
 				})].reverse();
 				return chatHistory;
