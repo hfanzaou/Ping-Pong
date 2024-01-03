@@ -4,30 +4,31 @@ import UsersInterface from './UsersInterface';
 import axios from 'axios';
 import data from './test.json'
 import { IconTent } from '@tabler/icons-react';
+import FriendshipButton from './FriendshipButton';
 
-function Users({userList, setUsersList, searchList, setSearchList}: {userList: UsersInterface[], setUsersList: any, searchList: UsersInterface[], setSearchList: any}) {
+function Users({userList, setUsersList, searchList, setSearchList, handleRequest}: {userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
 //   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
 //   const [addButton, setAddButton] = useState<boolean>(false);
   
-//   useEffect(() => {
-//     const getUsers = async () => {
-//       await axios.get("http://localhost:3001/user/list")
-//       .then((res) => {
-//         // setUsersList(data);
-//         // setSearchList(data);
-//         setUsersList(res.data);
-//         setSearchList(res.data);
-//         console.log("Users list00000-->: ", res.data);
-//       }).catch(err => {
-//         // setUsersList(data);
-//         // setSearchList(data);
-//         console.error("Error in fetching Users list: ", err);
-//       })
-//     };
-//     getUsers();
-// }, []);
+  useEffect(() => {
+    const getUsers = async () => {
+      await axios.get("http://localhost:3001/user/list")
+      .then((res) => {
+        // setUsersList(data);
+        // setSearchList(data);
+        setUsersList(res.data);
+        setSearchList(res.data);
+        console.log("Users list00000-->: ", res.data);
+      }).catch(err => {
+        // setUsersList(data);
+        // setSearchList(data);
+        console.error("Error in fetching Users list: ", err);
+      })
+    };
+    getUsers();
+}, []);
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   e.preventDefault();
@@ -50,73 +51,72 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 };
 
-const handleRequest = async (name: string, friendship: string) => {
-    console.log("Name from handle Request: ", name);
+// const handleRequest = async (name: string, friendship: string) => {
+//     // console.log("Name from handle Request: ", name);
+//     // console.log("friendship from handle Request: ", friendship);
 
-    if (friendship === 'add friend') {
-        const updatedUserList = searchList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'remove request'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-      await axios.post("http://localhost:3001/user/add/friend", {name: name})
-      .then((res) => {
-        console.log(res.data);
-     })
-     .catch((err) => {
-        console.log("Error in send post request to add friend ",err);
-     })
-    }else if (friendship === 'remove request') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'add friend'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/remove/request", {name: name})
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in send post request to remove request",err);
-        })
-    } else if (friendship === 'remove friend') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'add friend'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/remove/friend", {name: name})
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in send post request to remove friend ",err);
-        })
-    }else if (friendship === 'accept friend') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'remove friend'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/accept/friend", {name: name})
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in send post request to accept friend ",err);
-        })
-    }
-    // window.location.reload();
-
-  };
+//     if (friendship === 'add friend') {
+//         const updatedUserList = userList.map(user => 
+//             user.name === name 
+//             ? {...user, friendship: 'remove request'}
+//             : user
+//         );
+//         setUsersList(updatedUserList);
+//         setSearchList(updatedUserList);
+//       await axios.post("http://localhost:3001/user/add/friend", {name: name})
+//       .then((res) => {
+//         console.log(res.data);
+//      })
+//      .catch((err) => {
+//         console.log("Error in send post request to add friend ",err);
+//      })
+//     }else if (friendship === 'remove request') {
+//         const updatedUserList = userList.map(user => 
+//             user.name === name 
+//             ? {...user, friendship: 'add friend'}
+//             : user
+//         );
+//         setUsersList(updatedUserList);
+//         setSearchList(updatedUserList);
+//         await axios.post("http://localhost:3001/user/remove/request", {name: name})
+//         .then((res) => {
+//           console.log(res.data);
+//         })
+//         .catch((err) => {
+//           console.log("Error in send post request to remove request",err);
+//         })
+//     } else if (friendship === 'remove friend') {
+//         const updatedUserList = userList.map(user => 
+//             user.name === name 
+//             ? {...user, friendship: 'add friend'}
+//             : user
+//         );
+//         setUsersList(updatedUserList);
+//         setSearchList(updatedUserList);
+//         await axios.post("http://localhost:3001/user/remove/friend", {name: name})
+//         .then((res) => {
+//           console.log(res.data);
+//         })
+//         .catch((err) => {
+//           console.log("Error in send post request to remove friend ",err);
+//         })
+//     }else if (friendship === 'accept friend') {
+//         const updatedUserList = userList.map(user => 
+//             user.name === name 
+//             ? {...user, friendship: 'remove friend'}
+//             : user
+//         );
+//         setUsersList(updatedUserList);
+//         setSearchList(updatedUserList);
+//         await axios.post("http://localhost:3001/user/accept/friend", {name: name})
+//         .then((res) => {
+//           console.log(res.data);
+//         })
+//         .catch((err) => {
+//           console.log("Error in send post request to accept friend ",err);
+//         })
+//     }
+//   };
 
   const search = searchList.map((item) => (
       <Table.Tr key={item.name} m={6}>
@@ -142,10 +142,10 @@ const handleRequest = async (name: string, friendship: string) => {
         </Group>
 <div className=''>
 {/* item.name + ' sent you a friend request'  */}
-
-           <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
+            <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
+           {/* <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
                 {item.friendship}
-        </Button>
+        </Button> */}
         </div>
     </div>
       </Table.Td>
