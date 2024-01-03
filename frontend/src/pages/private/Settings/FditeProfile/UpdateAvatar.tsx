@@ -18,8 +18,8 @@ const file2Base64 = (file: File): Promise<string> => {
 function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: string})
 {
 
-  const [setAvatar, setSetAvatar] = useState<boolean>(false);
-  const [userimage, setUserImage] = useState(avatar as string | null);
+//   const [setAvatar, setSetAvatar] = useState<boolean>(false);
+  const [userimage, setUserImage] = useState<string>(avatar);
 //   const [image, setImage] = useState<string| undefined>(avatar);
   const [save, setSave] = useState<boolean>(true);
 
@@ -27,10 +27,10 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
   const fileRef = createRef<HTMLInputElement>();
 
   const onFileInputChange: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
+    e.preventDefault();
     const file = e.target?.files?.[0];
     const formData = new FormData();
     formData.append('File', file as Blob);
-    // console.log("formData------->: ", formData.get('File'));
 
     setUploaded(formData);
     if (file) {
@@ -39,6 +39,11 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
       })};
 
     setSave(false);
+
+        // Reset the value of the file input
+        if (e.target) {
+            e.target.value = '';
+          }
   };
 
   const handleRest = () => {
@@ -47,8 +52,7 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
   };
 
   const handleSaveAvatar = async () => {
-    // console.log("userimage: ", uploaded);
-    
+
     await axios.post('http://localhost:3001/settings/avatar',  uploaded)
     .then(res => {
       console.log(res.data);
@@ -56,9 +60,6 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
       settAvatar(userimage);
     })
     .catch(err => {
-        setSave(true);
-        settAvatar(avatar);
-
       console.error("Error in send profile info: ", err);
     }) 
   };        
@@ -75,7 +76,8 @@ const [uploaded, setUploaded] = useState<FormData | undefined>();
               />
 <div dir="rtl" className="relative h-32 w-32"  onClick={() => fileRef.current?.click()}>
         <button   type="button" className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-600 hover:bg-gray-900 hover:text-white">
-          <Avatar size='xl' src={userimage} />
+          
+          <Avatar size='xl' src={!userimage ? avatar : userimage} />
           <div className="absolute h-14 w-14 top-1 start-0">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />

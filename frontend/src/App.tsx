@@ -31,7 +31,7 @@ import { Socket, io } from 'socket.io-client'
 import UsersInterface from './pages/private/Home/Users/UsersInterface'
 
 function App()  {
-    const [avatar, setAvatar] = useState(null as string | null);
+    const [avatar, setAvatar] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
