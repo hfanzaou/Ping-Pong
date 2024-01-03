@@ -1,0 +1,39 @@
+-- CreateTable
+CREATE TABLE "CHATHISTORY" (
+    "id" SERIAL NOT NULL,
+
+    CONSTRAINT "CHATHISTORY_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "MESSAGE" (
+    "id" SERIAL NOT NULL,
+    "sender" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "chathistoryid" INTEGER NOT NULL,
+
+    CONSTRAINT "MESSAGE_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserCHATHISTORY" (
+    "userid" INTEGER NOT NULL,
+    "chathistoryid" INTEGER NOT NULL,
+
+    CONSTRAINT "UserCHATHISTORY_pkey" PRIMARY KEY ("userid","chathistoryid")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CHATHISTORY_id_key" ON "CHATHISTORY"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "MESSAGE_id_key" ON "MESSAGE"("id");
+
+-- AddForeignKey
+ALTER TABLE "MESSAGE" ADD CONSTRAINT "MESSAGE_chathistoryid_fkey" FOREIGN KEY ("chathistoryid") REFERENCES "CHATHISTORY"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserCHATHISTORY" ADD CONSTRAINT "UserCHATHISTORY_userid_fkey" FOREIGN KEY ("userid") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserCHATHISTORY" ADD CONSTRAINT "UserCHATHISTORY_chathistoryid_fkey" FOREIGN KEY ("chathistoryid") REFERENCES "CHATHISTORY"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,10 +1,12 @@
 export interface USERSOCKET {
 	socket: string
+	username: string | null
 }
 
 export interface User {
 	id:		number,
-	login:	string
+	login:	string,
+	avatar?: string
 }
 
 export interface USERDATA {

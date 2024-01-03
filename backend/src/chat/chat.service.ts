@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
+import { MESSAGE, NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
 import { Socket } from "socket.io"
 
 @Injectable()
@@ -11,9 +11,10 @@ export class ChatService {
 		this.rooms = [];
 	}
 	async getUserData(userSocket: USERSOCKET) {
-		const	user = await this.prisma.user.findFirst({
+		const	user = await this.prisma.user.findUnique({
 			where: {
-				state: "Offline"
+				username: userSocket.username,
+				// state: "Offline"
 			},
 			include: {
 				chatUsers: true
@@ -29,15 +30,18 @@ export class ChatService {
 					socket: userSocket.socket
 				}
 			});
+			const data: USERDATA = {
+				userName: user.username,
+				chatUsers: user.chatUsers.map(x => ({
+					id: x.id,
+					login: x.username,
+					avatar: x.avatar
+				}))
+			}
+			return data;
 		}
-		const data: USERDATA = {
-			userName: user.username,
-			chatUsers: user.chatUsers.map(x => ({
-				id: x.id,
-				login: x.username
-			}))
-		}
-		return data;
+		else
+			return null
 	}
 	async dropUser(client: Socket) {
 		const	user = await this.prisma.user.findUnique({
@@ -71,5 +75,123 @@ export class ChatService {
 			this.rooms.push(data.sender+data.recver);
 			return data.sender+data.recver;
 		}
+	}
+	async addMessage(data: MESSAGE) {
+		let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+			where: {
+				AND: [
+					{
+						users: {
+							some: {
+								user: {
+									username: data.sender
+								}
+							}
+						}
+					},
+					{
+						users: {
+							some: {
+								user: {
+									username: data.recver
+								}
+							}
+						}
+					}
+				]
+			}
+		})
+		if (!chatHistorie) {
+			chatHistorie = await this.prisma.cHATHISTORY.create({
+				data: {
+					users: {
+						create: [
+							{
+								user: {
+									connect: {
+										username: data.sender
+									}
+								}
+							},
+							{
+								user: {
+									connect: {
+										username: data.recver
+									}
+								}
+							}
+						]
+					}
+				}
+			});
+		}
+		const avatar = await this.prisma.user.findUnique({
+			where: {
+				username: data.sender
+			}
+		})
+		const message = await this.prisma.mESSAGE.create({
+			data: {
+				sender: data.sender,
+				message: data.message,
+				avatar: avatar.avatar,
+				chathistory: {
+					connect: {
+						id: chatHistorie.id
+					}
+				}
+			}
+		});
+		return {
+			id: message.id,
+			message: data.message,
+			sender: data.sender,
+			avatar: avatar.avatar
+		}
+	}
+	async getUserHistory(data: NEWCHAT) {
+		if (data.sender && data.recver) {
+			const history = await this.prisma.cHATHISTORY.findFirst({
+				where: {
+					AND: [
+						{
+							users: {
+								some: {
+									user: {
+										username: data.sender
+									}
+								}
+							}
+						},
+						{
+							users: {
+								some: {
+									user: {
+										username: data.recver
+									}
+								}
+							}
+						}
+					]
+				},
+				include: {
+					messages: true
+				}
+			});
+			if (history) {
+				const chatHistory = [...history.messages.map(x => {
+					return {
+						id: x.id,
+						message: x.message,
+						sender: x.sender,
+						avatar: x.avatar
+					}
+				})].reverse();
+				return chatHistory;
+			}
+			else
+				return null;
+		}
+		return null;
 	}
 }

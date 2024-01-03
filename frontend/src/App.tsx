@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Link, BrowserRouter as Router} from 'react-router-dom'
+import { BrowserRouter as Router} from 'react-router-dom'
 import { Route, Routes } from 'react-router-dom'
-import { Outlet, Navigate } from 'react-router-dom'
-
 import { LoadingOverlay, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
-
-import Cookies from 'js-cookie'
 import './index.css'
-
 import Login from './pages/public/Login/Authentication';
-// import Login from './pages/public/Login/Login'
-
-import Header from './Layout/Header/Header'
-import Footer from './Layout/Footer/Footer'
 import  Home from './pages/private/Home/Home'
 import Leaderbord from './pages/private/Dashbord/Leaderbord'
 import Profile from './pages/private/Profile/Profile'
 import EditeProfile from './pages/private/Settings/FditeProfile/EditeProfail'
-import EnableTowFactor from './pages/private/Settings/EnableTowFactor'
 import Game from './pages/private/Game/Game'
 import ChatApp from './pages/private/Chat/ChatApp'
-
 import axios from 'axios'
 import Auth from './pages/public/Auth'
-import CreatProfile from './pages/private/CreatProfile/CreatProfile'
-import { useDisclosure } from '@mantine/hooks'
 import UserProfile from './pages/private/UserProfile/UserProfile'
-import { Socket, io } from 'socket.io-client'
 import UsersInterface from './pages/private/Home/Users/UsersInterface'
 
 function App()  {
@@ -36,6 +22,7 @@ function App()  {
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
 
+    const [friendShip, setFriendShip] = useState<any>();
     const [userName, setUserName] = useState<string | null>(null);
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
@@ -45,11 +32,33 @@ function App()  {
 
   axios.defaults.withCredentials = true;  // to send token in every requiste
 
-const handleRequest = async (name: string, friendship: string) => {
+//   useEffect(() => {
+//     const getUsers = async () => {
+//       await axios.get("http://localhost:3001/user/list")
+//       .then((res) => {
+//         // setUsersList(data);
+//         // setSearchList(data);
+//         setUsersList(res.data);
+//         setSearchList(res.data);
+//         console.log("Users list00000-->: ", res.data);
+//       }).catch(err => {
+//         // setUsersList(data);
+//         // setSearchList(data);
+//         console.error("Error in fetching Users list: ", err);
+//       })
+//     };
+//     getUsers();
+// }, []);
+
+const handleRequest = async (name: string) => {
+
     console.log("Name from handle Request: ", name);
+
+    const user = userList.find(user => user.name === name);
+    const friendship = user ? user.friendship : null;
     console.log("friendship from handle Request: ", friendship);
 
-    // console.log("userList from handle Request: ", userList.[name].friendship);   // this is the problem [change to get friendship from userList by name]
+    console.log("friendship from userlist: ", userList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship);
 
     if (friendship === 'add friend') {
         const updatedUserList = userList.map(user => 
@@ -141,23 +150,17 @@ const handleRequest = async (name: string, friendship: string) => {
       }
     }
     getFirstVerify();
- 
-    // useEffect(() => {
-    //     setUserName(Cookies.get('userName'));
-    // }, [userName]);
-    
-
-
 
     useEffect(() =>  {
-        const getAvatar = async () => {
-            await axios.get("http://localhost:3001/user/avatar")
-            .then((res) => {
-          setAvatar(res.data.avatar);
-        }).catch(err => {
-          console.error("Error in fetching avatar: ", err);
-        })
-      };
+
+            const getAvatar = async () => {
+                await axios.get("http://localhost:3001/user/avatar")
+                .then((res) => {
+                    setAvatar(res.data.avatar);
+                }).catch(err => {
+                    console.error("Error in fetching avatar: ", err);
+                })
+            };
       getAvatar();
       const token = localStorage.getItem('jwt');
       if (token) {
@@ -177,9 +180,9 @@ const handleRequest = async (name: string, friendship: string) => {
           <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
           <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
           <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-          <Route path='/Chat' element={hasToken ? <ChatApp />  : <Login/>}/>
+          <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
           <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} friendship={userList}/> : <Login/>} />
+          <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} /> : <Login/>} />
           <Route path='/Login' element={<Login/>}/>
           <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>)}/>
         </Routes>

@@ -2,7 +2,7 @@ import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, HoverCard } from '@mantine/core';
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
-import data from './test.json'
+import testdata from './test.json'
 import { IconTent } from '@tabler/icons-react';
 import FriendshipButton from './FriendshipButton';
 
@@ -16,14 +16,12 @@ function Users({userList, setUsersList, searchList, setSearchList, handleRequest
     const getUsers = async () => {
       await axios.get("http://localhost:3001/user/list")
       .then((res) => {
-        // setUsersList(data);
-        // setSearchList(data);
+        // setUsersList(testdata);
+        // setSearchList(testdata);
         setUsersList(res.data);
         setSearchList(res.data);
         console.log("Users list00000-->: ", res.data);
       }).catch(err => {
-        // setUsersList(data);
-        // setSearchList(data);
         console.error("Error in fetching Users list: ", err);
       })
     };
@@ -35,12 +33,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const inputValue = e.target.value;
   setSearchInput(inputValue);
   
-  // console.log(e.target.value);
-  
     console.log(inputValue.length);
     if (inputValue.length > 0) {
       const filtredList = userList.filter((index) => {  // Filter by carachter no need to filter by name
-      // return index.name.match(inputValue);
+    //   return index.name.match(inputValue);
         return index.name.toLowerCase().includes(inputValue.toLowerCase())
       });
       console.log(filtredList);
@@ -50,73 +46,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchList(userList);
     }
 };
-
-// const handleRequest = async (name: string, friendship: string) => {
-//     // console.log("Name from handle Request: ", name);
-//     // console.log("friendship from handle Request: ", friendship);
-
-//     if (friendship === 'add friend') {
-//         const updatedUserList = userList.map(user => 
-//             user.name === name 
-//             ? {...user, friendship: 'remove request'}
-//             : user
-//         );
-//         setUsersList(updatedUserList);
-//         setSearchList(updatedUserList);
-//       await axios.post("http://localhost:3001/user/add/friend", {name: name})
-//       .then((res) => {
-//         console.log(res.data);
-//      })
-//      .catch((err) => {
-//         console.log("Error in send post request to add friend ",err);
-//      })
-//     }else if (friendship === 'remove request') {
-//         const updatedUserList = userList.map(user => 
-//             user.name === name 
-//             ? {...user, friendship: 'add friend'}
-//             : user
-//         );
-//         setUsersList(updatedUserList);
-//         setSearchList(updatedUserList);
-//         await axios.post("http://localhost:3001/user/remove/request", {name: name})
-//         .then((res) => {
-//           console.log(res.data);
-//         })
-//         .catch((err) => {
-//           console.log("Error in send post request to remove request",err);
-//         })
-//     } else if (friendship === 'remove friend') {
-//         const updatedUserList = userList.map(user => 
-//             user.name === name 
-//             ? {...user, friendship: 'add friend'}
-//             : user
-//         );
-//         setUsersList(updatedUserList);
-//         setSearchList(updatedUserList);
-//         await axios.post("http://localhost:3001/user/remove/friend", {name: name})
-//         .then((res) => {
-//           console.log(res.data);
-//         })
-//         .catch((err) => {
-//           console.log("Error in send post request to remove friend ",err);
-//         })
-//     }else if (friendship === 'accept friend') {
-//         const updatedUserList = userList.map(user => 
-//             user.name === name 
-//             ? {...user, friendship: 'remove friend'}
-//             : user
-//         );
-//         setUsersList(updatedUserList);
-//         setSearchList(updatedUserList);
-//         await axios.post("http://localhost:3001/user/accept/friend", {name: name})
-//         .then((res) => {
-//           console.log(res.data);
-//         })
-//         .catch((err) => {
-//           console.log("Error in send post request to accept friend ",err);
-//         })
-//     }
-//   };
 
   const search = searchList.map((item) => (
       <Table.Tr key={item.name} m={6}>
@@ -141,11 +70,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
         </Group>
 <div className=''>
-{/* item.name + ' sent you a friend request'  */}
             <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
-           {/* <Button  radius='xl' color='gray' aria-disabled onClick={() => handleRequest(item.name, item.friendship)}>
-                {item.friendship}
-        </Button> */}
         </div>
     </div>
       </Table.Td>
@@ -153,18 +78,17 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   ));
 
   return (
-    // <Table.ScrollContainer minWidth={500}>   {/* determin when device larg minWidth larg and when device small minWidth small in media qiuery by talwind*/}
     <div className='flex flex-col space-y-4'>
-        {/* <div className="flex h-10 w-full items-center rounded-md bg-primary p-4"> */}
-            {/* <h2 className="mb-2 mt-8 text-4xl font-medium leading-tight text-primary">
+        <div className="flex h-5 w-full items-center rounded-md bg-primary p-4">
+            <h2 className="mb-2 mt-1 text-4xl font-medium leading-tight text-primary">
               Users
-            </h2> */}
+            </h2>
+            </div>
             <TextInput className='ml-auto'
               variant="filled"
               radius="md"
               type='search' placeholder='search user' onChange={handleChange} value={searchInput}
               />
-          {/* </div> */}
     <ScrollArea h={300}>
     <Table verticalSpacing="md" highlightOnHover={true} color='gray' stickyHeader={true} className='h-full w-full'>
           <Table.Tbody>
@@ -173,7 +97,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       </Table>
         </ScrollArea>
         </div>
-    // </Table.ScrollContainer>
   );
 }
 

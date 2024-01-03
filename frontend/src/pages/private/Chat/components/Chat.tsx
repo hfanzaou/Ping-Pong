@@ -7,13 +7,50 @@ import { setMessageData } from "../utils";
 interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
+	avatar: string
 }
 
-const Chat: React.FC<Props> = ({ data, setData }) => {
-	const	[conversation, setConversation] = useState<string[]>([]);
+const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
+	const	[conversation, setConversation] = useState<Array<{
+		id: number,
+		message: string,
+		sender: string,
+		avatar: string
+	}>>([]);
 	const	Reference = useRef<HTMLInputElement | null>(null);
-
-	function callBack(m: string)
+	
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const res = await fetch("http://localhost:3001/chathistory", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						sender: data.userData?.userName,
+						recver: data.talkingTo
+					})
+				});
+				const Data = await res.json()
+				if (Data)
+					setConversation(Data)
+				else
+					throw new Error("error")
+			}
+			catch {
+				setConversation([]);
+				return ;
+			}
+		}
+		fetchData();
+	}, [data])
+	function callBack(m: {
+		id: number,
+		message: string,
+		sender: string,
+		avatar: string
+	})
 	{
 		setConversation(prev => [m, ...prev]);
 	}
@@ -46,7 +83,19 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
 					return (
-						<li key={x} className="flex hover:bg-discord3 rounded-md m-2 p-3">{x}</li>)
+						<li
+							key={x.id}
+							className="flex hover:bg-discord3 rounded-md m-2 p-3"
+						>
+							<img
+								src={x.avatar}
+								className="h-12 w-12 rounded-full mr-3"
+							/>
+							<div>
+								<div className="font-extrabold">{x.sender}</div>
+								<div className="w-96 break-words">{x.message}</div>
+							</div>
+						</li>)
 				})}
 			</ul>
 			<div className="flex">
@@ -59,9 +108,13 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 					autoFocus
 					ref={Reference}
 				/>
-				<ActionIcon className="bg-discord1 w-10 h-10 rounded-md" type="submit">
+				<button
+					className="bg-discord1 w-10 h-10 rounded-md flex
+						justify-center items-center"
+					type="submit"
+				>
 					{ data.message.length ? <IconSend2 /> : <IconPingPong/>}
-				</ActionIcon>
+				</button>
 			</div>
 		</form>
 	);

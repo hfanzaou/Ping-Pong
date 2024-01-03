@@ -18,9 +18,9 @@ function  Frindes({setUserName}: {setUserName: any}) {
   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
   const [value, setValue] = useState<string>('Friends list');
 
-  const handelsetname = (name: string) => {
-        // Cookies.set('userName', name);
-        window.location.reload();
+  const handelShowProfile = (name: string) => {
+        window.location.href = '/'+name+'/public/profile';
+        // window.location.reload();
   };
   
   useEffect(() => {
@@ -83,12 +83,14 @@ function  Frindes({setUserName}: {setUserName: any}) {
             </Menu.Target>
             <Menu.Dropdown>
             <Menu.Item
-              onClick={() => handelsetname(item.name)}
+              onClick={() => handelShowProfile(item.name)}
                 leftSection={
                   <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                <Link to={'/'+item.name+'/public/profile'}>Show Profile</Link>
+                {/* <Link to={'/'+item.name+'/public/profile'}> */}
+                    Show Profile
+                    {/* </Link> */}
               </Menu.Item>
               <Menu.Item
                 leftSection={
