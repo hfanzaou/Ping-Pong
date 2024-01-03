@@ -61,13 +61,12 @@ function UserCard({avatar} : {avatar: string }) {
 
     const handleClick = () => {
         window.location.href = '/'+userName+'/public/profile';
-        // <Link to={'/'+userName+'/public/profile'}></Link>
     }
 
   return (
     <div>
 
-  <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
+    <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
       <Card.Section
         h={50}
         >
@@ -90,13 +89,11 @@ function UserCard({avatar} : {avatar: string }) {
       <Group mt="md" justify="center" gap={30}>
         {items}
       </Group>
-  </Card>
+    </Card>
       <div className='flex justify-center items-centerw-12'>
-
-      <Button radius="md" size="md" color='gray' onClick={handleClick}>
-      show your public profile
-      {/* </Link> */}
-    </Button>
+        <Button radius="md" size="md" color='gray' onClick={handleClick}>
+            show your public profile
+        </Button>
       </div>
     </div>
   );
