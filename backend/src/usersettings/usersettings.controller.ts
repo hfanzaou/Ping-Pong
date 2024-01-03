@@ -18,6 +18,8 @@ export class UsersettingsController {
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)    
     async editUsername(@Req() req, @Body() Name) {
+        if (!Name.uniqueName)
+          throw HttpStatus.BAD_REQUEST;
         await this.userSetService.updateUsername(req.user, Name.uniqueName);   
     }
     @Post('avatar')
