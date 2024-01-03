@@ -10,10 +10,39 @@ interface Props {
 }
 
 const Chat: React.FC<Props> = ({ data, setData }) => {
-	const	[conversation, setConversation] = useState<string[]>([]);
+	const	[conversation, setConversation] = useState<Array<{
+		id: number,
+		message: string
+	}>>([]);
 	const	Reference = useRef<HTMLInputElement | null>(null);
-
-	function callBack(m: string)
+	
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const res = await fetch("http://localhost:3001/chathistory", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						sender: data.userData?.userName,
+						recver: data.talkingTo
+					})
+				});
+				const Data = await res.json()
+				if (Data)
+					setConversation(Data)
+				else
+					throw new Error("error")
+			}
+			catch {
+				setConversation([]);
+				return ;
+			}
+		}
+		fetchData();
+	}, [data])
+	function callBack(m: {id: number, message: string})
 	{
 		setConversation(prev => [m, ...prev]);
 	}
@@ -46,7 +75,7 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
 					return (
-						<li key={x} className="flex hover:bg-discord3 rounded-md m-2 p-3">{x}</li>)
+						<li key={x.id} className="flex hover:bg-discord3 rounded-md m-2 p-3">{x.message}</li>)
 				})}
 			</ul>
 			<div className="flex">
