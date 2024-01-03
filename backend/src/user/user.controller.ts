@@ -12,7 +12,7 @@ export class UserController {
     }
     ///USER_INFO////
     @Get('avatar')
-    async getImage(@Req() req) {
+    async getImage(@Req() req) { 
         ////console.log(req.user.id)
         return  {avatar: await this.userService.getUserAvatar(req.user.id)};
     }
