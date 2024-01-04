@@ -2,12 +2,11 @@ import React from 'react'
 import { Container, Group, ActionIcon, rem, Text } from '@mantine/core';
 import { IconBrandTwitter, IconBrandYoutube, IconBrandInstagram } from '@tabler/icons-react';
 import { MantineLogo } from '@mantinex/mantine-logo';
-import classes from './Footer.css';
 
 function FooterSocial() {
   return (
-    <div className={classes.footer}>
-      <Container className={classes.inner}>
+    <div>
+      <Container>
 
         <Text size='10'>ft_transcendence</Text>
         {/* <Group gap={0} className={classes.links} justify="flex-end" wrap="nowrap">

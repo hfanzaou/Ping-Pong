@@ -1,10 +1,6 @@
-import React, { createRef, useEffect, useState } from "react";
-import EditAvatar from "react-avatar-editor";
-import { Avatar, Button, Menu } from '@mantine/core';
+import React, { createRef, useState } from "react";
+import { Avatar, Button } from '@mantine/core';
 import axios from "axios";
-import Uploadd from "./Upload";
-
-import imageavatar from './avatar-3.png'
 
 const file2Base64 = (file: File): Promise<string> => {
     return new Promise<string>((resolve, reject) => {

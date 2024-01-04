@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import BlockedFriendInterface from "./BlockedFriendInterface";
 import testdata from './BlockedFriendsList.json'
 import { Group, Menu, Table, Avatar, Text, rem } from "@mantine/core";
@@ -32,7 +32,7 @@ function BlockedFriends() {
         })
     };
 
-    return (blockedFriendList.map((item) => (
+    const blockedFriend = blockedFriendList.map((item) => (
         <Table.Tr key={item.name}>
             <Table.Td>
                 <Group gap="sm">
@@ -62,7 +62,13 @@ function BlockedFriends() {
                 </Group>
             </Table.Td>
         </Table.Tr>
-    )));
+    ));
+
+    return (
+        <div>
+            {blockedFriend}
+        </div>
+    );
 }
 
 export default BlockedFriends
