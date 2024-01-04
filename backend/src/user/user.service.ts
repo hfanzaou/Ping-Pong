@@ -145,8 +145,8 @@ export class UserService {
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
-                    blockedFrom: {some: {id: {not: id}}},
-                    blocked: {some: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}},
+                    blocked: {every: {id: {not: id}}},
                     friends: {
                         some: {
                             id: id,
@@ -215,13 +215,14 @@ export class UserService {
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: {
-                    blocked: {every: {username: {not: name}}}, 
-                    blockedFrom: {every: {username: {not: name}}},
                     username: name,
+                    blocked: {every: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}},
                 }
             });
             if (!user)
                 throw new NotFoundException('USER NOT FOUND');
+           // console.log(user);
             await this.prismaservice.user.update({
                 where: {id: id},
                 data: {friends: {
@@ -238,8 +239,10 @@ export class UserService {
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
-                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
                     username: name,
+                    blocked: {every: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}},
+                    friendOf: {some: {username: name}}
                 }
             });
             if (!user)
@@ -259,9 +262,9 @@ export class UserService {
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
-                    blocked: {some: {username: {not: name}}}, 
-                    blockedFrom: {some: {username: {not: name}}},
                     username: name,
+                    blocked: {every: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}}
                 }
             });
             if (!user)
@@ -301,8 +304,9 @@ export class UserService {
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
-                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
                     username: name,
+                    blocked: {every: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}}
                 }
             });
             if(!user)
@@ -321,8 +325,9 @@ export class UserService {
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
-                    NOT: {blocked: {some: {username: name}}, blockedFrom: {some: {username:name}}},
                     username: name,
+                    blocked: {every: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}}
                 }
             });
             if(!user)
