@@ -1,6 +1,5 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import avatar from "./avatar-2.png";
 import { Menu, MenuDropdown, rem } from "@mantine/core";
 import { IconChartInfographic, IconDeviceGamepad2, IconLogout, IconMessages, IconPresentationAnalytics, IconSettings, IconUserCircle } from "@tabler/icons-react";
 import { IconHome } from "@tabler/icons-react";

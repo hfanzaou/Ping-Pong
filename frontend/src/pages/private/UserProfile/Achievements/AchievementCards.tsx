@@ -7,7 +7,7 @@ import images from "./AllAchievement.json"
 
 function AchievementCards({type, image, title, name}: OneAchievementInterface) {
 
-    const source = images.find((item) => item.id === image);
+    const source = images.find((item) => item.name === image);
     console.log("Type: ", type);
     return (
     <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
