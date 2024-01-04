@@ -242,7 +242,7 @@ export class UserService {
                     username: name,
                     blocked: {every: {id: {not: id}}},
                     blockedFrom: {every: {id: {not: id}}},
-                    friendOf: {some: {username: name}}
+                    friends: {some: {id: id}}
                 }
             });
             if (!user)
