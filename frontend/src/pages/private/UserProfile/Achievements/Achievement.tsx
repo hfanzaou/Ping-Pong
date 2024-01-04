@@ -1,13 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container, SimpleGrid } from '@mantine/core';
-import { IconMessages, IconTrash} from '@tabler/icons-react';
-import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
-import {MdChildFriendly} from 'react-icons/md';
+import React from 'react';
+import { SimpleGrid } from '@mantine/core';
 import AchievementsCards from './AchievementCards';
 import data from './AllAchievement.json';
 // import testDataAchievement from './testDataAchievement.json';
 import AchievementsInterface from './AchievementInterface';
-import axios from 'axios';
 
 
 {/*
@@ -31,27 +27,20 @@ data[4].type = achievement?.achievement5;
 
     const matches = data.map((item) => (
         <div key={item.name}>
-            <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.id}/>        
+            <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.name}/>        
         </div>
   ));
   
   return (
     <div className='mb-4 pb-4'>
       <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
-          <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Achievements</h2>
+        <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Achievements</h2>
       </div>
       <SimpleGrid 
         cols={{ base: 3, sm: 3, lg: 4 }}
-        // verticalSpacing={{ base: 'sm', sm: 'sm', lg: 'sm' }}
-        //     spacing={ {base: 10, sm: 'xl', lg: 'xl'} }
-    >
+        >
          {matches}
       </SimpleGrid>
-    {/* <div className='relative flex items-center'>
-        <div className='w-full h-full space-x-5'>
-        {matches}
-        </div>
-    </div> */}
     </div>
   );
 }

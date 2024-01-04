@@ -22,7 +22,7 @@ import axios from 'axios';
 
 
 function  Achievement() {
-    const [achievements, setAchievements] = useState<AchievementsInterface>([]);
+    const [achievements, setAchievements] = useState<AchievementsInterface>({});
 
     useEffect(() => {
         const getAchievements = async () => {

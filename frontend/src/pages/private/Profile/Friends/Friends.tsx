@@ -161,7 +161,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
                     data={[
                         { label: 'Friends list', value: 'Friends list' },
                         // { label: 'Friends list', value: FriendsIcon },  // when make the icone for the blocked users change the value to the icon
-                        { label: 'Blocked Users', value: 'Blocked Users', disabled: (blockedFriendsNumbre === 0) },
+                        { label: 'Blocked Users', value: 'Blocked Users'},
                         { label: 'Friends Request', value: "Friends Request"},
                     ]}
                 />

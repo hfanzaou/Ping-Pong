@@ -12,11 +12,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom'
-import pongImage from './remote-control_1287390.png';
 
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 
+const pongImage = '';
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
 const settings = ['Setting', 'Logout'];
 
@@ -42,7 +42,7 @@ function NavBar({avatar} : {avatar: string}) {
 
   const handleLogout = () => {
     // alert("test logout");
-    Cookies.remove('userName');
+    // Cookies.remove('userName');
     // Just redirect to logout api to remove Cookies token
     window.location.href = "http://localhost:3001/logout";
     

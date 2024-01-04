@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import {Container, ScrollArea, SimpleGrid} from '@mantine/core'
+import {Container, LoadingOverlay, ScrollArea, SimpleGrid} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 export function ProfileSections({handleRequest, friendShip}: {handleRequest: any, friendShip: string}) {
     const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
     const [profile, setProfile] = useState<any>(null);
+    const [notFound, setNotFound] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         // console.log("name: in public profile fitcheng data", name);
@@ -18,17 +21,33 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
             .then((res) => {
                 setProfile(res.data);
                 console.log("user profile: ", res.data);
+                setIsLoading(false);
             })
             .catch((err) => {
+                if (err.response.status === 404) {
+                    setNotFound(true);
+                }
+                setIsLoading(false);
                 console.error("error when send get request to get user profile: ", err);
             })
         };
         getUserProfile();
     }, []);
 
-    
     // console.log("user profile: ", profile?.achievements);
 
+    if (isLoading)
+        return (
+            <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+        );
+
+    if (notFound)
+        return (
+            window.location.href = "/404/notfound"
+            // <div className='h-screen flex justify-center items-center'>
+            //     <h1 className='text-3xl'>User not found</h1>
+            // </div>
+        );
     return (
       <div>
         <SimpleGrid
@@ -46,6 +65,7 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
 }
 
 function Profile({handleRequest, friendShip}: {handleRequest: any, friendShip: string}) {
+
     return (
         // <div  className='h-full ml-8 mr-8 pr-8 pl-8 '>
             <div>
