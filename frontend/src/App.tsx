@@ -112,10 +112,11 @@ const handleRequest = async (name: string) => {
         const res = await axios.get('http://localhost:3001/verify');
         if (res.status === 200) {
           setHasToken(true);
-        } else
-            setIsLoading(false);
+          setIsLoading(false);
+        } 
         // setHasToken(res.status === 200);
       } catch {
+        setIsLoading(false);
         console.log("error in fetching /verify");
       }
     }
@@ -126,10 +127,11 @@ const handleRequest = async (name: string) => {
         const res = await axios.get('http://localhost:3001/verifyTfa');
         if (res.status === 200) {
           setHas2fa(res.data);
-        } else
-            setIsLoading(false);
+          setIsLoading(false);
+        }
         // setHasToken(res.status === 200);
       } catch {
+        setIsLoading(false);
         console.log("error in fetching /verify");
       }
     }
@@ -153,11 +155,17 @@ const handleRequest = async (name: string) => {
         setIsLoading(false);
 }, []);
 
+    if (isLoading) {
+        return (
+            <MantineProvider>
+                <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+            </MantineProvider>
+        );
+    }
+
   return (
     <MantineProvider>
       <Router>
-        { !isLoading ?
-        (
         <Routes>
             <Route path='/*' element={hasToken ? <NotFound />  : <Login/>}/>
           <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
@@ -170,11 +178,10 @@ const handleRequest = async (name: string) => {
           <Route path='/Login' element={<Login/>}/>
           <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>)}/>
         </Routes>
-            ) : <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
-      {/* <Footer/> */}
       </Router>
       </MantineProvider>
   );
 }
 
+{/* <Footer/> */}
 export default App

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Container, LoadingOverlay, ScrollArea, SimpleGrid} from '@mantine/core'
+import {Button, Container, Group, LoadingOverlay, ScrollArea, SimpleGrid, Text, Title} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
@@ -19,22 +19,22 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
         const getUserProfile = async () => {
             await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
             .then((res) => {
-                setProfile(res.data);
-                console.log("user profile: ", res.data);
-                setIsLoading(false);
+                if (res.status === 200) {
+                    setProfile(res.data);
+                    console.log("user profile: ", res.data);
+                    setIsLoading(false);
+                }
             })
             .catch((err) => {
                 if (err.response.status === 404) {
                     setNotFound(true);
+                    setIsLoading(false);
                 }
-                setIsLoading(false);
                 console.error("error when send get request to get user profile: ", err);
             })
         };
         getUserProfile();
     }, []);
-
-    // console.log("user profile: ", profile?.achievements);
 
     if (isLoading)
         return (
@@ -43,10 +43,10 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
 
     if (notFound)
         return (
-            window.location.href = "/404/notfound"
-            // <div className='h-screen flex justify-center items-center'>
-            //     <h1 className='text-3xl'>User not found</h1>
-            // </div>
+            <Container  mb={200} m={200}>
+                <Title ta='center' m={5} size='xl' >User not found</Title>
+                <Text size='xl' bg='red' ta='center' className='rounded-md' >404</Text>
+            </Container>
         );
     return (
       <div>

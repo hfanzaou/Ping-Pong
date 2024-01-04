@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
   "scripts": {
-    "start": "PORT=3000",
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "serve": "vite preview --port 3000"
+      "dev": "vite",
+      "build": "tsc && vite build",
+      "serve": "vite preview --port 3000",
+      "start": "npm run build && npm run serve"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
