@@ -1,4 +1,4 @@
-import { Controller, UseFilters, UseGuards, Req, Post, Body, HttpCode, UseInterceptors, UploadedFile, HttpStatus, ParseFilePipeBuilder, PayloadTooLargeException, ParseFilePipe, FileTypeValidator, MaxFileSizeValidator } from '@nestjs/common';
+import { Controller, UseFilters, UseGuards, Req, Post, Body, HttpCode, UseInterceptors, UploadedFile, HttpStatus, ParseFilePipeBuilder, PayloadTooLargeException, ParseFilePipe, FileTypeValidator, MaxFileSizeValidator, BadRequestException } from '@nestjs/common';
 import JwtTwoFaGuard from 'src/auth/guard/twoFaAuth.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersettingsService } from './usersettings.service';
@@ -18,6 +18,8 @@ export class UsersettingsController {
     @UseGuards(JwtTwoFaGuard)
     @HttpCode(201)    
     async editUsername(@Req() req, @Body() Name) {
+        if (!Name.uniqueName || Name.uniqueName.length < 4)
+             throw new BadRequestException('unsupported data');
         await this.userSetService.updateUsername(req.user, Name.uniqueName);   
     }
     @Post('avatar')
@@ -32,11 +34,7 @@ export class UsersettingsController {
             ],
           }),
     ) file: Express.Multer.File) {
-        console.log(file);
-        //const avatar: string = body.avatar;
-        //console.log(avatar.length);
-        // if (avatar.length > 100000)
-        //    throw HttpStatus.PAYLOAD_TOO_LARGE;
+        //console.log(file);
       await this.userSetService.updateAvater(req.user.id, file.path);
     }
 }
