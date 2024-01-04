@@ -63,11 +63,8 @@ export class UserService {
             let user = await this.prismaservice.user.findUnique({
                 where: {
                     username: name,
-                    NOT: {
-                        blockedFrom: {every: {id: id}},
-                        blocked: {every
-                            : {id: id}}
-                    },
+                    blocked: {every: {id: {not: id}}},
+                    blockedFrom: {every: {id: {not: id}}},
                 }, select: {
                     id: true,
                     username: true,
@@ -246,7 +243,7 @@ export class UserService {
                 }
             });
             if (!user)
-                throw new NotFoundException('USER NOT FOUND')
+                throw new NotFoundException('NO REQUEST')
             await this.prismaservice.user.update({
                 where: {id: id},
                 data: {friends: {
@@ -254,7 +251,7 @@ export class UserService {
                 }}
             })
         } catch(error) {
-				throw new NotFoundException('USER NOT FOUND');
+				throw new NotFoundException('NO REQUEST');
         }
     }
     async blockUser(id: number, name: string) {
