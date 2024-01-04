@@ -23,8 +23,6 @@ function App()  {
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
 
-    const [friendShip, setFriendShip] = useState<any>();
-    const [friendShip2, setFriendShip2] = useState<any>();
     const [userName, setUserName] = useState<string | null>(null);
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
