@@ -2,12 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { MESSAGE, NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
 import { Socket } from "socket.io"
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class ChatService {
 	private rooms: string[];
 
-	constructor(private prisma: PrismaService) {
+	constructor(private prisma: PrismaService, private user: UserService) {
 		this.rooms = [];
 	}
 	async getUserData(userSocket: USERSOCKET) {
@@ -32,11 +33,11 @@ export class ChatService {
 			});
 			const data: USERDATA = {
 				userName: user.username,
-				chatUsers: user.chatUsers.map(x => ({
+				chatUsers: await Promise.all(user.chatUsers.map(async x => ({
 					id: x.id,
 					login: x.username,
-					avatar: x.avatar
-				}))
+					avatar: await this.user.getUserAvatar(x.id)
+				})))
 			}
 			return data;
 		}
@@ -134,7 +135,7 @@ export class ChatService {
 			data: {
 				sender: data.sender,
 				message: data.message,
-				avatar: avatar.avatar,
+				avatar: await this.user.getUserAvatar(avatar.id),
 				chathistory: {
 					connect: {
 						id: chatHistorie.id
@@ -144,9 +145,9 @@ export class ChatService {
 		});
 		return {
 			id: message.id,
-			message: data.message,
-			sender: data.sender,
-			avatar: avatar.avatar
+			message: message.message,
+			sender: message.sender,
+			avatar: message.avatar
 		}
 	}
 	async getUserHistory(data: NEWCHAT) {
