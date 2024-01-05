@@ -36,7 +36,7 @@ function UserCard({avatar} : {avatar: string }) {
     const [userName, setUserName] = useState<string| undefined>();
     useEffect(() => {
         const getUserNmae = async () => {
-            await axios.get("http://localhost:3001/user/name")
+            await axios.get("user/name")
             .then((res) => {
                 console.log(res.data.name);
                 setUserName(res.data.name);

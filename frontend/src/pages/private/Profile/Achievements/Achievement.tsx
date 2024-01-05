@@ -26,7 +26,7 @@ function  Achievement() {
 
     useEffect(() => {
         const getAchievements = async () => {
-            await axios.get("http://localhost:3001/user/achievements")
+            await axios.get("user/achievements")
             .then((res) => {
             // console.log("Achievement from res: ", res.data.achievement1);
             setAchievements(res.data);

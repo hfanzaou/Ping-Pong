@@ -9,11 +9,11 @@ function Auth() {
 
     const handleDisableSendCode = async () => {
         console.log("this is the code was send: ",code);
-        await axios.post("http://localhost:3001/2fa/auth", {AuthCode: code})
+        await axios.post("2fa/auth", {AuthCode: code})
         .then((res) => {
             if(res.status == 201)
             {
-                window.location.href = "http://localhost:3000/";
+                window.location.href = `${import.meta.env.VITE_APP_URL}`;
             } else {
                 setInvalidCode(true);
             }

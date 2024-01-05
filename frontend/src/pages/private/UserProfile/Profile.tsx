@@ -17,7 +17,7 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
     useEffect(() => {
         // console.log("name: in public profile fitcheng data", name);
         const getUserProfile = async () => {
-            await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
+            await axios.get("user/profile", {params: {name: name}})
             .then((res) => {
                 if (res.status === 200) {
                     setProfile(res.data);

@@ -25,7 +25,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
   
   useEffect(() => {
       const getFriends = async () => {
-      await axios.get("http://localhost:3001/user/friend/list")
+      await axios.get("user/friend/list")
       .then((res) => {
        setFriendList(res.data);
       }).catch(err => {
@@ -34,7 +34,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
       })
     };
     const getRequests = async () => {
-        await axios.get("http://localhost:3001/user/friend/requests")
+        await axios.get("user/friend/requests")
         .then((res) => {
             setRequestFriendList(res.data);
         }).catch(err => {
@@ -48,7 +48,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
 
   const handleBlockUser = async (name: string) => {
     console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/user/block", {name: name})
+    await axios.post("user/block", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })
@@ -59,7 +59,7 @@ function  Frindes({setUserName}: {setUserName: any}) {
 
   const handleAccepteFriend = async (name: string) => {
     console.log("accepted friend name: ", name);
-    await axios.post("http://localhost:3001/user/accept/friend", {name: name})
+    await axios.post("user/accept/friend", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })

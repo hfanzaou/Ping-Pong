@@ -15,6 +15,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["./src/", "src/main.tsx", "react-app-env.d.ts"]
+  "include": ["./src/", "src/main.tsx", "react-app-env.d.ts"],
 //   "include": ["./src/index.d.ts00"]
 }
