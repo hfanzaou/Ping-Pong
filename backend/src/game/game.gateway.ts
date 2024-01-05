@@ -1,8 +1,8 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayInit, ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer} from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { Logger } from '@nestjs/common';
-import { Ball } from "../classes/ball";
-import { Player } from "../classes/player";
+import { Ball } from "./classes/ball";
+import { Player } from "./classes/player";
 import { gameLoop } from './gameLogic';
 
 const HEIGHT = 450;
@@ -11,7 +11,7 @@ const INITIAL_SPEED = 8;
 const GAME_START_DELAY = 3000;
 const GAME_INTERVAL = 1000/40;
 
-@WebSocketGateway()
+@WebSocketGateway({cors: true})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   private logger: Logger = new Logger('GameGateway');
@@ -22,7 +22,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private waitingPlayers: Socket[] = [];
   private games: Map<string, {ball: Ball, player1: Player, player2: Player}> = new Map();
   
-  afterInit(server: any) {
+  afterInit() {
     this.logger.log("Initialized!");
     setInterval(() => {
       this.games.forEach((game) => {
@@ -89,6 +89,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     // this.wss.to(client.id).emit('gameOver');
   }
 
+  @SubscribeMessage('1Vs1 on same device')
+  oneVsOne(client: Socket) {
+    this.logger.log(`Client ${client.id} wants to play 1Vs1 on same device`);
+    let player1 = new Player(client.id, 10, HEIGHT / 2, 0, client.id);
+    let player2 = new Player(client.id, WIDTH - 30, HEIGHT / 2, 0, client.id);
+    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, INITIAL_SPEED);
+    this.wss.to(client.id).emit('initGame', {side: 1, player1: player1, player2: player2, ball: ball});
+  }
+
   @SubscribeMessage('gameOver')
   gameOver(client: Socket) {
     const player = this.players.get(client.id);
@@ -103,6 +112,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.wss.to(player.roomName).socketsLeave(player.roomName);
       }
     }
+    else
+      this.logger.log(`Client ${client.id} Vs Computer game ended`);
   }
 
 
@@ -121,14 +132,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     let player = this.players.get(client.id);
     if (player)
       client.to(player.roomName).emit('updateBall', ballPos);
-  }
-
-  @SubscribeMessage('goalScored')
-  goal(client: Socket, score: any) {
-    let player = this.players.get(client.id);
-    if (player) {
-      client.to(player.roomName).emit('updateScore', score);
-    }
   }
 
   private initGame(client1Id: string, client2Id: string, roomName: string)
