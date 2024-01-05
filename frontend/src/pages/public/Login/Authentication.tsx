@@ -49,7 +49,7 @@ function Authentication(props: PaperProps) {
             if (res.status === 201) {
                 console.log("res: ", res);
                 if(res.data.twofa === true)
-                    window.location.href = "http://localhost:3000/Auth";
+                    window.location.href = "http://localhost:3000/auth";
                 else
                     window.location.href = "http://localhost:3000/";
                 // setSingup(true);

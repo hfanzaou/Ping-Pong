@@ -7,6 +7,7 @@ import { UsersettingsModule } from './usersettings/usersettings.module';
 import { ChatModule } from './chat/Chat.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { join } from 'path';
             PrismaModule,
             UserModule,
             UsersettingsModule,
-            ChatModule
+            ChatModule,
+            GameModule
           ],
 })
 export class AppModule {}

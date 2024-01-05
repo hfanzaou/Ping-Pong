@@ -52,6 +52,7 @@ export class AuthController {
 			path:'/',
 			httpOnly: true,
 		});
+		//res.redirect('http://localhost:3000');
 		res.send({"twofa": false});
 	}
 	/////to verify user token////
