@@ -1,34 +1,53 @@
 import React, { useEffect, useState } from 'react'
-import {Container, ScrollArea, SimpleGrid} from '@mantine/core'
+import {Button, Container, Group, LoadingOverlay, ScrollArea, SimpleGrid, Text, Title} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 export function ProfileSections({handleRequest, friendShip}: {handleRequest: any, friendShip: string}) {
     const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
     const [profile, setProfile] = useState<any>(null);
+    const [notFound, setNotFound] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         // console.log("name: in public profile fitcheng data", name);
         const getUserProfile = async () => {
             await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
             .then((res) => {
-                setProfile(res.data);
-                console.log("user profile: ", res.data);
+                if (res.status === 200) {
+                    setProfile(res.data);
+                    console.log("user profile: ", res.data);
+                    setIsLoading(false);
+                }
             })
             .catch((err) => {
+                if (err.response.status === 404) {
+                    setNotFound(true);
+                    setIsLoading(false);
+                }
                 console.error("error when send get request to get user profile: ", err);
             })
         };
         getUserProfile();
     }, []);
 
-    
-    // console.log("user profile: ", profile?.achievements);
+    if (isLoading)
+        return (
+            <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+        );
 
+    if (notFound)
+        return (
+            <Container  mb={200} m={200}>
+                <Title ta='center' m={5} size='xl' >User not found</Title>
+                <Text size='xl' bg='red' ta='center' className='rounded-md' >404</Text>
+            </Container>
+        );
     return (
       <div>
         <SimpleGrid
@@ -46,6 +65,7 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
 }
 
 function Profile({handleRequest, friendShip}: {handleRequest: any, friendShip: string}) {
+
     return (
         // <div  className='h-full ml-8 mr-8 pr-8 pl-8 '>
             <div>

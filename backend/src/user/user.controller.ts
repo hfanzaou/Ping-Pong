@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, Param, HttpStatus } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, Param, HttpStatus, BadRequestException } from '@nestjs/common';
 import { GetUser } from '../auth/decorator'
 import { FTAuthGuard, JwtGuard } from '../auth/guard';
 import { UserService } from './user.service';
@@ -48,50 +48,51 @@ export class UserController {
     @HttpCode(201)
     async addFriend(@Req() req, @Body() body) {
         if (!body.name)
-            throw HttpStatus.BAD_REQUEST;
+            throw new BadRequestException('unsupported data');
         await this.userService.addFriend(req.user.id, body.name);
     }
     @Post('accept/friend')
     @HttpCode(201)
     async acceptFriend(@Req() req, @Body() body) {
         if (!body.name)
-            throw HttpStatus.BAD_REQUEST;
+            throw new BadRequestException('unsupported data');
+        //console.log(body.name);
         return (await this.userService.acceptFriend(req.user.id, body.name));
     }
     @Post('block')
     @HttpCode(201)
     async blockUser(@Req() req, @Body() body) {
         if (!body.name)
-            throw HttpStatus.BAD_REQUEST;
+            throw new BadRequestException('unsupported data');
         return (await this.userService.blockUser(req.user.id, body.name));
     }
     @Post('inblock')
     @HttpCode(201)
     async inblockUser(@Req() req, @Body() body) {
         if (!body.name)
-            throw HttpStatus.BAD_REQUEST;
+            throw new BadRequestException('unsupported data');
         return (await this.userService.inblockUser(req.user.id, body.name));
     }
     @Post('remove/request')
     @HttpCode(201)
     async removeReq(@Req() req, @Body() body) {
         if (!body.name)
-            throw HttpStatus.BAD_REQUEST;
+            throw new BadRequestException('unsupported data');
         return (await this.userService.removeReq(req.user.id, body.name));
     }
     @Post('remove/friend')
     @HttpCode(201)
     async removeFriend(@Req() req, @Body() body) {
         if (!body.name)
-            throw HttpStatus.BAD_REQUEST;
+            throw new BadRequestException('unsupported data');
         return (await this.userService.removeFriend(req.user.id, body.name));    
     }
     //////ADD_ACHIEVEMENTS, GET_ACHIEVEMENTS///////
     @Post('achievements')
     @HttpCode(201)
     async addAchievement(@Req() req, @Body() body) {
-        if (body.achievement)
-            throw HttpStatus.BAD_REQUEST;
+        if (!body.achievement)
+            throw new BadRequestException('unsupported data');
         return (await this.userService.addAchievement(req.user.id, body.achievement));
     }
     @Get('achievements')
