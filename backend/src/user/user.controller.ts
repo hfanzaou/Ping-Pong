@@ -24,7 +24,7 @@ export class UserController {
     @Get('profile')
     async getProfile(@Req() req, @Query() query) {
         if (!query.name)
-            throw HttpStatus.NOT_FOUND;
+            throw new BadRequestException('unsupported data');
         return (await this.userService.getProfile(req.user.id, query.name));
     }
     @Get('list')

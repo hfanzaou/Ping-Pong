@@ -5,10 +5,15 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersettingsModule } from './usersettings/usersettings.module';
 import { ChatModule } from './chat/Chat.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
+     ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend'),
+    }),
             ConfigModule.forRoot({
               isGlobal: true,
             }),

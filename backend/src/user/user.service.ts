@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { match } from 'assert';
 import { isInstance } from 'class-validator';
 import { createReadStream, readFileSync } from 'fs';
 import { of } from 'rxjs';
@@ -328,7 +329,7 @@ export class UserService {
                 }
             });
             if(!user)
-                throw HttpStatus.NOT_FOUND;
+                throw new NotFoundException('USER NOT FOUND');
             await this.prismaservice.user.update({
                 where: {id: id},
                 data: {friends: {
@@ -340,9 +341,7 @@ export class UserService {
                 }
             })
         } catch(error) {
-            if (error.isInstanceOf(HttpStatus.NOT_FOUND))
-                throw HttpStatus.NOT_FOUND;
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
+            throw error;
         }
     }
     ///Achievements////
@@ -429,7 +428,7 @@ export class UserService {
                     ]},
                 select : {players: {where: {
                         NOT: {id: id},
-                }, select: {id: true, username: true }}, playerScore: true, player2Score: true, win: true},
+                }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true, win: true},
             })
             if (!matchhistory)
                 return [];
@@ -440,7 +439,7 @@ export class UserService {
                 return { 
                     playerScore: obj.playerScore, 
                     player2Score: obj.player2Score, 
-                    win: obj.win,
+                    win: id === obj.playerId ? true: false,
                     avatar: avatar,
                     username: obj.players[0].username
                 };
