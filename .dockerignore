@@ -1,0 +1,10 @@
+/backend/node_modules
+/backend/.git
+/backend/.gitignore
+/backend/dist
+/frontend/node_modules
+/frontend/.git
+/frontend/.gitignore
+/frontend/backend
+/frontend/dist
+/Game
