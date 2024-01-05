@@ -1,5 +1,5 @@
-import { Ball } from "../classes/ball";
-import { Player } from "../classes/player";
+import { Ball } from "./classes/ball";
+import { Player } from "./classes/player";
 import { Server } from 'socket.io';
 
 const HEIGHT = 450;
