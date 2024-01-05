@@ -42,7 +42,7 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			res.send({"2fa": true});
+			res.send({"twofa": true});
 			return;
 		}
 		const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
@@ -51,7 +51,7 @@ export class AuthController {
 			httpOnly: true,
 		});
 		//res.redirect('http://localhost:3000');
-		res.send({"2fa": false});
+		res.send({"twofa": false});
 	}
 	/////to verify user token////
 	
