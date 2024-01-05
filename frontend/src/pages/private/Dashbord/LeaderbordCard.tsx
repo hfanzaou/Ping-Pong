@@ -23,5 +23,4 @@ function LeaderbordCard() {
     </Paper>
   );
 }
-
 export default LeaderbordCard;
