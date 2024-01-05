@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start:dev:chat:clean": "docker compose down",
-    "start:dev:chat": "npm run dcu && sleep 1 && npm run npmd && npm run nps",
+    "start:dev:chat": "npm run dcu && sleep 3 && npm run npmd && npm run nps",
     "dcu": "docker compose up -d",
     "npmd": "npx prisma migrate deploy",
     "nps": "npx prisma studio",
