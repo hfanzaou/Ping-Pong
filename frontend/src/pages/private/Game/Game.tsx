@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../../../Layout/Header/Header';
-import { Ball } from "../../../../../Game/src/classes/ball";
-import { Player } from "../../../../../Game/src/classes/player";
+// import { Ball } from "../../../../../Game/src/classes/ball";
+// import { Player } from "../../../../../Game/src/classes/player";
 import { io, Socket } from 'socket.io-client';
 import Sketch from 'react-p5';
 import p5Types from "p5";
@@ -44,7 +44,7 @@ export let canvas: p5Types.Renderer;
 const GameComponent = () => {
   
   if (socket === undefined)
-    socket = io("http://localhost:3001");
+    socket = io(import.meta.env.VITE_API_BASE_URL);
 
   const setup = (p5: p5Types) => { 
     canvas = p5.createCanvas(WIDTH, HEIGHT);

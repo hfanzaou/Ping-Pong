@@ -35,7 +35,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     useEffect(() => {
 
         const getUserNmae = async () => {
-            await axios.get("http://localhost:3001/user/name")
+            await axios.get("user/name")
             .then((res) => {
                 console.log(res.data.name);
                 setUserName(res.data.name);

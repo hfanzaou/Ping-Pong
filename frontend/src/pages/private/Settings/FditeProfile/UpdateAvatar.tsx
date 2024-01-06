@@ -45,7 +45,7 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
     }
 
     const handleSaveAvatar = async () => {
-        await axios.post('http://localhost:3001/settings/avatar',  uploaded)
+        await axios.post('settings/avatar',  uploaded)
         .then(res => {
             console.log(res.data);
             setSave(true);

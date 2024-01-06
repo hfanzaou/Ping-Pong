@@ -9,7 +9,7 @@ import { LoadingOverlay } from "@mantine/core";
 function UserProfile({avatar, handleRequest, usersList, setUsersList}: {avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function}) {
     useEffect(() => {
         const getUsers = async () => {
-            await axios.get("http://localhost:3001/user/list")
+            await axios.get("user/list")
             .then((res) => {
                 if (res.status === 200) {
                     setUsersList(res.data);

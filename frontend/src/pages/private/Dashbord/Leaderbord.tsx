@@ -2,17 +2,7 @@ import React from "react";
 import Header from "../../../Layout/Header/Header";
 import Footer from '../../../Layout/Footer/Footer';
 import LeaderbordTable from "./LeaderBordTable";
-import LeaderbordCard from "./LeaderbordCard";
-
-import {
-  IconPencil,
-  IconMessages,
-  IconNote,
-  IconReportAnalytics,
-  IconTrash,
-  IconDots,
-} from '@tabler/icons-react';
-
+import LeaderbordCard from "./LeaderBordCard";
 
 function Leaderbord({avatar} : {avatar: string}) {
     return (

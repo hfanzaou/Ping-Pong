@@ -18,20 +18,26 @@ import UsersInterface from './pages/private/Home/Users/UsersInterface'
 import NotFound from './pages/public/NotFound/NotFound'
 import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 
+
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
-
+    
     const [userName, setUserName] = useState<string | null>(null);
-
+    
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
+    
+    // comonentDidMount
 
-// comonentDidMount
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    // console.log("base url: ", apiUrl);
 
-  axios.defaults.withCredentials = true; 
+  axios.defaults.withCredentials = true;
+//   axios.defaults.headers.post['Access-Control-Allow-Origin'] = 'http://192.168.1.114:3000/';
+  axios.defaults.baseURL = apiUrl;
 
 const handleRequest = async (name: string) => {
 
@@ -51,7 +57,7 @@ const handleRequest = async (name: string) => {
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-      await axios.post("http://localhost:3001/user/add/friend", {name: name})
+      await axios.post("user/add/friend", {name: name})
       .then((res) => {
         console.log(res.data);
      })
@@ -66,7 +72,7 @@ const handleRequest = async (name: string) => {
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/remove/request", {name: name})
+        await axios.post("user/remove/request", {name: name})
         .then((res) => {
           console.log(res.data);
         })
@@ -81,7 +87,7 @@ const handleRequest = async (name: string) => {
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/remove/friend", {name: name})
+        await axios.post("user/remove/friend", {name: name})
         .then((res) => {
           console.log(res.data);
         })
@@ -96,7 +102,7 @@ const handleRequest = async (name: string) => {
         );
         setUsersList(updatedUserList);
         setSearchList(updatedUserList);
-        await axios.post("http://localhost:3001/user/accept/friend", {name: name})
+        await axios.post("user/accept/friend", {name: name})
         .then((res) => {
           console.log(res.data);
         })
@@ -106,10 +112,13 @@ const handleRequest = async (name: string) => {
     }
   };
 
+    //   const apiUrl = process.env.REACT_APP_API_BASE_URL;
+    //   console.log(`API Base URL: ${apiUrl}`);
   const getVerify = async () => {
     // setIsLoading(true);
+
     try {
-      const res = await axios.get('http://localhost:3001/verify');
+      const res = await axios.get('verify');
       if (res.status === 200) {
         setHasToken(true);
         setIsLoading(false);
@@ -126,7 +135,7 @@ const handleRequest = async (name: string) => {
 
         const getFirstVerify = async () => {
           try {
-            const res = await axios.get('http://localhost:3001/verifyTfa');
+            const res = await axios.get('verifyTfa');
             if (res.status === 200) {
                         setHas2fa(res.data);
                     }
@@ -139,7 +148,7 @@ const handleRequest = async (name: string) => {
         }
         getFirstVerify();
             const getAvatar = async () => {
-                await axios.get("http://localhost:3001/user/avatar")
+                await axios.get("user/avatar")
                 .then((res) => {
                     setAvatar(res.data.avatar);
                 }).catch(err => {

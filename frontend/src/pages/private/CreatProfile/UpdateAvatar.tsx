@@ -51,7 +51,7 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
 
   const handleSaveAvatar = async () => {
     {userimage !== avatar ?
-    await axios.post('http://localhost:3001/settings/avatar', {avatar: (userimage === avatar ? null : userimage)})
+    await axios.post('settings/avatar', {avatar: (userimage === avatar ? null : userimage)})
     .then(res => {
       console.log(res.data);
       setSetAvatar(false);

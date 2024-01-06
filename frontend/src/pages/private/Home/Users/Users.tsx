@@ -17,7 +17,7 @@ function Users({userList, setUsersList, searchList, setSearchList, handleRequest
 
 useEffect(() => {
     const getUsers = async () => {
-      await axios.get("http://localhost:3001/user/list")
+      await axios.get("user/list")
       .then((res) => {
         // setUsersList(testdata);
         // setSearchList(testdata);
@@ -38,7 +38,7 @@ const handelShowProfile = (name: string) => {
 
 const handleBlockUser = async (name: string) => {
     console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/user/block", {name: name})
+    await axios.post("user/block", {name: name})
     .then((res) => {
         res.status === 201 && window.location.reload();
     })
