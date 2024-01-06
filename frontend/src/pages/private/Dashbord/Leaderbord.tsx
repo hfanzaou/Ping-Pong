@@ -9,7 +9,7 @@ function Leaderbord({avatar} : {avatar: string}) {
         // <div className="bg-[url('./4304494.jpg')] h-full items-cente">
         <div className="h-full items-center">
 
-            <Header avatar={avatar}/>
+            {/* <Header avatar={avatar}/> */}
             <div className="flex  space-x-8  items-center justify-center mt-8">
                 <LeaderbordCard />
                     <LeaderbordCard />

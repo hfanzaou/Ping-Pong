@@ -3,8 +3,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview --port 3000"
-  },
+    "serve": "vite preview --port 3000",
+    "start": "npm run dev"
+},
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

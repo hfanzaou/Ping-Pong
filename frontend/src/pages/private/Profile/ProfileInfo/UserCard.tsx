@@ -31,8 +31,7 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function UserCard({avatar} : {avatar: string }) {
-
+function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }) {
     const [userName, setUserName] = useState<string| undefined>();
     useEffect(() => {
         const getUserNmae = async () => {
@@ -60,7 +59,9 @@ function UserCard({avatar} : {avatar: string }) {
   ));
 
     const handleClick = () => {
-        window.location.href = '/'+userName+'/public/profile';
+        setUrlName(userName);
+        // <Link to={'/'+ window.location.pathname.split("/")[1] +'/public/profile'}></Link>
+        // window.location.href = '/'+userName+'/public/profile';
     }
 
   return (
@@ -92,7 +93,10 @@ function UserCard({avatar} : {avatar: string }) {
     </Card>
       <div className='flex justify-center items-centerw-12'>
         <Button radius="md" size="md" color='gray' onClick={handleClick}>
+        {/* <Link to={'/'+userName+'/public/profile'}> */}
+        <Link to={`/public/profile?name=${userName}`}>
             show your public profile
+        </Link>
         </Button>
       </div>
     </div>

@@ -5,15 +5,14 @@ import axios from 'axios';
 import testdata from './test.json'
 import { IconMessages, IconTent, IconTrash, IconUserCircle } from '@tabler/icons-react';
 import FriendshipButton from './FriendshipButton';
-import { Link } from 'react-router-dom';
+import { Link, unstable_HistoryRouter, useParams } from 'react-router-dom';
 
-function Users({userList, setUsersList, searchList, setSearchList, handleRequest}: {userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
+function Users({setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
 //   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
 //   const [addButton, setAddButton] = useState<boolean>(false);
   
-
 
 useEffect(() => {
     const getUsers = async () => {
@@ -32,7 +31,10 @@ useEffect(() => {
 }, []);
 
 const handelShowProfile = (name: string) => {
-    window.location.href = '/'+name+'/public/profile';
+    // window.location.replace('/'+name+'/public/profile');
+    setUrlName(name);
+    // <Link to={'/'+name+'/public/profile'} >
+
     // window.location.reload();
 };
 
@@ -83,7 +85,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                    Show Profile
+                    <Link to={`/public/profile?name=${item.name}`}>
+                        Show Profile
+                    </Link>
               </Menu.Item>
               <Menu.Item
                 leftSection={

@@ -30,7 +30,7 @@ const BALL_DIAMETER = 15;
 function Game({avatar} : {avatar: string}) {
   return (
     <div>
-            <Header avatar={avatar}/>
+            {/* <Header avatar={avatar}/> */}
             <div id="sketchHolder" className="flex items-center justify-center">
               <GameComponent />
             </div>

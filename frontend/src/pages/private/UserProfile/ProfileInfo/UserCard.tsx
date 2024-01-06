@@ -33,7 +33,6 @@ const stats = [
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
     const [userName, setUserName] = useState<string>();
     useEffect(() => {
-
         const getUserNmae = async () => {
             await axios.get("user/name")
             .then((res) => {
@@ -61,7 +60,6 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
 
   return (
     <div >
-
   <Card style={{backgroundColor: 'transparent'}} radius="md" className={classes.card}>
       <Card.Section
         h={40}

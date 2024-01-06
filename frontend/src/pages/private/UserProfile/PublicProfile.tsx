@@ -6,7 +6,7 @@ import UsersInterface from './UsersInterface';
 import { Sledding } from "@mui/icons-material";
 import { LoadingOverlay } from "@mantine/core";
 
-function UserProfile({avatar, handleRequest, usersList, setUsersList}: {avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function}) {
+function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersList}: {profileName: string | undefined,avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function}) {
     useEffect(() => {
         const getUsers = async () => {
             await axios.get("user/list")
@@ -21,14 +21,14 @@ function UserProfile({avatar, handleRequest, usersList, setUsersList}: {avatar: 
          getUsers();
     }, []);
 
-    const friendShip: any = usersList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship;
+    const friendShip: any = usersList.find(user => user.name == profileName)?.friendship;
 
         return (
             <div>
-                <Header avatar={avatar}/>
-                <Profile handleRequest={handleRequest} friendShip={friendShip}/>
+                {/* <Header avatar={avatar}/> */}
+                <Profile profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
             </div>
     );
 }
 
-export default UserProfile;
+export default PublicProfile;

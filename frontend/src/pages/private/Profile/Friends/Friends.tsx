@@ -12,15 +12,16 @@ import { Link } from 'react-router-dom';
 // import Cookies from 'js-cookie'
 
 
-function  Frindes({setUserName}: {setUserName: any}) {
+function  Frindes({setUrlName}: {setUrlName: Function}) {
   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
   const [requestFriendList, setRequestFriendList] = useState<FriendInterface[]>([]); // this is for the request list [not implemented yet]
-  const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
+//   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
   const [value, setValue] = useState<string>('Friends list');
 
   const handelShowProfile = (name: string) => {
-        window.location.href = '/'+name+'/public/profile';
+        // window.location.href = '/'+name+'/public/profile';
         // window.location.reload();
+        setUrlName(name);
   };
   
   useEffect(() => {
@@ -85,7 +86,9 @@ function  Frindes({setUserName}: {setUserName: any}) {
                   <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                    Show Profile
+                    <Link to={`/public/profile?name=${item.name}`}>
+                        Show Profile
+                    </Link>
               </Menu.Item>
               <Menu.Item
                 leftSection={
