@@ -10,7 +10,7 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
         super ({
             clientID: config.get('42_CLIENTID'),
             clientSecret: config.get('42_CLIENTSECRET'),
-            callbackURL: 'http://localhost:3001/callback',
+            callbackURL: config.get('CALLBACK_URL'),
         });
     }
     validate(accessToken: string, refreshToken: string, profile: any) {

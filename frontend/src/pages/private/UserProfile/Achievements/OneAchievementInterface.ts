@@ -1,5 +1,5 @@
 interface Achievement {
-    isTaked: boolean;
+    type: boolean;
     name: string;
     image: string;
     title: string;

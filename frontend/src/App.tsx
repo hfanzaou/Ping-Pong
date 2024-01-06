@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router} from 'react-router-dom'
+import { Link, BrowserRouter as Router} from 'react-router-dom'
 import { Route, Routes } from 'react-router-dom'
 import { LoadingOverlay, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
@@ -15,6 +15,8 @@ import axios from 'axios'
 import Auth from './pages/public/Auth'
 import UserProfile from './pages/private/UserProfile/UserProfile'
 import UsersInterface from './pages/private/Home/Users/UsersInterface'
+import NotFound from './pages/public/NotFound/NotFound'
+import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
@@ -22,7 +24,6 @@ function App()  {
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
 
-    const [friendShip, setFriendShip] = useState<any>();
     const [userName, setUserName] = useState<string | null>(null);
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
@@ -30,25 +31,7 @@ function App()  {
 
 // comonentDidMount
 
-  axios.defaults.withCredentials = true;  // to send token in every requiste
-
-//   useEffect(() => {
-//     const getUsers = async () => {
-//       await axios.get("http://localhost:3001/user/list")
-//       .then((res) => {
-//         // setUsersList(data);
-//         // setSearchList(data);
-//         setUsersList(res.data);
-//         setSearchList(res.data);
-//         console.log("Users list00000-->: ", res.data);
-//       }).catch(err => {
-//         // setUsersList(data);
-//         // setSearchList(data);
-//         console.error("Error in fetching Users list: ", err);
-//       })
-//     };
-//     getUsers();
-// }, []);
+  axios.defaults.withCredentials = true; 
 
 const handleRequest = async (name: string) => {
 
@@ -123,36 +106,38 @@ const handleRequest = async (name: string) => {
     }
   };
 
-    const getVerify = async () => {
-      try {
-        const res = await axios.get('http://localhost:3001/verify');
-        if (res.status === 200) {
-          setHasToken(true);
-        } else
-            setIsLoading(false);
-        // setHasToken(res.status === 200);
-      } catch {
-        console.log("error in fetching /verify");
-      }
+  const getVerify = async () => {
+    // setIsLoading(true);
+    try {
+      const res = await axios.get('http://localhost:3001/verify');
+      if (res.status === 200) {
+        setHasToken(true);
+        setIsLoading(false);
+      } 
+      // setHasToken(res.status === 200);
+    } catch {
+      setIsLoading(false);
+      console.log("error in fetching /verify");
     }
-    getVerify();
+  }
+  getVerify();
+  
+  useEffect(() =>  {
 
-    const getFirstVerify = async () => {
-      try {
-        const res = await axios.get('http://localhost:3001/verifyTfa');
-        if (res.status === 200) {
-          setHas2fa(res.data);
-        } else
-            setIsLoading(false);
-        // setHasToken(res.status === 200);
-      } catch {
-        console.log("error in fetching /verify");
-      }
-    }
-    getFirstVerify();
-
-    useEffect(() =>  {
-
+        const getFirstVerify = async () => {
+          try {
+            const res = await axios.get('http://localhost:3001/verifyTfa');
+            if (res.status === 200) {
+                        setHas2fa(res.data);
+                    }
+                //   setIsLoading(false);
+                  // setHasToken(res.status === 200);
+          } catch {
+            // setIsLoading(false);
+            console.log("error in fetching /verify");
+          }
+        }
+        getFirstVerify();
             const getAvatar = async () => {
                 await axios.get("http://localhost:3001/user/avatar")
                 .then((res) => {
@@ -162,35 +147,89 @@ const handleRequest = async (name: string) => {
                 })
             };
       getAvatar();
-      const token = localStorage.getItem('jwt');
-      if (token) {
-        setHasToken(true);
-      }
-      else
-        setIsLoading(false);
+    //   const token = localStorage.getItem('jwt');
+    //   if (token) {
+    //     setHasToken(true);
+    //   }
+    //   else
+    //     setIsLoading(false);
 }, []);
 
-  return (
-    <MantineProvider>
-      <Router>
-        { !isLoading ?
-        (
-        <Routes>
-          <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
-          <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
-          <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
-          <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-          <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
-          <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-          <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} /> : <Login/>} />
-          <Route path='/Login' element={<Login/>}/>
-          <Route path='/auth' element={has2fa ? <Auth /> : (!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>)}/>
-        </Routes>
-            ) : <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
-      {/* <Footer/> */}
-      </Router>
-      </MantineProvider>
-  );
+    if (isLoading) {
+        return (
+            <MantineProvider>
+                <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+            </MantineProvider>
+        );
+    }
+
+    if (!hasToken) {
+            if (has2fa)
+                return (
+                    <MantineProvider>
+                    <Router>
+                        <Routes>
+                            <Route path='/' element={<Login/>}/>
+                            <Route path='/Login' element={<Login/>}/>
+                            <Route path='/auth' element={<Auth/>}/>
+                            <Route path='/*' element={<Login/>} />
+                        </Routes>
+                    </Router>
+                </MantineProvider>
+            );
+            return (
+                <MantineProvider>
+                <Router>
+                    <Routes>
+                        <Route path='/' element={<Login/>}/>
+                        <Route path='/Login' element={<Login/>}/>
+                        <Route path='/*' element={<GoToLogin />} />
+                        {/* {has2fa && <Route path='/auth' element={<Auth/>}/> } */}
+                    </Routes>
+                </Router>
+            </MantineProvider>
+        );
+}
+
+    return (
+        <MantineProvider>
+            <Router>
+                <Routes>
+                    <Route path='/*' element={<NotFound />}/>
+                    <Route path='/' element={<Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+                    <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
+                    <Route path='/Profile' element={<Profile avatar={avatar} setUserName={setUserName}/>}/>
+                    <Route path='/Game' element={<Game avatar={avatar}/>}/>
+                    <Route path='/Chat' element={<ChatApp avatar={avatar}/>}/>
+                    <Route path='/Setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
+                    <Route path={'/'+ window.location.pathname.split("/")[1] +'/public/profile'} element={<UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} />} />
+                    {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/>
+                    <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
+                </Routes>
+            </Router>
+        </MantineProvider>
+    );
+
+    // return (
+    //   <MantineProvider>
+    //     <Router>
+    //       <Routes>
+    //           <Route path='/*' element={hasToken ? <NotFound />  : <Login/>}/>
+    //         <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+    //         <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
+    //         <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
+    //         <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
+    //         <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
+    //         <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
+    //         <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} /> : <Login/>} />
+    //         <Route path='/Login' element={<Login/>}/>
+    //         <Route path='/auth' element={has2fa && !hasToken ? <Auth /> :  <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+    //       </Routes>
+    //     </Router>
+    //     </MantineProvider>
+    // );
+
 }
 
 export default App
+// {/* <Footer/> */}

@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start:dev:chat:clean": "docker compose down",
-    "start:dev:chat": "npm run dcu && sleep 1 && npm run npmd && npm run nps",
+    "start:dev:chat": "npm run dcu && sleep 3 && npm run npmd && npm run nps",
     "dcu": "docker compose up -d",
     "npmd": "npx prisma migrate deploy",
     "nps": "npx prisma studio",
@@ -38,6 +38,7 @@
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.10",
     "@nestjs/platform-socket.io": "^10.2.10",
+    "@nestjs/serve-static": "^4.0.0",
     "@nestjs/websockets": "^10.2.10",
     "@prisma/client": "^5.7.1",
     "@types/passport-42": "^1.1.1",

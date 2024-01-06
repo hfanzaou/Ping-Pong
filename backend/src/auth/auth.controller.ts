@@ -10,14 +10,16 @@ import JwtTwoFaGuard from './guard/twoFaAuth.guard';
 import { throwError } from 'rxjs';
 import { FTAuth } from './42startegy';
 import { AuthDto, FAuthDto } from './dto';
+import { ConfigService } from "@nestjs/config";
 
 @Controller('')
 export class AuthController {
 
 	private authService: AuthService;
-	
-	constructor(authService: AuthService) {
+	private config: ConfigService;
+	constructor(authService: AuthService, config: ConfigService) {
 		this.authService = authService;
+		this.config = config;
 	}
 
 	@Post('signup/pass')
@@ -42,7 +44,7 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			res.send({"2fa": true});
+			res.send({"twofa": true});
 			return;
 		}
 		const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
@@ -51,7 +53,7 @@ export class AuthController {
 			httpOnly: true,
 		});
 		//res.redirect('http://localhost:3000');
-		res.send({"2fa": false});
+		res.send({"twofa": false});
 	}
 	/////to verify user token////
 	
@@ -88,7 +90,7 @@ export class AuthController {
 				path:'/',
 				httpOnly: true,
 			});
-			res.redirect('http://localhost:3000/auth');
+			res.redirect(this.config.get('HOST') + '/auth');
 			return;
 		}
 		const token = await this.authService.signin(req.user);
@@ -98,10 +100,10 @@ export class AuthController {
 		});
 		if (!user) ///if user first time login
 		{
-			res.redirect('http://localhost:3000/Setting');
+			res.redirect( this.config.get('HOST') + '/Setting');
 			return;
 		}
-		res.redirect('http://localhost:3000');
+		res.redirect(this.config.get('HOST'));
 	}
 
 	@Get('logout')
@@ -109,7 +111,7 @@ export class AuthController {
 	async logout(@Req() req, @Res() res)
 	{
 		await res.clearCookie('jwt');
-		res.redirect('http://localhost:3000')
+		res.redirect(this.config.get('HOST'))
 	}
 	///turn on 2fa and genrate qr code/////
 	@Post('2fa/turnon')
