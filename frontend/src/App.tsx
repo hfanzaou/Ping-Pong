@@ -220,6 +220,24 @@ export default App
 
 
 
+// return (
+//   <MantineProvider>
+//     <Router>
+//       <Routes>
+//           <Route path='/*' element={hasToken ? <NotFound />  : <Login/>}/>
+//         <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+//         <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
+//         <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
+//         <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
+//         <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
+//         <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
+//         <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} /> : <Login/>} />
+//         <Route path='/Login' element={<Login/>}/>
+//         <Route path='/auth' element={has2fa && !hasToken ? <Auth /> :  <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+//       </Routes>
+//     </Router>
+//     </MantineProvider>
+// );
 
 
 
@@ -231,22 +249,3 @@ export default App
 
 
 // {/* <Footer/> */}
-
-    // return (
-    //   <MantineProvider>
-    //     <Router>
-    //       <Routes>
-    //           <Route path='/*' element={hasToken ? <NotFound />  : <Login/>}/>
-    //         <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
-    //         <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
-    //         <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
-    //         <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-    //         <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
-    //         <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-    //         <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} /> : <Login/>} />
-    //         <Route path='/Login' element={<Login/>}/>
-    //         <Route path='/auth' element={has2fa && !hasToken ? <Auth /> :  <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
-    //       </Routes>
-    //     </Router>
-    //     </MantineProvider>
-    // );
