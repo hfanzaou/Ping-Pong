@@ -16,7 +16,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.use(cors({
-    origin: 'http://192.168.1.114:3000', 
+    origin: 'http://10.24.84.246:3000', 
     credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
@@ -25,6 +25,6 @@ async function bootstrap() {
   //   origin: 
   // }
  // );
-  await app.listen(3001, '192.168.1.114');
+  await app.listen(3001);
 }
 bootstrap();
