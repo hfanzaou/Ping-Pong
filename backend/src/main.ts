@@ -16,8 +16,8 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.use(cors({
-    origin: 'http://localhost:3000', 
-    credentials: true, 
+    origin: 'http://192.168.1.114:3000', 
+    credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
   // app.enableCors()''
@@ -25,6 +25,6 @@ async function bootstrap() {
   //   origin: 
   // }
  // );
-  await app.listen(3001);
+  await app.listen(3001, '192.168.1.114');
 }
 bootstrap();

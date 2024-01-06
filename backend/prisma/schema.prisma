@@ -57,8 +57,6 @@ model CHATHISTORY {
 
 model MESSAGE {
   id            Int      @id @unique @default(autoincrement())
-  createAt      DateTime @default(now())
-  updateAt      DateTime @updatedAt
 
   sender        String
   message       String
