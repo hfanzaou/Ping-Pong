@@ -2,7 +2,7 @@ import { ActionIcon } from "@mantine/core";
 import { IconPingPong, IconSend2 } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { DATA, MESSAGE } from "../myTypes";
-import { setMessageData } from "../utils";
+import { setMessageData, setUserData } from "../utils";
 
 interface Props {
 	data: DATA,
@@ -17,7 +17,10 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 		sender: string,
 		avatar: string
 	}>>([]);
+	const	dataRef = useRef(data);
+	dataRef.current = data;
 	const	Reference = useRef<HTMLInputElement | null>(null);
+	const	[trigger, setTrigger] = useState(false)
 	
 	useEffect(() => {
 		const fetchData = async () => {
@@ -45,13 +48,56 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 		}
 		fetchData();
 	}, [data])
+	useEffect(() => {
+		if (trigger) {
+			// console.log({
+			// 	sender: data.userData?.userName,
+			// 	recver: data.talkingTo
+			// })
+			async function fetchData() {
+				const	res = await fetch("http://localhost:3001/chatUsers", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						sender: data.userData?.userName,
+						recver: data.talkingTo,
+					})
+				});
+				setData(prev => ({
+					...prev,
+					trigger: !prev.trigger
+					// console.log("here1")
+				}))
+				const res0 = await fetch("http://localhost:3001/chatUser", {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							socket: data.socket?.id,
+							username: data.userData?.userName
+						})
+					});
+					const Data = await res0.json();
+					setData(prev => setUserData(prev, Data));
+			}
+			fetchData()
+			setTrigger(false);
+		}
+	}, [trigger])
 	function callBack(m: {
 		id: number,
 		message: string,
 		sender: string,
-		avatar: string
+		avatar: string,
 	})
 	{
+		if (!dataRef.current.userData?.chatUsers.
+			find(x => x.login == dataRef.current.talkingTo)) {
+			setTrigger(true);
+		}
 		setConversation(prev => [m, ...prev]);
 	}
 	useEffect(() => {
@@ -63,7 +109,7 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 	function submit(event: FormEvent<HTMLFormElement>)
 	{
 		event.preventDefault();
-		console.log(data);
+		// console.log(data);
 		const	Message: MESSAGE = {
 			sender: data.userData ? data.userData.userName : "",
 			recver: data.talkingTo ? data.talkingTo: "",
