@@ -4,7 +4,8 @@ export interface DATA {
 	socket?: Socket,
 	userData?: USERDATA,
 	talkingTo?: string,
-	message: string
+	message: string,
+	trigger: boolean
 }
 
 export interface User {
@@ -15,7 +16,8 @@ export interface User {
 
 export interface USERDATA {
 	userName: string,
-	chatUsers: User[]
+	chatUsers: User[],
+	friends: User[]
 }
 
 export interface MESSAGE extends NEWCHAT {

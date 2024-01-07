@@ -15,4 +15,9 @@ export class ChatController {
 		const	history = await this.chatService.getUserHistory(data);
 		return history;
 	}
+	@Post("chatUsers")
+	async handleUsers(@Body() data: NEWCHAT) {
+		// console.log("here")
+		await this.chatService.getChatUsers(data);
+	}
 }

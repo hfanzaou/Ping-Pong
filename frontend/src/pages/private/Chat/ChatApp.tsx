@@ -9,7 +9,8 @@ import Header from "../../../Layout/Header/Header";
 
 const ChatApp = ({avatar}: {avatar: string}) => {
 	const	[data, setData] = useState<DATA>({
-		message: ""
+		message: "",
+		trigger: true
 	});
 	const	[option, setOption] = useState("Private");
 	
@@ -36,6 +37,7 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 					});
 					const Data = await res.json();
 					setData(prev => setUserData(prev, Data));
+					// console.log("here");
 				}
 				catch {
 					throw new Error("error");

@@ -13,19 +13,16 @@ export class ChatService {
 	}
 	async getUserData(userSocket: USERSOCKET) {
 		const	user = await this.prisma.user.findUnique({
-			where: {
-				username: userSocket.username,
-				// state: "Offline"
-			},
+			where: { username: userSocket.username },
 			include: {
-				chatUsers: true
+				chatUsers: true,
+				friends: true,
+				friendOf: true
 			}
 		});
 		if (user) {
 			await this.prisma.user.update({
-				where: {
-					id: user.id
-				},
+				where: { id: user.id },
 				data: {
 					state: "Online",
 					socket: userSocket.socket
@@ -37,7 +34,15 @@ export class ChatService {
 					id: x.id,
 					login: x.username,
 					avatar: await this.user.getUserAvatar(x.id)
-				})))
+				}))),
+				friends: await Promise.all(user.friends.filter(x =>
+					user.friendOf.some(friend => friend.id == x.id))
+						.map(async x => ({
+							id: x.id,
+							login: x.username,
+							avatar: await this.user.getUserAvatar(x.id)
+						}))
+				)
 			}
 			return data;
 		}
@@ -46,15 +51,11 @@ export class ChatService {
 	}
 	async dropUser(client: Socket) {
 		const	user = await this.prisma.user.findUnique({
-			where: {
-				socket: client.id
-			}
+			where: { socket: client.id }
 		});
 		if (user) {
 			await this.prisma.user.update({
-				where: {
-					id: user.id
-				},
+				where: { id: user.id },
 				data: {
 					state: "Offline",
 					socket: null
@@ -147,7 +148,8 @@ export class ChatService {
 			id: message.id,
 			message: message.message,
 			sender: message.sender,
-			avatar: message.avatar
+			avatar: message.avatar,
+			// recver: data.recver
 		}
 	}
 	async getUserHistory(data: NEWCHAT) {
@@ -194,5 +196,39 @@ export class ChatService {
 				return null;
 		}
 		return null;
+	}
+	async getChatUsers(data: NEWCHAT) {
+		const	recver = await this.prisma.user.findUnique({
+			where: { username: data.recver }
+		});
+		const	sender = await this.prisma.user.findUnique({
+			where: { username: data.sender }
+		});
+		console.log(sender.id)
+		console.log(recver.id)
+		await this.prisma.user.update({
+			where: {
+				id: sender.id
+			},
+			data: {
+				chatUsers: {
+					connect: {
+						id: recver.id
+					}
+				}
+			}
+		});
+		await this.prisma.user.update({
+			where: {
+				id: recver.id
+			},
+			data: {
+				chatUsers: {
+					connect: {
+						id: sender.id
+					}
+				}
+			}
+		});
 	}
 }

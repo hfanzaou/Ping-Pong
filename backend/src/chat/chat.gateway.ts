@@ -25,7 +25,7 @@ OnGatewayDisconnect {
 			.emit("client", message);
 	}
 	@SubscribeMessage("newChat")
-	handelNewChat(client: Socket, data: NEWCHAT) {
+	async handelNewChat(client: Socket, data: NEWCHAT) {
 		Array
 			.from(client.rooms)
 			.slice(1)
