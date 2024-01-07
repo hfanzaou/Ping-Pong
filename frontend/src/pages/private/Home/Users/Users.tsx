@@ -13,20 +13,20 @@ function Users({setUrlName, userList, setUsersList, searchList, setSearchList, h
   const [searchInput, setSearchInput] = useState("");
 //   const [addButton, setAddButton] = useState<boolean>(false);
   
+const getUsers = async () => {
+  await axios.get("user/list")
+  .then((res) => {
+    // setUsersList(testdata);
+    // setSearchList(testdata);
+    setUsersList(res.data);
+    setSearchList(res.data);
+    console.log("Users list00000-->: ", res.data);
+  }).catch(err => {
+    console.error("Error in fetching Users list: ", err);
+  })
+};
 
 useEffect(() => {
-    const getUsers = async () => {
-      await axios.get("user/list")
-      .then((res) => {
-        // setUsersList(testdata);
-        // setSearchList(testdata);
-        setUsersList(res.data);
-        setSearchList(res.data);
-        console.log("Users list00000-->: ", res.data);
-      }).catch(err => {
-        console.error("Error in fetching Users list: ", err);
-      })
-    };
     getUsers();
 }, []);
 
@@ -42,7 +42,10 @@ const handleBlockUser = async (name: string) => {
     console.log("blocked friend name: ", name);
     await axios.post("user/block", {name: name})
     .then((res) => {
-        res.status === 201 && window.location.reload();
+        if (res.status === 201) {
+            getUsers();
+        }
+        // res.status === 201 && window.location.reload();
     })
     .catch((err) => {
         console.error("error when send post request to block friend: ", err);

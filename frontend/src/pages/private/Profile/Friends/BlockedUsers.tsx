@@ -1,38 +1,42 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BlockedFriendInterface from "./BlockedFriendInterface";
+import BlockedUsersInterface from "./BlockedFriendInterface";
 import testdata from './BlockedFriendsList.json'
 import { Group, Menu, Table, Avatar, Text, rem } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 
-function BlockedFriends() {
-    const [blockedFriendList, setBlockedFriendList] = useState<BlockedFriendInterface[]>([]);
+function BlockedUsers() {
+    const [blockedUsersList, setBlockedUsersList] = useState<BlockedUsersInterface[]>([]);
+
+    const getBlockedUsers = async () => {
+        await axios.get("user/blocked")
+        .then((res) => {
+         setBlockedUsersList(res.data);
+        }).catch(err => {
+        //   setBlockedUsersList(testdata);
+            console.error("Error in fetching blocked friend list: ", err);
+        })
+    };
 
     useEffect(() => {
-        const getBlockedFriends = async () => {
-            await axios.get("user/blocked")
-            .then((res) => {
-             setBlockedFriendList(res.data);
-            }).catch(err => {
-            //   setBlockedFriendList(testdata);
-                console.error("Error in fetching blocked friend list: ", err);
-            })
-        };
-        getBlockedFriends();
+        getBlockedUsers();
     }, []);
 
-    const handleInBlockFriend = async (name: string) => {
+    const handleInBlockUsers = async (name: string) => {
         console.log("blocked friend name: ", name);
         await axios.post("user/inblock", {name: name})
         .then((res) => {
-            res.status === 201 && window.location.reload();
+            if (res.status === 201) {
+                getBlockedUsers();
+            }
+            // res.status === 201 && window.location.reload();
         })
         .catch((err) => {
             console.error("error when send post request to In block friend: ", err);
         })
     };
 
-    const blockedFriend = blockedFriendList.map((item) => (
+    const blockedUsers = blockedUsersList.map((item) => (
         <Table.Tr key={item.name}>
             <Table.Td>
                 <Group gap="sm">
@@ -50,7 +54,7 @@ function BlockedFriends() {
                       leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                       color="red"
                     >
-                        <button onClick={() => handleInBlockFriend(item.name)}>
+                        <button onClick={() => handleInBlockUsers(item.name)}>
                           InBlock friend
                         </button>
                     </Menu.Item>
@@ -66,9 +70,9 @@ function BlockedFriends() {
 
     return (
         <div>
-            {blockedFriend}
+            {blockedUsers}
         </div>
     );
 }
 
-export default BlockedFriends
+export default BlockedUsers
