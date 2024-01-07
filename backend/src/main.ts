@@ -5,6 +5,7 @@ import * as session from 'express-session';
 import CorsModule from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { ConfigService } from '@nestjs/config';
 // import * as cors from 'cors';
 const cors = require('cors');
 async function bootstrap() {
@@ -14,17 +15,13 @@ async function bootstrap() {
   		whitelist: true,
   	}),
   );
+  const config = app.get(ConfigService);
   app.use(cookieParser());
   app.use(cors({
-    origin: 'http://192.168.1.114:3000', 
+    origin: config.get('HOST'), 
     credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
-  // app.enableCors()''
-  // {
-  //   origin: 
-  // }
- // );
-  await app.listen(3001, '192.168.1.114');
+  await app.listen(3001);
 }
 bootstrap();

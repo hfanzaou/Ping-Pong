@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    depends_on:
+      - dev-db
+    restart: always   
+    networks:
+      - mynet
+
+  dev-db:
+    image: postgres:bullseye
+    ports:
+       - 5434:5432
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - mynet
+networks:
+  mynet:  
+
