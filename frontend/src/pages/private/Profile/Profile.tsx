@@ -1,7 +1,7 @@
 import React from 'react'
 import { SimpleGrid } from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
-import Friends from './Friends/Friends'
+import UsersRelation from './Friends/UsersRelation'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import Header from '../../../Layout/Header/Header'
@@ -18,13 +18,13 @@ export function ProfileSections({setUrlName, avatar}: {setUrlName: Function, ava
           <UserCard setUrlName={setUrlName} avatar={avatar} />
           <Achievements />
         </SimpleGrid>
-        <SimpleGrid 
-        cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
-        spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
-        verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
+        <SimpleGrid
+            cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+            spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+            verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >
-          <MatchHistory />
-          <Friends setUrlName={setUrlName}/>
+        <MatchHistory />
+        <UsersRelation setUrlName={setUrlName}/>
         </SimpleGrid>
       </div>
     );
