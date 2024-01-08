@@ -7,6 +7,27 @@ import axios from 'axios';
 function  FrindeRequest() {
   const [requestFriendList, setRequestFriendList] = useState<FriendInterface[]>([]);
 
+
+//   @Header('Content-Type', 'text/event-stream')
+//   useEffect(() => {
+//     // const eventSource = new EventSource('http://192.168.1.114:3001/user/friend/requests');
+
+//     const eventSource = new EventSource('http://192.168.1.114:3001/user/friend/requests', { withCredentials: true });
+
+//     eventSource.onmessage = (event) => {
+//       const newFriendRequest = JSON.parse(event.data);
+//       setRequestFriendList((prevList) => [...prevList, newFriendRequest]);
+//     };
+
+//     eventSource.onerror = (error) => {
+//       console.log('EventSource failed:', error);
+//     };
+
+//     return () => {
+//       eventSource.close();
+//     };
+//   }, []);
+
     const getRequests = async () => {
         await axios.get("user/friend/requests")
         .then((res) => {

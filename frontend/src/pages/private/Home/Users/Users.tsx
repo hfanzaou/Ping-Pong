@@ -22,6 +22,9 @@ const getUsers = async () => {
     setSearchList(res.data);
     console.log("Users list00000-->: ", res.data);
   }).catch(err => {
+    if (err.response.status === 401) {
+      window.location.replace('/login');
+    }
     console.error("Error in fetching Users list: ", err);
   })
 };
@@ -88,7 +91,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                    <Link to={`/public/profile?name=${item.name}`}>
+                    <Link to={`/UserProfile?name=${item.name}`}>
                         Show Profile
                     </Link>
               </Menu.Item>
@@ -108,7 +111,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             </Menu.Dropdown>
             </Menu>
           <div>
-            <Text fz="md" fw={800}>
+            <Text fz="md" fw={800} c='indigo'>
               {item.name}
             </Text>
             <Text >
@@ -135,11 +138,11 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className='flex flex-col space-y-4'>
-        <div className="flex h-5 w-full items-center rounded-md bg-primary p-4">
+        {/* <div className="flex h-5 w-full items-center rounded-md bg-primary p-4">
             <h2 className="mb-2 mt-1 text-4xl font-medium leading-tight text-primary">
-              Users
+                Users
             </h2>
-            </div>
+            </div> */}
             <TextInput className='ml-auto'
               variant="filled"
               radius="md"
