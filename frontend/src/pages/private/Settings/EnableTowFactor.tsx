@@ -11,16 +11,17 @@ function EnableTowFactor() {
   const [code, setCode] = useState<string>();
   const [disabled, setDisabled] = useState<boolean>(true);
 
+  const getFactorState = async () => {
+      await axios.get("user/2fa")
+      .then((res) => {
+          setTowFactor(res.data);
+      })
+      .catch((err) => {
+          console.error("Error in fetching Tow Factor State: ", err);
+      })
+  };
+
     useEffect(() => {
-        const getFactorState = async () => {
-            await axios.get("user/2fa")
-            .then((res) => {
-                setTowFactor(res.data);
-            })
-            .catch((err) => {
-                console.error("Error in fetching Tow Factor State: ", err);
-            })
-        };
         getFactorState();
     }, []);
 
@@ -63,8 +64,11 @@ function EnableTowFactor() {
                 setChange(true);
                 window.location.href = `${import.meta.env.VITE_APP_URL}`;
             }
-            else
-                window.location.reload();
+            else{
+                setChange(false);
+                getFactorState();
+                    // window.location.reload();
+            }
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
         // res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
         // res.status === 201 && setTowFactor(true); // redirect from backend or make same work when Enable 2fa
@@ -80,7 +84,11 @@ function EnableTowFactor() {
     await axios.post("2fa/turnoff", {AuthCode: code})
     .then((res) => {
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
-        res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
+        if (res.status == 201){
+            setChange(false);
+            getFactorState();
+        }
+        // res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
         // res.status === 201 && setTowFactor(false); redirect from backend or make same work when Desable 2fa
 
     })

@@ -94,7 +94,7 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
       <div className='flex justify-center items-centerw-12'>
         <Button radius="md" size="md" color='gray' onClick={handleClick}>
         {/* <Link to={'/'+userName+'/public/profile'}> */}
-        <Link to={`/public/profile?name=${userName}`}>
+        <Link to={`/UserProfile?name=${userName}`}>
             show your public profile
         </Link>
         </Button>
