@@ -11,15 +11,16 @@ html body {
 	src: url("./fonts/Inconsolata/Inconsolata-VariableFont_wdth\,wght.ttf");
 } */
 
-/* ::-webkit-scrollbar {
-	width: 0px;
+::-webkit-scrollbar {
+	width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
+	background: #1e2124;
 	box-shadow: inset 0 0 10px 10px #1e2124;
     border: solid 3px transparent;
 	border-radius: 10px;
-} */
+}
 
 canvas {
 	border-radius: 12px;
