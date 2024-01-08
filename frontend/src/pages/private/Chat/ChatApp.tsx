@@ -9,7 +9,8 @@ import Header from "../../../Layout/Header/Header";
 
 const ChatApp = ({avatar}: {avatar: string}) => {
 	const	[data, setData] = useState<DATA>({
-		message: ""
+		message: "",
+		trigger: true
 	});
 	const	[option, setOption] = useState("Private");
 	
@@ -36,6 +37,7 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 					});
 					const Data = await res.json();
 					setData(prev => setUserData(prev, Data));
+					// console.log("here");
 				}
 				catch {
 					throw new Error("error");
@@ -59,23 +61,20 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 		}
 	}, []);
 	return (
-		<div className="h-screen">
-			<Header avatar={avatar}/>
-			<div className="h-[80%]">
-			<div className="flex h-full">
-				<Nav option={option} setOption={setOption}/>
-				<Private
-					data={data}
-					setData={setData}
-					/>
-				<Chat
-					data={data}
-					setData={setData}
-					avatar={avatar}
-					/>
-			</div>
-
-			</div>
+		<div className="flex h-[80vh]">
+			<Nav option={option} setOption={setOption}/>
+			<Private
+				data={data}
+				setData={setData}
+				/>
+			{
+				data.talkingTo &&
+						<Chat
+							data={data}
+							setData={setData}
+							avatar={avatar}
+						/>
+			}
 		</div>
 	)
 }

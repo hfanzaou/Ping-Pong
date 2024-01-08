@@ -41,7 +41,7 @@ function Authentication(props: PaperProps) {
   const handelSubmit = async () => {
     console.log("handelSubmit");
     console.log("form.values: ", form.values);
-    type === 'login' ? await axios.post('http://localhost:3001/login/pass', {
+    type === 'login' ? await axios.post('login/pass', {
         email: form.values.email,
         password: form.values.password,
         })
@@ -49,9 +49,9 @@ function Authentication(props: PaperProps) {
             if (res.status === 201) {
                 console.log("res: ", res);
                 if(res.data.twofa === true)
-                    window.location.href = "http://localhost:3000/auth";
+                    window.location.href = `${import.meta.env.VITE_APP_URL}auth`;
                 else
-                    window.location.href = "http://localhost:3000/";
+                    window.location.href = `${import.meta.env.VITE_APP_URL}`;
                 // setSingup(true);
             }
 
@@ -59,7 +59,7 @@ function Authentication(props: PaperProps) {
         .catch((err) => {
             console.error("err in loging in: ", err);
         }):
-    await axios.post('http://localhost:3001/signup/pass', {
+    await axios.post('signup/pass', {
         name: form.values.name,
         email: form.values.email,
         password: form.values.password,
@@ -67,7 +67,7 @@ function Authentication(props: PaperProps) {
         .then((res) => {
             if (res.status === 201) {
                 console.log("res: ", res);
-                window.location.href = "http://localhost:3000/Setting";
+                window.location.href = `${import.meta.env.VITE_APP_URL}Setting`;
                 // setSingup(true);
             }
         })

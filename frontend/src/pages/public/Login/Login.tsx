@@ -9,7 +9,9 @@ function Login() {
   const handleClick = async () => {
 
     // Just redirect to backend /auth
-    window.location.href = "http://localhost:3001/login";
+    // window.location.href = "http://localhost:3001/login";
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}login`;
+
 
     // set cookies for dev mode
     // Cookies.set("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJJRCI6MSwiaWF0IjoxNzAxNTUzNTkxfQ.1vBFZhqlWwKkEadFEOLnC90torC3S87XRM2VtGzROzE");

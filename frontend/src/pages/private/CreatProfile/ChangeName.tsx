@@ -15,7 +15,7 @@ function ChangeName() {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      await axios.get("http://localhost:3001/user/name")
+      await axios.get("user/name")
       .then((res) => {
           console.log(res.data.name);
           setUserName(res.data.name);
@@ -35,7 +35,7 @@ function ChangeName() {
 
   {/* Push the Unique Name and the Avatar to Api http://localhost:3001/change/name*/}
   const handleSaveName = async () => {
-    await axios.post('http://localhost:3001/settings/name', {uniqueName: uniqueName})
+    await axios.post('settings/name', {uniqueName: uniqueName})
     .then(res => {
       console.log(res.data);
       {res.status != 201 ? (setInvalidName(true)) : (setInvalidName(false), setOpenChangeName(!openChangeName), setUserName(uniqueName))}

@@ -13,7 +13,7 @@ function EnableTowFactor() {
 
     useEffect(() => {
         const getFactorState = async () => {
-            await axios.get("http://localhost:3001/user/2fa")
+            await axios.get("user/2fa")
             .then((res) => {
                 setTowFactor(res.data);
             })
@@ -29,7 +29,7 @@ function EnableTowFactor() {
 
         if (!towFactor) {
             // handle enable it
-            await axios.post("http://localhost:3001/2fa/turnon")
+            await axios.post("2fa/turnon")
             .then((res) => {
                 console.log(res.data);
                 setQrImage(res.data);
@@ -53,7 +53,7 @@ function EnableTowFactor() {
 
   const handleEnableSendCode = async () => {
     console.log("this is the code was send: ",code);
-    await axios.post("http://localhost:3001/2fa/auth", {AuthCode: code})
+    await axios.post("2fa/auth", {AuthCode: code})
     .then((res) => {
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
         res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
@@ -67,7 +67,7 @@ function EnableTowFactor() {
 
   const handleDisableSendCode = async () => {
     console.log("this is the code was send: ",code);
-    await axios.post("http://localhost:3001/2fa/turnoff", {AuthCode: code})
+    await axios.post("2fa/turnoff", {AuthCode: code})
     .then((res) => {
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
         res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route

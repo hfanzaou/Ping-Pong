@@ -5,42 +5,47 @@ import axios from 'axios';
 import testdata from './test.json'
 import { IconMessages, IconTent, IconTrash, IconUserCircle } from '@tabler/icons-react';
 import FriendshipButton from './FriendshipButton';
-import { Link } from 'react-router-dom';
+import { Link, unstable_HistoryRouter, useParams } from 'react-router-dom';
 
-function Users({userList, setUsersList, searchList, setSearchList, handleRequest}: {userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
+function Users({setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
 //   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
 //   const [addButton, setAddButton] = useState<boolean>(false);
   
-
+const getUsers = async () => {
+  await axios.get("user/list")
+  .then((res) => {
+    // setUsersList(testdata);
+    // setSearchList(testdata);
+    setUsersList(res.data);
+    setSearchList(res.data);
+    console.log("Users list00000-->: ", res.data);
+  }).catch(err => {
+    console.error("Error in fetching Users list: ", err);
+  })
+};
 
 useEffect(() => {
-    const getUsers = async () => {
-      await axios.get("http://localhost:3001/user/list")
-      .then((res) => {
-        // setUsersList(testdata);
-        // setSearchList(testdata);
-        setUsersList(res.data);
-        setSearchList(res.data);
-        console.log("Users list00000-->: ", res.data);
-      }).catch(err => {
-        console.error("Error in fetching Users list: ", err);
-      })
-    };
     getUsers();
 }, []);
 
 const handelShowProfile = (name: string) => {
-    window.location.href = '/'+name+'/public/profile';
+    // window.location.replace('/'+name+'/public/profile');
+    setUrlName(name);
+    // <Link to={'/'+name+'/public/profile'} >
+
     // window.location.reload();
 };
 
 const handleBlockUser = async (name: string) => {
     console.log("blocked friend name: ", name);
-    await axios.post("http://localhost:3001/user/block", {name: name})
+    await axios.post("user/block", {name: name})
     .then((res) => {
-        res.status === 201 && window.location.reload();
+        if (res.status === 201) {
+            getUsers();
+        }
+        // res.status === 201 && window.location.reload();
     })
     .catch((err) => {
         console.error("error when send post request to block friend: ", err);
@@ -83,7 +88,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                    Show Profile
+                    <Link to={`/public/profile?name=${item.name}`}>
+                        Show Profile
+                    </Link>
               </Menu.Item>
               <Menu.Item
                 leftSection={

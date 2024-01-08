@@ -10,7 +10,7 @@ function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string
 
     return (
         <div className=''>
-            <Header avatar={avatar}/>
+            {/* <Header avatar={avatar}/> */}
             <Box maw={340} mx="auto" className='h-[800px]'>
                 <div className=''>
                     <ChangeAvatar settAvatar={setAvatar} avatar={avatar} />

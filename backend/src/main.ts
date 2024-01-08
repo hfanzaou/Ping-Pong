@@ -17,7 +17,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(cors({
     origin: 'http://localhost:3000', 
-    credentials: true, 
+    credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
   // app.enableCors()''

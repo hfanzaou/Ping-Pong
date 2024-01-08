@@ -6,10 +6,10 @@ import Achievements from './Achievements/Achievement'
 import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
-export function ProfileSections({handleRequest, friendShip}: {handleRequest: any, friendShip: string}) {
-    const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
+export function ProfileSections({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
+    // const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
     const [profile, setProfile] = useState<any>(null);
     const [notFound, setNotFound] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -17,7 +17,7 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
     useEffect(() => {
         // console.log("name: in public profile fitcheng data", name);
         const getUserProfile = async () => {
-            await axios.get("http://localhost:3001/user/profile", {params: {name: name}})
+            await axios.get("user/profile", {params: {name: profileName}})
             .then((res) => {
                 if (res.status === 200) {
                     setProfile(res.data);
@@ -26,20 +26,24 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
                 }
             })
             .catch((err) => {
-                if (err.response.status === 404) {
+                // if (err.response.status === 404) {
                     setNotFound(true);
                     setIsLoading(false);
-                }
+                // }
                 console.error("error when send get request to get user profile: ", err);
             })
         };
         getUserProfile();
     }, []);
 
-    if (isLoading)
-        return (
-            <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-        );
+    // if (isLoading)
+    //     return (
+    //         <div className="flex justify-center items-center">
+    //             <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900">
+    //              <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+    //             </div>
+    //         </div>
+    //     );
 
     if (notFound)
         return (
@@ -64,14 +68,14 @@ export function ProfileSections({handleRequest, friendShip}: {handleRequest: any
     );
 }
 
-function Profile({handleRequest, friendShip}: {handleRequest: any, friendShip: string}) {
+function Profile({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
 
+
+    console.log("profileName: ", profileName);
     return (
-        // <div  className='h-full ml-8 mr-8 pr-8 pl-8 '>
             <div>
-            {/* <Header avatar={avatar}/> */}
              <div className=' ml-4 mr-4 pr-4 pl-4 mb-8 pb-8'> 
-                <ProfileSections handleRequest={handleRequest} friendShip={friendShip}/>
+                <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
              </div> 
             <Footer/>
         </div>
