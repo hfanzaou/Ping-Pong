@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, useParams} from 'react-router-dom'
+import { BrowserRouter as Router} from 'react-router-dom'
 import { Route, Routes } from 'react-router-dom'
 import { LoadingOverlay, MantineProvider } from '@mantine/core'
 import Login from './pages/public/Login/Authentication';
@@ -18,6 +18,7 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 import '@mantine/core/styles.css'
 import './index.css'
 import Header from './Layout/Header/Header';
+
 
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
@@ -44,7 +45,7 @@ const handleRequest = async (name: string) => {
     const friendship = user ? user.friendship : null;
     console.log("friendship from handle Request: ", friendship);
 
-    console.log("friendship from userlist: ", userList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship);
+    // console.log("friendship from userlist: ", userList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship);
 
     if (friendship === 'add friend') {
         const updatedUserList = userList.map(user => 
@@ -202,9 +203,9 @@ const handleRequest = async (name: string) => {
                     <Route path='/Game' element={<Game avatar={avatar}/>}/>
                     <Route path='/Chat' element={<ChatApp avatar={avatar}/>}/>
                     <Route path='/Setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
-                    <Route path={'/public/profile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
-                    {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/>
-                    <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
+                    <Route path={'/UserProfile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
+                    {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
+                    {/* <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
                 </Routes>
             </Router>
         </MantineProvider>

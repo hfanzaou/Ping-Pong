@@ -1,7 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
 import CorsModule from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 import { IoAdapter } from '@nestjs/platform-socket.io';
@@ -16,7 +15,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.use(cors({
-    origin: 'http://10.24.84.246:3000', 
+    origin: 'http://localhost:3000', 
     credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
