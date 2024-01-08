@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 html body {
-    background-color: rgb(51 65 85);
+    /* background-color: rgb(51 65 85); */
+	background-color: #334155;
 }
 
 @font-face {
@@ -16,7 +17,7 @@ html body {
 }
 
 ::-webkit-scrollbar-thumb {
-	box-shadow: inset 0 0 10px 10px #1e2124;
+	background: #1e2124;
     border: solid 3px transparent;
 	border-radius: 10px;
 }

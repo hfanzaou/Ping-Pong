@@ -1,6 +1,6 @@
-import { light } from "@mui/material/styles/createPalette";
-import { DATA, NEWCHAT, User } from "../myTypes";
+import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useState } from "react";
+import { setUserData } from "../utils";
 
 interface Props {
 	data:		DATA,
@@ -11,8 +11,29 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[List, setList] = useState(data.userData?.chatUsers);
 	const	[text, setText] = useState("");
 
+	// useEffect(() => {
+	// 	setText("");
+	// }, [data.message])
+	async function callBack() {
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				socket: data.socket?.id,
+				username: data.userData?.userName
+			})
+		});
+		const Data = await res0.json();
+		setData(prev => setUserData(prev, Data));
+	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers)
+		data.socket?.on("newuser", callBack);
+		return () => {
+			data.socket?.off("newuser", callBack);
+		}
 	}, [data.userData?.chatUsers])
 	function click(event: React.MouseEvent<HTMLButtonElement>)
 	{
@@ -45,11 +66,17 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				.filter((value => value.login
 					.includes(event.target.value)));
 			setList(list);
+			if (!list.find(x => x.login == data.talkingTo))
+					setData(x => ({
+						...x,
+						talkingTo: undefined
+					}))
 		}
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
-				font-Inconsolata font-bold h-full overflow-auto"
+			font-Inconsolata font-bold h-full overflow-auto
+			min-w-[100px] rounded-s-3xl"
 		>
 			<input
 				type="text"
@@ -57,10 +84,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				className="w-full font-thin bg-discord1
 					h-10 p-5 outline-none rounded-full mb-3"
 				onChange={change}
-				onKeyDown={x => {
-					if (x.key == "Enter")
-						setText("");
-				}}
 				value={text}
 			/>
 			<ul>
@@ -72,14 +95,15 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									onClick={click}
 									name={x.login}
 									className={`w-full px-7 py-3 rounded-md
-										select-none ${data.talkingTo == x.login
+									select-none ${data.talkingTo == x.login
 										? "bg-discord5"
 										: "hover:bg-discord4"}
 										flex justify-center items-center`}
 								>
 									<img
 										src={x.avatar}
-										className="w-10 h-10 mr-3 rounded-full"
+										className="w-10 h-10 mr-3
+											rounded-full"
 									/>
 									{x.login}
 								</button>

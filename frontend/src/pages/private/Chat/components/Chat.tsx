@@ -10,7 +10,7 @@ interface Props {
 	avatar: string
 }
 
-const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
+const Chat: React.FC<Props> = ({ data, setData }) => {
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
 		message: string,
@@ -21,7 +21,11 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 	dataRef.current = data;
 	const	Reference = useRef<HTMLInputElement | null>(null);
 	const	[trigger, setTrigger] = useState(false)
-	
+
+	useEffect(() => {
+		if (Reference.current)
+			Reference.current.focus();
+	}, [data.talkingTo])
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -55,21 +59,23 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 			// 	recver: data.talkingTo
 			// })
 			async function fetchData() {
-				const	res = await fetch("http://localhost:3001/chatUsers", {
-					method: "POST",
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						sender: data.userData?.userName,
-						recver: data.talkingTo,
-					})
-				});
-				setData(prev => ({
-					...prev,
-					trigger: !prev.trigger
-					// console.log("here1")
-				}))
+				if (data.talkingTo) {
+					const	res = await fetch("http://localhost:3001/chatUsers", {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							sender: data.userData?.userName,
+							recver: data.talkingTo,
+						})
+					});
+					setData(prev => ({
+						...prev,
+						trigger: !prev.trigger
+						// console.log("here1")
+					}))
+				}
 				const res0 = await fetch("http://localhost:3001/chatUser", {
 						method: "POST",
 						headers: {
@@ -82,6 +88,7 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 					});
 					const Data = await res0.json();
 					setData(prev => setUserData(prev, Data));
+					data.socket?.emit("newUser", data.talkingTo)
 			}
 			fetchData()
 			setTrigger(false);
@@ -103,7 +110,7 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 	useEffect(() => {
 		data.socket?.on("client", callBack);
 		return (() => {
-			data.socket?.off("client", callBack);
+			data.socket?.off("newMessage", callBack);
 		})
 	}, [data.socket])
 	function submit(event: FormEvent<HTMLFormElement>)
@@ -125,26 +132,35 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 		setData(prev => setMessageData(prev, event.target.value))
 	}
 	return (
-		<form onSubmit={submit} className="w-screen bg-discord4 p-2 flex flex-col justify-end text-discord6">
+		<form
+			onSubmit={submit}
+			className="w-[57%] bg-discord4 flex flex-col
+				justify-end text-discord6  p-0 rounded-e-3xl"
+		>
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
 					return (
 						<li
 							key={x.id}
-							className="flex hover:bg-discord3 rounded-md m-2 p-3"
+							className="flex hover:bg-discord3
+								rounded-md m-2 p-3"
 						>
-							<img
-								src={x.avatar}
-								className="h-12 w-12 rounded-full mr-3"
-							/>
-							<div>
+							<a
+								href={`http://localhost:3000/public/profile?name=${x.sender}`}
+							>
+								<img
+									src={x.avatar}
+									className="h-12 w-12 rounded-full mr-3"
+								/>
+							</a>
+							<div className="w-[80%]">
 								<div className="font-extrabold">{x.sender}</div>
-								<div className="w-96 break-words">{x.message}</div>
+								<div className="break-words">{x.message}</div>
 							</div>
 						</li>)
 				})}
 			</ul>
-			<div className="flex">
+			<div className="flex m-2">
 				<input
 					type="text"
 					placeholder="Message..."

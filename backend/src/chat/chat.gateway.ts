@@ -21,17 +21,26 @@ OnGatewayDisconnect {
 		const room = this.chatService.getRoom(data);
 		const message = await this.chatService.addMessage(data);
 		this.server
-			.to(room)
-			.emit("client", message);
+		.to(room)
+		.emit("client", message);
+		// console.log(client.id);
+		// console.log(recver);
 	}
 	@SubscribeMessage("newChat")
 	async handelNewChat(client: Socket, data: NEWCHAT) {
 		Array
-			.from(client.rooms)
-			.slice(1)
-			.forEach(room => client.leave(room));
+		.from(client.rooms)
+		.slice(1)
+		.forEach(room => client.leave(room));
 		const room = this.chatService.getRoom(data);
 		client.join(room);
+	}
+	@SubscribeMessage("newUser")
+	async handelUser(client: Socket, data: string) {
+		const recver = await this.chatService.newMessage(data);
+		this.server
+			.to(recver)
+			.emit("newuser");
 	}
 	async handleConnection(client: Socket) {
 		// console.log(`connection: ${client.id}`);
