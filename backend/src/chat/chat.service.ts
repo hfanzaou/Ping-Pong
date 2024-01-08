@@ -231,4 +231,11 @@ export class ChatService {
 			}
 		});
 	}
+	async newMessage(recver: string) {
+		const user = await this.prisma.user.findUnique({
+			where: { username: recver },
+		});
+		// console.log(user.socket);
+		return (user.socket);
+	}
 }

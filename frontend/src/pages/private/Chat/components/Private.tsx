@@ -1,6 +1,7 @@
 import { light } from "@mui/material/styles/createPalette";
-import { DATA, NEWCHAT, User } from "../myTypes";
+import { DATA, NEWCHAT, USERDATA, User } from "../myTypes";
 import React, { useEffect, useState } from "react";
+import { setUserData } from "../utils";
 
 interface Props {
 	data:		DATA,
@@ -11,8 +12,28 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[List, setList] = useState(data.userData?.chatUsers);
 	const	[text, setText] = useState("");
 
+	async function callBack() {
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				socket: data.socket?.id,
+				username: data.userData?.userName
+			})
+		});
+		const Data = await res0.json();
+		// console.log(Data);
+		setData(prev => setUserData(prev, Data));
+	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers)
+		// data.socket?.on("newMessage", () =>{});
+		data.socket?.on("newuser", callBack);
+		return () => {
+			data.socket?.off("newuser", callBack);
+		}
 	}, [data.userData?.chatUsers])
 	function click(event: React.MouseEvent<HTMLButtonElement>)
 	{

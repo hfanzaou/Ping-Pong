@@ -61,9 +61,9 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 		}
 	}, []);
 	return (
-		<div className="h-screen">
+		<div className="h-[80vh]">
 			{/* <Header avatar={avatar}/> */}
-			<div className="h-[80%]">
+			<div className="h-full">
 			<div className="flex h-full">
 				<Nav option={option} setOption={setOption}/>
 				<Private
