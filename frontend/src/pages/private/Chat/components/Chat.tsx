@@ -10,7 +10,7 @@ interface Props {
 	avatar: string
 }
 
-const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
+const Chat: React.FC<Props> = ({ data, setData }) => {
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
 		message: string,
@@ -21,7 +21,11 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 	dataRef.current = data;
 	const	Reference = useRef<HTMLInputElement | null>(null);
 	const	[trigger, setTrigger] = useState(false)
-	
+
+	useEffect(() => {
+		if (Reference.current)
+			Reference.current.focus();
+	}, [data.talkingTo])
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -131,7 +135,7 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 		<form
 			onSubmit={submit}
 			className="w-[57%] bg-discord4 flex flex-col
-				justify-end text-discord6  p-0"
+				justify-end text-discord6  p-0 rounded-e-3xl"
 		>
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
@@ -141,10 +145,14 @@ const Chat: React.FC<Props> = ({ data, setData, avatar }) => {
 							className="flex hover:bg-discord3
 								rounded-md m-2 p-3"
 						>
-							<img
-								src={x.avatar}
-								className="h-12 w-12 rounded-full mr-3"
-							/>
+							<a
+								href={`http://localhost:3000/public/profile?name=${x.sender}`}
+							>
+								<img
+									src={x.avatar}
+									className="h-12 w-12 rounded-full mr-3"
+								/>
+							</a>
 							<div className="w-[80%]">
 								<div className="font-extrabold">{x.sender}</div>
 								<div className="break-words">{x.message}</div>
