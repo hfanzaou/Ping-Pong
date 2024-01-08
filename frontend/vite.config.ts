@@ -4,7 +4,7 @@ import reactRefresh from '@vitejs/plugin-react-refresh'
 // https://vitejs.dev/config/
 export default defineConfig({
     build: {
-        chunkSizeWarningLimit: 3000,
+        chunkSizeWarningLimit: 2000,
         rollupOptions: {
         onwarn(warning, warn) {
           if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
@@ -13,6 +13,5 @@ export default defineConfig({
           warn(warning)
         }}
       },
-      plugins: [reactRefresh()],
-//   plugins: [reactRefresh()]
+      plugins: [reactRefresh()]
 })

@@ -86,7 +86,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
   </Card>
     {usercard?.username !== userName &&
       <div className='flex justify-center items-center mt-2'>
-            <FriendshipButton name={window.location.pathname.split("/")[1]} friendship={friendShip} handleRequest={handleRequest}/>
+            <FriendshipButton name={usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
       </div>
     }
     </div>

@@ -1,7 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
 import CorsModule from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 import { IoAdapter } from '@nestjs/platform-socket.io';

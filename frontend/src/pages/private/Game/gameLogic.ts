@@ -1,6 +1,6 @@
 import { StarBorderPurple500, StarBorderPurple500Outlined } from "@mui/icons-material";
-import { Ball } from "../../../../../backend/src/game/classes/ball";
-import { Player } from "../../../../../backend/src/game/classes/player";
+import { Ball } from "./classes/ball";
+import { Player } from "./classes/player";
 import p5Types from "p5";
 import { Socket } from "socket.io-client";
 import { canvas } from "./Game";
@@ -122,6 +122,8 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function positionButton(Button: p5Types.Element, Dy: number, Dx: number = 0) {
+//   let x = canvas.position().x;
+//   let y = canvas.position().y;
   let x = 0;
   let y = 0;
 
