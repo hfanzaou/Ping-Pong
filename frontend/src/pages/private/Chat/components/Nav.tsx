@@ -14,7 +14,7 @@ export default function Nav(props: {option: string, setOption: React.Dispatch<Re
 	return (
 		<nav>
 			<ul
-				className="bg-discord1 h-full flex flex-col
+				className=" h-full flex flex-col
 					justify-center rounded-full mr-5"
 			>
 				<li

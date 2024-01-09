@@ -1,6 +1,7 @@
 import { DATA, NEWCHAT } from "../myTypes";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
+import { IconDotsVertical, IconTrash, IconVolume3 } from "@tabler/icons-react";
 
 interface Props {
 	data:		DATA,
@@ -10,10 +11,31 @@ interface Props {
 const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[List, setList] = useState(data.userData?.chatUsers);
 	const	[text, setText] = useState("");
-
-	// useEffect(() => {
-	// 	setText("");
-	// }, [data.message])
+	const	[settings, setSettings] = useState(false);
+	const	[settingsXy, setSettingsXy] = useState({
+		x: 0,
+		y: 0,
+		login: ""
+	})
+	const	settingsXyRef = useRef(settingsXy);
+	const	[blockTrigger, setBlockTrigger] = useState(false)
+	settingsXyRef.current = settingsXy;
+	useEffect(() => {
+		setText("");
+	}, [data.send])
+	useEffect(() => {
+		function callBackMouse(event: MouseEvent) {
+			if (event.clientX < settingsXyRef.current.x ||
+				event.clientX > settingsXyRef.current.x + 100 ||
+				event.clientY < settingsXyRef.current.y ||
+				event.clientY > settingsXyRef.current.y + 100)
+				setSettings(false);
+		}
+		document.addEventListener("mousedown", callBackMouse);
+		return () => {
+			document.removeEventListener("mousedown", callBackMouse);
+		}
+	}, [])
 	async function callBack() {
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
@@ -35,6 +57,25 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			data.socket?.off("newuser", callBack);
 		}
 	}, [data.userData?.chatUsers])
+	useEffect(() => {
+		if (blockTrigger) {
+			async function fetchData() {
+				await fetch("http://localhost:3001/user/block", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						name: settingsXy.login
+					}),
+					credentials: "include"
+				})
+			}
+			fetchData();
+			setBlockTrigger(false);
+			setSettings(false);
+		}
+	}, [blockTrigger])
 	function click(event: React.MouseEvent<HTMLButtonElement>)
 	{
 		const tmp = event.currentTarget.name;
@@ -73,6 +114,19 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}))
 		}
 	}
+	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
+		setSettingsXy({
+			x: event.clientX,
+			y: event.clientY,
+			login: event.currentTarget.name
+		})
+		setSettings(true);
+	}
+	function block() {
+		setBlockTrigger(true);
+		console.log(settingsXy.login);
+	}
+	function mute() {}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -90,7 +144,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				{
 					List?.map(x => {
 						return (
-							<li key={x.id}>
+							<li key={x.id} className="flex relative">
 								<button
 									onClick={click}
 									name={x.login}
@@ -107,10 +161,48 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									/>
 									{x.login}
 								</button>
+								<button
+									className="absolute top-5 right-2 w-10"
+									onClick={clickSettings}
+									name={x.login}
+								>
+									<IconDotsVertical/ >
+								</button>
 							</li>);
 					})
 				}
 			</ul>
+			{
+				settings && <ul
+					className={`fixed border-none
+						bg-discord1 rounded-md`}
+					style={{
+						top: settingsXy.y,
+						left: settingsXy.x
+					}}
+				>
+					<li>
+						<button
+							className="flex justify-center items-center w-[100px]
+								h-[50px] rounded-t-md hover:bg-discord3"
+							onClick={block}
+						>
+							<IconTrash />
+							<h2 className="mt-1">Block</h2>
+						</button>
+					</li>
+					<li>
+						<button
+							className="flex justify-center items-center w-[100px]
+								h-[50px] rounded-b-md hover:bg-discord3"
+							onClick={mute}
+						>
+							<IconVolume3 />
+							<h2 className="">Mute</h2>
+						</button>
+					</li>
+				</ul>
+			}
 		</div>
 	)
 }

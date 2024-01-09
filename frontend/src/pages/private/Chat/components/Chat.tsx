@@ -101,6 +101,11 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 		avatar: string,
 	})
 	{
+		console.log("here")
+		setData(x => ({
+			...x,
+			send: !x.send
+		}))
 		if (!dataRef.current.userData?.chatUsers.
 			find(x => x.login == dataRef.current.talkingTo)) {
 			setTrigger(true);
@@ -131,7 +136,7 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
-	return (
+	return data.talkingTo && (
 		<form
 			onSubmit={submit}
 			className="w-[57%] bg-discord4 flex flex-col

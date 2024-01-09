@@ -17,14 +17,11 @@ OnGatewayDisconnect {
 	@WebSocketServer() server: Server
 	@SubscribeMessage("server")
 	async handelMessage(client: Socket, data: MESSAGE) {
-		// console.log(Array.from(client.rooms).slice(1));
 		const room = this.chatService.getRoom(data);
 		const message = await this.chatService.addMessage(data);
 		this.server
 		.to(room)
 		.emit("client", message);
-		// console.log(client.id);
-		// console.log(recver);
 	}
 	@SubscribeMessage("newChat")
 	async handelNewChat(client: Socket, data: NEWCHAT) {
@@ -40,7 +37,7 @@ OnGatewayDisconnect {
 		const recver = await this.chatService.newMessage(data);
 		this.server
 			.to(recver)
-			.emit("newuser");
+			.emit("newuser	");
 	}
 	async handleConnection(client: Socket) {
 		// console.log(`connection: ${client.id}`);
