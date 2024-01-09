@@ -1,6 +1,8 @@
 import { DATA, NEWCHAT } from "../myTypes";
-import React, { useEffect, useState } from "react";
+import React, { DetailedHTMLProps, HTMLAttributes, useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
+import { IconDotsVertical } from "@tabler/icons-react";
+import { Settings, SettingsRemote } from "@mui/icons-material";
 
 interface Props {
 	data:		DATA,
@@ -10,10 +12,11 @@ interface Props {
 const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[List, setList] = useState(data.userData?.chatUsers);
 	const	[text, setText] = useState("");
+	const	[settings, setSettings] = useState(false);
 
-	// useEffect(() => {
-	// 	setText("");
-	// }, [data.message])
+	useEffect(() => {
+		setText("");
+	}, [data.send])
 	async function callBack() {
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
@@ -73,6 +76,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}))
 		}
 	}
+	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
+		setSettings(true);
+	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -90,7 +96,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				{
 					List?.map(x => {
 						return (
-							<li key={x.id}>
+							<li key={x.id} className="flex relative">
 								<button
 									onClick={click}
 									name={x.login}
@@ -107,10 +113,20 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									/>
 									{x.login}
 								</button>
+								<button
+									className="absolute top-5 right-2"
+									onClick={clickSettings}
+									name={x.login}
+								>
+									<IconDotsVertical/ >
+								</button>
 							</li>);
 					})
 				}
 			</ul>
+			{
+				settings && <div >test</div>
+			}
 		</div>
 	)
 }

@@ -10,7 +10,8 @@ import Header from "../../../Layout/Header/Header";
 const ChatApp = ({avatar}: {avatar: string}) => {
 	const	[data, setData] = useState<DATA>({
 		message: "",
-		trigger: true
+		trigger: true,
+		send: true
 	});
 	const	[option, setOption] = useState("Private");
 	
@@ -67,14 +68,11 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 				data={data}
 				setData={setData}
 				/>
-			{
-				data.talkingTo &&
-						<Chat
-							data={data}
-							setData={setData}
-							avatar={avatar}
-						/>
-			}
+			<Chat
+				data={data}
+				setData={setData}
+				avatar={avatar}
+			/>
 		</div>
 	)
 }
