@@ -1,5 +1,5 @@
 import { ActionIcon } from "@mantine/core";
-import { IconPingPong, IconSend2 } from "@tabler/icons-react";
+import { IconPingPong, IconSend2, IconUser } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { DATA, MESSAGE } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
@@ -7,7 +7,6 @@ import { setMessageData, setUserData } from "../utils";
 interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
-	avatar: string
 }
 
 const Chat: React.FC<Props> = ({ data, setData }) => {
@@ -149,10 +148,17 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 							<a
 								href={`http://localhost:3000/UserProfile?name=${x.sender}`}
 							>
-								<img
-									src={x.avatar}
-									className="h-12 w-12 rounded-full mr-3"
-								/>
+								{
+									x.avatar ?
+										<img
+											src={x.avatar}
+											className="h-12 w-12 rounded-full mr-3"
+										/> :
+										<IconUser
+											className="h-12 w-12 rounded-full mr-3
+												bg-discord1"
+										/>
+								}
 							</a>
 							<div className="w-[80%]">
 								<div className="font-extrabold">{x.sender}</div>

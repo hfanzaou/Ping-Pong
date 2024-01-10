@@ -1,15 +1,26 @@
 import { IconMessages, IconUsersGroup } from "@tabler/icons-react";
 import React from "react";
+import { DATA } from "../myTypes";
 
-export default function Nav(props: {option: string, setOption: React.Dispatch<React.SetStateAction<string>>})
-{
+interface Props {
+	option: string,
+	setOption: React.Dispatch<React.SetStateAction<string>>
+	setData: React.Dispatch<React.SetStateAction<DATA>>
+}
+
+const	Nav: React.FC<Props> = ({ option, setOption, setData}) => {
 	function clickPrivate()
 	{
-		props.setOption("Private");
+		setOption("Private");
 	}
 	function clickRooms()
 	{
-		props.setOption("Rooms");
+		setOption("Rooms");
+		setData(x => ({
+			...x,
+			talkingTo: undefined
+		}));
+
 	}
 	return (
 		<nav className="ml-2 mr-2">
@@ -20,7 +31,7 @@ export default function Nav(props: {option: string, setOption: React.Dispatch<Re
 				<li
 					onClick={clickPrivate}
 					className={`${
-							props.option == "Private"
+							option == "Private"
 							? "animate-in bg-discord5"
 							: "bg-discord3 animate-out hover:animate-in hover:bg-discord5"
 						}
@@ -33,7 +44,7 @@ export default function Nav(props: {option: string, setOption: React.Dispatch<Re
 				<li
 					onClick={clickRooms}
 					className={`${
-							props.option == "Rooms"
+							option == "Rooms"
 							? "animate-in bg-discord5"
 							: "bg-discord3 animate-out hover:animate-in hover:bg-discord5"
 						}
@@ -47,3 +58,5 @@ export default function Nav(props: {option: string, setOption: React.Dispatch<Re
     	</nav>
 	)
 }
+
+export default Nav;

@@ -20,4 +20,8 @@ export class ChatController {
 		// console.log("here")
 		await this.chatService.getChatUsers(data);
 	}
+	// @Post("createGroup")
+	// async handleCreateGroup(@Body() data: NEWCHAT) {
+	// 	await this.chatService.getChatUsers(data);
+	// }
 }

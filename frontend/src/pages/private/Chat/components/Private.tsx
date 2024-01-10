@@ -1,7 +1,7 @@
 import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
-import { IconDotsVertical, IconTrash, IconVolume3 } from "@tabler/icons-react";
+import { IconDotsVertical, IconTrash, IconUser, IconVolume3 } from "@tabler/icons-react";
 
 interface Props {
 	data:		DATA,
@@ -170,15 +170,26 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 										: "hover:bg-discord4"}
 										flex justify-center items-center`}
 								>
-									<img
-										src={x.avatar}
-										className={`w-10 h-10 mr-3
-											rounded-full
-											${
-												data.talkingTo == x.login &&
-													"shadow-black shadow-lg"
-											}`}
-									/>
+									{
+										x.avatar ?
+											<img
+												src={x.avatar}
+												className={`w-10 h-10 mr-3
+													rounded-full
+													${
+														data.talkingTo == x.login &&
+															"shadow-black shadow-lg"
+													}`}
+											/> :
+											<IconUser
+												className={`w-10 h-10 mr-3
+													rounded-full bg-discord1
+													${
+														data.talkingTo == x.login &&
+															"shadow-black shadow-lg"
+													}`}
+											/>
+									}
 									{size && x.login}
 								</button>
 								<button
