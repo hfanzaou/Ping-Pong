@@ -19,6 +19,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	})
 	const	settingsXyRef = useRef(settingsXy);
 	const	[blockTrigger, setBlockTrigger] = useState(false)
+	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
+
 	settingsXyRef.current = settingsXy;
 	useEffect(() => {
 		setText("");
@@ -31,9 +33,18 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				event.clientY > settingsXyRef.current.y + 100)
 				setSettings(false);
 		}
+		function callBackResize() {
+			console.log(window.innerWidth);
+			if (window.innerWidth < 600)
+				setSize(false);
+			else
+				setSize(true);
+		}
 		document.addEventListener("mousedown", callBackMouse);
+		window.addEventListener("resize", callBackResize);
 		return () => {
 			document.removeEventListener("mousedown", callBackMouse);
+			window.removeEventListener("resize", callBackResize);
 		}
 	}, [])
 	async function callBack() {
@@ -92,8 +103,13 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
-		if (event.target.value == "" && data.userData)
+		if (event.target.value == "" && data.userData) {
 			setList(data.userData.chatUsers);
+			setData(x => ({
+				...x,
+				talkingTo: undefined
+			}))
+		}
 		else if (data.userData){
 			const list	= [...data.userData?.chatUsers,
 				...data.userData?.friends]
@@ -156,13 +172,17 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 								>
 									<img
 										src={x.avatar}
-										className="w-10 h-10 mr-3
-											rounded-full"
+										className={`w-10 h-10 mr-3
+											rounded-full
+											${
+												data.talkingTo == x.login &&
+													"shadow-black shadow-lg"
+											}`}
 									/>
-									{x.login}
+									{size && x.login}
 								</button>
 								<button
-									className="absolute top-5 right-2 w-10"
+									className="absolute top-5 right-0 w-10 flex justify-center"
 									onClick={clickSettings}
 									name={x.login}
 								>

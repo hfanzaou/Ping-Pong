@@ -12,10 +12,10 @@ export default function Nav(props: {option: string, setOption: React.Dispatch<Re
 		props.setOption("Rooms");
 	}
 	return (
-		<nav>
+		<nav className="ml-2 mr-2">
 			<ul
-				className=" h-full flex flex-col
-					justify-center rounded-full mr-5"
+				className="bg-discord1 h-full flex flex-col
+					justify-center rounded-full"
 			>
 				<li
 					onClick={clickPrivate}
