@@ -37,13 +37,11 @@ OnGatewayDisconnect {
 		const recver = await this.chatService.newMessage(data);
 		this.server
 			.to(recver)
-			.emit("newuser	");
+			.emit("newuser");
 	}
 	async handleConnection(client: Socket) {
-		// console.log(`connection: ${client.id}`);
 	}
 	handleDisconnect(client: Socket) {
-		// console.log(`disconnect: ${client.id}`);
 		this.chatService.dropUser(client);
 	}
 }
