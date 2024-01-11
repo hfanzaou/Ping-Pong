@@ -5,6 +5,7 @@ import { IconChartInfographic, IconDeviceGamepad2, IconLogout, IconMessages, Ico
 import { IconHome } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
 import iconleadr from "./iconleadr.json";
+import axios from "axios";
 // import { IconButton, Typography } from "@mui/material";
 
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
@@ -86,6 +87,12 @@ function NavigationItem() {
 const LeftSide = ({avatar} : {avatar: string}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
 
+
+    const handleLogout = async () => {
+        await axios.get('user/offline');
+    }
+
+
     return (
         <div className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-1 xl:ml-1 md:pr-0">
 
@@ -116,7 +123,7 @@ const LeftSide = ({avatar} : {avatar: string}) => {
               <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2 text-base font-medium" >
                 <Link className="flex items-center"  to={'/setting'}><IconSettings style={{ width: rem(20), height: rem(25) }} /> Settings</Link>
               </Menu.Item>
-              <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2  text-base font-medium" >
+              <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2  text-base font-medium" onClick={handleLogout} >
                 <Link className="flex items-center"  to={`${import.meta.env.VITE_API_BASE_URL}logout`}><IconLogout style={{ width: rem(20), height: rem(25) }} /> Logout</Link>
               </Menu.Item>
             </Menu.Dropdown>
@@ -129,8 +136,8 @@ const LeftSide = ({avatar} : {avatar: string}) => {
 
 function Nav({avatar} : {avatar: string}) {
     return (
-    <div className="bg-slate-700">
-        <nav className="bg-gray-800 rounded-full mx-8 mb-4">
+    <div className="bg-gray-800">
+        <nav className="bg-slate-900 rounded-full mx-8 mb-4">
             <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <NavigationItem/>

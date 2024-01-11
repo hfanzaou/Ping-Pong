@@ -74,6 +74,7 @@ const handleOpenChangeName = () => {
       >
         <div className='m-3'></div>
         {username}
+        {/* Change Name */}
       {/* Change Name */}
           <div className="absolute top-0 right-0 h-16 w-16">
             <IconEdit/>
