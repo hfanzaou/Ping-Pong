@@ -9,7 +9,10 @@ import { Server, Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { MESSAGE, NEWCHAT } from "./myTypes";
 
-@WebSocketGateway({cors: true})
+@WebSocketGateway({ cors: {
+	origin: 'http://localhost:3000',
+    credentials: true
+} })
 export class ChatGateway implements
 OnGatewayConnection,
 OnGatewayDisconnect {
@@ -17,14 +20,11 @@ OnGatewayDisconnect {
 	@WebSocketServer() server: Server
 	@SubscribeMessage("server")
 	async handelMessage(client: Socket, data: MESSAGE) {
-		// console.log(Array.from(client.rooms).slice(1));
 		const room = this.chatService.getRoom(data);
 		const message = await this.chatService.addMessage(data);
 		this.server
 		.to(room)
 		.emit("client", message);
-		// console.log(client.id);
-		// console.log(recver);
 	}
 	@SubscribeMessage("newChat")
 	async handelNewChat(client: Socket, data: NEWCHAT) {
@@ -42,11 +42,10 @@ OnGatewayDisconnect {
 			.to(recver)
 			.emit("newuser");
 	}
-	async handleConnection(client: Socket) {
-		// console.log(`connection: ${client.id}`);
+	handleConnection(client: Socket) {
+		// console.log(client.handshake.headers.cookie);
 	}
 	handleDisconnect(client: Socket) {
-		// console.log(`disconnect: ${client.id}`);
 		this.chatService.dropUser(client);
 	}
 }

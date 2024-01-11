@@ -5,14 +5,15 @@ import Chat from "./components/Chat";
 import { DATA } from "./myTypes";
 import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
-import Header from "../../../Layout/Header/Header";
+import Groups from "./components/Groops";
 
-const ChatApp = ({avatar}: {avatar: string}) => {
+const ChatApp = () => {
 	const	[data, setData] = useState<DATA>({
 		message: "",
-		trigger: true
+		trigger: true,
+		send: true
 	});
-	const	[option, setOption] = useState("Private");
+	const	[option, setOption] = useState("Rooms");
 	
 	async function callBack(socket: Socket) {
 		setData(prev => setSocket(prev, socket));
@@ -37,7 +38,6 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 					});
 					const Data = await res.json();
 					setData(prev => setUserData(prev, Data));
-					// console.log("here");
 				}
 				catch {
 					throw new Error("error");
@@ -49,7 +49,10 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 		}
 	}
 	useEffect(() => {
-		const	socket = io("http://localhost:3001");
+		// console.log(document.cookie)
+		const	socket = io("http://localhost:3001", {
+			withCredentials: true
+		})
 		socket.on("connect", async () => {
 			await callBack(socket);
 		})
@@ -62,19 +65,22 @@ const ChatApp = ({avatar}: {avatar: string}) => {
 	}, []);
 	return (
 		<div className="flex h-[80vh]">
-			<Nav option={option} setOption={setOption}/>
-			<Private
+			<Nav option={option} setOption={setOption} setData={setData}/>
+			{
+				option == "Private" ?
+					<Private
+						data={data}
+						setData={setData}
+					/> : 
+					<Groups
+						data={data}
+						// setData={setData}
+					/>
+			}
+			<Chat
 				data={data}
 				setData={setData}
-				/>
-			{
-				data.talkingTo &&
-						<Chat
-							data={data}
-							setData={setData}
-							avatar={avatar}
-						/>
-			}
+			/>
 		</div>
 	)
 }
