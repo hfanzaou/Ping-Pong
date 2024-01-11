@@ -7,6 +7,7 @@ import * as cookieParser from 'cookie-parser';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 // import * as cors from 'cors';
 const cors = require('cors');
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
@@ -16,7 +17,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.use(cors({
-    origin: 'http://localhost:3000', 
+    origin: 'http://192.168.1.106:3000', 
     credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
