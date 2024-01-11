@@ -14,14 +14,10 @@ import { AuthService } from "src/auth/auth.service";
 import { notifDto } from "src/auth/dto/notif.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 
-<<<<<<< HEAD
-@WebSocketGateway({cors: true, headers: true})
-=======
 @WebSocketGateway({ cors: {
 	origin: 'http://localhost:3000',
     credentials: true
 } })
->>>>>>> master
 export class ChatGateway implements
 OnGatewayConnection,
 OnGatewayDisconnect {
@@ -29,11 +25,6 @@ OnGatewayDisconnect {
 	@WebSocketServer() server: Server
 	@SubscribeMessage("server")
 	async handelMessage(client: Socket, data: MESSAGE) {
-<<<<<<< HEAD
-		// console.log(Array.from(client.rooms).slice(1));
-
-=======
->>>>>>> master
 		const room = this.chatService.getRoom(data);
 		const message = await this.chatService.addMessage(data);
 		this.server
