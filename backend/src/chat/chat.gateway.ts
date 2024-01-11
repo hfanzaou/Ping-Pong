@@ -43,7 +43,7 @@ OnGatewayDisconnect {
 			.emit("newuser");
 	}
 	handleConnection(client: Socket) {
-		console.log(client.id);
+		// console.log(client.id);
 		// console.log(client.handshake.headers.cookie);
 	}
 	handleDisconnect(client: Socket) {
