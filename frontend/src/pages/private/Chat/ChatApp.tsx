@@ -7,7 +7,11 @@ import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
 import Groups from "./components/Groops";
 
-const ChatApp = () => {
+interface Props {
+	socket: Socket
+}
+
+const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[data, setData] = useState<DATA>({
 		message: "",
 		trigger: true,
@@ -50,14 +54,13 @@ const ChatApp = () => {
 	}
 	useEffect(() => {
 		// console.log(document.cookie)
-		const	socket = io("http://localhost:3001", {
-			withCredentials: true
-		})
+		// const	socket = io("http://localhost:3001", {
+		// 	withCredentials: true
+		// })
 		socket.on("connect", async () => {
 			await callBack(socket);
 		})
 		return () => {
-			socket.disconnect();
 			socket.off("connect", async () => {
 				await callBack(socket);
 			})
