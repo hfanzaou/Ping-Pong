@@ -18,9 +18,9 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 import '@mantine/core/styles.css'
 import './index.css'
 import Header from './Layout/Header/Header';
+import { Socket } from 'socket.io-client';
 import Message from './pages/public/Message';
 import ScrollUp from './componenet/ScrollUp';
-
 
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
@@ -31,6 +31,7 @@ function App()  {
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
+    const   [socket, setSocket] = useState<Socket | null>(null);
     // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -48,6 +49,7 @@ const handleRequest = async (name: string) => {
     const user = userList.find(user => user.name === name);
     const friendship = user ? user.friendship : null;
     console.log("friendship from handle Request: ", friendship);
+    //
 
     // console.log("friendship from userlist: ", userList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship);
 
@@ -198,7 +200,7 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-            <Header avatar={avatar}/>
+            <Header setSocket={setSocket} avatar={avatar}/>
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>
@@ -206,7 +208,7 @@ const handleRequest = async (name: string) => {
                     <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
                     <Route path='/Profile' element={<Profile setUrlName={setUrlName} avatar={avatar}/>}/>
                     <Route path='/Game' element={<Game avatar={avatar}/>}/>
-                    <Route path='/Chat' element={<ChatApp avatar={avatar}/>}/>
+                    <Route path='/Chat' element={socket && <ChatApp socket={socket}/>}/>
                     <Route path='/Setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
                     <Route path={'/UserProfile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
                     <Route path='/Message' element={<Message/>} />

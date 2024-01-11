@@ -70,14 +70,15 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 						trigger: !prev.trigger
 					}))
 				}
+				// console.log(data.userData?.userName)
 				const res0 = await fetch("http://localhost:3001/chatUser", {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify({
-							socket: data.socket?.id,
-							username: data.userData?.userName
+							// socket: data.socket?.id,
+							userName: data.userData?.userName
 						})
 					});
 					const Data = await res0.json();

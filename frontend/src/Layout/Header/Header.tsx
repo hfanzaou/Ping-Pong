@@ -1,12 +1,70 @@
 import React, { useEffect } from "react";
 import Nav from './Nav'
-import { io } from "socket.io-client";
-import axios from "axios";
+import { Socket, io } from "socket.io-client";
 
-function Header({avatar} : {avatar: string}) {
+interface Props {
+    setSocket: React.Dispatch<React.SetStateAction<Socket | null>>,
+    avatar: string,
+}
 
-
-
+const   Header: React.FC<Props> = ({ setSocket, avatar }) => {
+    async function callBack(socket: Socket) {
+        try {
+            const res0 = await fetch("http://localhost:3001/user/name", {
+                credentials: "include"
+            });
+            const Data0 = await res0.json();
+            if (Data0.name)
+            {
+                try {
+                    await fetch("http://localhost:3001/onlineoffline", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            socket: socket.id,
+                            username: Data0.name
+                        })
+                    });
+                }
+                catch {
+                    throw new Error("error");
+                }
+            }
+        }
+        catch {
+            return ;
+        }
+        // await fetch("http://localhost:3001/onlineoffline", {
+        //     method: "POST",
+        //     headers: {
+        //         "content-type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         socket: socket.id,
+        //         username: 
+        //     })
+        // });
+    }
+    useEffect(() => {
+        const   socket = io("http://localhost:3001", {
+            withCredentials: true
+        });
+        socket.on("connect", () => {
+            // console.log(socket.id)
+            setSocket(socket)
+            callBack(socket);
+        })
+        setSocket(socket);
+        return () => {
+            socket.disconnect();
+            socket.off("connect", () => {
+                setSocket(socket)
+                callBack(socket)
+            })
+        }
+    }, [])
     return (
         <div className='sticky top-0 z-50'>
             <Nav avatar={avatar}/>
