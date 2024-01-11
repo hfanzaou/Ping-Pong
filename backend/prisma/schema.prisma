@@ -81,6 +81,8 @@ model GROUP {
   owner   String
   admins  String[]
   members UserGROUP[]
+  state   String
+  hash    String?
 }
 
 model UserGROUP {

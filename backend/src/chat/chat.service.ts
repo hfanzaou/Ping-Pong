@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { MESSAGE, NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
+import { MESSAGE, NEWCHAT, NEWGROUP, USERDATA, USERSOCKET } from "./myTypes";
 import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
+import { hash } from "bcrypt";
 
 @Injectable()
 export class ChatService {
@@ -237,5 +238,37 @@ export class ChatService {
 		});
 		// console.log(user.socket);
 		return (user.socket);
+	}
+	async addGroup(data: NEWGROUP) {
+		// console.log(data)
+		const	user = await this.prisma.user.findUnique({
+			where: { username: data.owner }
+		})
+		try {
+			await this.prisma.gROUP.create({
+				data: {
+					name: data.name,
+					owner: data.owner,
+					admins: [data.owner],
+					state: data.state,
+					members: {
+						create: {
+							user:{
+								connect: {
+									id: user.id
+								}
+							}
+						}
+					},
+					hash: data.password.length > 0 ?
+						await hash(data.password, 10) :
+						null
+				}
+			});
+		}
+		catch {
+			return false;
+		}
+		return true;
 	}
 }
