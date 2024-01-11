@@ -70,7 +70,7 @@ const ChatApp = () => {
 						setData={setData}
 					/> : 
 					<Groups
-						// data={data}
+						data={data}
 						// setData={setData}
 					/>
 			}
