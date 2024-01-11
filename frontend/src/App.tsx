@@ -18,6 +18,8 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 import '@mantine/core/styles.css'
 import './index.css'
 import Header from './Layout/Header/Header';
+import Message from './pages/public/Message';
+import ScrollUp from './componenet/ScrollUp';
 
 
 function App()  {
@@ -26,7 +28,7 @@ function App()  {
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
     const [urlName, setUrlName] = useState<string | undefined>();
-    
+
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
     // comonentDidMount
@@ -36,6 +38,8 @@ function App()  {
 
     axios.defaults.withCredentials = true;
     axios.defaults.baseURL = apiUrl;
+
+
 
 const handleRequest = async (name: string) => {
 
@@ -195,8 +199,9 @@ const handleRequest = async (name: string) => {
         <MantineProvider>
             <Router>
             <Header avatar={avatar}/>
+            <ScrollUp/>
                 <Routes>
-                    <Route path='/*' element={<NotFound />}/>
+                    <Route path='*' element={<NotFound />}/>
                     <Route path='/' element={<Home setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
                     <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
                     <Route path='/Profile' element={<Profile setUrlName={setUrlName} avatar={avatar}/>}/>
@@ -204,6 +209,7 @@ const handleRequest = async (name: string) => {
                     <Route path='/Chat' element={<ChatApp avatar={avatar}/>}/>
                     <Route path='/Setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
                     <Route path={'/UserProfile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
+                    <Route path='/Message' element={<Message/>} />
                     {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
                     {/* <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
                 </Routes>
@@ -214,8 +220,6 @@ const handleRequest = async (name: string) => {
 }
 
 export default App
-
-
 
 
 

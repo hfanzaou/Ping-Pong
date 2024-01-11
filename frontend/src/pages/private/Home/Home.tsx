@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { BackgroundImage, Container, Flex, SimpleGrid } from '@mantine/core';
 import Users  from './Users/Users'
 import UserCard  from '../Profile/ProfileInfo/UserCard'
@@ -34,5 +34,5 @@ function Home({setUrlName, userList, setUsersList, searchList, setSearchList, ha
   );
 }
 
-export default Home
+export default memo(Home)
 
