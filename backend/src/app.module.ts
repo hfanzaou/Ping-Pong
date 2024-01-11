@@ -23,7 +23,7 @@ import { GameModule } from './game/game.module';
             UserModule,
             UsersettingsModule,
             ChatModule,
-            GameModule
+            GameModule,
           ],
 })
 export class AppModule {}

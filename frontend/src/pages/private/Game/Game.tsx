@@ -1,19 +1,14 @@
 import React from 'react';
 import Header from '../../../Layout/Header/Header';
-// import { Ball } from "../../../../../Game/src/classes/ball";
-// import { Player } from "../../../../../Game/src/classes/player";
 import { io, Socket } from 'socket.io-client';
 import Sketch from 'react-p5';
 import p5Types from "p5";
+import { selectMode, handleGameStates, mode, play } from "./gameStates";
 import { eventListeners,
-        selectMode,
-        handleGameStates,
         checkKeys, 
         computerPlayer,
         gameLoop,
         _mouseDragged,
-        play,
-        mode,
         player1,
         player2,
         ball 

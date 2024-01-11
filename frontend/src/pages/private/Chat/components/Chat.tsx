@@ -1,5 +1,5 @@
 import { ActionIcon } from "@mantine/core";
-import { IconPingPong, IconSend2 } from "@tabler/icons-react";
+import { IconPingPong, IconSend2, IconUser } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { DATA, MESSAGE } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
@@ -7,7 +7,6 @@ import { setMessageData, setUserData } from "../utils";
 interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
-	avatar: string
 }
 
 const Chat: React.FC<Props> = ({ data, setData }) => {
@@ -54,10 +53,6 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 	}, [data])
 	useEffect(() => {
 		if (trigger) {
-			// console.log({
-			// 	sender: data.userData?.userName,
-			// 	recver: data.talkingTo
-			// })
 			async function fetchData() {
 				if (data.talkingTo) {
 					const	res = await fetch("http://localhost:3001/chatUsers", {
@@ -73,17 +68,17 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 					setData(prev => ({
 						...prev,
 						trigger: !prev.trigger
-						// console.log("here1")
 					}))
 				}
+				// console.log(data.userData?.userName)
 				const res0 = await fetch("http://localhost:3001/chatUser", {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify({
-							socket: data.socket?.id,
-							username: data.userData?.userName
+							// socket: data.socket?.id,
+							userName: data.userData?.userName
 						})
 					});
 					const Data = await res0.json();
@@ -101,6 +96,11 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 		avatar: string,
 	})
 	{
+		console.log("here")
+		setData(x => ({
+			...x,
+			send: !x.send
+		}))
 		if (!dataRef.current.userData?.chatUsers.
 			find(x => x.login == dataRef.current.talkingTo)) {
 			setTrigger(true);
@@ -116,26 +116,27 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 	function submit(event: FormEvent<HTMLFormElement>)
 	{
 		event.preventDefault();
-		// console.log(data);
-		const	Message: MESSAGE = {
-			sender: data.userData ? data.userData.userName : "",
-			recver: data.talkingTo ? data.talkingTo: "",
-			message: data.message
+		if (data.message.length) {
+			const	Message: MESSAGE = {
+				sender: data.userData ? data.userData.userName : "",
+				recver: data.talkingTo ? data.talkingTo: "",
+				message: data.message
+			}
+			data.socket?.emit("server", Message);
+			setData(prev => setMessageData(prev, ""))
+			if (Reference.current)
+				Reference.current.focus();
 		}
-		data.socket?.emit("server", Message);
-		setData(prev => setMessageData(prev, ""))
-		if (Reference.current)
-			Reference.current.focus();
 	}
 	function change(event: ChangeEvent<HTMLInputElement>)
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
-	return (
+	return data.talkingTo && (
 		<form
 			onSubmit={submit}
 			className="w-[57%] bg-discord4 flex flex-col
-				justify-end text-discord6  p-0 rounded-e-3xl"
+				justify-end text-discord6  p-0"
 		>
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
@@ -146,12 +147,19 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 								rounded-md m-2 p-3"
 						>
 							<a
-								href={`http://localhost:3000/public/profile?name=${x.sender}`}
+								href={`http://localhost:3000/UserProfile?name=${x.sender}`}
 							>
-								<img
-									src={x.avatar}
-									className="h-12 w-12 rounded-full mr-3"
-								/>
+								{
+									x.avatar ?
+										<img
+											src={x.avatar}
+											className="h-12 w-12 rounded-full mr-3"
+										/> :
+										<IconUser
+											className="h-12 w-12 rounded-full mr-3
+												bg-discord1"
+										/>
+								}
 							</a>
 							<div className="w-[80%]">
 								<div className="font-extrabold">{x.sender}</div>

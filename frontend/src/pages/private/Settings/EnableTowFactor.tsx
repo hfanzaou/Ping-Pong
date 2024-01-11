@@ -1,6 +1,7 @@
 import { Switch, TextInput, Image, Button } from "@mantine/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 // import QuerCode from '../../../avatarImage/avatar-2.png';
 
 function EnableTowFactor() {
@@ -35,14 +36,15 @@ function EnableTowFactor() {
                 console.log(res.data);
                 setQrImage(res.data);
                 // setChange(true);
+
             })
             .catch((err) => {
                 console.error(err);
             })
         }
-  };
-
-  const handleSaveCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    };
+    
+    const handleSaveCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
     setInvalidCode(false);
     if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
@@ -51,9 +53,9 @@ function EnableTowFactor() {
         setDisabled(true)
         setInvalidCode(true);
     }
-  };
+};
 
-  const handleEnableSendCode = async () => {
+const handleEnableSendCode = async () => {
     console.log("this is the code was send: ",code);
     await axios.post("2fa/auth", {AuthCode: code})
     .then((res) => {
@@ -67,7 +69,7 @@ function EnableTowFactor() {
             else{
                 setChange(false);
                 getFactorState();
-                    // window.location.reload();
+                // window.location.reload();
             }
         // make the needed work when the code valid {reload the page to get the correct state of 2fa}
         // res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
@@ -77,9 +79,10 @@ function EnableTowFactor() {
         setInvalidCode(true);
         console.error("Error in sending 2f code: ", err);
     })
-  };
+};
 
-  const handleDisableSendCode = async () => {
+
+const handleDisableSendCode = async () => {
     console.log("this is the code was send: ",code);
     await axios.post("2fa/turnoff", {AuthCode: code})
     .then((res) => {
@@ -90,15 +93,15 @@ function EnableTowFactor() {
         }
         // res.status === 201 && window.location.reload();  // when reload return to home after change logice of protented route
         // res.status === 201 && setTowFactor(false); redirect from backend or make same work when Desable 2fa
-
+        
     })
     .catch((err) => {
         setInvalidCode(true);
         console.error("Error in sending 2f code: ", err);
     })
-  };
+};
 
-    const handleCancel = () => {
+const handleCancel = () => {
         setInvalidCode(false);
         setDisabled(true);
         setChange(false);
@@ -107,14 +110,23 @@ function EnableTowFactor() {
   return (
     <div className="static">
         {!change ?
-        <Switch
-            label={!towFactor ? "enable 2f" : "disable 2f"}
-            checked={towFactor}
-            onChange={handleTowFactor}
-        /> :
+        <Button
+        radius={'xl'}
+        color={towFactor ? 'red' : 'green'}
+        onClick={handleTowFactor}
+        >
+            {!towFactor ? "enable 2f" : "disable 2f"}
+        </Button>
+        // <Switch
+        //     label={!towFactor ? "enable 2f" : "disable 2f"}
+        //     checked={towFactor}
+        //     onChange={handleTowFactor}
+        // />
+         :
         (!towFactor ?
             <div>
-            <Image src={qrImage}/>
+            <img className="h-40 w-40 mx-auto" alt="qr code"
+            src={qrImage}/>
             <TextInput
                 onChange={handleSaveCode}
                 label="scane Quire Code and set code here"
@@ -122,13 +134,12 @@ function EnableTowFactor() {
             />
             <Button
                 ml={170}
-
-                mt={10}
+                mt={5}
                     radius={'xl'}
                     color='gray'
             onClick={handleEnableSendCode} disabled={disabled}>Enable</Button> {/*make enable and disable in same butoon input and button in onw component */}
             <Button 
-                mt={10}
+                mt={5}
                     radius={'xl'}
                     color='gray'
             onClick={handleCancel} >Cancel</Button>

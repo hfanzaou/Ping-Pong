@@ -18,8 +18,9 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 import '@mantine/core/styles.css'
 import './index.css'
 import Header from './Layout/Header/Header';
-import { Socket, io } from 'socket.io-client';
-
+import { Socket } from 'socket.io-client';
+import Message from './pages/public/Message';
+import ScrollUp from './componenet/ScrollUp';
 
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
@@ -27,11 +28,10 @@ function App()  {
     const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
     const [urlName, setUrlName] = useState<string | undefined>();
-    
+
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
-
-    const [socket, setSocket] = useState<Socket>();
+    const   [socket, setSocket] = useState<Socket | null>(null);
     // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -40,7 +40,8 @@ function App()  {
     axios.defaults.withCredentials = true;
     axios.defaults.baseURL = apiUrl;
 
-        //newSocket.connect();
+
+
 const handleRequest = async (name: string) => {
 
     console.log("Name from handle Request: ", name);
@@ -48,6 +49,7 @@ const handleRequest = async (name: string) => {
     const user = userList.find(user => user.name === name);
     const friendship = user ? user.friendship : null;
     console.log("friendship from handle Request: ", friendship);
+    //
 
     // console.log("friendship from userlist: ", userList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship);
 
@@ -198,14 +200,15 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-            <Header avatar={avatar}/>
+            <Header setSocket={setSocket} avatar={avatar}/>
+            <ScrollUp/>
                 <Routes>
-                    <Route path='/*' element={<NotFound />}/>
+                    <Route path='*' element={<NotFound />}/>
                     <Route path='/' element={<Home setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
                     <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
                     <Route path='/Profile' element={<Profile setUrlName={setUrlName} avatar={avatar}/>}/>
                     <Route path='/Game' element={<Game avatar={avatar}/>}/>
-                    <Route path='/Chat' element={<ChatApp avatar={avatar}/>}/>
+                    <Route path='/Chat' element={socket && <ChatApp socket={socket}/>}/>
                     <Route path='/Setting' element={<EditeProfile setAvatar={setAvatar} avatar={avatar}/>}/>
                     <Route path={'/UserProfile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
                     {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
@@ -218,8 +221,6 @@ const handleRequest = async (name: string) => {
 }
 
 export default App
-
-
 
 
 

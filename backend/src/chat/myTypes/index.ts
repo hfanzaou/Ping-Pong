@@ -1,8 +1,3 @@
-export interface USERSOCKET {
-	socket: string
-	username: string | null
-}
-
 export interface User {
 	id:		number,
 	login:	string,
@@ -22,4 +17,11 @@ export interface MESSAGE extends NEWCHAT {
 export interface NEWCHAT {
 	sender: string
 	recver: string
+}
+
+export interface NEWGROUP {
+	name: string,
+	state: string,
+	password: string,
+	owner: string
 }

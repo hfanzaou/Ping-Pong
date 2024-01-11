@@ -3,24 +3,28 @@
 @tailwind utilities;
 
 html body {
-    /* background-color: rgb(51 65 85); */
-	background-color: #334155;
+    background-color: rgb(31 41 55);
+
+    /* background-color: rgb(15 23 42); */
+    /* background-color: rgb(30 41 59); */
+    /* background-color: rgb(35, 46, 61); */
+	/* background-color: #25303f; */
 }
 
-@font-face {
+/* @font-face {
 	font-family: "Inconsolata";
 	src: url("./fonts/Inconsolata/Inconsolata-VariableFont_wdth\,wght.ttf");
-}
+} */
 
-::-webkit-scrollbar {
-	width: 0px;
+/* ::-webkit-scrollbar {
+	width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
 	background: #1e2124;
     border: solid 3px transparent;
 	border-radius: 10px;
-}
+} */
 
 canvas {
 	border-radius: 12px;
