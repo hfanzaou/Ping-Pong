@@ -9,7 +9,10 @@ import { Server, Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { MESSAGE, NEWCHAT } from "./myTypes";
 
-@WebSocketGateway({cors: true})
+@WebSocketGateway({ cors: {
+	origin: 'http://localhost:3000',
+    credentials: true
+} })
 export class ChatGateway implements
 OnGatewayConnection,
 OnGatewayDisconnect {
@@ -39,7 +42,8 @@ OnGatewayDisconnect {
 			.to(recver)
 			.emit("newuser");
 	}
-	async handleConnection(client: Socket) {
+	handleConnection(client: Socket) {
+		// console.log(client.handshake.headers.cookie);
 	}
 	handleDisconnect(client: Socket) {
 		this.chatService.dropUser(client);

@@ -49,7 +49,10 @@ const ChatApp = () => {
 		}
 	}
 	useEffect(() => {
-		const	socket = io("http://localhost:3001");
+		// console.log(document.cookie)
+		const	socket = io("http://localhost:3001", {
+			withCredentials: true
+		})
 		socket.on("connect", async () => {
 			await callBack(socket);
 		})
