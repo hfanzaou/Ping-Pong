@@ -1,4 +1,3 @@
-import { StarBorderPurple500, StarBorderPurple500Outlined } from "@mui/icons-material";
 import { Ball } from "./classes/ball";
 import { Player } from "./classes/player";
 import p5Types from "p5";

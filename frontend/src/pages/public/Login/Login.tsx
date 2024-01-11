@@ -10,7 +10,7 @@ function Login() {
 
     // Just redirect to backend /auth
     // window.location.href = "http://localhost:3001/login";
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL}login`;
+    window.location.href = `/login`;
     
 
     // set cookies for dev mode

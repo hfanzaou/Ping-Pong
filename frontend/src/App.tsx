@@ -18,6 +18,7 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 import '@mantine/core/styles.css'
 import './index.css'
 import Header from './Layout/Header/Header';
+import { Socket, io } from 'socket.io-client';
 
 
 function App()  {
@@ -29,6 +30,8 @@ function App()  {
     
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
+
+    const [socket, setSocket] = useState<Socket>();
     // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -37,6 +40,7 @@ function App()  {
     axios.defaults.withCredentials = true;
     axios.defaults.baseURL = apiUrl;
 
+        //newSocket.connect();
 const handleRequest = async (name: string) => {
 
     console.log("Name from handle Request: ", name);

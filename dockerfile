@@ -1,4 +1,5 @@
 FROM node:20-slim
+
 RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
@@ -17,6 +18,10 @@ WORKDIR  /usr/src/app/backend/
 
 RUN npm run build
 
+RUN apt-get update -y && apt-get install openssl -y
+
 EXPOSE 3001
 
-CMD [ "sleep", "infinity" ]
+run chmod +x init.sh
+
+cmd [ "sh", "init.sh" ]

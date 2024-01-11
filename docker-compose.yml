@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   app:
+    container_name: app
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,9 +17,8 @@ services:
       - mynet
 
   dev-db:
+    container_name: database
     image: postgres:bullseye
-    ports:
-       - 5434:5432
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}

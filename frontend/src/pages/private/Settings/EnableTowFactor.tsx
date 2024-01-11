@@ -62,7 +62,7 @@ function EnableTowFactor() {
             if (!change)
             {
                 setChange(true);
-                window.location.href = `${import.meta.env.VITE_APP_URL}`;
+                window.location.href = ``;
             }
             else{
                 setChange(false);
