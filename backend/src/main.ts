@@ -17,7 +17,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.use(cors({
-    origin: 'http://192.168.1.106:3000', 
+    origin: 'http://localhost:3000', 
     credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));
