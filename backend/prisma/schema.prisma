@@ -36,6 +36,7 @@ model User {
   chatUsers       User[]  @relation("ChatUsers")
   chatUsersOf     User[]  @relation("ChatUsers")
   chatHistorys    UserCHATHISTORY[]
+  groups          UserGROUP[]
 }
 
 model MatchHistory {
@@ -71,4 +72,23 @@ model UserCHATHISTORY {
   chathistoryid Int
   chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
   @@id([userid, chathistoryid])
+}
+
+model GROUP {
+  id      Int     @id @unique @default(autoincrement())
+
+  name    String  @unique
+  owner   String
+  admins  String[]
+  members UserGROUP[]
+  state   String
+  hash    String?
+}
+
+model UserGROUP {
+  userid        Int
+  user          User  @relation(fields: [userid], references: [id])
+  groupId       Int
+  group         GROUP @relation(fields: [groupId], references: [id])
+  @@id([userid, groupId])
 }

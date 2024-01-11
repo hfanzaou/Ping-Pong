@@ -109,6 +109,7 @@ export class UserController {
     async getMatchHistory(@Req() req) {
         return (await this.userService.getMatchHistory(req.user.id));
     }
+
     // @Post('matchhistory')
     // async addMatchHistoy(@Req() req, @Body() body) {
     //     return (await this.userService.addMatchHistory(req.user.id, body.username));

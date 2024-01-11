@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { MESSAGE, NEWCHAT, USERDATA, USERSOCKET } from "./myTypes";
+import { MESSAGE, NEWCHAT, NEWGROUP, USERDATA } from "./myTypes";
 import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
+import { hash } from "bcrypt";
 
 @Injectable()
 export class ChatService {
@@ -11,9 +12,9 @@ export class ChatService {
 	constructor(private prisma: PrismaService, private user: UserService) {
 		this.rooms = [];
 	}
-	async getUserData(userSocket: USERSOCKET) {
+	async getUserData(userName: string) {
 		const	user = await this.prisma.user.findUnique({
-			where: { username: userSocket.username },
+			where: { username: userName },
 			include: {
 				chatUsers: true,
 				friends: true,
@@ -21,13 +22,13 @@ export class ChatService {
 			}
 		});
 		if (user) {
-			await this.prisma.user.update({
-				where: { id: user.id },
-				data: {
-					state: "Online",
-					socket: userSocket.socket
-				}
-			});
+			// await this.prisma.user.update({
+			// 	where: { id: user.id },
+			// 	data: {
+			// 		state: "Online",
+			// 		socket: userSocket.socket
+			// 	}
+			// });
 			const data: USERDATA = {
 				userName: user.username,
 				chatUsers: await Promise.all(user.chatUsers.map(async x => ({
@@ -237,5 +238,51 @@ export class ChatService {
 		});
 		// console.log(user.socket);
 		return (user.socket);
+	}
+	async addGroup(data: NEWGROUP) {
+		// console.log(data)
+		const	user = await this.prisma.user.findUnique({
+			where: { username: data.owner }
+		})
+		try {
+			await this.prisma.gROUP.create({
+				data: {
+					name: data.name,
+					owner: data.owner,
+					admins: [data.owner],
+					state: data.state,
+					members: {
+						create: {
+							user:{
+								connect: {
+									id: user.id
+								}
+							}
+						}
+					},
+					hash: data.password.length > 0 ?
+						await hash(data.password, 10) :
+						null
+				}
+			});
+		}
+		catch {
+			return false;
+		}
+		return true;
+	}
+	async OnlineOffline(socket: string, username: string) {
+		const	user = await this.prisma.user.findUnique({
+			where: { username: username }
+		})
+		if (user) {
+			await this.prisma.user.update({
+				where: { id: user.id },
+				data: {
+					state: "Online",
+					socket: socket
+				}
+			});
+		}
 	}
 }

@@ -81,8 +81,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <div className='flex justify-between'>
         <Group gap="sm">
             <Menu position='bottom-start'>
-            <Menu.Target>
-              <Avatar size={40} src={item.avatar} radius={40}/>
+            <Menu.Target >
+                {/* <div className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-300 hover:text-white"> */}
+                <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <Avatar size={40} src={item.avatar} radius={40} />
+                </button>
+                {/* </div> */}
             </Menu.Target>
             <Menu.Dropdown>
             <Menu.Item
@@ -114,18 +118,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             <Text fz="md" fw={800} c='indigo'>
               {item.name}
             </Text>
-            <Text >
-            {/* <Text fz="sm" fw={300} >
+            {/* <Text fz="md" fw={600} >
                Level {item.level}
             </Text> */}
             <Text fz="sm" fw={500} c="dimmed">
               {item.state}         {/*this state was need to be real time*/}
               </Text>
-            </Text>
-            {/* <Text>
-                  Level {item.level}
-
-            </Text> */}
           </div>
         </Group>
 <div className=''>
@@ -148,8 +146,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               radius="md"
               type='search' placeholder='search user' onChange={handleChange} value={searchInput}
               />
-    <ScrollArea h={300}>
-    <Table verticalSpacing="md" highlightOnHover={true} color='gray' stickyHeader={true} className='h-full w-full'>
+    <ScrollArea h={450}>
+    <Table verticalSpacing="md" highlightOnHover={false} stickyHeader={false} className='h-full w-full'>
           <Table.Tbody>
             {search}
           </Table.Tbody>
