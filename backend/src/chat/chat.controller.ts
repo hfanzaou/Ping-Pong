@@ -1,13 +1,14 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ChatService } from "./chat.service";
-import { NEWCHAT, NEWGROUP, USERSOCKET } from "./myTypes";
+import { NEWCHAT, NEWGROUP } from "./myTypes";
 
 @Controller()
 export class ChatController {
 	constructor(private chatService: ChatService) {}
 	@Post("chatUser")
-	async handleUser(@Body() userSocket: USERSOCKET) {
-		const	user = await this.chatService.getUserData(userSocket);
+	async handleUser(@Body() data: { userName: string }) {
+		// console.log(data)
+		const	user = await this.chatService.getUserData(data.userName);
 		return user;
 	}
 	@Post("chathistory")
@@ -25,5 +26,9 @@ export class ChatController {
 		// console.log(data);
 		const condition = await this.chatService.addGroup(data.data);
 		return condition;
+	}
+	@Post("onlineoffline")
+	async handleOnlineOffline(@Body() data: {socket: string, username: string}) {
+		await this.chatService.OnlineOffline(data.socket, data.username);
 	}
 }

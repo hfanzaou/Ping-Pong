@@ -7,7 +7,11 @@ import { Socket, io } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
 import Groups from "./components/Groops";
 
-const ChatApp = () => {
+interface Props {
+	socket: Socket
+}
+
+const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[data, setData] = useState<DATA>({
 		message: "",
 		trigger: true,
@@ -15,54 +19,58 @@ const ChatApp = () => {
 	});
 	const	[option, setOption] = useState("Rooms");
 	
-	async function callBack(socket: Socket) {
-		setData(prev => setSocket(prev, socket));
-		try {
-			const res0 = await fetch("http://localhost:3001/user/name", {
-				credentials: "include"
-			});
-			const Data0 = await res0.json();
-
-			if (Data0.name)
-			{
+	// async function callBack(socket: Socket) {
+		useEffect(() => {
+			async function fetchData() {
+				setData(prev => setSocket(prev, socket));
 				try {
-					const res = await fetch("http://localhost:3001/chatUser", {
-						method: "POST",
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({
-							socket: socket.id,
-							username: Data0.name
-						})
+					const res0 = await fetch("http://localhost:3001/user/name", {
+						credentials: "include"
 					});
-					const Data = await res.json();
-					setData(prev => setUserData(prev, Data));
+					const Data0 = await res0.json();
+					// console.log(Data0.name)
+					if (Data0.name)
+					{
+						try {
+							// console.log(Data0.name)
+							const res = await fetch("http://localhost:3001/chatUser", {
+								method: "POST",
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									userName: Data0.name
+								})
+							});
+							const Data = await res.json();
+							setData(prev => setUserData(prev, Data));
+						}
+						catch {
+							throw new Error("error");
+						}
+					}
 				}
 				catch {
-					throw new Error("error");
+					return ;
 				}
 			}
-		}
-		catch {
-			return ;
-		}
-	}
-	useEffect(() => {
+			fetchData();
+		}, [])
+	// }
+	// useEffect(() => {
 		// console.log(document.cookie)
-		const	socket = io("http://localhost:3001", {
-			withCredentials: true
-		})
-		socket.on("connect", async () => {
-			await callBack(socket);
-		})
-		return () => {
-			socket.disconnect();
-			socket.off("connect", async () => {
-				await callBack(socket);
-			})
-		}
-	}, []);
+		// const	socket = io("http://localhost:3001", {
+		// 	withCredentials: true
+		// })
+		// socket.on("connect", async () => {
+		// 	await callBack(socket);
+		// })
+		// return () => {
+		// 	socket.off("connect", async () => {
+		// 		await callBack(socket);
+		// 	})
+		// }
+	// }, []);
 	return (
 		<div className="flex h-[80vh]">
 			<Nav option={option} setOption={setOption} setData={setData}/>
