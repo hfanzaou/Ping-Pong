@@ -23,3 +23,10 @@ export interface NEWCHAT {
 	sender: string
 	recver: string
 }
+
+export interface NEWGROUP {
+	name: string,
+	state: string,
+	password: string,
+	owner: string
+}

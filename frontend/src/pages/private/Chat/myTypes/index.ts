@@ -5,13 +5,14 @@ export interface DATA {
 	userData?: USERDATA,
 	talkingTo?: string,
 	message: string,
-	trigger: boolean
+	trigger: boolean,
+	send: boolean
 }
 
 export interface User {
 	id:		number,
 	login:	string,
-	avatar?: string
+	avatar?: string,
 }
 
 export interface USERDATA {

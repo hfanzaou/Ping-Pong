@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ChatService } from "./chat.service";
-import { NEWCHAT, USERSOCKET } from "./myTypes";
+import { NEWCHAT, NEWGROUP, USERSOCKET } from "./myTypes";
 
 @Controller()
 export class ChatController {
@@ -19,5 +19,11 @@ export class ChatController {
 	async handleUsers(@Body() data: NEWCHAT) {
 		// console.log("here")
 		await this.chatService.getChatUsers(data);
+	}
+	@Post("createGroup")
+	async handleCreateGroup(@Body() data: {data: NEWGROUP}) {
+		// console.log(data);
+		const condition = await this.chatService.addGroup(data.data);
+		return condition;
 	}
 }

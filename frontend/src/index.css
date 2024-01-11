@@ -7,6 +7,11 @@ html body {
 	background-color: #334155;
 }
 
+@font-face {
+	font-family: "Inconsolata";
+	src: url("./fonts/Inconsolata/Inconsolata-VariableFont_wdth\,wght.ttf");
+}
+
 ::-webkit-scrollbar {
 	width: 5px;
 }

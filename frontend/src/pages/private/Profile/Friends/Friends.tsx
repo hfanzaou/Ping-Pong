@@ -63,7 +63,7 @@ function  Frindes({setUrlName}: {setUrlName: Function}) {
                   <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
                 }
                 >
-                    <Link to={`/public/profile?name=${item.name}`}>
+                    <Link to={`/UserProfile?name=${item.name}`}>
                         Show Profile
                     </Link>
               </Menu.Item>
