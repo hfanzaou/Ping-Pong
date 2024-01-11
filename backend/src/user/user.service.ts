@@ -12,33 +12,6 @@ export class UserService {
     constructor(private prismaservice: PrismaService) {}
 
     ///USER INFO///
-
-    async getOnline(id: number) {
-        try {
-            await this.prismaservice.user.update({
-                where: {id: id},
-                data: {
-                    state: 'online'
-                },
-            })
-        } catch(error) {
-            throw new NotFoundException('USER NOT FOUND');
-        }
-    }
-
-    async getOffline(id: number) {
-        try {
-            await this.prismaservice.user.update({
-                where: {id: id},
-                data: {
-                    state: 'offline'
-                },
-            })
-        } catch(error) {
-            throw new NotFoundException('USER NOT FOUND');
-        }
-    }
-
     async getUserAvatar(id: number) {
         try {
             const avatar = await this.prismaservice.user.findUnique({

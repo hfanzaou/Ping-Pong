@@ -109,14 +109,7 @@ export class UserController {
     async getMatchHistory(@Req() req) {
         return (await this.userService.getMatchHistory(req.user.id));
     }
-    @Get('online')
-    async getOnline(@Req() req) {
-        return (await this.userService.getOnline(req.user.id));
-    }
-    @Get('offline')
-    async getOffline(@Req() req) {
-        return (await this.userService.getOffline(req.user.id));
-    }
+
     // @Post('matchhistory')
     // async addMatchHistoy(@Req() req, @Body() body) {
     //     return (await this.userService.addMatchHistory(req.user.id, body.username));
