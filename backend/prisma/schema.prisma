@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -16,28 +16,29 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  email           String        @unique
-  hash            String?
-  username        String        @unique
-  firstName       String?
-  lastName        String?
-  upAvatar        Boolean       @default(false)
-  avatar          String?
-  state           String        @default("Offline")
-  twoFaAuth       Boolean
-  twoFaSecret     Json?         
-  friends         User[]        @relation("Friends")
-  friendOf        User[]        @relation("Friends")
-  blocked         User[]        @relation("Blocked")
-  blockedFrom     User[]        @relation("Blocked")
-  achievement     Json?
-  MatchHistory    MatchHistory? @relation(fields: [matchHistoryId], references: [id])
-  matchHistoryId  Int?
-  socket          String? @unique
-  chatUsers       User[]  @relation("ChatUsers")
-  chatUsersOf     User[]  @relation("ChatUsers")
-  chatHistorys    UserCHATHISTORY[]
-  groups          UserGROUP[]
+  email          String            @unique
+  hash           String?
+  username       String            @unique
+  firstName      String?
+  lastName       String?
+  upAvatar       Boolean           @default(false)
+  avatar         String?
+  state          String            @default("Offline")
+  twoFaAuth      Boolean
+  twoFaSecret    Json?
+  friends        User[]            @relation("Friends")
+  friendOf       User[]            @relation("Friends")
+  blocked        User[]            @relation("Blocked")
+  blockedFrom    User[]            @relation("Blocked")
+  achievement    Json?
+  MatchHistory   MatchHistory?     @relation(fields: [matchHistoryId], references: [id])
+  matchHistoryId Int?
+  socket         String?           @unique
+  chatUsers      User[]            @relation("ChatUsers")
+  chatUsersOf    User[]            @relation("ChatUsers")
+  chatHistorys   UserCHATHISTORY[]
+  groups         UserGROUP[]
+  notifications  Notifications[]
 }
 
 model MatchHistory {
@@ -51,14 +52,14 @@ model MatchHistory {
 }
 
 model CHATHISTORY {
-  id  Int      @id @unique @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
 
-  messages  MESSAGE[]
-  users     UserCHATHISTORY[]
+  messages MESSAGE[]
+  users    UserCHATHISTORY[]
 }
 
 model MESSAGE {
-  id            Int      @id @unique @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
 
   sender        String
   message       String
@@ -69,16 +70,17 @@ model MESSAGE {
 
 model UserCHATHISTORY {
   userid        Int
-  user          User  @relation(fields: [userid], references: [id])
+  user          User        @relation(fields: [userid], references: [id])
   chathistoryid Int
   chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
+
   @@id([userid, chathistoryid])
 }
 
 model GROUP {
-  id      Int     @id @unique @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
 
-  name    String  @unique
+  name    String      @unique
   owner   String
   admins  String[]
   members UserGROUP[]
@@ -87,9 +89,17 @@ model GROUP {
 }
 
 model UserGROUP {
-  userid        Int
-  user          User  @relation(fields: [userid], references: [id])
-  groupId       Int
-  group         GROUP @relation(fields: [groupId], references: [id])
+  userid  Int
+  user    User  @relation(fields: [userid], references: [id])
+  groupId Int
+  group   GROUP @relation(fields: [groupId], references: [id])
+
   @@id([userid, groupId])
+}
+
+model Notifications {
+  userId Int    @unique()
+  user   User   @relation(fields: [userId], references: [id])
+  senderId Int
+  type   String
 }

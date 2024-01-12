@@ -56,6 +56,7 @@ OnGatewayDisconnect {
 	}
 
 
+
 	////////
 	////////
 	@SubscribeMessage('addnotification')
@@ -64,12 +65,17 @@ OnGatewayDisconnect {
 	console.log(cookie);
 	 	console.log(payload);
 	  //const user = this.auth.validateUser();
-	  const receiver = await this.prisma.user.findUnique({
+	  const reciever = await this.prisma.user.findUnique({
 		where: {username: payload.reciever},
 		select: {socket: true}
 	  })
 	  console.log('here');
-	  client.emit('getnotification', 'hello');
+	  client.to(reciever.socket).emit('getnotification', 'hello');
 	  return 'Hello world!';
+	}
+	@SubscribeMessage('state')
+	async handlestate(client: Socket)
+	{
+		client.broadcast.emit('online')
 	}
 }

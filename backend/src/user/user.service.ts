@@ -5,6 +5,7 @@ import { isInstance } from 'class-validator';
 import { createReadStream, readFileSync } from 'fs';
 import { of } from 'rxjs';
 import { listDto, userDto } from 'src/auth/dto';
+import { notifDto } from 'src/auth/dto/notif.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -451,6 +452,33 @@ export class UserService {
                 
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
+    }
+
+    async addNotification(id: number, payload: notifDto)
+    {
+        await this.prismaservice.notifications.create({
+            data: {
+                user: {connect: {username: payload.reciever}},
+                senderId: id,
+                type: payload.type
+            }
+        })
+    }
+
+    async getNotification(id: number)
+    {
+        const notif = await this.prismaservice.notifications.findMany({
+            where: {
+                userId: id,
+            },
+            select: {senderId: true, type: true}
+        })
+        const notification = await Promise.all(notif.map(async (obj) => {
+            const username = await this.getUsername(obj.senderId);
+            const avatar = await this.getUserAvatar(obj.senderId);
+            return {username, avatar, type: obj.type}
+        }))
+        return (notification);
     }
     // async addMatchHistory(id: number, name: string) {
     //     try {

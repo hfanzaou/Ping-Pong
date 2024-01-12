@@ -64,7 +64,7 @@ const handleEnableSendCode = async () => {
             if (!change)
             {
                 setChange(true);
-                window.location.href = ``;
+                window.location.href = `${import.meta.env.VITE_APP_URL}`;
             }
             else{
                 setChange(false);

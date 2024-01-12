@@ -138,13 +138,8 @@ const LeftSide = ({avatar} : {avatar: string}) => {
               <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2 text-base font-medium" >
                 <Link className="flex items-center"  to={'/setting'}><IconSettings style={{ width: rem(20), height: rem(25) }} /> Settings</Link>
               </Menu.Item>
-<<<<<<< HEAD
-              <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2  text-base font-medium" >
-                <Link className="flex items-center"  to={`/logout`}><IconLogout style={{ width: rem(20), height: rem(25) }} /> Logout</Link>
-=======
               <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2  text-base font-medium" onClick={handleLogout} >
                 <Link className="flex items-center"  to={`${import.meta.env.VITE_API_BASE_URL}logout`}><IconLogout style={{ width: rem(20), height: rem(25) }} /> Logout</Link>
->>>>>>> master
               </Menu.Item>
             </Menu.Dropdown>
             </div>
