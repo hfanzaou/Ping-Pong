@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, MenuDropdown, rem } from "@mantine/core";
 import { IconChartInfographic, IconDeviceGamepad2, IconLogout, IconMessages, IconPresentationAnalytics, IconSettings, IconUserCircle } from "@tabler/icons-react";
@@ -6,6 +6,7 @@ import { IconHome } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
 import iconleadr from "./iconleadr.json";
 import axios from "axios";
+import FriendInterface from "../../pages/private/Profile/Friends/FriendsInterface";
 // import { IconButton, Typography } from "@mui/material";
 
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
@@ -86,12 +87,26 @@ function NavigationItem() {
 
 const LeftSide = ({avatar} : {avatar: string}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
+    const [requestFriendList, setRequestFriendList] = useState<FriendInterface[]>([]);
+
 
 
     const handleLogout = async () => {
         // await axios.get('user/offline');
     }
+    const getRequests = async () => {
+        await axios.get("user/friend/requests")
+        .then((res) => {
+            setRequestFriendList(res.data);
+        }).catch(err => {
+            // setRequestFriendList(testdata);
+            console.error("Error in fetching friend requests: ", err);
+        })
+    };
 
+    useEffect(() => {
+        getRequests();
+    }, []);
 
     return (
         <div className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-1 xl:ml-1 md:pr-0">

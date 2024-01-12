@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Avatar, Text, Group, Button, SimpleGrid } from '@mantine/core';
-import classes from './UserCard.module.css';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
 import sectionimage from '../../Home/assite/bg.gif'
@@ -67,11 +66,10 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
   return (
     <div>
 
-    <Card style={{backgroundColor: 'transparent'}}   radius="md" className={classes.card}>
+    <Card style={{backgroundColor: 'transparent'}}    radius="md">
       <Card.Section
         h={50}
         >
-            {/* <img className='h-full w-full' src={sectionimage}/> */}
         </Card.Section>
       <Avatar
         src={avatar}
@@ -79,7 +77,6 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
         radius={160}
         mx="auto"
         mt={-30}
-        className={classes.avatar}
         />
       <Text  ta="center" fz="lg" fw={800} mt="lg" c='dimmed'>
         {userName}

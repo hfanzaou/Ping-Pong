@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Avatar, Text, Group, Button, SimpleGrid } from '@mantine/core';
-import classes from './UserCard.module.css';
+import { Card, Avatar, Text, Group } from '@mantine/core';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
-import sectionimage from '../../Home/assite/bg.gif'
 import FriendshipButton from '../../Home/Users/FriendshipButton';
 // import { Cookies } from 'react-cookie';
 
@@ -60,7 +58,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
 
   return (
     <div >
-  <Card style={{backgroundColor: 'transparent'}} radius="md" className={classes.card}>
+  <Card style={{backgroundColor: 'transparent'}} radius="md">
       <Card.Section
         h={40}
         >
@@ -72,7 +70,6 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
         radius={160}
         mx="auto"
         mt={-30}
-        className={classes.avatar}
         />
       <Text ta="center" fz="lg" fw={500} mt="sm">
         {usercard?.username}
