@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Table, ScrollArea, SegmentedControl} from '@mantine/core';
 import FriendInterface from './FriendsInterface';
-
 import BlockedUsers from './BlockedUsers';
 import Friends from './Friends';
 import FriendRequest from './FriendRequest';
+import { Socket } from 'socket.io-client';
 
-function  UsersRelation({setUrlName}: {setUrlName: Function}) {
+function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Function}) {
   const [value, setValue] = useState<string>('Friends list');
 
   return (
@@ -36,7 +36,7 @@ function  UsersRelation({setUrlName}: {setUrlName: Function}) {
                 </Table.Tbody> :
             (value === 'Friends list' ?
                 (<Table.Tbody>
-                    <Friends setUrlName={setUrlName}/>
+                    <Friends socket={socket} setUrlName={setUrlName}/>
                 </Table.Tbody>) :
                     <Table.Tbody>
                         <BlockedUsers />

@@ -49,10 +49,10 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
 
   const items = stats.map((stat) => (
     <div key={stat.label}>
-      <Text ta="center" fz="lg" fw={500}>
+      <Text ta="center" fz="lg" fw={500} c={(stat.label === 'Total'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
         {stat.value}
       </Text>
-      <Text ta="center" fz="sm" c="dimmed" lh={1}>
+      <Text ta="center" fz="sm" lh={1} c={(stat.label === 'Total'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
         {stat.label}
       </Text>
     </div>
@@ -81,10 +81,10 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
         mt={-30}
         className={classes.avatar}
         />
-      <Text ta="center" fz="lg" fw={500} mt="sm">
+      <Text  ta="center" fz="lg" fw={800} mt="lg" c='dimmed'>
         {userName}
       </Text>
-      <Text ta="center" fz="sm">
+      <Text ta="center" c="indigo" fz="sm">
       {"level "  + userInfo.level}
       </Text>
       <Group mt="md" justify="center" gap={30}>
