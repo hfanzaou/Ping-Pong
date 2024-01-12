@@ -4,10 +4,12 @@ import { ChatController } from "./chat.controller";
 import { ChatGateway } from "./chat.gateway";
 import { UserService } from "src/user/user.service";
 import { UserModule } from "src/user/user.module";
+import { JwtTwoFaStrategy } from "src/strategy";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
-	imports: [UserModule],
-	providers: [ChatService, ChatGateway, UserService],
+	imports: [UserModule, JwtModule.register({})],
+	providers: [ChatService, ChatGateway, UserService, JwtTwoFaStrategy],
 	controllers: [ChatController]
 })
 export class ChatModule {}

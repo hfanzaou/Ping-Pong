@@ -13,6 +13,7 @@ import JwtTwoFaGuard from "src/auth/guard/twoFaAuth.guard";
 import { AuthService } from "src/auth/auth.service";
 import { notifDto } from "src/auth/dto/notif.dto";
 import { PrismaService } from "src/prisma/prisma.service";
+import { JwtTwoFaStrategy } from "src/strategy";
 
 @WebSocketGateway({ cors: {
 	origin: 'http://localhost:3000',
@@ -21,7 +22,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class ChatGateway implements
 OnGatewayConnection,
 OnGatewayDisconnect {
-	constructor(private chatService: ChatService, private prisma: PrismaService) {}
+	constructor(private chatService: ChatService, private prisma: PrismaService, private strategy: JwtTwoFaStrategy) {}
 	@WebSocketServer() server: Server
 	@SubscribeMessage("server")
 	async handelMessage(client: Socket, data: MESSAGE) {
@@ -53,6 +54,7 @@ OnGatewayDisconnect {
 	}
 	handleDisconnect(client: Socket) {
 		this.chatService.dropUser(client);
+		client.broadcast.emit("online")
 	}
 
 
@@ -73,9 +75,12 @@ OnGatewayDisconnect {
 	  client.to(reciever.socket).emit('getnotification', 'hello');
 	  return 'Hello world!';
 	}
-	@SubscribeMessage('state')
-	async handlestate(client: Socket)
-	{
-		client.broadcast.emit('online')
-	}
+	@SubscribeMessage("state")
+    async handleOnline(client: Socket) {
+		const token = client.handshake.headers.cookie.split('jwt=')[1];
+		const payload = await this.strategy.verifyToken(token);
+		const {username, state} = await this.strategy.validate(payload);
+		// console.log(client.handshake.headers.cookie);
+        client.broadcast.emit("online", {username, state});
+    }
 }
