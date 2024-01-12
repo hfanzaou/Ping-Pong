@@ -13,8 +13,7 @@ interface stateprops {
     state: string
 }
 
-function StateComponent({userName, socket, userstate}: {userstate: string, userName: string, socket: Socket}) {
-    // const [newconnect, setnewconnect] = useState<boolean>(false);
+export function StateComponent({userName, socket, userstate}: {userstate: string, userName: string, socket: Socket}) {
     const [state, setState] = useState<string>(userstate);
 
     useEffect(() => {
@@ -37,7 +36,6 @@ function StateComponent({userName, socket, userstate}: {userstate: string, userN
         // Clean up the effect
         return () => {
             socket?.off('online');
-            socket?.off('connect_error');
             socket?.off('error');
         }
 
@@ -48,24 +46,24 @@ function StateComponent({userName, socket, userstate}: {userstate: string, userN
 
         {/* offline */}
         {state === "Offline" &&
-            <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
                 <path fill="#888281" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
             </svg>
         }
 
         {/* online */}
         {state === "Online" &&
-            <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
                 <path fill="#0de34d" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
             </svg>
         }
 
         {/* ongame */}
-        {/* {state === "ongame" &&
-            <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+        {state === "Ongame" &&
+            <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 512 512">
                 <path fill="#74C0FC" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
             </svg>
-        } */}
+        }
 
         </div>
     );
@@ -153,7 +151,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       <Table.Td>
         <div className='flex justify-between'>
         <Group gap="sm">
-            <Menu position='bottom-start' trigger="hover" openDelay={200} closeDelay={100}>
+            <Menu position='right-start' offset={2}>
             <Menu.Target >
 
                 <div dir="rtl" className="relative"  >
@@ -165,7 +163,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 </div>
 
             </Menu.Target>
-            <Menu.Dropdown bg='gray'>
+            <Menu.Dropdown bg='gray' mt={25}>
             <Menu.Item
               onClick={() => handelShowProfile(item.name)}
                 leftSection={
