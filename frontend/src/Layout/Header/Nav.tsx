@@ -89,7 +89,7 @@ const LeftSide = ({avatar} : {avatar: string}) => {
 
 
     const handleLogout = async () => {
-        await axios.get('user/offline');
+        // await axios.get('user/offline');
     }
 
 

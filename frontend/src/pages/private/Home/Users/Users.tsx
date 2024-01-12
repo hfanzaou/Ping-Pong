@@ -13,42 +13,59 @@ interface stateprops {
     state: string
 }
 
-function StateComponent({userName, socket}: {userName: string, socket: Socket}) {
+function StateComponent({userName, socket, userstate}: {userstate: string, userName: string, socket: Socket}) {
     // const [newconnect, setnewconnect] = useState<boolean>(false);
-    const [state, setState] = useState<string>("offline");
+    const [state, setState] = useState<string>(userstate);
+
     useEffect(() => {
+        // if (localStorage.getItem(userName) !== null) {
+        //     setState(localStorage.getItem(userName) as string);
+        // }
         socket?.on('online', ({username, state}: stateprops) => {
             console.log("user name: ", username);
             console.log("state: ", state);
                 if (username === userName) {
                     setState(state);
+                    // localStorage.setItem(userName, state);
                 }
         });
-    }, []);
+    
+        socket?.on('error', (error) => {
+            console.error('Error', error);
+        });
+
+        // Clean up the effect
+        return () => {
+            socket?.off('online');
+            socket?.off('connect_error');
+            socket?.off('error');
+        }
+
+    }, [setState, userName, socket]);
 
     return (
-    <div className="absolute h-14 w-14 top-2 start-2">
+    <div className="absolute h-14 w-14 top-1 start-1">
 
         {/* offline */}
-        {state === "offline" &&
+        {state === "Offline" &&
             <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
                 <path fill="#888281" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
             </svg>
         }
 
         {/* online */}
-        {state === "online" &&
-        <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
-            <path fill="#0de34d" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
-        </svg>
+        {state === "Online" &&
+            <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+                <path fill="#0de34d" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+            </svg>
         }
 
         {/* ongame */}
-        {state === "ongame" &&
-        <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
-            <path fill="#74C0FC" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
-        </svg>
-        }
+        {/* {state === "ongame" &&
+            <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+                <path fill="#74C0FC" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+            </svg>
+        } */}
 
         </div>
     );
@@ -76,18 +93,18 @@ const getUsers = async () => {
   })
 };
 
-socket?.on('online', () => {
-    console.log("message from socket: ");
-    setnewconnect(true);
-    // getUsers();
-});
+// socket?.on('online', () => {
+//     console.log("message from socket: ");
+//     setnewconnect(true);
+//     // getUsers();
+// });
 
 useEffect(() => {
-    if(newconnect){
-        setnewconnect(false);
-    }
+    // if(newconnect){
+    //     setnewconnect(false);
+    // }
     getUsers();
-}, [newconnect]);
+}, []);
 
 const handelShowProfile = (name: string) => {
     // window.location.replace('/'+name+'/public/profile');
@@ -136,19 +153,19 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       <Table.Td>
         <div className='flex justify-between'>
         <Group gap="sm">
-            <Menu position='bottom-start'>
+            <Menu position='bottom-start' trigger="hover" openDelay={200} closeDelay={100}>
             <Menu.Target >
 
                 <div dir="rtl" className="relative"  >
                     <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
                     
                     <Avatar size={40} src={item.avatar} radius={40} />
-                    <StateComponent userName={item.name} socket={socket}/>
+                    <StateComponent userName={item.name} socket={socket} userstate={item.state}/>
                     </button>
                 </div>
 
             </Menu.Target>
-            <Menu.Dropdown>
+            <Menu.Dropdown bg='gray'>
             <Menu.Item
               onClick={() => handelShowProfile(item.name)}
                 leftSection={
@@ -182,7 +199,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                Level {item.level}
             </Text> */}
             <Text fz="sm" fw={500} c="dimmed">
-              {item.state}         {/*this state was need to be real time*/}
+              level {item.level}         {/*this state was need to be real time*/}
               </Text>
           </div>
         </Group>

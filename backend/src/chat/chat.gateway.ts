@@ -57,8 +57,8 @@ OnGatewayDisconnect {
 		// console.log(client.handshake.headers.cookie);
 	}
 	async handleDisconnect(client: Socket) {
+        await this.chatService.dropUser(client);
 		const {username, state} = await this.verifyClient(client);
-		this.chatService.dropUser(client);
 		client.broadcast.emit("online", {username, state});
 	}
 
