@@ -8,6 +8,50 @@ import FriendshipButton from './FriendshipButton';
 import { Link, unstable_HistoryRouter, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 
+interface stateprops {
+    username: string,
+    state: string
+}
+
+function StateComponent({socket}: {socket: Socket}) {
+    const [state, setState] = useState<string>("offline");
+    useEffect(() => {
+        socket?.on('online', ({username, state}: stateprops) => {
+            setState(state);
+            console.log("message from socket: ");
+            // setnewconnect(true);
+            // getUsers();
+        });
+    }, [socket]);
+
+    return (
+    <div className="absolute h-14 w-14 top-2 start-2">
+
+        {/* offline */}
+        {state === "offline" &&
+            <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+                <path fill="#888281" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+            </svg>
+        }
+
+        {/* online */}
+        {state === "online" &&
+        <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+            <path fill="#0de34d" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+        </svg>
+        }
+
+        {/* ongame */}
+        {state === "ongame" &&
+        <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512">
+            <path fill="#74C0FC" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+        </svg>
+        }
+
+        </div>
+    );
+}
+
 function Users({socket, setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {socket: Socket, setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
 //   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
@@ -92,11 +136,15 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <Group gap="sm">
             <Menu position='bottom-start'>
             <Menu.Target >
-                {/* <div className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-300 hover:text-white"> */}
-                <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
+
+                <div dir="rtl" className="relative"  >
+                    <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
+                    
                     <Avatar size={40} src={item.avatar} radius={40} />
-                </button>
-                {/* </div> */}
+                    <StateComponent socket={socket}/>
+                    </button>
+                </div>
+
             </Menu.Target>
             <Menu.Dropdown>
             <Menu.Item
