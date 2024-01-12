@@ -69,6 +69,7 @@ const   Header: React.FC<Props> = ({ setSocket, avatar }) => {
             })
         }
     }, [])
+    
     return (
         <div className='sticky top-0 z-50'>
             <Nav avatar={avatar}/>

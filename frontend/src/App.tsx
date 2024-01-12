@@ -63,6 +63,7 @@ const handleRequest = async (name: string) => {
         setSearchList(updatedUserList);
       await axios.post("user/add/friend", {name: name})
       .then((res) => {
+        socket?.emit("addnotification", {reciever: name, type: "friend request"})
         console.log(res.data);
      })
      .catch((err) => {

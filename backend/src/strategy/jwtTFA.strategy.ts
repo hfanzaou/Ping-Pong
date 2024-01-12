@@ -4,9 +4,11 @@ import { Strategy, ExtractJwt } from 'passport-jwt'
 import { ConfigService } from "@nestjs/config";
 import { Request } from 'express';
 import { PrismaService } from "src/prisma/prisma.service";
+import * as jwt from "jsonwebtoken";
 @Injectable()
 export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor') {
-    constructor(config: ConfigService, private prisma: PrismaService) {
+    // config: ConfigService;
+    constructor(private config: ConfigService, private prisma: PrismaService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([JwtTwoFaStrategy.extractJWT]),
             secretOrKey: config.get('JWT_SECRET')
@@ -30,5 +32,16 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
             return user;
         }
         ////console.log();
+    }
+    async verifyToken(token: string) {
+        try {
+            const secret = await this.config.get("JWT_SECRET");
+          const payload: any = jwt.verify(token, secret)
+          // You can perform additional logic with the decoded payload if needed
+          return payload;
+        } catch (error) {
+            console.log(error);
+          throw new UnauthorizedException('Invalid token');
+        }
     }
 } 

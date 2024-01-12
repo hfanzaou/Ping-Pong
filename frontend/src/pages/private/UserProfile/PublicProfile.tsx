@@ -3,7 +3,6 @@ import Header from "../../../Layout/Header/Header";
 import Profile from "./Profile";
 import axios from "axios";
 import UsersInterface from './UsersInterface';
-import { Sledding } from "@mui/icons-material";
 import { LoadingOverlay } from "@mantine/core";
 
 function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersList}: {profileName: string | undefined,avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function}) {

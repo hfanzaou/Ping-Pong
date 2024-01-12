@@ -1,6 +1,4 @@
-import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, Param, HttpStatus, BadRequestException, Header } from '@nestjs/common';
-import { GetUser } from '../auth/decorator'
-import { FTAuthGuard, JwtGuard } from '../auth/guard';
+import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import JwtTwoFaGuard from 'src/auth/guard/twoFaAuth.guard';
 
@@ -110,6 +108,10 @@ export class UserController {
         return (await this.userService.getMatchHistory(req.user.id));
     }
 
+    @Get('notification')
+    async getNotification(@Req() req) {
+        return (await this.userService.getNotification(req.user.id));
+    }
     // @Post('matchhistory')
     // async addMatchHistoy(@Req() req, @Body() body) {
     //     return (await this.userService.addMatchHistory(req.user.id, body.username));
