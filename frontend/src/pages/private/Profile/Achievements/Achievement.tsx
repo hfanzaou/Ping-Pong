@@ -44,30 +44,21 @@ data[2].type = achievements['achievement3'];
 data[3].type = achievements['achievement4'];
 data[4].type = achievements['achievement5'];
 
-    const matches = data.map((item) => (
+    const achievementsData = data.map((item) => (
         <div key={item.name}>
             <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.id}/>        
         </div>
   ));
   
   return (
-    <div className='mb-4 pb-4'>
-      <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
-          <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">Your Achievements</h2>
-      </div>
-      <SimpleGrid 
-        cols={{ base: 3, sm: 3, lg: 4 }}
-        // verticalSpacing={{ base: 'sm', sm: 'sm', lg: 'sm' }}
-        //     spacing={ {base: 10, sm: 'xl', lg: 'xl'} }
-    >
-         {matches}
-      </SimpleGrid>
-    {/* <div className='relative flex items-center'>
-        <div className='w-full h-full space-x-5'>
-        {matches}
-        </div>
-    </div> */}
-    </div>
+    <>
+        <h2 className="mt-2 mb-0 text-4xl font-medium leading-tight text-slate-100">Your Achievements</h2>
+        <SimpleGrid 
+            cols={{ base: 3, sm: 3, lg: 5 }}
+        >
+            {achievementsData}
+        </SimpleGrid>
+    </>
   );
 }
 

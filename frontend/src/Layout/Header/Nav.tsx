@@ -167,7 +167,7 @@ const LeftSide = ({avatar} : {avatar: string}) => {
 function Nav({avatar} : {avatar: string}) {
     return (
     <div className="bg-gray-800">
-        <nav className="bg-slate-900 rounded-full mx-8 mb-4">
+        <nav className="bg-slate-900 rounded-full mx-8 mb-2">
             <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <NavigationItem/>
