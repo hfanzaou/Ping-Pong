@@ -84,8 +84,13 @@ OnGatewayDisconnect {
         client.broadcast.emit("online", {username, state});
     }
 	async verifyClient(client: Socket) {
-		const token = client.handshake.headers.cookie.split('jwt=')[1];
-		const payload = await this.strategy.verifyToken(token);
-		return (await this.strategy.validate(payload));
+		try {
+			const token = client.handshake.headers.cookie.split('jwt=')[1];
+			const payload = await this.strategy.verifyToken(token);
+			return (await this.strategy.validate(payload));
+		}
+		catch (error) {
+			client.emit('error', 'invalid token');
+		}
 	}
 }
