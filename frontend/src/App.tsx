@@ -205,7 +205,7 @@ const handleRequest = async (name: string) => {
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>
-                    <Route path='/' element={<Home setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+                    <Route path='/' element={ socket && <Home socket={socket}  setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
                     <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
                     <Route path='/Profile' element={<Profile setUrlName={setUrlName} avatar={avatar}/>}/>
                     <Route path='/Game' element={<Game avatar={avatar}/>}/>

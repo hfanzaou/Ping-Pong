@@ -283,6 +283,7 @@ export class ChatService {
 					socket: socket
 				}
 			});
+            
 		}
 	}
 }

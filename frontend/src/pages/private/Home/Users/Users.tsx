@@ -6,12 +6,13 @@ import testdata from './test.json'
 import { IconMessages, IconTent, IconTrash, IconUserCircle } from '@tabler/icons-react';
 import FriendshipButton from './FriendshipButton';
 import { Link, unstable_HistoryRouter, useParams } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 
-function Users({setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
+function Users({socket, setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {socket: Socket, setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
 //   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
   const [searchInput, setSearchInput] = useState("");
-//   const [addButton, setAddButton] = useState<boolean>(false);
+  const [newconnect, setnewconnect] = useState<boolean>(false);
   
 const getUsers = async () => {
   await axios.get("user/list")
@@ -29,9 +30,18 @@ const getUsers = async () => {
   })
 };
 
+socket?.on('online', () => {
+    console.log("message from socket: ");
+    setnewconnect(true);
+    // getUsers();
+});
+
 useEffect(() => {
+    if(newconnect){
+        setnewconnect(false);
+    }
     getUsers();
-}, []);
+}, [newconnect]);
 
 const handelShowProfile = (name: string) => {
     // window.location.replace('/'+name+'/public/profile');

@@ -51,17 +51,21 @@ const   Header: React.FC<Props> = ({ setSocket, avatar }) => {
         const   socket = io("http://localhost:3001", {
             withCredentials: true
         });
-        socket.on("connect", () => {
+        socket.on("connect", async () => {
             // console.log(socket.id)
-            setSocket(socket)
-            callBack(socket);
+            setSocket(socket);
+            await callBack(socket);
+            socket.emit("state");
+            // console.log("connected");
         })
         setSocket(socket);
         return () => {
             socket.disconnect();
-            socket.off("connect", () => {
-                setSocket(socket)
-                callBack(socket)
+            socket.off("connect", async () => {
+                setSocket(socket);
+            await    callBack(socket);
+            socket.emit("state");
+
             })
         }
     }, [])
