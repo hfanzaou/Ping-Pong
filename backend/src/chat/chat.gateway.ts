@@ -14,6 +14,7 @@ import { AuthService } from "src/auth/auth.service";
 import { notifDto } from "src/auth/dto/notif.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { JwtTwoFaStrategy } from "src/strategy";
+import { UserService } from "src/user/user.service";
 
 @WebSocketGateway({ cors: {
 	origin: 'http://localhost:3000',
@@ -22,7 +23,10 @@ import { JwtTwoFaStrategy } from "src/strategy";
 export class ChatGateway implements
 OnGatewayConnection,
 OnGatewayDisconnect {
-	constructor(private chatService: ChatService, private prisma: PrismaService, private strategy: JwtTwoFaStrategy) {}
+	constructor(private chatService: ChatService, 
+				private prisma: PrismaService, 
+				private strategy: JwtTwoFaStrategy,
+				private user: UserService) {}
 	@WebSocketServer() server: Server
 	@SubscribeMessage("server")
 	async handelMessage(client: Socket, data: MESSAGE) {
@@ -52,9 +56,10 @@ OnGatewayDisconnect {
         console.log("test");
 		// console.log(client.handshake.headers.cookie);
 	}
-	handleDisconnect(client: Socket) {
+	async handleDisconnect(client: Socket) {
+		const {username, state} = await this.verifyClient(client);
 		this.chatService.dropUser(client);
-		client.broadcast.emit("online")
+		client.broadcast.emit("online", {username, state});
 	}
 
 
@@ -63,24 +68,24 @@ OnGatewayDisconnect {
 	////////
 	@SubscribeMessage('addnotification')
 	async handleNotification(client: Socket, payload: notifDto) {
-	 const cookie = client.handshake.headers.cookie;
-	console.log(cookie);
-	 	console.log(payload);
+		const {id} = await this.verifyClient(client);
 	  //const user = this.auth.validateUser();
 	  const reciever = await this.prisma.user.findUnique({
 		where: {username: payload.reciever},
-		select: {socket: true}
+		select: {id: true, socket: true}
 	  })
-	  console.log('here');
+	  await this.user.addNotification(id, payload);
 	  client.to(reciever.socket).emit('getnotification', 'hello');
-	  return 'Hello world!';
 	}
 	@SubscribeMessage("state")
     async handleOnline(client: Socket) {
-		const token = client.handshake.headers.cookie.split('jwt=')[1];
-		const payload = await this.strategy.verifyToken(token);
-		const {username, state} = await this.strategy.validate(payload);
+		const {username, state} = await this.verifyClient(client);
 		// console.log(client.handshake.headers.cookie);
         client.broadcast.emit("online", {username, state});
     }
+	async verifyClient(client: Socket) {
+		const token = client.handshake.headers.cookie.split('jwt=')[1];
+		const payload = await this.strategy.verifyToken(token);
+		return (await this.strategy.validate(payload));
+	}
 }
