@@ -1,7 +1,7 @@
 interface  RequestFriendListInterface {
     avatar: string;
     name: string;
-    status: string;
+    state: string;
     level: number;
 }
 

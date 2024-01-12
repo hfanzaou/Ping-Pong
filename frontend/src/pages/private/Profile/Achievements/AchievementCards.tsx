@@ -10,21 +10,21 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
     const source = images.find((item) => item.id === image);
     // console.log("Type: ", type);
     return (
-    <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
+    <div className='w-[100px] '>
             <Group justify="center">
     <HoverCard width={200} openDelay={500}>
     <HoverCard.Target>
-    <Card shadow="sm" padding="mg" radius="md" withBorder>
+    <Card shadow="sm" radius="md" withBorder>
     <Card.Section>
     {type ?
                 <Image
                     src={imagge}
-                    height={300}
+                    // height={200}
                     alt="Norway"
                     /> :
                 <Image className="blur-sm"
                 src={imagge}
-                    height={300}
+                    // height={200}
                     alt="Norway"
                     />
                 }
