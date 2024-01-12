@@ -8,6 +8,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { MESSAGE, NEWCHAT } from "./myTypes";
+import { subscribe } from "diagnostics_channel";
 
 @WebSocketGateway({ cors: {
 	origin: 'http://localhost:3000',
@@ -43,10 +44,10 @@ OnGatewayDisconnect {
 			.emit("newuser");
 	}
 	handleConnection(client: Socket) {
-		// console.log(client.id);
+        console.log("test");
 		// console.log(client.handshake.headers.cookie);
 	}
-	handleDisconnect(client: Socket) {
-		this.chatService.dropUser(client);
-	}
+	async handleDisconnect(client: Socket) {
+		await this.chatService.dropUser(client);
+    }
 }
