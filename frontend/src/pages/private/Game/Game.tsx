@@ -50,7 +50,7 @@ const GameComponent = () => {
   };
   
   const draw = (p5: p5Types) => {
-    p5.background('rgb(31, 41, 55)');
+    p5.background('rgb(40, 41, 55)');
     p5.fill('white');
     handleGameStates(p5);
 
