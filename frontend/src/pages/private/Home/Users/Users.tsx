@@ -13,16 +13,18 @@ interface stateprops {
     state: string
 }
 
-function StateComponent({socket}: {socket: Socket}) {
+function StateComponent({userName, socket}: {userName: string, socket: Socket}) {
+    // const [newconnect, setnewconnect] = useState<boolean>(false);
     const [state, setState] = useState<string>("offline");
     useEffect(() => {
         socket?.on('online', ({username, state}: stateprops) => {
-            setState(state);
-            console.log("message from socket: ");
-            // setnewconnect(true);
-            // getUsers();
+            console.log("user name: ", username);
+            console.log("state: ", state);
+                if (username === userName) {
+                    setState(state);
+                }
         });
-    }, [socket]);
+    }, []);
 
     return (
     <div className="absolute h-14 w-14 top-2 start-2">
@@ -141,7 +143,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                     <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
                     
                     <Avatar size={40} src={item.avatar} radius={40} />
-                    <StateComponent socket={socket}/>
+                    <StateComponent userName={item.name} socket={socket}/>
                     </button>
                 </div>
 
