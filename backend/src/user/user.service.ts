@@ -402,7 +402,7 @@ export class UserService {
                     ]},
                 select : {players: {where: {
                         NOT: {id: id},
-                }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true, win: true},
+                }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true},
             })
             if (!matchhistory)
                 return [];
