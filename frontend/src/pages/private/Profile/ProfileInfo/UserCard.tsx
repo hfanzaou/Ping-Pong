@@ -67,16 +67,16 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
     //  h-[515px]
     <div className='m-2 p-2 rounded-lg bg-gray-800'>
     <Card style={{backgroundColor: 'transparent'}}    radius="md">
-      <Card.Section
+      {/* <Card.Section
         h={60}
         >
-        </Card.Section>
+        </Card.Section> */}
       <Avatar
         src={avatar}
         size={250}
-        radius={160}
+        radius={250}
         mx="auto"
-        mt={-30}
+        // mt={-30}
         />
       <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
 
