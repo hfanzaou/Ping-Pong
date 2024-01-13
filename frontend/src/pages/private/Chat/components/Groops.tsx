@@ -1,12 +1,13 @@
-import { IconCirclePlus, IconDotsVertical } from "@tabler/icons-react";
+import { IconCirclePlus, IconDotsVertical, IconTrash, IconVolume3 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
-import { DATA } from "../myTypes";
+import { DATA, Group } from "../myTypes";
 
 interface Props {
 	data: DATA,
+	setData: React.Dispatch<React.SetStateAction<DATA>>
 }
 
-const Groups: React.FC<Props> = ({ data }) => {
+const Groups: React.FC<Props> = ({ data, setData }) => {
 	const	[settingsXy, setSettingsXy] = useState({
 		x: 0,
 		y: 0,
@@ -24,17 +25,50 @@ const Groups: React.FC<Props> = ({ data }) => {
 	const	[validate, setValidate] = useState(true);
 	const	[createTrigger, setCreateTrigger] = useState(false);
 	const	[name, setName] = useState(true);
-	const	nameRef = useRef(name);
+	const	[validateText, setValidateText] = useState("");
+	const	[accessibility, setAccessibility] = useState(true);
+	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
+	const	[list, setList] = useState(data.userData?.groups);
+	const	[publicList, setPublicList] = useState<Group[]>([]);
+	const	[searchText, setSearchText] = useState("");
+	const	[settings, setSettings] = useState(false);
 	
 	settingsXyRef.current = settingsXy;
+	const	nameRef = useRef(name);
 	nameRef.current = name;
 	useEffect(() => {
 		function callBackMouse(event: MouseEvent) {
 			if (event.clientX < settingsXyRef.current.x ||
 				event.clientX > settingsXyRef.current.x + 400 ||
 				event.clientY < settingsXyRef.current.y ||
-				event.clientY > settingsXyRef.current.y + 320)
-				setCreate(false);
+				event.clientY > settingsXyRef.current.y + 320) {
+					setCreate(false);
+					setPassword(true);
+					setCreateData(x => ({
+						...x,
+						name: "",
+						state: "",
+						password: ""
+					}));
+					setPasswordText("");
+					setValidate(true);
+					setName(true);
+					setValidateText("");
+					setAccessibility(true);
+				}
+			function callBackResize() {
+				console.log(window.innerWidth);
+				if (window.innerWidth < 600)
+					setSize(false);
+				else
+					setSize(true);
+			}
+			document.addEventListener("mousedown", callBackMouse);
+			window.addEventListener("resize", callBackResize);
+			return () => {
+				document.removeEventListener("mousedown", callBackMouse);
+				window.removeEventListener("resize", callBackResize);
+			}
 		}
 		document.addEventListener("mousedown", callBackMouse);
 		return () => {
@@ -61,7 +95,8 @@ const Groups: React.FC<Props> = ({ data }) => {
 				})
 				const	Data = await res.json();
 				if (Data) {
-					setPasswordText("")
+					setPasswordText("");
+					setValidateText("");
 					setCreate(false);
 					setCreateData(x => ({
 						...x,
@@ -69,6 +104,10 @@ const Groups: React.FC<Props> = ({ data }) => {
 						state: "",
 						password: ""
 					}));
+					setData(x => ({
+						...x,
+						trigger: !x.trigger
+					}))
 				}
 				setName(Data);
 			}
@@ -76,6 +115,22 @@ const Groups: React.FC<Props> = ({ data }) => {
 			setCreateTrigger(false);
 		}
 	}, [createTrigger])
+	useEffect(() => {
+		setList(data.userData?.groups);
+	}, [data.userData?.groups])
+	useEffect(() => {
+		async function fetchData() {
+			const	res = await fetch("http://localhost:3001/searchList", {
+				method: "GET",
+				headers: {
+					"content-type": "application/json"
+				}
+			});
+			const	Data = await res.json();
+			setPublicList(Data);
+		}
+		fetchData();
+	}, [])
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
 		setCreate(true);
 		setSettingsXy({ x: event.clientX, y: event.clientY})
@@ -86,14 +141,23 @@ const Groups: React.FC<Props> = ({ data }) => {
 			...x,
 			state: tmp
 		}))
+		setAccessibility(true);
 	}
 	function submitCreate(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		if (password && validate) {
+		if (password &&
+			validate &&
+			createData.name.length &&
+			createData.state.length) {
 			setCreateTrigger(true);
 		}
+		else if (!createData.name.length)
+			setName(false);
+		else if (!createData.state.length)
+			setAccessibility(false);
 	}
 	function changeCreate(event: React.ChangeEvent<HTMLInputElement>) {
+		setName(true);
 		setCreateData(x => ({
 			...x,
 			name: event.target.value,
@@ -107,6 +171,12 @@ const Groups: React.FC<Props> = ({ data }) => {
 		else
 			setPassword(true);
 		setPasswordText(event.target.value);
+		if (validateText.length) {
+			if (validateText != event.target.value)
+				setValidate(false);
+			else
+				setValidate(true);
+		}
 	}
 	function changeValidate(event: React.ChangeEvent<HTMLInputElement>) {
 		if (passwordText == event.target.value) {
@@ -118,6 +188,43 @@ const Groups: React.FC<Props> = ({ data }) => {
 		}
 		else
 			setValidate(false);
+		setValidateText(event.target.value)
+	}
+	function changeSearch(event: React.ChangeEvent<HTMLInputElement>) {
+		setSearchText(event.target.value);
+		if (event.target.value == "")
+			setList(data.userData?.groups);
+		else if (data.userData) {
+			const	List = [...data.userData?.groups, ...publicList].
+				filter((value, index, self) => {
+					for (let i = index + 1; i < self.length; i++)
+						if (value.id == self[i].id)
+							return false;
+					return true;
+				}).filter(x => x.name.includes(event.target.value));
+			setList(List);
+			if (!List.find(x => x.name == data.groupTo))
+				setData(prev => ({
+					...prev,
+					groupTo: undefined
+				}));
+		}
+	}
+	function clickGroup(event: React.MouseEvent<HTMLButtonElement>) {
+		const tmp = event.currentTarget.name;
+
+		setData(prev => ({
+			...prev,
+			groupTo: tmp
+		}))
+		// const	newChat: NEWCHAT = {
+		// 	sender: data.userData ? data.userData.userName : "",
+		// 	recver: tmp
+		// }
+		// data.socket?.emit("newChat", newChat);
+	}
+	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
+		setSettings(true);
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
@@ -137,20 +244,25 @@ const Groups: React.FC<Props> = ({ data }) => {
 					placeholder="search..."
 					className="w-full font-thin bg-discord1
 						h-10 p-5 outline-none rounded-r-full mb-3"
-					// onChange={change}
-					// value={text}
+					onChange={changeSearch}
+					value={searchText}
 				/>
 				{
 					create &&
 						<form
-							className="fixed font-thin w-[400px] bg-discord1 p-5
+							className="fixed z-50 font-thin w-[400px] bg-discord1 p-5
 								rounded-md"
 							style={{ top: settingsXy.y, left: settingsXy.x}}
 							onSubmit={submitCreate}
 						>
 							{
-								!name &&
-									<h6 className="text-red-500">this name is already taken</h6>
+								!name && (createData.name.length ?
+									<h6 className="text-red-400">
+										this name is already taken
+									</h6> :
+									<h6 className="text-red-400">
+										you need a group name
+									</h6>)
 							}
 							<input
 								type="text"
@@ -161,6 +273,12 @@ const Groups: React.FC<Props> = ({ data }) => {
 								onChange={changeCreate}
 								value={createData.name}
 							/>
+							{
+								!accessibility &&
+									<h6 className="text-red-400">
+										you need to spicify the group accessibility
+									</h6>
+							}
 							<div className="flex h-10 mb-5">
 								<button
 									type="button"
@@ -210,6 +328,7 @@ const Groups: React.FC<Props> = ({ data }) => {
 									h-10 p-5 rounded-full w-full mb-5
 									${!validate && "outline-red-500"}`}
 								onChange={changeValidate}
+								value={validateText}
 							/>
 							<button className="bg-discord3 w-full rounded-md h-10
 								hover:bg-discord4"
@@ -221,70 +340,70 @@ const Groups: React.FC<Props> = ({ data }) => {
 			</div>
 			<ul>
 				{
-					// List?.map(x => {
-					// 	return (
-					// 		<li key={x.id} className="flex relative">
-					// 			<button
-					// 				onClick={click}
-					// 				name={x.login}
-					// 				className={`w-full px-7 py-3 rounded-md
-					// 				select-none ${data.talkingTo == x.login
-					// 					? "bg-discord5"
-					// 					: "hover:bg-discord4"}
-					// 					flex justify-center items-center`}
-					// 			>
-					// 				<img
-					// 					src={x.avatar}
-					// 					className={`w-10 h-10 mr-3
-					// 						rounded-full
-					// 						${
-					// 							data.talkingTo == x.login &&
-					// 								"shadow-black shadow-lg"
-					// 						}`}
-					// 				/>
-					// 				{size && x.login}
-					// 			</button>
-					// 			<button
-					// 				className="absolute top-5 right-0 w-10 flex justify-center"
-					// 				onClick={clickSettings}
-					// 				name={x.login}
-					// 			>
-					// 				<IconDotsVertical/ >
-					// 			</button>
-					// 		</li>);
-					// })
+					list?.map(x => {
+						return (
+							<li key={x.id} className="flex relative">
+								<button
+									onClick={clickGroup}
+									name={x.name}
+									className={`w-full px-7 py-3 rounded-md
+									select-none ${data.groupTo == x.name
+										? "bg-discord5"
+										: "hover:bg-discord4"}
+										flex justify-center items-center`}
+								>
+									{/* <img
+										src={x.avatar}
+										className={`w-10 h-10 mr-3
+											rounded-full
+											${
+												data.talkingTo == x.login &&
+													"shadow-black shadow-lg"
+											}`}
+									/> */}
+									{size && x.name}
+								</button>
+								<button
+									className="absolute top-5 right-0 w-10 flex justify-center"
+									onClick={clickSettings}
+									name={x.name}
+								>
+									<IconDotsVertical/ >
+								</button>
+							</li>);
+					})
 				}
 			</ul>
 			{
-				// settings && <ul
-				// 	className={`fixed border-none
-				// 		bg-discord1 rounded-md`}
-				// 	style={{
-				// 		top: settingsXy.y,
-				// 		left: settingsXy.x
-				// 	}}
-				// >
-				// 	<li>
-				// 		<button
-				// 			className="flex justify-center items-center w-[100px]
-				// 				h-[50px] rounded-t-md hover:bg-discord3"
-				// 			onClick={block}
-				// 		>
-				// 			<IconTrash />
-				// 			<h2 className="mt-1">Block</h2>
-				// 		</button>
-				// 	</li>
-				// 	<li>
-				// 		<button
-				// 			className="flex justify-center items-center w-[100px]
-				// 				h-[50px] rounded-b-md hover:bg-discord3"
-				// 			onClick={mute}
-				// 		>
-				// 			<IconVolume3 />
-				// 			<h2 className="">Mute</h2>
-				// 		</button>
-				// 	</li>
-				// </ul>
+				settings && <ul
+					className={`fixed border-none
+						bg-discord1 rounded-md`}
+					style={{
+						top: settingsXy.y,
+						left: settingsXy.x
+					}}
+				>
+					<li>
+						<button
+							className="flex justify-center items-center w-[100px]
+								h-[50px] rounded-t-md hover:bg-discord3"
+							// onClick={block}
+						>
+							<IconTrash />
+							<h2 className="mt-1">Block</h2>
+						</button>
+					</li>
+					<li>
+						<button
+							className="flex justify-center items-center w-[100px]
+								h-[50px] rounded-b-md hover:bg-discord3"
+							// onClick={mute}
+						>
+							<IconVolume3 />
+							<h2 className="">Mute</h2>
+						</button>
+					</li>
+				</ul>
 			}
 		</div>
 	)

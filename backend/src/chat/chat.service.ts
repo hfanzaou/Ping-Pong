@@ -18,17 +18,15 @@ export class ChatService {
 			include: {
 				chatUsers: true,
 				friends: true,
-				friendOf: true
+				friendOf: true,
+				groups: {
+					include: {
+						group: true
+					}
+				}
 			}
 		});
 		if (user) {
-			// await this.prisma.user.update({
-			// 	where: { id: user.id },
-			// 	data: {
-			// 		state: "Online",
-			// 		socket: userSocket.socket
-			// 	}
-			// });
 			const data: USERDATA = {
 				userName: user.username,
 				chatUsers: await Promise.all(user.chatUsers.map(async x => ({
@@ -43,7 +41,11 @@ export class ChatService {
 							login: x.username,
 							avatar: await this.user.getUserAvatar(x.id)
 						}))
-				)
+				),
+				groups: user.groups.map(x => ({
+					id: x.group.id,
+					name: x.group.name
+				}))
 			}
 			return data;
 		}
@@ -62,7 +64,9 @@ export class ChatService {
 					socket: null
 				}
 			});
+			return user;
 		}
+		return null;
 	}
 	getRoom(data: NEWCHAT) {
 		const room = this.rooms.find(room => {
@@ -75,7 +79,7 @@ export class ChatService {
 		if (room)
 			return room;
 		else {
-			this.rooms.push(data.sender+data.recver);
+			this.rooms.push(`&${data.sender}${data.recver}`);
 			return data.sender+data.recver;
 		}
 	}
@@ -285,5 +289,14 @@ export class ChatService {
 			});
             
 		}
+	}
+	async getSearchList() {
+		const	groups = await this.prisma.gROUP.findMany({
+			where: { state: "Public" }
+		})
+		return groups.map(x => ({
+			id: x.id,
+			name: x.name
+		}));
 	}
 }
