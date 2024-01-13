@@ -96,8 +96,9 @@ model UserGROUP {
 }
 
 model Notifications {
-  userId Int    @unique()
+  userId Int
   user   User   @relation(fields: [userId], references: [id])
   senderId Int
   type   String
+  @@id([userId])
 }
