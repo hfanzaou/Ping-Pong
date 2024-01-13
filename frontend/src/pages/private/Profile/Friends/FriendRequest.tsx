@@ -65,7 +65,7 @@ function  FrindeRequest() {
             {item.name}
           </Text>
           <Text fz="xs" c="dimmed">
-            {item.status}
+            {item.state}
           </Text>
         </div>
       </Group>

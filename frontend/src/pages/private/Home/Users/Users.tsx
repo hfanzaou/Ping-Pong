@@ -157,7 +157,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 <div dir="rtl" className="relative"  >
                     <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
                     
-                    <Avatar size={40} src={item.avatar} radius={40} />
+                    <Avatar size={50} src={item.avatar} radius={50} />
                     <StateComponent userName={item.name} socket={socket} userstate={item.state}/>
                     </button>
                 </div>
