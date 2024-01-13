@@ -35,18 +35,20 @@ function Notification({socket}: Socket) {
     //         socket?.off("getnotification", handleNotification);
     //     };
     // }, [socket]);
-    
+    useEffect(() => {
     socket?.on("getnotification", () => {
         setNotification(true);
+        getRequests();
         console.log("get notification");
         return () => {
             socket.off("getnotification");
         }
     });
+    }, [socket]);
 
     useEffect(() => {
         getRequests();
-    }, [socket]);
+    }, []);
 
     const requestRows = notificationList.map((item) => (
         // <div className=" h-[700px] bg-gray-500">

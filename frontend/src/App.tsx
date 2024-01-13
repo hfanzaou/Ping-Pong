@@ -79,7 +79,8 @@ const handleRequest = async (name: string) => {
         setSearchList(updatedUserList);
         await axios.post("user/remove/request", {name: name})
         .then((res) => {
-          console.log(res.data);
+            socket?.emit("addnotification", {reciever: name, type: "remove request"})
+            console.log(res.data);
         })
         .catch((err) => {
           console.log("Error in send post request to remove request",err);
