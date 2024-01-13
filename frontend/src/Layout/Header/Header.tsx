@@ -59,6 +59,9 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar }) => {
             socket.emit("state");
             // console.log("connected");
         })
+        socket.on("error", () => {
+            console.log("error in socket");
+        });
         setSocket(socket);
         return () => {
             socket.disconnect();

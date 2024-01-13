@@ -13,17 +13,17 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
       <div>
         <SimpleGrid
               cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
-              spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
-              verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
+            //   spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+            //   verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
           <UserCard setUrlName={setUrlName} avatar={avatar} />
         <SimpleGrid
             cols={{ base: 1, xs: 1, md: 1, lg: 1 }}
-            spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
-            verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
+            // spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+            // verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >
-          <Achievements />
         {/* <MatchHistory /> */}
+          <Achievements />
         <UsersRelation socket={socket} setUrlName={setUrlName}/>
         </SimpleGrid>
         </SimpleGrid>
@@ -46,3 +46,20 @@ function Profile({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Func
 }
 
 export default Profile
+
+
+
+    // //  h-[515px]
+    // <div className='m-2 w-[300px] p-2 rounded-lg bg-gray-800'>
+    // <Card w={300} style={{backgroundColor: 'transparent'}}    radius="md">
+    //   {/* <Card.Section
+    //     h={60}
+    //     >
+    //     </Card.Section> */}
+    //   <Avatar
+    //     src={avatar}
+    //     size={200}
+    //     radius={200}
+    //     mx="auto"
+    //     // mt={-30}
+    //     />
