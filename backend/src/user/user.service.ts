@@ -317,6 +317,13 @@ export class UserService {
                     disconnect: {id: user.id}
                 }}
             })
+            await this.prismaservice.notifications.delete({
+                where: {
+                    userId: user.id,
+                    senderId: id,
+                    type: "friend request"
+                }
+            })
         } catch(error) {
             throw new NotFoundException('USER NOT FOUND');
         }
@@ -448,14 +455,28 @@ export class UserService {
     async addNotification(id: number, payload: notifDto)
     {
         try {
-            await this.prismaservice.notifications.create({
-                data: {
-                    user: {connect: {username: payload.reciever}},
+            if (payload.type === "remove request")
+                return ;
+            const already = await this.prismaservice.notifications.findMany({
+                where: {
+                    user: {username: payload.reciever},
                     senderId: id,
-                    type: payload.type
+                    type: payload.type,
                 }
             })
+            console.log(already)
+            if (!already[0])
+            {
+                await this.prismaservice.notifications.create({
+                    data: {
+                        user: {connect: {username: payload.reciever}},
+                        senderId: id,
+                        type: payload.type
+                    }
+                })
+            }
         } catch(error) {
+            console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
