@@ -11,6 +11,13 @@ root.render(
     );
     {/* </React.StrictMode>  */}
 
+// const rootjoj = ReactDOM.createRoot(document.getElementById("rootjoj") as HTMLElement);
+// rootjoj.render(
+// //    <React.StrictMode>
+//     <AppJoj />
+//     );
+//     {/* </React.StrictMode>  */}
+// );
 
 // ReactDOM.render(
 //   <React.StrictMode>

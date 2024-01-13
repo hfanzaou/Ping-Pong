@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { MESSAGE, NEWCHAT, NEWGROUP, USERDATA, USERSOCKET } from "./myTypes";
+import { MESSAGE, NEWCHAT, NEWGROUP, USERDATA } from "./myTypes";
 import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
 import { hash } from "bcrypt";
@@ -12,9 +12,9 @@ export class ChatService {
 	constructor(private prisma: PrismaService, private user: UserService) {
 		this.rooms = [];
 	}
-	async getUserData(userSocket: USERSOCKET) {
+	async getUserData(userName: string) {
 		const	user = await this.prisma.user.findUnique({
-			where: { username: userSocket.username },
+			where: { username: userName },
 			include: {
 				chatUsers: true,
 				friends: true,
@@ -22,13 +22,13 @@ export class ChatService {
 			}
 		});
 		if (user) {
-			await this.prisma.user.update({
-				where: { id: user.id },
-				data: {
-					state: "Online",
-					socket: userSocket.socket
-				}
-			});
+			// await this.prisma.user.update({
+			// 	where: { id: user.id },
+			// 	data: {
+			// 		state: "Online",
+			// 		socket: userSocket.socket
+			// 	}
+			// });
 			const data: USERDATA = {
 				userName: user.username,
 				chatUsers: await Promise.all(user.chatUsers.map(async x => ({
@@ -270,5 +270,20 @@ export class ChatService {
 			return false;
 		}
 		return true;
+	}
+	async OnlineOffline(socket: string, username: string) {
+		const	user = await this.prisma.user.findUnique({
+			where: { username: username }
+		})
+		if (user) {
+			await this.prisma.user.update({
+				where: { id: user.id },
+				data: {
+					state: "Online",
+					socket: socket
+				}
+			});
+            
+		}
 	}
 }

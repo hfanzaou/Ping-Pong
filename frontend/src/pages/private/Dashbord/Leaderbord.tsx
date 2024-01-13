@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../../../Layout/Header/Header";
 import Footer from '../../../Layout/Footer/Footer';
 import LeaderbordTable from "./LeaderBordTable";
-import LeaderbordCard from "./LeaderBordCard";
+import LeaderbordCard from "./LeaderbordCard";
 
 function Leaderbord({avatar} : {avatar: string}) {
     return (

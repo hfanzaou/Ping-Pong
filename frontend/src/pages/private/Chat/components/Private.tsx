@@ -48,13 +48,13 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
+		// console.log(data.userData?.userName)
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				socket: data.socket?.id,
 				username: data.userData?.userName
 			})
 		});

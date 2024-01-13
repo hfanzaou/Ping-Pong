@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { BackgroundImage, Container, Flex, SimpleGrid } from '@mantine/core';
 import Users  from './Users/Users'
 import UserCard  from '../Profile/ProfileInfo/UserCard'
@@ -7,9 +7,9 @@ import Header from '../../../Layout/Header/Header';
 import Footer from '../../../Layout/Footer/Footer';
 import UsersInterface from './Users/UsersInterface';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
 
-
-function Home({setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest, avatar}: {setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any, avatar: string}) {
+function Home({socket, setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest, avatar}: {socket: Socket, setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any, avatar: string}) {
   
     return (
     <div className='h-full' >
@@ -24,7 +24,7 @@ function Home({setUrlName, userList, setUsersList, searchList, setSearchList, ha
           spacing={{ base: 10, sm: 'xl' }}
           verticalSpacing={{ base: 'md', sm: 'lg' }}
           >
-            <Users setUrlName={setUrlName} userList={userList} searchList={searchList} setUsersList={setUsersList} setSearchList={setSearchList} handleRequest={handleRequest}/>
+            <Users socket={socket} setUrlName={setUrlName} userList={userList} searchList={searchList} setUsersList={setUsersList} setSearchList={setSearchList} handleRequest={handleRequest}/>
             <img src={image} />
           </SimpleGrid>
           </div>
@@ -34,5 +34,5 @@ function Home({setUrlName, userList, setUsersList, searchList, setSearchList, ha
   );
 }
 
-export default Home
+export default memo(Home)
 

@@ -8,3 +8,6 @@
 /frontend/backend
 /frontend/dist
 /Game
+/frontend/.env
+/
+/backend/.env

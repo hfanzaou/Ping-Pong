@@ -1,6 +1,4 @@
-import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, Param, HttpStatus, BadRequestException, Header } from '@nestjs/common';
-import { GetUser } from '../auth/decorator'
-import { FTAuthGuard, JwtGuard } from '../auth/guard';
+import { Controller, Get, UseGuards, Req, Query, Post, Body, HttpCode, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import JwtTwoFaGuard from 'src/auth/guard/twoFaAuth.guard';
 
@@ -105,12 +103,20 @@ export class UserController {
         //console.log('in 2fa state');
         return (await this.userService.getTwoFaState(req.user.id));
     }
+
     @Get('matchhistory')
     async getMatchHistory(@Req() req) {
         return (await this.userService.getMatchHistory(req.user.id));
     }
-    // @Post('matchhistory')
-    // async addMatchHistoy(@Req() req, @Body() body) {
-    //     return (await this.userService.addMatchHistory(req.user.id, body.username));
-    // }
+
+    @Get('notification')
+    async getNotification(@Req() req) {
+        return (await this.userService.getNotification(req.user.id));
+    }
+    @Post('matchhistory')
+    async addMatchHistoy(@Req() req, @Body() body: {name: string, playerScore: number, player2Score: number}) {
+        if (!body)
+            throw new BadRequestException('unsupported data');
+        return (await this.userService.addMatchHistory(req.user.id, body));
+    }
 }

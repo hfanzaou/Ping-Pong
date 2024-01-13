@@ -4,15 +4,8 @@ import { Prisma } from '@prisma/client';
 import { FTUser } from './42dto';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt'
-import fetch from 'node-fetch';
-import { createWriteStream } from 'fs';
-import { Path } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
-import * as path from 'path';
-import { authenticator } from 'otplib';
-import { toDataURL } from 'qrcode';
 import * as speakeasy from 'speakeasy';
-import { IsBase32 } from 'class-validator';
 import { AuthDto, FAuthDto } from './dto';
 
 @Injectable()

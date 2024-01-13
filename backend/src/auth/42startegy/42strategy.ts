@@ -8,8 +8,8 @@ const Strategy = require('passport-42').Strategy;
 export class FTAuth extends PassportStrategy(Strategy, '42') {
     constructor(config: ConfigService) {
         super ({
-            clientID: config.get('42_CLIENTID'),
-            clientSecret: config.get('42_CLIENTSECRET'),
+            clientID: config.get('CLIENTID'),
+            clientSecret: config.get('CLIENTSECRET'),
             callbackURL: config.get('CALLBACK_URL'),
         });
     }
