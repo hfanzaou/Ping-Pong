@@ -1,7 +1,7 @@
 interface NotificationInterface {
-    notification: {
-        username: string;
-        avatar: string;
-        type: string;
-    }[]
+    username: string;
+    avatar: string;
+    type: string;
 }
+
+export default NotificationInterface;

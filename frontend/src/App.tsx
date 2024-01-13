@@ -201,7 +201,7 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-            <Header setSocket={setSocket} avatar={avatar}/>
+             <Header socket={socket} setSocket={setSocket} avatar={avatar}/>
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>
