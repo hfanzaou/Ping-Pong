@@ -79,6 +79,7 @@ const handleRequest = async (name: string) => {
         setSearchList(updatedUserList);
         await axios.post("user/remove/request", {name: name})
         .then((res) => {
+            socket?.emit("addnotification", {reciever: name, type: "remove request"})
           console.log(res.data);
         })
         .catch((err) => {
