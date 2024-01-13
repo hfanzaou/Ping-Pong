@@ -29,14 +29,14 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
                 }
         });
     
-        socket?.on('error', (error) => {
-            console.error('Error', error);
-        });
+        // socket?.on('error', (error) => {
+        //     console.error('Error', error);
+        // });
 
         // Clean up the effect
         return () => {
             socket?.off('online');
-            socket?.off('error');
+            // socket?.off('error');
         }
 
     }, [setState, userName, socket]);
