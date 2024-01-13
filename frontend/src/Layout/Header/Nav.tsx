@@ -4,9 +4,7 @@ import { Menu, MenuDropdown, rem } from "@mantine/core";
 import { IconChartInfographic, IconDeviceGamepad2, IconLogout, IconMessages, IconPresentationAnalytics, IconSettings, IconUserCircle } from "@tabler/icons-react";
 import { IconHome } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
-import iconleadr from "./iconleadr.json";
-import axios from "axios";
-import FriendInterface from "../../pages/private/Profile/Friends/FriendsInterface";
+import Notification from "./Notification";
 // import { IconButton, Typography } from "@mui/material";
 
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
@@ -65,7 +63,7 @@ function NavigationItem() {
 
       <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
        
-        {/* <div className="flex flex-shrink-0 items-center text-gray-900">
+        {/* <div className="flex flex-shrink-0 items-center mr-12 text-gray-100">
           Pong Game
         </div> */}
 
@@ -87,57 +85,19 @@ function NavigationItem() {
 
 const LeftSide = ({avatar} : {avatar: string}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
-    const [requestFriendList, setRequestFriendList] = useState<FriendInterface[]>([]);
-
 
 
     const handleLogout = async () => {
         // await axios.get('user/offline');
     }
-    const getRequests = async () => {
-        await axios.get("user/friend/requests")
-        .then((res) => {
-            setRequestFriendList(res.data);
-        }).catch(err => {
-            // setRequestFriendList(testdata);
-            console.error("Error in fetching friend requests: ", err);
-        })
-    };
 
-    useEffect(() => {
-        getRequests();
-    }, []);
 
     return (
         <div className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-1 xl:ml-1 md:pr-0">
 
             {/* <button type="button" className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"> */}
 
-        <Menu  position="bottom-end" offset={20}>
-            <Menu.Target>
-            <button type="button" className="relative rounded-full bg-gray-800  text-gray-400 hover:text-white">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-              </svg>
-            </button>
-            </Menu.Target>
-            <Menu.Dropdown bg='gray'>
-                <div className="h-full w-[300px]">
-                    <div className="flex flex-col">
-                        <div className="flex flex-row">
-                            <p className="place-self-start ">User Name</p>
-                            <p className="place-item-end">accepte friend</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <p className="place-self-start text-white text-md font-bold">User Name</p>
-                            <p className="place-self-end text-gray-400 text-xs">accepte friend</p>
-                        </div>
-                    </div>
-                </div>
-            </Menu.Dropdown>
-        </Menu>
-
-
+        <Notification />
 
         <Menu trigger="hover"  openDelay={100} closeDelay={400} opened={disabled} onChange={setDisabled} shadow="md" position="bottom-end" offset={5}>
 
