@@ -319,8 +319,7 @@ export class UserService {
             })
             await this.prismaservice.notifications.delete({
                 where: {
-                    userId: user.id,
-                    senderId: id,
+                    userId_senderId: {userId: user.id, senderId: id},
                     type: "friend request"
                 }
             })

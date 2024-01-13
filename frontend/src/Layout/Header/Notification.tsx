@@ -38,6 +38,7 @@ function Notification({socket}: Socket) {
     
     socket?.on("getnotification", () => {
         setNotification(true);
+        getRequests();
         console.log("get notification");
         return () => {
             socket.off("getnotification");
@@ -46,7 +47,7 @@ function Notification({socket}: Socket) {
 
     useEffect(() => {
         getRequests();
-    }, [socket]);
+    }, [socket, setNotification]);
 
     const requestRows = notificationList.map((item) => (
         // <div className=" h-[700px] bg-gray-500">
