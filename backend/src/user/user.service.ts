@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { match } from 'assert';
 import { isInstance } from 'class-validator';
@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { listDto, userDto } from 'src/auth/dto';
 import { notifDto } from 'src/auth/dto/notif.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { resourceLimits } from 'worker_threads';
 
 @Injectable()
 export class UserService {
@@ -345,26 +346,6 @@ export class UserService {
             throw error;
         }
     }
-    ///Achievements////
-    // async addAchievement(id: number, achievement: boolean) {
-    //     try { 
-    //         await this.prismaservice.achievement.update({
-    //             where: {
-    //                 userId: id
-    //             }, data: {
-    //                achievement: true,
-    //             }
-
-    //         })
-    //         const user = await this.prismaservice.user.findUnique({
-    //             where: {id: id},
-    //             select: {id: true, achievement: true}
-    //         })
-    //         console.log(user);
-    //     } catch(error) {
-    //         throw HttpStatus.INTERNAL_SERVER_ERROR;
-    //     }
-    // }
     async getAchievements(id: number)
     {
         try {
@@ -374,7 +355,7 @@ export class UserService {
             })
             return ach.achievement;
         } catch(error) {
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new BadGatewayException('ERROR GETTING DATA');
         }
     }
     async addAchievement(id: number, achievement: any)
@@ -383,8 +364,8 @@ export class UserService {
             await this.prismaservice.user.update({
                 where : {id: id}, data : {achievement: achievement}
             })
-        } catch(error){
-
+        } catch(error) {
+            throw new BadGatewayException('ERROR UPDATING DATA');
         }    
     }
     ////extartacting user info functions////
@@ -406,14 +387,6 @@ export class UserService {
                 }
                 return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
               }));
-            //    const to_cons = usersre;
-            //    let i = 0;
-            //   while (to_cons[i])
-            //   {
-            //     delete to_cons[i].avatar;
-            //     console.log(to_cons[i]);
-            //     i++;
-            //   }
                 return (usersre);     
     }
 
@@ -429,7 +402,7 @@ export class UserService {
                     ]},
                 select : {players: {where: {
                         NOT: {id: id},
-                }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true, win: true},
+                }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true},
             })
             if (!matchhistory)
                 return [];
@@ -445,50 +418,65 @@ export class UserService {
                     username: obj.players[0].username
                 };
               }));
-            //console.log(to_send);
             return to_send;
         } catch(error) {
-            //if (error.instanceof(this.prismaservice))
-                
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new BadGatewayException('ERROR GETTING DATA');
+        }
+    }
+    
+    async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
+        try {
+            const loserid = await this.prismaservice.user.findUnique({
+                where: {username: result.name},
+                select: {id: true},
+            })
+            await this.prismaservice.matchHistory.create({
+                data: {
+                    players: {connect: [{id: id}, {username: result.name}]},  
+                    playerId: id,
+                    player2Id: loserid.id,
+                    playerScore: result.playerScore,
+                    player2Score: result.player2Score,
+
+                }    
+            })
+        } catch(error) {
+            throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
 
     async addNotification(id: number, payload: notifDto)
     {
-        await this.prismaservice.notifications.create({
-            data: {
-                user: {connect: {username: payload.reciever}},
-                senderId: id,
-                type: payload.type
-            }
-        })
+        try {
+            await this.prismaservice.notifications.create({
+                data: {
+                    user: {connect: {username: payload.reciever}},
+                    senderId: id,
+                    type: payload.type
+                }
+            })
+        } catch(error) {
+            throw new BadGatewayException('ERROR UPDATING DATA');
+        }
     }
 
     async getNotification(id: number)
     {
-        const notif = await this.prismaservice.notifications.findMany({
-            where: {
-                userId: id,
-            },
-            select: {senderId: true, type: true}
-        })
-        const notification = await Promise.all(notif.map(async (obj) => {
-            const username = await this.getUsername(obj.senderId);
-            const avatar = await this.getUserAvatar(obj.senderId);
-            return {username, avatar, type: obj.type}
-        }))
-        return (notification);
+        try {
+            const notif = await this.prismaservice.notifications.findMany({
+                where: {
+                    userId: id,
+                },
+                select: {senderId: true, type: true}
+            })
+            const notification = await Promise.all(notif.map(async (obj) => {
+                const username = await this.getUsername(obj.senderId);
+                const avatar = await this.getUserAvatar(obj.senderId);
+                return {username, avatar, type: obj.type}
+            }))
+            return (notification);
+        } catch(error) {
+            throw new BadGatewayException('ERROR GETTING DATA');
+        }
     }
-    // async addMatchHistory(id: number, name: string) {
-    //     try {
-    //         const user = await this.prismaservice.matchHistory.update({
-    //             data: {
-    //                 player
-    //         })
-    //     } catch(error)
-    //     {
-
-    //     }
-    // }
 }

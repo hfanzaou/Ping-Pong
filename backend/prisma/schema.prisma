@@ -30,8 +30,7 @@ model User {
   blocked        User[]            @relation("Blocked")
   blockedFrom    User[]            @relation("Blocked")
   achievement    Json?
-  MatchHistory   MatchHistory?     @relation(fields: [matchHistoryId], references: [id])
-  matchHistoryId Int?
+  MatchHistory   MatchHistory[]
   socket         String?           @unique
   chatUsers      User[]            @relation("ChatUsers")
   chatUsersOf    User[]            @relation("ChatUsers")
@@ -42,12 +41,12 @@ model User {
 
 model MatchHistory {
   id           Int     @id @unique @default(autoincrement())
+  createAt     DateTime @default(now())
+  players      User[]
   playerId     Int
   player2Id    Int
-  players      User[]
   playerScore  Int
   player2Score Int
-  win          Boolean @default(false)
 }
 
 model CHATHISTORY {
