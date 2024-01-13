@@ -6,7 +6,8 @@ export interface DATA {
 	talkingTo?: string,
 	message: string,
 	trigger: boolean,
-	send: boolean
+	send: boolean,
+	groupTo?: string
 }
 
 export interface User {
@@ -18,7 +19,8 @@ export interface User {
 export interface USERDATA {
 	userName: string,
 	chatUsers: User[],
-	friends: User[]
+	friends: User[],
+	groups: Group[]
 }
 
 export interface MESSAGE extends NEWCHAT {
@@ -28,4 +30,9 @@ export interface MESSAGE extends NEWCHAT {
 export interface NEWCHAT {
 	sender: string
 	recver: string
+}
+
+export interface Group {
+	id:		number,
+	name:	string,
 }
