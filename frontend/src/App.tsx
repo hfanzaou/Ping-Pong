@@ -25,7 +25,7 @@ import ScrollUp from './componenet/ScrollUp';
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
-    const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
+    const [hasToken, setHasToken] = useState<Boolean>(true); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
     const [urlName, setUrlName] = useState<string | undefined>();
 
@@ -80,11 +80,7 @@ const handleRequest = async (name: string) => {
         await axios.post("user/remove/request", {name: name})
         .then((res) => {
             socket?.emit("addnotification", {reciever: name, type: "remove request"})
-<<<<<<< HEAD
-            console.log(res.data);
-=======
           console.log(res.data);
->>>>>>> origin/master
         })
         .catch((err) => {
           console.log("Error in send post request to remove request",err);

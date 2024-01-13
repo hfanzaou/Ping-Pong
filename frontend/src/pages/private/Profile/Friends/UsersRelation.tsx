@@ -10,7 +10,7 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
   const [value, setValue] = useState<string>('Friends list');
 
   return (
-    <>
+    <div>
         <div className="flex h-2 mt-5 w-full items-center rounded-md bg-gray">
             <SegmentedControl
                 fullWidth
@@ -42,7 +42,7 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
             )}
         </Table>
       </ScrollArea>
-  </>
+  </div>
   );
 }
 
