@@ -48,7 +48,7 @@ function Notification({socket}: Socket) {
 
     useEffect(() => {
         getRequests();
-    }, []);
+    }, [socket, setNotification]);
 
     const requestRows = notificationList.map((item) => (
         // <div className=" h-[700px] bg-gray-500">

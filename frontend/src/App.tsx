@@ -80,7 +80,11 @@ const handleRequest = async (name: string) => {
         await axios.post("user/remove/request", {name: name})
         .then((res) => {
             socket?.emit("addnotification", {reciever: name, type: "remove request"})
+<<<<<<< HEAD
             console.log(res.data);
+=======
+          console.log(res.data);
+>>>>>>> origin/master
         })
         .catch((err) => {
           console.log("Error in send post request to remove request",err);
