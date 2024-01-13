@@ -46,7 +46,7 @@ function Notification({socket}: Socket) {
 
     useEffect(() => {
         getRequests();
-    }, [setNotificationList, setNotification, socket]);
+    }, [socket]);
 
     const requestRows = notificationList.map((item) => (
         // <div className=" h-[700px] bg-gray-500">
@@ -77,6 +77,7 @@ function Notification({socket}: Socket) {
 
             <Drawer
                 // offset={20}
+                onClick={() => setNotification(false)}
                 position="right"
                 opened={opened}
                 onClose={close}
