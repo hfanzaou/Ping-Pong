@@ -7,6 +7,7 @@ import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
+import data from './MatchHistory/test.json'
 
 export function ProfileSections({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
     // const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
@@ -62,7 +63,8 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
           <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip} />
           {/* <UserCard userName={profile?.username} avatar={profile?.avatar} level={profile?.level} win={5} losses={6} /> */}
           <Achievements achievement={profile?.achievements} />
-          <MatchHistory matchhistory={profile?.matchhistory}/>
+          {/* <MatchHistory matchhistory={profile?.matchhistory}/> */}
+          <MatchHistory matchhistory={data}/>
         </SimpleGrid>
       </div>
     );

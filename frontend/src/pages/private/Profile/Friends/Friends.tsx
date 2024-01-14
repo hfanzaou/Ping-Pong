@@ -11,11 +11,9 @@ import { StateComponent } from '../../Home/Users/Users';
 import testdata from './FriendsList.json';
 
 function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) {
-//   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
-const [friendList, setFriendList] = useState<any>(testdata);
+  const [friendList, setFriendList] = useState<FriendInterface[]>([]);
 
-//   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
-  const [value, setValue] = useState<string>('Friends list');
+  const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
 
   const handelShowProfile = (name: string) => {
         setUrlName(name);
@@ -25,12 +23,13 @@ const [friendList, setFriendList] = useState<any>(testdata);
       await axios.get("user/friend/list")
       .then((res) => {
        setFriendList(res.data);
-      }).catch(err => {
+        // setFriendList(testdata);
+    }).catch(err => {
         // setFriendList(testdata);
         console.error("Error in fetching friend list: ", err);
       })
     };
-    
+
     useEffect(() => {
         getFriends();
     }, []);
@@ -55,7 +54,7 @@ const [friendList, setFriendList] = useState<any>(testdata);
     <Table.Tr key={item.name} m={6}>
     <Table.Td>
       <div className='flex justify-between'>
-      <Group gap="sm">
+      <Group gap="md">
           <Menu position='right-start' trigger="hover" openDelay={200} closeDelay={100} offset={2}>
           <Menu.Target >
 
@@ -166,7 +165,7 @@ const [friendList, setFriendList] = useState<any>(testdata);
 
   return (
     <div>
-        {Object.keys(rows).length ?
+        {Object.keys(search).length ?
             search :
             <Table.Tr>
                 <Table.Td>

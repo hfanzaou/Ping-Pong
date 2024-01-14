@@ -13,12 +13,13 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
       <div>
         <SimpleGrid
               cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
-              spacing={{ base: 2, sm: 'md', lg: 'xs' }}
+              spacing={'md'}
             //   verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
         <SimpleGrid
             cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
-            spacing={{ base: 10, sm: 'sm', lg: 'xs', xl: 'xm' }}
+            spacing={'md'}
+            // spacing={{ base: 10, sm: 'sm', lg: 'xs', xl: 'xm' }}
             // verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >
 
@@ -28,9 +29,9 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
           <UserCard setUrlName={setUrlName} avatar={avatar} />
         {/* </div> */}
         {/* <div> */}
-          <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="md">
+          <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
 
-            <MatchHistory />
+          <UsersRelation socket={socket} setUrlName={setUrlName}/>
             </Card>
         {/* </div> */}
         </SimpleGrid>
@@ -41,7 +42,7 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
           {/* </Card> */}
             {/* </div> */}
           <Achievements />
-          <UsersRelation socket={socket} setUrlName={setUrlName}/>
+            <MatchHistory />
         </div>
         </SimpleGrid>
       </div>
@@ -50,7 +51,7 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
 
 function Profile({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Function, avatar: string}) {
     return (
-        <div className='mx-[50px] mt-[20px] p-5 rounded-lg bg-slate-900 shadow-5'>
+        <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
             <ProfileSections socket={socket} setUrlName={setUrlName} avatar={avatar}/>
         </div>
     );
