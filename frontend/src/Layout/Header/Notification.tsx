@@ -35,7 +35,7 @@ function Notification({socket}: Socket) {
     //         socket?.off("getnotification", handleNotification);
     //     };
     // }, [socket]);
-    
+    useEffect(() => {
     socket?.on("getnotification", () => {
         setNotification(true);
         getRequests();
@@ -44,6 +44,7 @@ function Notification({socket}: Socket) {
             socket.off("getnotification");
         }
     });
+    }, [socket]);
 
     useEffect(() => {
         getRequests();

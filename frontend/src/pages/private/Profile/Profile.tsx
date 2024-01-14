@@ -1,5 +1,5 @@
 import React from 'react'
-import { SimpleGrid } from '@mantine/core'
+import { Card, SimpleGrid } from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import UsersRelation from './Friends/UsersRelation'
 import MatchHistory from './MatchHistory/MatchHistory'
@@ -13,19 +13,24 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
       <div>
         <SimpleGrid
               cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
-            //   spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+              spacing={{ base: 2, sm: 'md', lg: 'xs' }}
             //   verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
-          <UserCard setUrlName={setUrlName} avatar={avatar} />
         <SimpleGrid
-            cols={{ base: 1, xs: 1, md: 1, lg: 1 }}
-            // spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
+            cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+            spacing={{ base: 10, sm: 'sm', lg: 'xs', xl: 'xm' }}
             // verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >
-        {/* <MatchHistory /> */}
-          <Achievements />
-        <UsersRelation socket={socket} setUrlName={setUrlName}/>
+
+          <UserCard setUrlName={setUrlName} avatar={avatar} />
+          <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="md">
+            <MatchHistory />
+          </Card>
         </SimpleGrid>
+        <div>
+          <Achievements />
+          <UsersRelation socket={socket} setUrlName={setUrlName}/>
+        </div>
         </SimpleGrid>
       </div>
     );
@@ -33,14 +38,8 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
 
 function Profile({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Function, avatar: string}) {
     return (
-        // <div  className='h-full ml-8 mr-8 pr-8 pl-8 '>
-        // h-[530px]
-            <div className='ml-[70px] mr-[70px] pl-5 pr-5 rounded-lg bg-slate-900 shadow-5'>
-            {/* <Header avatar={avatar}/> */}
-             {/* <div className=' '>  */}
-                <ProfileSections socket={socket} setUrlName={setUrlName} avatar={avatar}/>
-             {/* </div>  */}
-            {/* <Footer/> */}
+        <div className='mx-[50px] mt-[20px] p-5 rounded-lg bg-slate-900 shadow-5'>
+            <ProfileSections socket={socket} setUrlName={setUrlName} avatar={avatar}/>
         </div>
     );
 }
