@@ -45,9 +45,9 @@ function  MatchHistory() {
 
   return (
     <div className='flex flex-col space-y-12 mb-4 pb-4'>
-        <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
+        {/* <div className="flex h-16 w-full items-center rounded-md bg-primary p-4">
             <h2 className="mb-2 mt-0 text-4xl font-medium leading-tight  text-slate-100">Match History</h2>
-        </div>
+        </div> */}
         <div className='relative h-full flex items-center'>
             <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderLeft} size={40}/>
             <div id='match-history-slider' className='relative flex items-center w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>

@@ -22,12 +22,24 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
             // verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
         >
 
+        
+        {/* <div> */}
+
           <UserCard setUrlName={setUrlName} avatar={avatar} />
+        {/* </div> */}
+        {/* <div> */}
           <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="md">
+
             <MatchHistory />
-          </Card>
+            </Card>
+        {/* </div> */}
         </SimpleGrid>
         <div>
+            {/* <div className=''> */}
+
+          {/* <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="md"> */}
+          {/* </Card> */}
+            {/* </div> */}
           <Achievements />
           <UsersRelation socket={socket} setUrlName={setUrlName}/>
         </div>

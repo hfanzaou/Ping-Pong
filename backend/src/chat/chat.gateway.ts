@@ -93,7 +93,10 @@ OnGatewayDisconnect {
 		try {
 			const token = client.handshake.headers.cookie.split('jwt=')[1];
 			const payload = await this.strategy.verifyToken(token);
-			return (await this.strategy.validate(payload));
+            const user = await this.strategy.validate(payload)
+            if (!user)
+                throw new Error('invalid token');
+			return (user);
 		}
 		catch (error) {
 			client.emit('error', 'invalid token');
