@@ -35,4 +35,5 @@ export interface NEWCHAT {
 export interface Group {
 	id:		number,
 	name:	string,
+	size:	boolean
 }

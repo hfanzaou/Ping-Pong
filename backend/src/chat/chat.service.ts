@@ -249,24 +249,21 @@ export class ChatService {
 			where: { username: data.owner }
 		})
 		try {
-			await this.prisma.gROUP.create({
+			const group = await this.prisma.gROUP.create({
 				data: {
 					name: data.name,
 					owner: data.owner,
 					admins: [data.owner],
 					state: data.state,
-					members: {
-						create: {
-							user:{
-								connect: {
-									id: user.id
-								}
-							}
-						}
-					},
 					hash: data.password.length > 0 ?
 						await hash(data.password, 10) :
 						null
+				}
+			});
+			await this.prisma.userGROUP.create({
+				data: {
+					userid: user.id,
+					groupId: group.id
 				}
 			});
 		}
@@ -297,6 +294,31 @@ export class ChatService {
 		return groups.map(x => ({
 			id: x.id,
 			name: x.name
+		}));
+	}
+	async getLeave(data: { userName: string, name: string}) {
+		let	user = await this.prisma.user.findUnique({
+			where: { username: data.userName },
+		});
+		const	group = await this.prisma.gROUP.findUnique({
+			where: { name: data.name }
+		});
+		if (user && group)
+			await this.prisma.userGROUP.delete({
+				where: {
+					userid_groupId: {
+						userid: user.id,
+						groupId: group.id
+					}
+				}
+			});
+		const	updatedUser = await this.prisma.user.findUnique({
+				where: { id: user.id },
+				include: { groups: { include: { group: true }}}
+			});
+		return updatedUser.groups.map(x => ({
+			id: x.group.id,
+			name: x.group.name
 		}));
 	}
 }
