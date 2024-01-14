@@ -8,10 +8,10 @@ function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: Ma
         <Card shadow="sm" padding="mg" radius="md" withBorder>
             <Card.Section>
                 <Image
+                    h={100}
                     src={avatar}
-                    height={100}
                     alt="Norway"
-                />
+                    />
             </Card.Section>
             <Text size="xs" ta='center'>
                 {username}
@@ -19,7 +19,7 @@ function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: Ma
             <Text ta='center'>
                 {playerScore} - {player2Score}
             </Text>
-            <Text ta="center" fw={700}>
+            <Text ta="center" fw={500}>
                 {!win ? "loss" : "win"}
                 {/* {!wine ? <p className="text-red-600">losse</p> : <p className="text-green-600">wine</p>} */}
             </Text>

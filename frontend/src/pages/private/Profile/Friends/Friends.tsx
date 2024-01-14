@@ -8,9 +8,12 @@ import { Link } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { StateComponent } from '../../Home/Users/Users';
 
+import testdata from './FriendsList.json';
 
 function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) {
-  const [friendList, setFriendList] = useState<FriendInterface[]>([]);
+//   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
+const [friendList, setFriendList] = useState<any>(testdata);
+
 //   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
   const [value, setValue] = useState<string>('Friends list');
 
