@@ -46,14 +46,14 @@ function  MatchHistory() {
   return (
     <div className='mx-2 flex flex-col mt-2'>
         {/* <div className="flex h-16 w-full items-center rounded-md bg-primary"> */}
-            <h2 className="mb-4 text-3xl font-medium leading-tight  text-slate-100">Match History</h2>
+            <h2 className="mb-5 text-3xl font-medium leading-tight  text-slate-100">Match History</h2>
         {/* </div> */}
-        <div className='relative h-full flex items-center'>
-            <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderLeft} size={40}/>
+        <div className='mt-5 relative h-full flex items-center'>
+            {matches.length ? <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100 color-blue' onClick={sliderLeft} size={40}/>: null}
             <div id='match-history-slider' className='relative flex items-center w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>
                 {matches}
             </div>
-            <MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={40}/>
+            {matches.length ?<MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={40}/> : null}
         </div>
     </div>
   );
