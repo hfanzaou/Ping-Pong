@@ -66,10 +66,14 @@ export class AuthController {
 	@Get('verifyTfa')
 	@UseGuards(JwtGuard)
 	async verifyTwoFa(@Req() req) {
-        const user = await this.authService.validateUser(req.user);
-        if (user && user.twoFaAuth)
-            return (true);
-        return false;
+		try {
+        	const user = await this.authService.validateUser(req.user);
+        	if (user && user.twoFaAuth)
+        	    return (true);
+        	return false;
+		} catch (error) {
+			throw new UnauthorizedException();
+		}
     }
 	////// login logout and callback////
 	@Get('login')
@@ -81,33 +85,43 @@ export class AuthController {
 	@Get('callback')
 	@UseGuards(FTAuthGuard)
 	async callback(@Req() req, @Res({passthrough: true}) res: Response) {
-		const user = await this.authService.validateUser(req.user);
-		//console.log(user.twoFaAuth);
-		if (user && user.twoFaAuth) ///2fa enabled need an access token that only enables to verify code
-		{
-			const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
+		try {
+			if (req.user === null)
+			{
+				res.redirect(this.config.get('HOST'))
+				return;
+			}
+			const user = await this.authService.validateUser(req.user);
+			//console.log(user.twoFaAuth);
+			if (user && user.twoFaAuth) ///2fa enabled need an access token that only enables to verify code
+			{
+				const token = await this.authService.signToken({sub: user.id, userID: user.id, isTwoFaAuth: false})
+				res.cookie('jwt', token, {
+					path:'/',
+					httpOnly: true,
+				});
+				res.redirect(this.config.get('HOST') + '/auth');
+				return;
+			}
+			const token = await this.authService.signin(req.user);
 			res.cookie('jwt', token, {
 				path:'/',
 				httpOnly: true,
 			});
-			res.redirect(this.config.get('HOST') + '/auth');
-			return;
+			if (!user) ///if user first time login
+			{
+				res.redirect( this.config.get('HOST') + '/Setting');
+				return;
+			}
+			res.redirect(this.config.get('HOST'));
 		}
-		const token = await this.authService.signin(req.user);
-		res.cookie('jwt', token, {
-			path:'/',
-			httpOnly: true,
-		});
-		if (!user) ///if user first time login
-		{
-			res.redirect( this.config.get('HOST') + '/Setting');
-			return;
+		catch(error) {
+			res.redirect(this.config.get('HOST'));
 		}
-		res.redirect(this.config.get('HOST'));
 	}
 
 	@Get('logout')
-	@UseGuards(JwtTwoFaGuard)
+	@UseGuards(JwtGuard)
 	async logout(@Req() req, @Res() res)
 	{
 		await res.clearCookie('jwt');
@@ -127,6 +141,11 @@ export class AuthController {
 	@HttpCode(201)
 	@UseGuards(JwtTwoFaGuard)
 	async turnOffTwoFaAuth(@Req() req, @Res({passthrough: true}) res, @Body() body) {
+		if (!req.user)
+		{
+			res.redirect(this.config.get('HOST'))
+			return;
+		}
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(
@@ -155,7 +174,6 @@ export class AuthController {
 	@HttpCode(201)
 	@UseGuards(JwtGuard)
 	async autenticate(@Req() req, @Res({passthrough: true}) res, @Body() body) {
-		console.log('AuthCode = ', body.AuthCode)
 		const user = await this.authService.validateUser(req.user)
 		try {
 			const isCodeValid = await this.authService.verifyTwoFa(

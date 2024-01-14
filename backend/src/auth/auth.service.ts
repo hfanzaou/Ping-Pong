@@ -106,7 +106,7 @@ export class AuthService {
 	async signToken(payload: {sub: number, userID: number, isTwoFaAuth: boolean}) : Promise<string> {
 		const secret = this.config.get('JWT_SECRET');
 		const token = await this.jwt.signAsync(payload, {
-			expiresIn: '60m',
+			expiresIn: '10 days',
 			secret: secret,
 		});
 		//console.log('console in signToken');
