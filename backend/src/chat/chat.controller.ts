@@ -31,4 +31,9 @@ export class ChatController {
 	async handleOnlineOffline(@Body() data: {socket: string, username: string}) {
 		await this.chatService.OnlineOffline(data.socket, data.username);
 	}
+	@Get("searchList")
+	async handlegetSearchList() {
+		const	groups = await this.chatService.getSearchList();
+		return groups;
+	}
 }

@@ -25,7 +25,7 @@ import ScrollUp from './componenet/ScrollUp';
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
-    const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
+    const [hasToken, setHasToken] = useState<Boolean>(true); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
     const [urlName, setUrlName] = useState<string | undefined>();
 
@@ -79,6 +79,7 @@ const handleRequest = async (name: string) => {
         setSearchList(updatedUserList);
         await axios.post("user/remove/request", {name: name})
         .then((res) => {
+            socket?.emit("addnotification", {reciever: name, type: "remove request"})
           console.log(res.data);
         })
         .catch((err) => {
@@ -201,7 +202,7 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-            <Header setSocket={setSocket} avatar={avatar}/>
+             <Header socket={socket} setSocket={setSocket} avatar={avatar}/>
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>

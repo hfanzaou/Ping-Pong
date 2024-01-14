@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Avatar, Text, Group, Button, SimpleGrid } from '@mantine/core';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
-import sectionimage from '../../Home/assite/bg.gif'
+import sectionimage from './avatar-10.png'
 import { Link } from 'react-router-dom';
 
 
@@ -65,19 +65,24 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
 
   return (
     //  h-[515px]
-    <div className='m-2 p-2 rounded-lg bg-gray-800'>
-    <Card style={{backgroundColor: 'transparent'}}    radius="md">
+    // <div className='p-2  w-[250px]  rounded-lg bg-gray-800'>
+     <Card p={2} style={{backgroundColor: 'rgb(31 41 55)'}}    radius="md">
       <Card.Section
-        h={60}
+        h={300}
+        style={{
+          backgroundImage: `url(${sectionimage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+        }}
         >
         </Card.Section>
-      <Avatar
+      {/* <Avatar
         src={avatar}
-        size={250}
-        radius={160}
+        size={150}
+        radius={150}
         mx="auto"
-        mt={-30}
-        />
+        // mt={-30}
+        /> */}
       <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
 
         {userName}
@@ -88,7 +93,6 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
       <Group mt="md" justify="center" gap={30}>
         {items}
       </Group>
-    </Card>
       <div className='flex justify-center items-centerw-12'>
         <Button radius="md" size="md" color='gray' onClick={handleClick}>
         {/* <Link to={'/'+userName+'/public/profile'}> */}
@@ -97,7 +101,8 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
         </Link>
         </Button>
       </div>
-    </div>
+    </Card>
+    //   </div>
   );
 }
 

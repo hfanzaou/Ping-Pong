@@ -51,14 +51,14 @@ data[4].type = achievements['achievement5'];
   ));
   
   return (
-    <>
+    <div>
         <h2 className="mt-2 mb-0 text-4xl font-medium leading-tight text-slate-100">Your Achievements</h2>
         <SimpleGrid 
-            cols={{ base: 3, sm: 3, lg: 5 }}
+            cols={{ base: 3, md: 3, lg: 5, xl: 5 }}
         >
             {achievementsData}
         </SimpleGrid>
-    </>
+    </div>
   );
 }
 

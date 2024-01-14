@@ -39,9 +39,9 @@ OnGatewayDisconnect {
 	@SubscribeMessage("newChat")
 	async handelNewChat(client: Socket, data: NEWCHAT) {
 		Array
-		.from(client.rooms)
-		.slice(1)
-		.forEach(room => client.leave(room));
+			.from(client.rooms)
+			.slice(1)
+			.forEach(room => client.leave(room));
 		const room = this.chatService.getRoom(data);
 		client.join(room);
 	}
@@ -53,13 +53,21 @@ OnGatewayDisconnect {
 			.emit("newuser");
 	}
 	handleConnection(client: Socket) {
-        console.log("test");
+        // console.log("test");
 		// console.log(client.handshake.headers.cookie);
 	}
 	async handleDisconnect(client: Socket) {
-        await this.chatService.dropUser(client);
-		const {username, state} = await this.verifyClient(client);
-		client.broadcast.emit("online", {username, state});
+		Array
+			.from(client.rooms)
+			.slice(1)
+			.forEach(room => client.leave(room));
+        const	user = await this.chatService.dropUser(client);
+		// const {username, state} = await this.verifyClient(client);
+		if (user)
+			client.broadcast.emit("online", {
+				username: user.username,
+				state: user.state
+			});
 	}
 
 

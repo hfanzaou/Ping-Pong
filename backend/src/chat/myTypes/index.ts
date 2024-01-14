@@ -7,7 +7,8 @@ export interface User {
 export interface USERDATA {
 	userName: string,
 	chatUsers: User[],
-	friends: User[]
+	friends: User[],
+	groups: Group[]
 }
 
 export interface MESSAGE extends NEWCHAT {
@@ -24,4 +25,9 @@ export interface NEWGROUP {
 	state: string,
 	password: string,
 	owner: string
+}
+
+interface Group {
+	id:		number,
+	name:	string,
 }
