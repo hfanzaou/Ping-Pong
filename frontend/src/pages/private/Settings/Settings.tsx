@@ -1,10 +1,8 @@
 import React from 'react';
-import { Box, Card, SimpleGrid } from '@mantine/core';
+import { Card, SimpleGrid } from '@mantine/core';
 import ChangeAvatar from './UpdateAvatar';
 import ChangeName from './ChangeName';
-import EnableTowFactor from '../EnableTowFactor';
-import Header from '../../../../Layout/Header/Header';
-import Footer from '../../../../Layout/Footer/Footer';
+import EnableTowFactor from './EnableTowFactor';
 
 function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
 
