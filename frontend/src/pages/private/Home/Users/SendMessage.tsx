@@ -45,7 +45,6 @@ function SerndMessage({name, opened, close}: {name: string, opened: boolean, clo
             style={{backgroundColor: 'rgb(31 41 55)'}}
         >
             <div className='flex flex-col justify-center'>
-                <h1>{name}</h1>
                 <Textarea
                     variant="filled"
                     label={name}
