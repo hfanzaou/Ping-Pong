@@ -68,6 +68,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
 
     const [searchInput, setSearchInput] = useState("");
     const [opened, { open, close }] = useDisclosure(false);
+    const [receverName, setReceverName] = useState<string>('');
   
     const getUsers = async () => {
         await axios.get("user/list")
@@ -120,7 +121,8 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         }
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = (name: string) => {
+        setReceverName(name);
         open();
     };
 
@@ -148,7 +150,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                     </Link>
                                 </Menu.Item>
                                 <Menu.Item
-                                    onClick={handleSendMessage}
+                                    onClick={() => handleSendMessage(item.name)}
                                     leftSection={<IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                                 >
                                     Send message
@@ -160,8 +162,8 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                     Block user
                                 </Menu.Item>
                             </Menu.Dropdown>
+                            <SerndMessage name={receverName} opened={opened} close={close}/>
                         </Menu>
-                                <SerndMessage name={item.name} opened={opened} close={close}/>
                         <div>
                             <Text fz="md" fw={800} c='indigo'>
                                 {item.name}
