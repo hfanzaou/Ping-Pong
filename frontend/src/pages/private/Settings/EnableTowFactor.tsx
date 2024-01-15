@@ -1,4 +1,5 @@
-import { Switch, TextInput, Image, Button } from "@mantine/core";
+import { Switch, TextInput, Image, Button, Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -11,6 +12,9 @@ function EnableTowFactor() {
   const [qrImage, setQrImage] = useState();
   const [code, setCode] = useState<string>();
   const [disabled, setDisabled] = useState<boolean>(true);
+
+  const [opened, { open, close }] = useDisclosure(false);
+
 
   const getFactorState = async () => {
       await axios.get("user/2fa")
@@ -28,7 +32,7 @@ function EnableTowFactor() {
 
     const handleTowFactor = async () => {
         setChange(true);
-
+        open();
         if (!towFactor) {
             // handle enable it
             await axios.post("2fa/turnon")
@@ -123,8 +127,19 @@ const handleCancel = () => {
         //     onChange={handleTowFactor}
         // />
          :
-        (!towFactor ?
-            <div>
+        <Modal 
+            opened={opened} 
+            onClose={close}
+            withCloseButton={false}
+            radius='lg' 
+            c={'blue'}
+            centered={true}
+            style={{backgroundColor: 'rgb(31 41 55)'}}
+        >
+            {
+
+                (!towFactor ?
+                    <div>
             <img className="h-40 w-40 mx-auto" alt="qr code"
             src={qrImage}/>
             <TextInput
@@ -157,10 +172,12 @@ const handleCancel = () => {
             onClick={handleDisableSendCode} disabled={disabled}>Disable</Button>
             <Button 
                 mt={10}
-                    radius={'xl'}
-                    color='gray'
-            onClick={handleCancel} >Cancel</Button>
+                radius={'xl'}
+                color='gray'
+                onClick={handleCancel} >Cancel</Button>
         </div>)
+            }
+        </Modal>
         }
     </div>
   );

@@ -65,7 +65,7 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
                 onChange={onFileInputChange}
                 accept="image/png,image/jpeg,image/gif"
               />
-            <div dir="rtl" className="relative h-32 w-32"  onClick={() => fileRef.current?.click()}>
+            <div dir="rtl" className="relative"  onClick={() => fileRef.current?.click()}>
                 <button   type="button" className="relative inline-flex items-center justify-center rounded-full p-1 text-gray-600 hover:bg-gray-900 hover:text-white">
                     <Avatar size='xl' src={!userimage ? avatar : userimage} />
                     <div className="absolute h-14 w-14 top-1 start-0">
@@ -77,9 +77,9 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
                 </button>
             </div>
             {!save && 
-                <div className="mb-8">
-                    <Button color="gray" radius='xl' onClick={handleSaveAvatar}>Set new Avatar</Button>
-                    <Button color="gray"  ml={8} radius='xl' onClick={handleRest} >Discard</Button>
+                <div className="">
+                    <Button color='green' size="xs" radius='xl' onClick={handleSaveAvatar}>Set</Button>
+                    <Button color="red" size="xs" ml={'sm'} radius='xl' onClick={handleRest} >Discard</Button>
                 </div>}
         </div>
     );

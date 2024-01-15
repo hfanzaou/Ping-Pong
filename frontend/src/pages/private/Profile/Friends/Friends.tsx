@@ -113,56 +113,6 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
   </Table.Tr>
 ));
 
-  const rows = friendList.map((item) => (
-    <Table.Tr key={item.name}>
-      <Table.Td>
-        <Group gap="sm">
-          <Menu
-            position="bottom-start"
-            >
-            <Menu.Target>
-             <Avatar size={40} src={item.avatar} radius={40} />
-            </Menu.Target>
-            <Menu.Dropdown>
-            <Menu.Item
-              onClick={() => handelShowProfile(item.name)}
-                leftSection={
-                  <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                }
-                >
-                    <Link to={`/UserProfile?name=${item.name}`}>
-                        Show Profile
-                    </Link>
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                }
-                >
-                <Link to={'/Chat'}>Send message</Link>
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => handleBlockUser(item.name)}
-                leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                      Block user
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          <div>
-            <Text fz="sm" fw={500}>
-              {item.name}
-            </Text>
-            <Text c="dimmed" fz="xs">
-              {item.state}
-            </Text>
-          </div>
-        </Group>
-      </Table.Td>
-    </Table.Tr>
-  ));
-
-
   return (
     <div>
         {Object.keys(search).length ?

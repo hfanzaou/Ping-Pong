@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mantine/core';
+import { Box, Card, SimpleGrid } from '@mantine/core';
 import ChangeAvatar from './UpdateAvatar';
 import ChangeName from './ChangeName';
 import EnableTowFactor from '../EnableTowFactor';
@@ -9,21 +9,19 @@ import Footer from '../../../../Layout/Footer/Footer';
 function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
 
     return (
-        <div className='grid place-items-center h-full'>
-            {/* <Header avatar={avatar}/> */}
-            {/* <Box maw={340} mx="auto" className='h-full'> */}
-                {/* <div className=''> */}
+        <div className='flex w- justify-center mx-[50px] h-[497px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
+            <SimpleGrid className='w-1/2 grid place-items-center'>
+                <Card style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+                <SimpleGrid 
+                    spacing='lg'
+                    className='grid place-items-center'
+                >
                     <ChangeAvatar settAvatar={setAvatar} avatar={avatar} />
-                {/* </div> */}
-                <ChangeName/>
-                <EnableTowFactor/>
-                {/* <div className='flex space-x-6'> */}
-                {/* </div> */}
-                {/* <Group justify="flex-end" mt="md">
-                <Button type="button" onClick={handleClick}>Save Changs</Button>
-            </Group> */}
-            {/* </Box> */}
-            {/* <Footer/> */}
+                    <ChangeName/>
+                    <EnableTowFactor/>
+                </SimpleGrid>
+                </Card>
+            </SimpleGrid>
         </div>
   );
 }

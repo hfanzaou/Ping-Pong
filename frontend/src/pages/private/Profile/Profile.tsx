@@ -4,48 +4,29 @@ import UserCard  from './ProfileInfo/UserCard'
 import UsersRelation from './Friends/UsersRelation'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
-import Header from '../../../Layout/Header/Header'
-import Footer from '../../../Layout/Footer/Footer'
 import { Socket } from 'socket.io-client'
 
 export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Function, avatar: string}) {
     return (
-      <div>
         <SimpleGrid
               cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
               spacing={'md'}
-            //   verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
         >
-        <SimpleGrid
-            cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
-            spacing={'md'}
-            // spacing={{ base: 10, sm: 'sm', lg: 'xs', xl: 'xm' }}
-            // verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl'}}
-        >
+            <SimpleGrid
+                cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+                spacing={'md'}
+            >
+                <UserCard setUrlName={setUrlName} avatar={avatar} />
+                <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
 
-        
-        {/* <div> */}
-
-          <UserCard setUrlName={setUrlName} avatar={avatar} />
-        {/* </div> */}
-        {/* <div> */}
-          <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
-
-          <UsersRelation socket={socket} setUrlName={setUrlName}/>
-            </Card>
-        {/* </div> */}
+                    <UsersRelation socket={socket} setUrlName={setUrlName}/>
+                </Card>
+            </SimpleGrid>
+            <div>
+                <Achievements />
+                <MatchHistory />
+            </div>
         </SimpleGrid>
-        <div>
-            {/* <div className=''> */}
-
-          {/* <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="md"> */}
-          {/* </Card> */}
-            {/* </div> */}
-          <Achievements />
-            <MatchHistory />
-        </div>
-        </SimpleGrid>
-      </div>
     );
 }
 

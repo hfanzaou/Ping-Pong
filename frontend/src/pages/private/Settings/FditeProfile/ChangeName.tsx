@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, Button } from '@mantine/core';
+import { TextInput, Button, Modal } from '@mantine/core';
 import axios from 'axios';
 import { IconEdit } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
 
 function ChangeName() {
   const [username, setUserName] = useState<string>();
-  
+
   const [uniqueName, setUniqueNmae] = useState<string>('');
-  
+
   const [invalidName, setInvalidName] = useState<boolean>(false);
 
   const [save, setSave] = useState<boolean>(true);
 
   const [openChangeName, setOpenChangeName] = useState<boolean>(true);
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -51,6 +54,7 @@ function ChangeName() {
 const handleOpenChangeName = () => {
     setSave(true);
     setOpenChangeName(!openChangeName);
+    open();
   };
 
   const handleCloseChangeName = () => {
@@ -59,36 +63,41 @@ const handleOpenChangeName = () => {
   };
 
   return (
-    <div>
+    <div className=''>
     {/* <h1 >{username}</h1> */}
     {openChangeName ? 
     // <>
-          <div className='grid  '>
-        <div dir="rtl" className="relative h-32 w-32" >
+          <div className='grid'>
+        <div dir="rtl" className="relative" >
 
     <Button
         radius={'xl'}
-        color='gray'
+        color='blue'
     // className="text-white bg-gray-800 hover:bg-gray-700 hover:text-white block rounded-full px-2 py-2 text-base font-medium"
       onClick={handleOpenChangeName}
       >
         <div className='m-3'></div>
         {username}
         {/* Change Name */}
-      {/* Change Name */}
-          <div className="absolute top-0 right-0 h-16 w-16">
-            <IconEdit/>
-            {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-            </svg> */}
+          <div className="absolute top-0 right-0">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="30" viewBox="0 0 640 512">
+            <path fill="#3e35bb" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/>
+          </svg>
           </div>
             </Button>
         </div>
         </div>
     //   </>
        :
-    <>    
+       <Modal
+       opened={opened}
+       onClose={close}
+       withCloseButton={false}
+       radius='lg' 
+       c={'blue'}
+       centered={true}
+       style={{backgroundColor: 'rgb(31 41 55)'}}
+   >   
     <TextInput
     // label={username}
     placeholder="Unique Name"
@@ -118,7 +127,7 @@ const handleOpenChangeName = () => {
     >
         Cancel
     </Button>
-    </>
+    </Modal>
     }
     </div>
   );
