@@ -7,6 +7,7 @@ function SerndMessage({name, opened, close}: {name: string, opened: boolean, clo
     const [disabled, setDisabled] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('');
 
+    console.log("name: ", name);
     // sent message to server
     const handleSentMessage = async () => {
         await axios.post('message', {name: name, message: message})
@@ -44,6 +45,7 @@ function SerndMessage({name, opened, close}: {name: string, opened: boolean, clo
             style={{backgroundColor: 'rgb(31 41 55)'}}
         >
             <div className='flex flex-col justify-center'>
+                <h1>{name}</h1>
                 <Textarea
                     variant="filled"
                     label={name}
