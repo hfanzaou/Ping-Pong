@@ -29,17 +29,16 @@ function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: Ma
 }
 
 
-
 // function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: MatchHistoryInterface) {
 //     return (
 //     <div className='inline-block w-[150px] h-full p-2 cursor-pointer hover:scale-110 ease-in-out duration-300'>
 //         <Card shadow="sm" padding="mg" radius="md" withBorder>
 //             <Card.Section>
 //                 <Image
-//                     h={150}
 //                     src={avatar}
+//                     height={100}
 //                     alt="Norway"
-//                     />
+//                 />
 //             </Card.Section>
 //             <Text size="xs" ta='center'>
 //                 {username}
@@ -47,7 +46,7 @@ function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: Ma
 //             <Text ta='center'>
 //                 {playerScore} - {player2Score}
 //             </Text>
-//             <Text ta="center" fw={500}>
+//             <Text ta="center" fw={700}>
 //                 {!win ? "loss" : "win"}
 //                 {/* {!wine ? <p className="text-red-600">losse</p> : <p className="text-green-600">wine</p>} */}
 //             </Text>

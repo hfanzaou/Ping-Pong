@@ -43,50 +43,53 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
         };
         getUserNmae();
     }, []);
-    const items = stats.map((stat) => (
-    <div key={stat.label}>
-      <Text ta="center" fz="lg" fw={500}>
-        {stat.value}
-      </Text>
-      <Text ta="center" fz="sm" c="dimmed" lh={1}>
-        {stat.label}
-      </Text>
-    </div>
-  ));
 
-        // const name = window.location.pathname.split("/")[1];
+
+    const items = stats.map((stat) => (
+        <div key={stat.label} className={stat.label !== 'Played game' ? "mb-12" : ""}>
+          <Text ta="center" fz="lg" fw={500} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
+            {stat.value}
+          </Text>
+          <Text ta="center" fz="sm" lh={1} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
+            {stat.label}
+          </Text>
+        </div>
+      ));
+    
 
   return (
-    <div >
-  <Card style={{backgroundColor: 'transparent'}} radius="md">
-      <Card.Section
-        h={40}
-        >
-            {/* <img className='h-full w-full' src={sectionimage}/> */}
-        </Card.Section>
-      <Avatar
-        src={usercard?.avatar}
-        size={200}
-        radius={160}
-        mx="auto"
-        mt={-30}
-        />
-      <Text ta="center" fz="lg" fw={500} mt="sm">
-        {usercard?.username}
-      </Text>
-      <Text ta="center" fz="sm">
-      {"level "  + usercard?.level}
-      </Text>
-      <Group mt="md" justify="center" gap={30}>
-        {items}
-      </Group>
-  </Card>
-    {usercard?.username !== userName &&
+    <Card p={2} style={{backgroundColor: 'rgb(31 41 55)'}}    radius="lg">
+    {/* <Card.Section
+      h={250}
+      style={{
+        backgroundImage: `url(${avatar})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+      }}
+      /> */}
+    <Avatar
+      src={usercard?.avatar}
+      size={250}
+      radius={250}
+      m="auto"
+      mt={12}
+      />
+    <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
+
+      {usercard?.username}
+    </Text>
+    <Text ta="center" c="indigo" fz="sm">
+    {"level "  + userInfo.level}
+    </Text>
+    <Group mt="md" justify="center" gap={30}>
+      {items}
+    </Group>
+    {/* {usercard?.username !== userName &&
       <div className='flex justify-center items-center mt-2'>
             <FriendshipButton name={usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
       </div>
-    }
-    </div>
+    } */}
+    </Card>
   );
 }
 

@@ -11,11 +11,9 @@ import { StateComponent } from '../../Home/Users/Users';
 import testdata from './FriendsList.json';
 
 function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) {
-//   const [friendList, setFriendList] = useState<FriendInterface[]>([]);
-const [friendList, setFriendList] = useState<any>(testdata);
+  const [friendList, setFriendList] = useState<FriendInterface[]>([]);
 
-//   const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
-  const [value, setValue] = useState<string>('Friends list');
+  const [searchFriendList, setSearchFriendList] = useState<FriendInterface[]>([]);
 
   const handelShowProfile = (name: string) => {
         setUrlName(name);
@@ -25,12 +23,13 @@ const [friendList, setFriendList] = useState<any>(testdata);
       await axios.get("user/friend/list")
       .then((res) => {
        setFriendList(res.data);
-      }).catch(err => {
+        // setFriendList(testdata);
+    }).catch(err => {
         // setFriendList(testdata);
         console.error("Error in fetching friend list: ", err);
       })
     };
-    
+
     useEffect(() => {
         getFriends();
     }, []);
@@ -55,7 +54,7 @@ const [friendList, setFriendList] = useState<any>(testdata);
     <Table.Tr key={item.name} m={6}>
     <Table.Td>
       <div className='flex justify-between'>
-      <Group gap="sm">
+      <Group gap="md">
           <Menu position='right-start' trigger="hover" openDelay={200} closeDelay={100} offset={2}>
           <Menu.Target >
 
@@ -114,59 +113,9 @@ const [friendList, setFriendList] = useState<any>(testdata);
   </Table.Tr>
 ));
 
-  const rows = friendList.map((item) => (
-    <Table.Tr key={item.name}>
-      <Table.Td>
-        <Group gap="sm">
-          <Menu
-            position="bottom-start"
-            >
-            <Menu.Target>
-             <Avatar size={40} src={item.avatar} radius={40} />
-            </Menu.Target>
-            <Menu.Dropdown>
-            <Menu.Item
-              onClick={() => handelShowProfile(item.name)}
-                leftSection={
-                  <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                }
-                >
-                    <Link to={`/UserProfile?name=${item.name}`}>
-                        Show Profile
-                    </Link>
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                }
-                >
-                <Link to={'/Chat'}>Send message</Link>
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => handleBlockUser(item.name)}
-                leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                      Block user
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          <div>
-            <Text fz="sm" fw={500}>
-              {item.name}
-            </Text>
-            <Text c="dimmed" fz="xs">
-              {item.state}
-            </Text>
-          </div>
-        </Group>
-      </Table.Td>
-    </Table.Tr>
-  ));
-
-
   return (
     <div>
-        {Object.keys(rows).length ?
+        {Object.keys(search).length ?
             search :
             <Table.Tr>
                 <Table.Td>

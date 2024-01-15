@@ -7,6 +7,7 @@ import Header from '../../../Layout/Header/Header'
 import Footer from '../../../Layout/Footer/Footer'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
+import data from './MatchHistory/test.json'
 
 export function ProfileSections({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
     // const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
@@ -52,33 +53,38 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
                 <Text size='xl' bg='red' ta='center' className='rounded-md' >404</Text>
             </Container>
         );
+
     return (
-      <div>
         <SimpleGrid
-              cols={{ base: 1, sm: 1, lg: 2 }}
-              spacing={{ base: 10, sm: 'xl', lg: 'xl' }}
-              verticalSpacing={{ base: 'xl', sm: 'xl', lg: 'xl' }}
+              cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+              spacing={'md'}
         >
-          <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip} />
-          {/* <UserCard userName={profile?.username} avatar={profile?.avatar} level={profile?.level} win={5} losses={6} /> */}
-          <Achievements achievement={profile?.achievements} />
-          <MatchHistory matchhistory={profile?.matchhistory}/>
+            <SimpleGrid
+                cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+                spacing={'md'}
+            >
+                <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip} />
+                {/* <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+
+                    <UsersRelation socket={socket} setUrlName={setUrlName}/>
+                </Card> */}
+            </SimpleGrid>
+            <div>
+                <Achievements  achievement={profile?.achievements}/>
+                {/* <MatchHistory matchhistory={profile?.matchhistory} /> */}
+                <MatchHistory matchhistory={data}/>
+            </div>
         </SimpleGrid>
-      </div>
     );
 }
 
 function Profile({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
 
-
     console.log("profileName: ", profileName);
     return (
-            <div>
-             <div className=' ml-4 mr-4 pr-4 pl-4 mb-8 pb-8'> 
+            <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
                 <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
-             </div> 
-            <Footer/>
-        </div>
+             </div>
     );
 }
 
