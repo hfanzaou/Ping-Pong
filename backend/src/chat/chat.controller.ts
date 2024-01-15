@@ -36,9 +36,9 @@ export class ChatController {
 		const	groups = await this.chatService.getSearchList();
 		return groups;
 	}
-	@Post("leave")
-	async handleLeave(@Body() data: { userName: string, name: string}) {
-		const	groups = await this.chatService.getLeave(data);
+	@Post("leaveJoin")
+	async handleLeaveJoin(@Body() data: { userName: string, name: string}) {
+		const	groups = await this.chatService.getLeaveJoin(data);
 		return groups;
 	}
 }

@@ -9,7 +9,7 @@ interface Props {
 	setData: React.Dispatch<React.SetStateAction<DATA>>
 }
 
-const Chat: React.FC<Props> = ({ data, setData }) => {
+const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
 		message: string,
@@ -130,6 +130,7 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
+	console.log(data.talkingTo);
 	return data.talkingTo && (
 		<form
 			onSubmit={submit}
@@ -187,4 +188,4 @@ const Chat: React.FC<Props> = ({ data, setData }) => {
 		</form>
 	);
 }
-export default Chat;
+export default ChatPrivate;

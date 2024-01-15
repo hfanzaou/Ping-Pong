@@ -1,4 +1,4 @@
-import { IconCirclePlus, IconDotsVertical, IconLogout2, IconTrash, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
+import { IconCirclePlus, IconDotsVertical, IconLogin, IconLogout2, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group } from "../myTypes";
 
@@ -35,7 +35,8 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	const	[settingsXy, setSettingsXy] = useState({
 		x: 0,
 		y: 0,
-		login: ""
+		login: "",
+		joined: false
 	});
 	const	nameRef = useRef(name);
 	const	settingsXyRef = useRef(settingsXy);
@@ -129,7 +130,8 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [createTrigger])
 	useEffect(() => {
-		setList(data.userData?.groups);
+		if (searchText == "")
+			setList(data.userData?.groups);
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
@@ -143,7 +145,11 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 			setPublicList(Data);
 		}
 		fetchData();
-	}, [])
+	}, [settingsXy])
+	useEffect(() => {
+		setSearchText("");
+		setList(data.userData?.groups);
+	}, [data.send])
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
 		setCreate(true);
 		setCreateXy({ x: event.clientX, y: event.clientY})
@@ -228,7 +234,8 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 
 		setData(prev => ({
 			...prev,
-			groupTo: tmp
+			groupTo: tmp,
+			password: list?.find(x => x.name == tmp)?.password
 		}))
 		// const	newChat: NEWCHAT = {
 		// 	sender: data.userData ? data.userData.userName : "",
@@ -237,15 +244,31 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 		// data.socket?.emit("newChat", newChat);
 	}
 	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
+		const	x = event.clientX;
+		const	y = event.clientY;
+		const	login = event.currentTarget.name;
+
 		setSettings(true);
-		setSettingsXy({
-			x: event.clientX,
-			y: event.clientY,
-			login: event.currentTarget.name
+		setSettingsXy(() => {
+			if (data.userData?.groups.find(x => x.name == login))
+				return {
+					joined: true,
+					x: x,
+					y: y,
+					login: login
+				}
+			else
+				return {
+					joined: false,
+					x: x,
+					y: y,
+					login: login
+				}
+
 		});
 	}
-	async function leave() {
-		const	res = await fetch("http://localhost:3001/leave", {
+	async function leaveJoin() {
+		const	res = await fetch("http://localhost:3001/leaveJoin", {
 			method: "POST",
 			headers: {
 				"content-type": "application/json"
@@ -438,12 +461,21 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 				>
 					<li>
 						<button
-							className="flex justify-center items-center w-[100px]
-								h-[50px] rounded-t-md hover:bg-discord3"
-							onClick={leave}
+							className=" w-[100px] h-[50px] rounded-t-md
+								hover:bg-discord3"
+							onClick={leaveJoin}
 						>
-							<IconLogout2 />
-							<h2 className="mt-1">Leave</h2>
+							{
+								settingsXy.joined ? 
+									<div className="flex justify-center items-center">
+										<IconLogout2 />
+										<h2 className="mt-1">Leave</h2>
+									</div> :
+									<div className="flex justify-center items-center">
+										<IconLogin />
+										<h2 className="mt-1">Join</h2>
+									</div>
+							}
 						</button>
 					</li>
 					<li>
