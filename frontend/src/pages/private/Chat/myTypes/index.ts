@@ -7,7 +7,8 @@ export interface DATA {
 	message: string,
 	trigger: boolean,
 	send: boolean,
-	groupTo?: string
+	groupTo?: string,
+	password?: boolean
 }
 
 export interface User {
@@ -33,6 +34,8 @@ export interface NEWCHAT {
 }
 
 export interface Group {
-	id:		number,
-	name:	string,
+	id:			number,
+	name:		string,
+	size:		boolean,
+	password:	boolean
 }

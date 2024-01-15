@@ -1,4 +1,4 @@
-import { IconCirclePlus, IconDotsVertical, IconTrash, IconVolume3 } from "@tabler/icons-react";
+import { IconCirclePlus, IconDotsVertical, IconLogin, IconLogout2, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group } from "../myTypes";
 
@@ -8,11 +8,11 @@ interface Props {
 }
 
 const Groups: React.FC<Props> = ({ data, setData }) => {
-	const	[settingsXy, setSettingsXy] = useState({
+	const	[createXy, setCreateXy] = useState({
 		x: 0,
 		y: 0,
 	})
-	const	settingsXyRef = useRef(settingsXy);
+	const	createXyRef = useRef(createXy);
 	const	[create, setCreate] = useState(false);
 	const	[password, setPassword] = useState(true);
 	const	[createData, setCreateData] = useState({
@@ -32,16 +32,24 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	const	[publicList, setPublicList] = useState<Group[]>([]);
 	const	[searchText, setSearchText] = useState("");
 	const	[settings, setSettings] = useState(false);
-	
-	settingsXyRef.current = settingsXy;
+	const	[settingsXy, setSettingsXy] = useState({
+		x: 0,
+		y: 0,
+		login: "",
+		joined: false
+	});
 	const	nameRef = useRef(name);
+	const	settingsXyRef = useRef(settingsXy);
+	
+	createXyRef.current = createXy;
 	nameRef.current = name;
+	settingsXyRef.current = settingsXy;
 	useEffect(() => {
 		function callBackMouse(event: MouseEvent) {
-			if (event.clientX < settingsXyRef.current.x ||
-				event.clientX > settingsXyRef.current.x + 400 ||
-				event.clientY < settingsXyRef.current.y ||
-				event.clientY > settingsXyRef.current.y + 320) {
+			if (event.clientX < createXyRef.current.x ||
+				event.clientX > createXyRef.current.x + 400 ||
+				event.clientY < createXyRef.current.y ||
+				event.clientY > createXyRef.current.y + 320) {
 					setCreate(false);
 					setPassword(true);
 					setCreateData(x => ({
@@ -56,6 +64,12 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 					setValidateText("");
 					setAccessibility(true);
 				}
+				if (event.clientX < settingsXyRef.current.x ||
+					event.clientX > settingsXyRef.current.x + 100 ||
+					event.clientY < settingsXyRef.current.y ||
+					event.clientY > settingsXyRef.current.y + 100) {
+						setSettings(false);
+					}
 			function callBackResize() {
 				console.log(window.innerWidth);
 				if (window.innerWidth < 600)
@@ -116,7 +130,8 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [createTrigger])
 	useEffect(() => {
-		setList(data.userData?.groups);
+		if (searchText == "")
+			setList(data.userData?.groups);
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
@@ -130,10 +145,14 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 			setPublicList(Data);
 		}
 		fetchData();
-	}, [])
+	}, [settingsXy])
+	useEffect(() => {
+		setSearchText("");
+		setList(data.userData?.groups);
+	}, [data.send])
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
 		setCreate(true);
-		setSettingsXy({ x: event.clientX, y: event.clientY})
+		setCreateXy({ x: event.clientX, y: event.clientY})
 	}
 	function clickPrivatePublic(event: React.MouseEvent<HTMLButtonElement>) {
 		const tmp = event.currentTarget.name;
@@ -215,7 +234,8 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 
 		setData(prev => ({
 			...prev,
-			groupTo: tmp
+			groupTo: tmp,
+			password: list?.find(x => x.name == tmp)?.password
 		}))
 		// const	newChat: NEWCHAT = {
 		// 	sender: data.userData ? data.userData.userName : "",
@@ -224,7 +244,55 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 		// data.socket?.emit("newChat", newChat);
 	}
 	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
+		const	x = event.clientX;
+		const	y = event.clientY;
+		const	login = event.currentTarget.name;
+
 		setSettings(true);
+		setSettingsXy(() => {
+			if (data.userData?.groups.find(x => x.name == login))
+				return {
+					joined: true,
+					x: x,
+					y: y,
+					login: login
+				}
+			else
+				return {
+					joined: false,
+					x: x,
+					y: y,
+					login: login
+				}
+
+		});
+	}
+	async function leaveJoin() {
+		const	res = await fetch("http://localhost:3001/leaveJoin", {
+			method: "POST",
+			headers: {
+				"content-type": "application/json"
+			},
+			body: JSON.stringify({
+				userName: data.userData?.userName,
+				name: settingsXy.login
+			})
+		});
+		const	Data = await res.json();
+		setData(x => {
+			if (x.userData)
+				return {
+					...x,
+					userData: {
+						...x.userData,
+						groups: Data
+					}
+				}
+			return x;
+		});
+		setSettings(false);
+		if (data.groupTo == settingsXy.login)
+			setData(x => ({ ...x, groupTo: undefined }));
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
@@ -252,7 +320,7 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 						<form
 							className="fixed z-50 font-thin w-[400px] bg-discord1 p-5
 								rounded-md"
-							style={{ top: settingsXy.y, left: settingsXy.x}}
+							style={{ top: createXy.y, left: createXy.x}}
 							onSubmit={submitCreate}
 						>
 							{
@@ -361,6 +429,14 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 													"shadow-black shadow-lg"
 											}`}
 									/> */}
+									<IconUsersGroup
+										className={`w-10 h-10 mr-3
+											rounded-full bg-discord1
+											${
+												data.groupTo == x.name &&
+													"shadow-black shadow-lg"
+											}`}
+											/>
 									{size && x.name}
 								</button>
 								<button
@@ -385,12 +461,21 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 				>
 					<li>
 						<button
-							className="flex justify-center items-center w-[100px]
-								h-[50px] rounded-t-md hover:bg-discord3"
-							// onClick={block}
+							className=" w-[100px] h-[50px] rounded-t-md
+								hover:bg-discord3"
+							onClick={leaveJoin}
 						>
-							<IconTrash />
-							<h2 className="mt-1">Block</h2>
+							{
+								settingsXy.joined ? 
+									<div className="flex justify-center items-center">
+										<IconLogout2 />
+										<h2 className="mt-1">Leave</h2>
+									</div> :
+									<div className="flex justify-center items-center">
+										<IconLogin />
+										<h2 className="mt-1">Join</h2>
+									</div>
+							}
 						</button>
 					</li>
 					<li>

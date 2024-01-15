@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Nav from "./components/Nav";
 import Private from "./components/Private";
-import Chat from "./components/Chat";
 import { DATA } from "./myTypes";
-import { Socket, io } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { setSocket, setUserData } from "./utils";
-import Groups from "./components/Groops";
+import Groups from "./components/Groups";
+import ChatPrivate from "./components/ChatPrivate";
+import ChatGroups from "./components/ChatGroups";
 
 interface Props {
 	socket: Socket
@@ -58,19 +59,14 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			<Nav option={option} setOption={setOption} setData={setData}/>
 			{
 				option == "Private" ?
-					<Private
-						data={data}
-						setData={setData}
-					/> : 
-					<Groups
-						data={data}
-						setData={setData}
-					/>
+					<Private data={data} setData={setData} /> :
+					<Groups data={data} setData={setData} />
+				}
+			{
+				option == "Private" ?
+					<ChatPrivate data={data} setData={setData} /> :
+					<ChatGroups data={data} setData={setData}/>
 			}
-			<Chat
-				data={data}
-				setData={setData}
-			/>
 		</div>
 	)
 }
