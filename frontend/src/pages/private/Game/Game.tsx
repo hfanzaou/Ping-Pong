@@ -3,7 +3,7 @@ import Header from '../../../Layout/Header/Header';
 import { io, Socket } from 'socket.io-client';
 import Sketch from 'react-p5';
 import p5Types, { Image } from "p5";
-import { selectMode, handleGameStates, mode, play, PlayerInfo } from "./gameStates";
+import { selectMode, handleGameStates, mode, play } from "./gameStates";
 import { eventListeners,
         checkKeys, 
         computerPlayer,
@@ -76,18 +76,6 @@ export {socket};
 export let canvas: p5Types.Renderer;
 let img: Image;
 const GameComponent = ({avatar} : {avatar: string}) => {
-
-    // socket.on('getData', async (id: number) => 
-    // {
-    //   await axios.get('user/game', {data: id}).then((res) => {
-    //     setOppAvatar(res.data.avatar);
-    //     setOppName(res.data.name);
-    //     setOppLevel(res.data.level);
-    //   }).catch((err)=> {
-    //     console.log(err);
-    //   })
-    // })
-    // socket = io(import.meta.env.VITE_API_BASE_URL);
   const setup = (p5: p5Types) => { 
     canvas = p5.createCanvas(WIDTH, HEIGHT);
     canvas.parent('sketchHolder');
@@ -98,23 +86,6 @@ const GameComponent = ({avatar} : {avatar: string}) => {
   
   const draw = (p5: p5Types) => {
     p5.background('rgb(31,41,55)');
-    // p5.loadImage()
-    // p5.fill('rgb(31,41,55)')
-    // p5.noStroke()
-    // p5.rect(0, 50, WIDTH + MOVE, HEIGHT - 100, 10)
-    // p5.fill(255)
-    // p5.noStroke();
-    // p5.strokeWeight(4)
-    // p5.image(p5.get(50, 90, 70, 70), 50, 90, 70, 70);
-    // // img.mask();
-    // p5.circle(WIDTH + MOVE - 50, 90, 70);
-    // p5.noStroke();
-    // p5.fill('rgb(31,41,55)')
-    // p5.stroke('white')
-    // p5.strokeWeight(4);
-    // p5.rect(100, 0, WIDTH, HEIGHT, 10)
-    // p5.noStroke();
-
     handleGameStates(p5);
 
     if (play) {
