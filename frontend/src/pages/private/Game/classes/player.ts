@@ -1,12 +1,25 @@
 
+export class User {
+  id : number;
+  username: string;
+  socket: string;
+
+  constructor(id : number, username: string, socket: string) {
+    this.id = id;
+    this.username = username;
+    this.socket = socket;
+  }
+
+}
+
 export class Player {
-  id : string;
+  user: User;
   roomName: string;
   racket: { x: number, y: number };
   score: number;
 
-  constructor(id: string, x: number, y: number, score: number, roomName: string) {
-    this.id = id;
+  constructor(user: User, x: number, y: number, score: number, roomName: string) {
+    this.user = user;
     this.racket = { x, y };
     this.score = score;
     this.roomName = roomName;

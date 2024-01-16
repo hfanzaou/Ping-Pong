@@ -1,7 +1,7 @@
-import { Ball } from "../../../../../backend/src/game/classes/ball";
-import { Player } from "../../../../../backend/src/game/classes/player";
+import { Ball } from "./classes/ball";
+import { Player } from "./classes/player";
 import p5Types from "p5";
-import { socket } from "./Game";
+import { Socket } from "socket.io-client";
 import { startCountdown, gameOver, opponentDisconnect, mode, difficulty } from "./gameStates"
 
 
@@ -27,10 +27,10 @@ export let player1: Player,
     ball: Ball;
 
 
-export function  gameLoop(p5: p5Types)
+export function  gameLoop(p5: p5Types, socket: Socket)
 {
   if (!goalScored) {
-    updateBallPos(p5);
+    updateBallPos(p5, socket);
     updatePosition();
   }
 }
@@ -40,7 +40,7 @@ export function  updatePosition() {
     ball.y += (ball.ydir * ball.speed);
 }
 
-export function  updateBallPos(p5: p5Types)
+export function  updateBallPos(p5: p5Types, socket: Socket)
 {
   if (update) return;
   let nextY = ball.y + (ball.ydir * ball.speed);
@@ -62,15 +62,15 @@ export function  updateBallPos(p5: p5Types)
   }
   else if (ball.x > WIDTH) {
     player1.score += 1;
-    ft_goalScored(p5);
+    ft_goalScored(p5, socket);
   }
   else if (ball.x < (BALL_DIAMETER >> 1)) {
     player2.score += 1;
-    ft_goalScored(p5);
+    ft_goalScored(p5, socket);
   }
 }
 
-function ft_goalScored(p5: p5Types) {
+function ft_goalScored(p5: p5Types, socket: Socket) {
   ball.x = WIDTH / 2;
   ball.y = HEIGHT / 2;
   ball.xdir *= -1;
@@ -109,7 +109,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export function checkKeys(p5: p5Types) {
+export function checkKeys(p5: p5Types, socket: Socket) {
     
   if (p5.keyIsDown(87) || p5.keyIsDown(p5.UP_ARROW)) {
     if ((side == 2 || (p5.keyIsDown(p5.UP_ARROW) && mode === 2))
@@ -136,7 +136,7 @@ export function checkKeys(p5: p5Types) {
   }
 }
 
-export function  _mouseDragged(p5: p5Types)
+export function  _mouseDragged(p5: p5Types, socket: Socket)
 {
   if (p5.mouseY <= HEIGHT && p5.mouseY >= 0 &&
       p5.mouseX <= WIDTH && p5.mouseX >= 0)
@@ -173,7 +173,7 @@ export function computerPlayer() {
   }
 }
 
-export function eventListeners(p5: p5Types) {
+export function eventListeners(p5: p5Types, socket: Socket) {
   socket.on('gameStart', () => {
     p5.removeElements();
     p5.loop();
@@ -186,10 +186,11 @@ export function eventListeners(p5: p5Types) {
     player1 = data.player1;
     player2 = data.player2;
     ball = data.ball;
+    
   });
   
   socket.on('gameOver', () => {
-    socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
+    // socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
     gameOver(p5, player1, player2);
   });
 

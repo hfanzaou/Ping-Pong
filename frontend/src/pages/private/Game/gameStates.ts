@@ -3,8 +3,8 @@
 import { Player } from "./classes/player";
 import p5Types from "p5";
 import { canvas } from "./Game";
-import { socket } from "./Game";
 import { player1, player2 } from "./gameLogic";
+import { Socket } from "socket.io-client";
 
 const WIDTH = 700;
 const HEIGHT = 450;
@@ -37,12 +37,11 @@ function ft_style(Button: p5Types.Element) {
   Button.style('font-family', 'system-ui');
 }
   
-export function selectMode(p5: p5Types) {
-
+export async function selectMode(p5: p5Types, socket: Socket) {
+  
   p5.removeElements();
   let playButton = p5.createButton('Vs other player');
-  positionButton(playButton, -80, -60);
-  playButton.parent('sketchHolder');
+  positionButton(playButton, -100, -40);
   ft_style(playButton);
   playButton.mousePressed(() => {
     p5.removeElements();
@@ -57,9 +56,8 @@ export function selectMode(p5: p5Types) {
     mode = 1;
   });
   let vsOtherPlayer2 = p5.createButton('1Vs1 on same device');
-  positionButton(vsOtherPlayer2, 0, -85);
+  positionButton(vsOtherPlayer2, -20, -40);
   ft_style(vsOtherPlayer2);
-  vsOtherPlayer2.parent('sketchHolder');
   vsOtherPlayer2.mousePressed(() => {
     p5.removeElements();
     socket.emit("1Vs1 on same device");
@@ -68,15 +66,13 @@ export function selectMode(p5: p5Types) {
   });
 
   let vsComputerButt = p5.createButton('Vs Computer');
-  positionButton(vsComputerButt, 80, -55);
+  positionButton(vsComputerButt, 60, -40);
   ft_style(vsComputerButt);
-  vsComputerButt.parent('sketchHolder');
   vsComputerButt.mousePressed(() => {
     mode = 3;
     let easyButton = p5.createButton('Easy');
-    positionButton(easyButton, 140, -130); // Adjust these values as needed
+    positionButton(easyButton, 120, -120); // Adjust these values as needed
     ft_style(easyButton);
-    easyButton.parent('sketchHolder');
     easyButton.mousePressed(() => {
       difficulty = 1;
       socket.emit('VsComputer');
@@ -85,8 +81,7 @@ export function selectMode(p5: p5Types) {
   
     let mediumButton = p5.createButton('Medium');
     ft_style(mediumButton);
-    positionButton(mediumButton, 140, -40); // Adjust these values as needed
-    mediumButton.parent('sketchHolder');
+    positionButton(mediumButton, 120, 0); // Adjust these values as needed
     mediumButton.mousePressed(() => {
       difficulty = 2;
       socket.emit('VsComputer');
@@ -94,19 +89,18 @@ export function selectMode(p5: p5Types) {
     });
   
     let hardButton = p5.createButton('Hard');
-    positionButton(hardButton, 140, 80); // Adjust these values as needed
+    positionButton(hardButton, 120, 75); // Adjust these values as needed
     ft_style(hardButton);
-    hardButton.parent('sketchHolder');
     hardButton.mousePressed(() => {
       difficulty = 3;
       socket.emit('VsComputer');
       startCountdown(p5);
     });
-  });
 
+  });
 }
 
-export function handleGameStates(p5: p5Types) {
+export function handleGameStates(p5: p5Types, socket: Socket) {
     if (countdown > 0) {
         p5.textSize(32);
         p5.textAlign(p5.CENTER, p5.CENTER);
@@ -147,7 +141,7 @@ export function handleGameStates(p5: p5Types) {
           winnerMessage = null;
           playAgain = false;
           playAgainButt.remove();
-          selectMode(p5);
+          selectMode(p5, socket);
         });
     }
 }
@@ -171,7 +165,7 @@ export function gameOver(p5: p5Types, player1: Player, player2: Player) {
   p5.removeElements();
   play = false;
   gameOverMessage = 'Game Over!';
-  winnerMessage = (player1.score > player2.score) ? 'Player1 Won' : 'Player2 Won';
+  winnerMessage = (player1.score > player2.score) ? player1.user.username + ' Won' : player2.user.username + ' Won';
   playAgain = true;
 }
 
