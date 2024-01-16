@@ -14,8 +14,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[passwordText, setPasswordText] = useState("");
 	const	[passwordError, setPasswordError] = useState(false);
 
-	async function clickJoin() {
-		if (!data.password) {
+	async function clickJoinCallBack(state: boolean) {
+		if (!state) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
 				method: "POST",
 				headers: {
@@ -42,10 +42,39 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				...x,
 				send: !x.send
 			}))
+			setPasswordText("");
+			setInputType("password");
 		}
-		else {
+	}
+	async function clickJoin() {
+		if (data.password != undefined)
+			await clickJoinCallBack(data.password)
+		if (data.password) {
 			if (passwordText == "")
 				setPasswordError(true);
+			else {
+				const	res = await fetch("http://localhost:3001/checkPassword", {
+					method: "POST",
+					headers: {
+						"content-type": "application/json"
+					},
+					body: JSON.stringify({
+						name: data.groupTo,
+						password: passwordText
+					})
+				});
+				const	Data = await res.json();
+				if (Data) {
+					setData(x => ({
+						...x,
+						password: false
+					}));
+					await clickJoinCallBack(false);
+				}
+				else {
+					setPasswordError(true);
+				}
+			}
 		}
 	}
 	function clickInputType() {

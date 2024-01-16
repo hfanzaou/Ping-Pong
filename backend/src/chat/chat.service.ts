@@ -3,7 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { MESSAGE, NEWCHAT, NEWGROUP, USERDATA } from "./myTypes";
 import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
 
 @Injectable()
 export class ChatService {
@@ -340,5 +340,13 @@ export class ChatService {
 			name: x.group.name,
 			password: x.group.hash ? true : false
 		}));
+	}
+	async getCheckPassword(data: { name: string, password: string}) {
+		const	group = await this.prisma.gROUP.findUnique({
+			where: { name: data.name }
+		});
+		const	match = await compare(data.password, group.hash);
+
+		return (match);
 	}
 }

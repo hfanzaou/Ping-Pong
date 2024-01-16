@@ -41,4 +41,9 @@ export class ChatController {
 		const	groups = await this.chatService.getLeaveJoin(data);
 		return groups;
 	}
+	@Post("checkPassword")
+	async handleCheckPassword(@Body() data: { name: string, password: string}) {
+		const	answer = await this.chatService.getCheckPassword(data);
+		return answer;
+	}
 }
