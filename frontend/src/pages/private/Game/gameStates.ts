@@ -5,6 +5,8 @@ import p5Types from "p5";
 import { canvas } from "./Game";
 import { socket } from "./Game";
 import { player1, player2 } from "./gameLogic";
+import axios from "axios";
+import p5 from "p5";
 
 const WIDTH = 700;
 const HEIGHT = 450;
@@ -108,6 +110,7 @@ export function selectMode(p5: p5Types) {
 
 export function handleGameStates(p5: p5Types) {
     if (countdown > 0) {
+        p5.fill("white");
         p5.textSize(32);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.textStyle(p5.BOLD);
@@ -154,6 +157,7 @@ export function handleGameStates(p5: p5Types) {
 
 export function startCountdown(p5: p5Types) {
   p5.removeElements();
+  
   waitingForPlayer = false;
   countdown = 3;
   countdownInterval = setInterval(() => {
@@ -167,12 +171,30 @@ export function startCountdown(p5: p5Types) {
   }, 1000);
 }
 
-export function gameOver(p5: p5Types, player1: Player, player2: Player) {
+export async function gameOver(p5: p5Types, player1: Player, player2: Player) {
   p5.removeElements();
   play = false;
   gameOverMessage = 'Game Over!';
   winnerMessage = (player1.score > player2.score) ? 'Player1 Won' : 'Player2 Won';
   playAgain = true;
+  console.log(player1);
+  console.log(player2);
+  if(player1.score > player2.score && socket.id == player1.id)
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/matchhistory`, {result: {oppid: player2.baseId, playerScore: player1.score, player2Score: player2.score}})
+    .then((res) => {
+      console.log(res.data);
+   })
+   .catch((err) => {
+      console.log("Error ",err);
+   })
+   if(player1.score < player2.score && socket.id == player2.id)
+   await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/matchhistory`, {result: {oppid: player1.baseId, playerScore: player2.score, player2Score: player1.score}})
+   .then((res) => {
+     console.log(res.data);
+  })
+  .catch((err) => {
+     console.log("Error ",err);
+  })
 }
 
 export function opponentDisconnect() {
