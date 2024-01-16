@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { NEWCHAT, NEWGROUP } from "./myTypes";
+import { ChatGateway } from "./chat.gateway";
 
 @Controller()
 export class ChatController {
@@ -11,9 +12,14 @@ export class ChatController {
 		const	user = await this.chatService.getUserData(data.userName);
 		return user;
 	}
-	@Post("chathistory")
-	async handleHistory(@Body() data: NEWCHAT) {
-		const	history = await this.chatService.getUserHistory(data);
+	@Post("chathistoryPrivate")
+	async handleHistoryPrivate(@Body() data: NEWCHAT) {
+		const	history = await this.chatService.getUserHistoryPrivate(data);
+		return history;
+	}
+	@Post("chathistoryRoom")
+	async handleHistoryRoom(@Body() data: NEWCHAT) {
+		const	history = await this.chatService.getUserHistoryRoom(data);
 		return history;
 	}
 	@Post("chatUsers")
@@ -40,5 +46,10 @@ export class ChatController {
 	async handleLeaveJoin(@Body() data: { userName: string, name: string}) {
 		const	groups = await this.chatService.getLeaveJoin(data);
 		return groups;
+	}
+	@Post("checkPassword")
+	async handleCheckPassword(@Body() data: { name: string, password: string}) {
+		const	answer = await this.chatService.getCheckPassword(data);
+		return answer;
 	}
 }

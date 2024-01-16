@@ -1,6 +1,6 @@
 import { IconCirclePlus, IconDotsVertical, IconLogin, IconLogout2, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
-import { DATA, Group } from "../myTypes";
+import { DATA, Group, NEWCHAT } from "../myTypes";
 
 interface Props {
 	data: DATA,
@@ -210,24 +210,26 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 		setValidateText(event.target.value)
 	}
 	function changeSearch(event: React.ChangeEvent<HTMLInputElement>) {
+		let	List: Group[] | undefined;
+
 		setSearchText(event.target.value);
 		if (event.target.value == "")
-			setList(data.userData?.groups);
+			List = data.userData?.groups;
 		else if (data.userData) {
-			const	List = [...data.userData?.groups, ...publicList].
+			List = [...data.userData?.groups, ...publicList].
 				filter((value, index, self) => {
 					for (let i = index + 1; i < self.length; i++)
 						if (value.id == self[i].id)
 							return false;
 					return true;
 				}).filter(x => x.name.includes(event.target.value));
-			setList(List);
-			if (!List.find(x => x.name == data.groupTo))
-				setData(prev => ({
-					...prev,
-					groupTo: undefined
-				}));
 		}
+		setList(List);
+		if (List && !List.find(x => x.name == data.groupTo))
+			setData(prev => ({
+				...prev,
+				groupTo: undefined
+			}));
 	}
 	function clickGroup(event: React.MouseEvent<HTMLButtonElement>) {
 		const tmp = event.currentTarget.name;
@@ -237,11 +239,14 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 			groupTo: tmp,
 			password: list?.find(x => x.name == tmp)?.password
 		}))
-		// const	newChat: NEWCHAT = {
-		// 	sender: data.userData ? data.userData.userName : "",
-		// 	recver: tmp
-		// }
-		// data.socket?.emit("newChat", newChat);
+		if (data.userData?.groups.find(x => x.name == tmp)) {
+			const	newChat: NEWCHAT = {
+				sender: data.userData ? data.userData.userName : "",
+				recver: tmp
+			}
+			// console.log("hello")
+			data.socket?.emit("newChatRoom", newChat);
+		}
 	}
 	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
 		const	x = event.clientX;
