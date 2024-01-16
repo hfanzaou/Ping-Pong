@@ -32,9 +32,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @WebSocketServer() wss: Server;
   
-  private players: Map<string, Player> = new Map();
-  private waitingPlayers: Socket[] = [];
-  private games: Map<string, {ball: Ball, player1: Player, player2: Player}> = new Map();
   users: Map<string, User> = new Map();
   
   afterInit() {
@@ -55,45 +52,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.disconnectPlayer(this.wss, client);
   }
 
-  async verifyClient(client: Socket) {
-		try {
-			const token = client.handshake.headers.cookie.split('jwt=')[1];
-			const payload = await this.strategy.verifyToken(token);
-			return (await this.strategy.validate(payload));
-		}
-		catch (error) {
-			this.wss.to(client.id).emit('error', 'invalid token');
-		}
-	}
-  async findOpponent(SocketId: string)
-  {
-    try {
-        const user = await this.prismaService.user.findUnique({
-          where: {socket: SocketId}
-        })
-        return user;
-    } catch(error)
-    {
-      this.wss.to(SocketId).emit('error')
-    }
-  }
+
   @SubscribeMessage('join_room')
   async joinRoom(@ConnectedSocket() client: Socket, payload: any) {
-    if (this.waitingPlayers.length > 0) {
-      // If there are players waiting, match the new player with the first one in the queue
-      const opponent = this.waitingPlayers.shift();
-      const roomName = `room${client.id}${opponent.id}`; // Create a unique room name
-      
-      const {id: clientid} = await this.verifyClient(client);
-      const {id: oppid} = await this.findOpponent(opponent.id);
-      this.wss.to(client.id).emit("getData", oppid, false);
-      this.wss.to(opponent.id).emit("getData", clientid, true);
-      client.join(roomName);
-      opponent.join(roomName);
-      
-      this.logger.log(`Clients ${client.id} and ${opponent.id} joined ${roomName}`);
+    if (this.gameService.waitingPlayers.length > 0) {
       // Initialize the game for these two players
-      this.gameService.initGame(this.wss, client);
+      await this.gameService.initGame(this.wss, client);
     } else {
       // If there are no players waiting, add the new player to the queue
       this.gameService.waitingPlayers.push(client);
