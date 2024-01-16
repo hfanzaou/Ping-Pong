@@ -52,8 +52,9 @@ model MatchHistory {
 model CHATHISTORY {
   id Int @id @unique @default(autoincrement())
 
-  messages MESSAGE[]
-  users    UserCHATHISTORY[]
+  name      String? @unique
+  messages  MESSAGE[]
+  users     UserCHATHISTORY[]
 }
 
 model MESSAGE {
@@ -78,12 +79,12 @@ model UserCHATHISTORY {
 model GROUP {
   id Int @id @unique @default(autoincrement())
 
-  name    String      @unique
-  owner   String
-  admins  String[]
-  members UserGROUP[]
-  state   String
-  hash    String?
+  name        String      @unique
+  owner       String
+  admins      String[]
+  members     UserGROUP[]
+  state       String
+  hash        String?
 }
 
 model UserGROUP {

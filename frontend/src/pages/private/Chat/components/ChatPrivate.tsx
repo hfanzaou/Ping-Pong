@@ -28,7 +28,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await fetch("http://localhost:3001/chathistory", {
+				const res = await fetch("http://localhost:3001/chathistoryPrivate", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 			}
 		}
 		fetchData();
-	}, [data])
+	}, [data]);
 	useEffect(() => {
 		if (trigger) {
 			async function fetchData() {
@@ -106,9 +106,9 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		setConversation(prev => [m, ...prev]);
 	}
 	useEffect(() => {
-		data.socket?.on("client", callBack);
+		data.socket?.on("clientPrivate", callBack);
 		return (() => {
-			data.socket?.off("newMessage", callBack);
+			data.socket?.off("clientPrivate", callBack);
 		})
 	}, [data.socket])
 	function submit(event: FormEvent<HTMLFormElement>)
@@ -120,7 +120,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				recver: data.talkingTo ? data.talkingTo: "",
 				message: data.message
 			}
-			data.socket?.emit("server", Message);
+			data.socket?.emit("direct", Message);
 			setData(prev => setMessageData(prev, ""))
 			if (Reference.current)
 				Reference.current.focus();
@@ -130,7 +130,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
-	console.log(data.talkingTo);
+	// console.log(data.talkingTo);
 	return data.talkingTo && (
 		<form
 			onSubmit={submit}

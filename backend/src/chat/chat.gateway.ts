@@ -28,21 +28,36 @@ OnGatewayDisconnect {
 				private strategy: JwtTwoFaStrategy,
 				private user: UserService) {}
 	@WebSocketServer() server: Server
-	@SubscribeMessage("server")
+	@SubscribeMessage("direct")
 	async handelMessage(client: Socket, data: MESSAGE) {
-		const room = this.chatService.getRoom(data);
-		const message = await this.chatService.addMessage(data);
-		this.server
-		.to(room)
-		.emit("client", message);
+		const room = this.chatService.getRoomDirect(data);
+		const message = await this.chatService.addMessagePrivate(data);
+		this.server.to(room).emit("clientPrivate", message);
 	}
-	@SubscribeMessage("newChat")
-	async handelNewChat(client: Socket, data: NEWCHAT) {
+	@SubscribeMessage("room")
+	async handelRoom(client: Socket, data: MESSAGE) {
+		const room = this.chatService.getRoomRoom(data);
+		const message = await this.chatService.addMessageRoom(data);
+		// console.log(message);
+		this.server.to(room).emit("clientRoom", message);
+	}
+	@SubscribeMessage("newChatPrivate")
+	async handelNewChatPrivate(client: Socket, data: NEWCHAT) {
 		Array
 			.from(client.rooms)
 			.slice(1)
 			.forEach(room => client.leave(room));
-		const room = this.chatService.getRoom(data);
+		const room = this.chatService.getRoomDirect(data);
+		client.join(room);
+	}
+	@SubscribeMessage("newChatRoom")
+	async handelNewChatRoom(client: Socket, data: NEWCHAT) {
+		Array
+			.from(client.rooms)
+			.slice(1)
+			.forEach(room => client.leave(room));
+		const room = this.chatService.getRoomRoom(data);
+		console.log(room)
 		client.join(room);
 	}
 	@SubscribeMessage("newUser")

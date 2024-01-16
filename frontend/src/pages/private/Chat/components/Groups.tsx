@@ -1,6 +1,6 @@
 import { IconCirclePlus, IconDotsVertical, IconLogin, IconLogout2, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
-import { DATA, Group } from "../myTypes";
+import { DATA, Group, NEWCHAT } from "../myTypes";
 
 interface Props {
 	data: DATA,
@@ -239,11 +239,14 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 			groupTo: tmp,
 			password: list?.find(x => x.name == tmp)?.password
 		}))
-		// const	newChat: NEWCHAT = {
-		// 	sender: data.userData ? data.userData.userName : "",
-		// 	recver: tmp
-		// }
-		// data.socket?.emit("newChat", newChat);
+		if (data.userData?.groups.find(x => x.name == tmp)) {
+			const	newChat: NEWCHAT = {
+				sender: data.userData ? data.userData.userName : "",
+				recver: tmp
+			}
+			// console.log("hello")
+			data.socket?.emit("newChatRoom", newChat);
+		}
 	}
 	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
 		const	x = event.clientX;

@@ -13,7 +13,52 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[inputType, setInputType] = useState("password");
 	const	[passwordText, setPasswordText] = useState("");
 	const	[passwordError, setPasswordError] = useState(false);
-
+	const	Reference = useRef<HTMLInputElement | null>(null);
+	const	dataRef = useRef(data);
+	const	[conversation, setConversation] = useState<Array<{
+		id: number,
+		message: string,
+		sender: string,
+		avatar: string
+	}>>([]);
+	
+	dataRef.current = data;
+	useEffect(() => {
+		if (Reference.current)
+			Reference.current.focus();
+	}, [data.groupTo]);
+	useEffect(() => {
+		data.socket?.on("clientRoom", callBack);
+		return (() => {
+			data.socket?.off("clientRoom", callBack);
+		})
+	}, [data.socket]);
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const res = await fetch("http://localhost:3001/chathistoryRoom", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						sender: data.userData?.userName,
+						recver: data.groupTo
+					})
+				});
+				const Data = await res.json()
+				if (Data)
+					setConversation(Data)
+				else
+					throw new Error("error")
+			}
+			catch {
+				setConversation([]);
+				return ;
+			}
+		}
+		fetchData();
+	}, [data]);
 	async function clickJoinCallBack(state: boolean) {
 		if (!state) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
@@ -84,16 +129,54 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setPasswordText(event.target.value);
 		setPasswordError(false);
 	}
+	function changeMessage(event: React.ChangeEvent<HTMLInputElement>) {
+		setData(x => ({
+			...x,
+			message: event.target.value
+		}));
+	}
+	function submitMessage(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		if (data.message.length) {
+			const	Message: MESSAGE = {
+				sender: data.userData ? data.userData.userName : "",
+				recver: data.groupTo ? data.groupTo : "",
+				message: data.message
+			}
+			data.socket?.emit("room", Message);
+			setData(prev => setMessageData(prev, ""))
+			if (Reference.current)
+				Reference.current.focus();
+		}
+	}
+	function callBack(m: {
+		id: number,
+		message: string,
+		sender: string,
+		avatar: string,
+	})
+	{
+		// console.log(m);
+		setData(x => ({
+			...x,
+			send: !x.send
+		}))
+		// if (!dataRef.current.userData?.chatUsers.
+		// 	find(x => x.login == dataRef.current.talkingTo)) {
+		// 	setTrigger(true);
+		// }
+		setConversation(prev => [m, ...prev]);
+	}
 	if (data.groupTo) {
 		if (data.userData?.groups.find(x => x.name == data.groupTo))
 			return (
 				<form
-					// onSubmit={submit}
+					onSubmit={submitMessage}
 					className="w-[57%] bg-discord4 flex flex-col
 						justify-end text-discord6 p-0"
 				>
 					<ul className="max-h-90 overflow-auto flex flex-col-reverse">
-						{/* {conversation.map(x => {
+						{conversation.map(x => {
 							return (
 								<li
 									key={x.id}
@@ -120,17 +203,17 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 										<div className="break-words">{x.message}</div>
 									</div>
 								</li>)
-						})} */}
+						})}
 					</ul>
 					<div className="flex m-2">
 						<input
 							type="text"
 							placeholder="Message..."
 							className="bg-discord1 border-none outline-none w-full h-10 rounded-md mr-2 p-5"
-							// onChange={change}
+							onChange={changeMessage}
 							value={data.message}
 							autoFocus
-							// ref={Reference}
+							ref={Reference}
 						/>
 						<button
 							className="bg-discord1 w-10 h-10 rounded-md flex
