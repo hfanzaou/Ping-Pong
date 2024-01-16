@@ -412,7 +412,7 @@ export class UserService {
             })
             if (!matchhistory)
                 return [];
-            console.log(matchhistory);
+            //console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
                // console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
@@ -430,23 +430,25 @@ export class UserService {
         }
     }
     
-    async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
+    async addMatchHistory(id: number, result: {oppid: number, playerScore: number, player2Score: number}) {
         try {
-            const loserid = await this.prismaservice.user.findUnique({
-                where: {username: result.name},
-                select: {id: true},
-            })
+            console.log(result);
+            // const loserid = await this.prismaservice.user.findUnique({
+            //     where: {id: result.oppid},
+            //     select: {username: true},
+            // })
             await this.prismaservice.matchHistory.create({
                 data: {
-                    players: {connect: [{id: id}, {username: result.name}]},  
+                    players: {connect: [{id: id}, {id: result.oppid}]},  
                     playerId: id,
-                    player2Id: loserid.id,
+                    player2Id: result.oppid,
                     playerScore: result.playerScore,
                     player2Score: result.player2Score,
 
                 }    
             })
         } catch(error) {
+            console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }

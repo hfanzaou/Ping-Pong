@@ -70,7 +70,7 @@ export function  updateBallPos(p5: p5Types)
   }
 }
 
-function ft_goalScored(p5: p5Types) {
+async function ft_goalScored(p5: p5Types) {
   ball.x = WIDTH / 2;
   ball.y = HEIGHT / 2;
   ball.xdir *= -1;
@@ -78,7 +78,7 @@ function ft_goalScored(p5: p5Types) {
   ball.speed = INITIAL_SPEED;
   if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
       socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-      gameOver(p5, player1, player2);
+      await gameOver(p5, player1, player2);
   }
   else {
     // socket.emit('goalScored', { player1Score: player1.score, player2Score: player2.score });
@@ -188,9 +188,9 @@ export function eventListeners(p5: p5Types) {
     ball = data.ball;
   });
   
-  socket.on('gameOver', () => {
-    socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-    gameOver(p5, player1, player2);
+  socket.on('gameOver', async () => {
+    socket.emit('gameOver', { score1: player1.score, score2: player2.score });
+    await gameOver(p5, player1, player2);
   });
 
   socket.on('opponentDisconnected', () => {
