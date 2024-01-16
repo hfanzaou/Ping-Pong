@@ -6,7 +6,7 @@ import data from "./test.json";
 function LeaderbordTable() {
     const rows = data.map((item) => (
       <Table.Tr key={item.name}>
-        <Table.Td>
+        <Table.Td c={'cyan'} >
           <Group gap="sm">
             <Avatar size={40} src={item.avatar} radius={40} />
             <div>
@@ -43,7 +43,7 @@ function LeaderbordTable() {
     ));
   
     return (
-        <Table verticalSpacing="md" highlightOnHover withRowBorders={false} horizontalSpacing='xl'>
+        <Table verticalSpacing="lg" highlightOnHover withRowBorders={false} horizontalSpacing='xl'>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
     );

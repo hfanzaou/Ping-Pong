@@ -5,6 +5,7 @@ import { IconChartInfographic, IconDeviceGamepad2, IconLogout, IconMessages, Ico
 import { IconHome } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
 import Notification from "./Notification";
+import { Socket } from "socket.io-client";
 // import { IconButton, Typography } from "@mui/material";
 
 const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
@@ -83,7 +84,7 @@ function NavigationItem() {
 }
 
 
-const LeftSide = ({avatar} : {avatar: string}) => {
+const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
 
 
@@ -97,7 +98,7 @@ const LeftSide = ({avatar} : {avatar: string}) => {
 
             {/* <button type="button" className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"> */}
 
-        <Notification />
+        <Notification socket={socket}/>
 
         <Menu trigger="hover"  openDelay={100} closeDelay={400} opened={disabled} onChange={setDisabled} shadow="md" position="bottom-end" offset={5}>
 
@@ -124,14 +125,14 @@ const LeftSide = ({avatar} : {avatar: string}) => {
 }
 
 
-function Nav({avatar} : {avatar: string}) {
+function Nav({socket, avatar} : {socket: Socket, avatar: string}) {
     return (
     <div className="bg-gray-800">
         <nav className="bg-slate-900 rounded-full mx-8 mb-2">
             <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <NavigationItem/>
-                    <LeftSide avatar={avatar}/>
+                    <LeftSide socket={socket} avatar={avatar}/>
                 </div>
             </div>
         </nav>

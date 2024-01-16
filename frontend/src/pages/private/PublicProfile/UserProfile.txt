@@ -1,0 +1,15 @@
+interface UserProfile {
+    username: string, 
+    avatar: string,
+    MatchHistory: {
+                     playerScore: number;
+                     player2Score: number;
+                     win: boolean;
+                     avatar: string;
+                     username: string;
+     }[], 
+    state: boolean,
+    level: number
+}
+
+export default UserProfile;

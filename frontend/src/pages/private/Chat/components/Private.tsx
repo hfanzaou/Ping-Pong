@@ -20,8 +20,10 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	settingsXyRef = useRef(settingsXy);
 	const	[blockTrigger, setBlockTrigger] = useState(false)
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
+	const	userNameRef = useRef(data.userData?.userName);
 
 	settingsXyRef.current = settingsXy;
+	userNameRef.current = data.userData?.userName;
 	useEffect(() => {
 		setText("");
 	}, [data.send])
@@ -48,14 +50,14 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
-		// console.log(data.userData?.userName)
+		// console.log(data.userData?.userName);
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				username: data.userData?.userName
+				userName: userNameRef.current
 			})
 		});
 		const Data = await res0.json();
@@ -99,17 +101,12 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			sender: data.userData ? data.userData.userName : "",
 			recver: tmp
 		}
-		data.socket?.emit("newChat", newChat);
+		data.socket?.emit("newChatPrivate", newChat);
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
-		if (event.target.value == "" && data.userData) {
+		if (event.target.value == "" && data.userData)
 			setList(data.userData.chatUsers);
-			setData(x => ({
-				...x,
-				talkingTo: undefined
-			}))
-		}
 		else if (data.userData){
 			const list	= [...data.userData?.chatUsers,
 				...data.userData?.friends]

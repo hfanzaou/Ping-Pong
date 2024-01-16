@@ -4,10 +4,11 @@ import { Socket, io } from "socket.io-client";
 
 interface Props {
     setSocket: React.Dispatch<React.SetStateAction<Socket | null>>,
+    socket: Socket | null,
     avatar: string,
 }
 
-const   Header: React.FC<Props> = ({ setSocket, avatar }) => {
+const   Header: React.FC<Props> = ({ setSocket, socket, avatar }) => {
     async function callBack(socket: Socket) {
         try {
             const res0 = await fetch("http://localhost:3001/user/name", {
@@ -58,6 +59,9 @@ const   Header: React.FC<Props> = ({ setSocket, avatar }) => {
             socket.emit("state");
             // console.log("connected");
         })
+        socket.on("error", () => {
+            console.log("error in socket");
+        });
         setSocket(socket);
         return () => {
             socket.disconnect();
@@ -72,7 +76,7 @@ const   Header: React.FC<Props> = ({ setSocket, avatar }) => {
     
     return (
         <div className='sticky top-0 z-50'>
-            <Nav avatar={avatar}/>
+            {socket && <Nav socket={socket} avatar={avatar}/>}
         </div>
     );
 }

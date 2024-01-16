@@ -4,7 +4,7 @@ import image from "./test.png";
 
 function LeaderbordCard() {
   return (
-    <Paper radius="md"  >
+    <Paper radius="md" bg={'transparent'} >
       <Avatar
         src={image}
         size={120}

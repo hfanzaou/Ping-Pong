@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Avatar, Text, Group, Button, SimpleGrid } from '@mantine/core';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
-import sectionimage from '../../Home/assite/bg.gif'
+import sectionimage from './avatar-10.png'
 import { Link } from 'react-router-dom';
 
 
@@ -26,7 +26,7 @@ interface UserCardProps {
 
 const stats = [
   {value: '5', label: 'Wins'},
-  {value: '7', label: 'Total'},
+  {value: '7', label: 'Played game'},
   {value: '3', label: 'losses'},
 ];
 
@@ -47,11 +47,11 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
       }, []);
 
   const items = stats.map((stat) => (
-    <div key={stat.label}>
-      <Text ta="center" fz="lg" fw={500} c={(stat.label === 'Total'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
+    <div key={stat.label} className={stat.label !== 'Played game' ? "mb-12" : ""}>
+      <Text ta="center" fz="lg" fw={500} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
         {stat.value}
       </Text>
-      <Text ta="center" fz="sm" lh={1} c={(stat.label === 'Total'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
+      <Text ta="center" fz="sm" lh={1} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
         {stat.label}
       </Text>
     </div>
@@ -65,18 +65,22 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
 
   return (
     //  h-[515px]
-    <div className='m-2 p-2 rounded-lg bg-gray-800'>
-    <Card style={{backgroundColor: 'transparent'}}    radius="md">
-      <Card.Section
-        h={60}
-        >
-        </Card.Section>
+    // <div className='p-2  w-[250px]  rounded-lg bg-gray-800'>
+     <Card p={2} style={{backgroundColor: 'rgb(31 41 55)'}}    radius="lg">
+      {/* <Card.Section
+        h={250}
+        style={{
+          backgroundImage: `url(${avatar})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+        }}
+        /> */}
       <Avatar
         src={avatar}
         size={250}
-        radius={160}
-        mx="auto"
-        mt={-30}
+        radius={250}
+        m="auto"
+        mt={12}
         />
       <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
 
@@ -88,16 +92,15 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
       <Group mt="md" justify="center" gap={30}>
         {items}
       </Group>
-    </Card>
-      <div className='flex justify-center items-centerw-12'>
+      {/* <div className='flex justify-center items-centerw-12 mt-5'>
         <Button radius="md" size="md" color='gray' onClick={handleClick}>
-        {/* <Link to={'/'+userName+'/public/profile'}> */}
         <Link to={`/UserProfile?name=${userName}`}>
             show your public profile
         </Link>
         </Button>
-      </div>
-    </div>
+      </div> */}
+    </Card>
+    //   </div>
   );
 }
 
