@@ -2,7 +2,7 @@ import React from 'react';
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import Login from './Login';
-
+import image from "./home.jpg"
 import {
   TextInput,
   PasswordInput,
@@ -15,6 +15,7 @@ import {
   Checkbox,
   Anchor,
   Stack,
+  SimpleGrid,
 } from '@mantine/core';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -22,8 +23,9 @@ import { Link } from 'react-router-dom';
 // import { TwitterButton } from './TwitterButton';
 
 function Authentication(props: PaperProps) {
+    const [incorect, setIncorect] = React.useState(false);
   const [type, toggle] = useToggle(['login', 'register']);
-//   const [singup, setSingup] = React.useState(false);
+
   const form = useForm({
     initialValues: {
       email: '',
@@ -39,9 +41,9 @@ function Authentication(props: PaperProps) {
   });
 
   const handelSubmit = async () => {
-    console.log("handelSubmit");
-    console.log("form.values: ", form.values);
-    type === 'login' ? await axios.post('login/pass', {
+        console.log("handelSubmit");
+        console.log("form.values: ", form.values);
+        type === 'login' ? await axios.post('login/pass', {
         email: form.values.email,
         password: form.values.password,
         })
@@ -52,11 +54,11 @@ function Authentication(props: PaperProps) {
                     window.location.href = `${import.meta.env.VITE_APP_URL}auth`;
                 else
                     window.location.href = `${import.meta.env.VITE_APP_URL}`;
-                // setSingup(true);
             }
 
         })
         .catch((err) => {
+            setIncorect(true);
             console.error("err in loging in: ", err);
         }):
     await axios.post('signup/pass', {
@@ -68,88 +70,95 @@ function Authentication(props: PaperProps) {
             if (res.status === 201) {
                 console.log("res: ", res);
                 window.location.href = `${import.meta.env.VITE_APP_URL}Setting`;
-                // setSingup(true);
             }
         })
         .catch((err) => {
+            setIncorect(true);
             console.error("err in sining up: ", err);
         })
-  };
+    };
 
-  return (
-    <div className='h-full ml-[200px] mt-[150px] w-[800px]'>
-    <Paper radius="lg" p="xl" withBorder {...props}>
-      {/* <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
-      </Text> */}
-
-      {/* <Group grow mb="md" mt="md"> */}
-        {/* <Login/> */}
-
-        {/* <GoogleButton radius="xl">Google</GoogleButton> */}
-        {/* <TwitterButton radius="xl">Twitter</TwitterButton> */}
-      {/* </Group> */}
-
-      {/* <Divider label="Or continue with email" labelPosition="center" my="lg" /> */}
-
-      <form onSubmit={form.onSubmit(() => {handelSubmit})}>
-        <Stack>
-          {type === 'register' && (
-            <TextInput
-              label="Name"
-              placeholder="Your name"
-              value={form.values.name}
-              onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
-              radius="md"
-            />
-            )}
-          <TextInput
-            required
-            label="Email"
-            placeholder="Your email"
-            value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && 'Invalid email'}
-            radius="md"
-            />
-
-          <PasswordInput
-            required
-            label="Password"
-            placeholder="Your password"
-            value={form.values.password}
-            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-            error={form.errors.password && 'Password should include at least 6 characters'}
-            radius="md"
-            />
-{/* 
-          {type === 'register' && (
-              <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
-              />
-              )} */}
-        </Stack>
-
-        <Group justify="space-between" mt="xl">
-          <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
-            {type === 'register'
-              ? 'Already have an account? Login'
-              : "Don't have an account? Register"}
-          </Anchor>
-          <div>
-
-            <Login/>
-          <Button onClick={handelSubmit} color='gray' type="submit" radius="xl">
-            {upperFirst(type)}
-          </Button>
-          </div>
-        </Group>
-      </form>
-    </Paper>
-              </div>
-  );
+    return (
+        // <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
+        <div className='mx-[50px] mt-7 p-5 rounded-xl bg-slate-900 shadow-5'>
+            <SimpleGrid
+                className='grid place-items-center'
+                cols={{base: 1, md:2, lg: 2, xl: 2}}
+                spacing='sm'
+            >
+                <Paper h={520} c='blue' bg={'rgb(31 41 55)'} radius="lg" p="md" {...props}>
+                <Text size="md" fw={500}>
+                    Welcome to game
+                </Text>
+                <Group grow mb="md" mt="md">
+                    <Login/>
+                </Group>
+                <Divider label="Or continue with email" labelPosition="center" my="lg" />
+                        {incorect && <Text c={'red'}>Incorrect, try agin</Text>}
+                <form onSubmit={form.onSubmit(() => {handelSubmit})}>
+                    <Stack>
+                        {type === 'register' && (
+                        <TextInput
+                            radius="md"
+                            variant="filled"
+                            required
+                            label="Name"
+                            placeholder="Your name"
+                            value={form.values.name}
+                            onChange={(event) => {
+                                    form.setFieldValue('name', event.currentTarget.value);
+                                    setIncorect(false)
+                                }
+                            }
+                        />
+                        )}
+                        <TextInput
+                            radius="md"
+                            variant="filled"
+                            required
+                            label="Email"
+                            placeholder="Your email"
+                            value={form.values.email}
+                            error={form.errors.email && 'Invalid email'}
+                            onChange={(event) => {
+                                    form.setFieldValue('email', event.currentTarget.value);
+                                    setIncorect(false);
+                                }
+                            }
+                            />
+                            <PasswordInput
+                                radius="md"
+                                variant="filled"
+                                required
+                                label="Password"
+                                placeholder="Your password"
+                                value={form.values.password}
+                                error={form.errors.password && 'Password should include at least 6 characters'}
+                                onChange={(event) =>  {
+                                        form.setFieldValue('password', event.currentTarget.value);
+                                        setIncorect(false);
+                                    }
+                                }
+                            />
+                        </Stack>
+                        <Group justify="space-between" mt="md">
+                            <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
+                                {type === 'register'
+                                ? 'Already have an account? Login'
+                                : "Don't have an account? Register"}
+                            </Anchor>
+                            <div>
+                                <Button onClick={handelSubmit} color='green' size='xs' type="submit" radius="xl">
+                                    {upperFirst(type)}
+                                </Button>
+                            </div>
+                        </Group>
+                    </form>
+                </Paper>
+                <img className='rounded-lg' src={image} alt="ping pong image" />
+            </SimpleGrid>
+        </div>
+    );
 }
 
 export default Authentication;

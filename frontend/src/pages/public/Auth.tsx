@@ -1,6 +1,6 @@
+import React, { useState } from "react";
 import { Button, TextInput } from "@mantine/core";
 import axios from "axios";
-import React, { useState } from "react";
 
 function Auth() {
     const [code, setCode] = useState<number>();
@@ -36,8 +36,6 @@ function Auth() {
 
     return (
         <div className="h-[605px] space-y-8 items-center">
-
-            {/* <Header avatar={avatar}/> */}
             <div className="flex items-center justify-center  pt-20">
             <TextInput
                 onChange={handleSaveCode}

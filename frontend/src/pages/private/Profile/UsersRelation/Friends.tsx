@@ -78,13 +78,13 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
                       Show Profile
                   </Link>
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               leftSection={
                 <IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
               }
               >
               <Link to={'/Chat'}>Send message</Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
             onClick={() => handleBlockUser(item.name)}
             leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}

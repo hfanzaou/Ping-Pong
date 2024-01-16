@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router} from 'react-router-dom'
 import { Route, Routes } from 'react-router-dom'
 import { LoadingOverlay, MantineProvider } from '@mantine/core'
+import '@mantine/core/styles.css'
+import './index.css'
+
+import axios from 'axios'
+import { Socket } from 'socket.io-client';
+
 import Login from './pages/public/Login/Authentication';
-import Home from './pages/private/Home/Home'
-import Leaderbord from './pages/private/Dashbord/Leaderbord'
-import Profile from './pages/private/Profile/Profile'
+import Auth from './pages/public/Auth'
+import Header from './Layout/Header/Header';
 import Setting from './pages/private/Settings/Settings'
+import ScrollUp from './componenet/ScrollUp';
+import Home from './pages/private/Home/Home'
+import Profile from './pages/private/Profile/Profile'
+import Leaderbord from './pages/private/Dashbord/Leaderbord'
 import Game from './pages/private/Game/Game'
 import ChatApp from './pages/private/Chat/ChatApp'
-import axios from 'axios'
-import Auth from './pages/public/Auth'
 import PublicProfile from './pages/private/PublicProfile/PublicProfile'
 import UsersInterface from './pages/private/Home/Users/UsersInterface'
 import NotFound from './pages/public/NotFound/NotFound'
 import GoToLogin from './pages/public/GoToLogin/GoToLogin'
-import '@mantine/core/styles.css'
-import './index.css'
-import Header from './Layout/Header/Header';
-import { Socket } from 'socket.io-client';
-import ScrollUp from './componenet/ScrollUp';
 
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
