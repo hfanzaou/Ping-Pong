@@ -7,7 +7,7 @@ import EnableTowFactor from './EnableTowFactor';
 function EditeProfile({setAvatar, avatar} : {setAvatar: Function, avatar: string}) {
 
     return (
-        <div className='flex w- justify-center mx-[50px] h-[497px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
+        <div className='flex justify-center mx-[50px] h-[497px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
             <SimpleGrid className='w-1/2 grid place-items-center'>
                 <Card style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
                 <SimpleGrid 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, SimpleGrid } from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
-import UsersRelation from './Friends/UsersRelation'
+import UsersRelation from './UsersRelation/UsersRelation'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
 import { Socket } from 'socket.io-client'
