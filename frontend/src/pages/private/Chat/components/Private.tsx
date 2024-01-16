@@ -101,7 +101,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			sender: data.userData ? data.userData.userName : "",
 			recver: tmp
 		}
-		data.socket?.emit("newChat", newChat);
+		data.socket?.emit("newChatPrivate", newChat);
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);

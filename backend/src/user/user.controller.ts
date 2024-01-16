@@ -125,7 +125,7 @@ export class UserController {
         return (await this.userService.getNotification(req.user.id));
     }
     @Post('matchhistory')
-    async addMatchHistoy(@Req() req, @Body() body: {oppid: number, playerScore: number, player2Score: number}) {
+    async addMatchHistoy(@Req() req, @Body() body: {name: string, playerScore: number, player2Score: number}) {
         if (!body)
             throw new BadRequestException('unsupported data');
         console.log(body);

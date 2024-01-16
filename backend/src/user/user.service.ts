@@ -430,18 +430,18 @@ export class UserService {
         }
     }
     
-    async addMatchHistory(id: number, result: {oppid: number, playerScore: number, player2Score: number}) {
+    async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
         try {
             console.log(result);
-            // const loserid = await this.prismaservice.user.findUnique({
-            //     where: {id: result.oppid},
-            //     select: {username: true},
-            // })
+            const loserid = await this.prismaservice.user.findUnique({
+                where: {username: result.name},
+                select: {id: true},
+            })
             await this.prismaservice.matchHistory.create({
                 data: {
-                    players: {connect: [{id: id}, {id: result.oppid}]},  
+                    players: {connect: [{id: id}, {username: result.name}]},  
                     playerId: id,
-                    player2Id: result.oppid,
+                    player2Id: loserid.id,
                     playerScore: result.playerScore,
                     player2Score: result.player2Score,
 

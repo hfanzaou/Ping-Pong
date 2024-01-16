@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Drawer, Group, Menu, Modal, ScrollArea, Table, Text } from "@mantine/core";
-import FriendInterface from "../../pages/private/Profile/Friends/FriendsInterface";
+import { Avatar, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Group, Menu, Modal, ScrollArea, Table, Text } from "@mantine/core";
+import FriendInterface from "../../pages/private/Profile/UsersRelation/FriendsInterface";
 import NotificationInterface from "./NotificationInterface";
 import { useDisclosure } from "@mantine/hooks";
 import { Socket } from "socket.io-client";
@@ -77,7 +77,9 @@ function Notification({socket}: Socket) {
                 {requestRows}
             </Modal> */}
 
-            <Drawer
+
+
+            <Drawer 
                 // offset={20}
                 onClick={() => setNotification(false)}
                 position="right"
@@ -85,7 +87,9 @@ function Notification({socket}: Socket) {
                 onClose={close}
                 title="Notification"
                 scrollAreaComponent={ScrollArea.Autosize}
+                c={'blue'}
             >
+
                 {requestRows}
             </Drawer>
 

@@ -3,7 +3,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { MESSAGE, NEWCHAT, NEWGROUP, USERDATA } from "./myTypes";
 import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
+import { ChatGateway } from "./chat.gateway";
 
 @Injectable()
 export class ChatService {
@@ -44,7 +45,8 @@ export class ChatService {
 				),
 				groups: user.groups.map(x => ({
 					id: x.group.id,
-					name: x.group.name
+					name: x.group.name,
+					password: x.group.hash ? true : false
 				}))
 			}
 			return data;
@@ -68,10 +70,11 @@ export class ChatService {
 		}
 		return null;
 	}
-	getRoom(data: NEWCHAT) {
+	getRoomDirect(data: NEWCHAT) {
 		const room = this.rooms.find(room => {
-			if (room.indexOf(data.sender) == -1
-				|| room.indexOf(data.recver) == -1)
+			if (room.indexOf(data.sender) == -1 ||
+				room.indexOf(data.recver) == -1 ||
+				room.indexOf("&") == -1)
 				return false;
 			else
 				return true;
@@ -80,10 +83,19 @@ export class ChatService {
 			return room;
 		else {
 			this.rooms.push(`&${data.sender}${data.recver}`);
-			return data.sender+data.recver;
+			return `&${data.sender}${data.recver}`;
 		}
 	}
-	async addMessage(data: MESSAGE) {
+	getRoomRoom(data: NEWCHAT) {
+		const room = this.rooms.find(room => room == data.recver);
+		if (room)
+			return room;
+		else {
+			this.rooms.push(`${data.recver}`);
+			return data.recver;
+		}
+	}
+	async addMessagePrivate(data: MESSAGE) {
 		let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 			where: {
 				AND: [
@@ -157,7 +169,34 @@ export class ChatService {
 			// recver: data.recver
 		}
 	}
-	async getUserHistory(data: NEWCHAT) {
+	async addMessageRoom(data: MESSAGE) {
+		const	chatHistorie = await this.prisma.cHATHISTORY.findUnique({
+			where: { name: data.recver }
+		})
+		const avatar = await this.prisma.user.findUnique({
+			where: { username: data.sender }
+		})
+		const message = await this.prisma.mESSAGE.create({
+			data: {
+				sender: data.sender,
+				message: data.message,
+				avatar: await this.user.getUserAvatar(avatar.id),
+				chathistory: {
+					connect: {
+						id: chatHistorie.id
+					}
+				}
+			}
+		});
+		return {
+			id: message.id,
+			message: message.message,
+			sender: message.sender,
+			avatar: message.avatar,
+			// recver: data.recver
+		}
+	}
+	async getUserHistoryPrivate(data: NEWCHAT) {
 		if (data.sender && data.recver) {
 			const history = await this.prisma.cHATHISTORY.findFirst({
 				where: {
@@ -185,6 +224,28 @@ export class ChatService {
 				include: {
 					messages: true
 				}
+			});
+			if (history) {
+				const chatHistory = [...history.messages.map(x => {
+					return {
+						id: x.id,
+						message: x.message,
+						sender: x.sender,
+						avatar: x.avatar
+					}
+				})].reverse();
+				return chatHistory;
+			}
+			else
+				return null;
+		}
+		return null;
+	}
+	async getUserHistoryRoom(data: NEWCHAT) {
+		if (data.sender && data.recver) {
+			const history = await this.prisma.cHATHISTORY.findFirst({
+				where: { name: data.recver },
+				include: { messages: true }
 			});
 			if (history) {
 				const chatHistory = [...history.messages.map(x => {
@@ -249,26 +310,30 @@ export class ChatService {
 			where: { username: data.owner }
 		})
 		try {
+			await this.prisma.cHATHISTORY.create({
+				data: {
+					users: { create: [{ user: { connect: { id: user.id }}}]},
+					name: data.name
+				}
+			});
 			await this.prisma.gROUP.create({
 				data: {
 					name: data.name,
 					owner: data.owner,
 					admins: [data.owner],
 					state: data.state,
-					members: {
-						create: {
-							user:{
-								connect: {
-									id: user.id
-								}
-							}
-						}
-					},
 					hash: data.password.length > 0 ?
 						await hash(data.password, 10) :
-						null
+						null,
+					members: { create: [{ user: { connect: { id: user.id}}}]}
 				}
 			});
+			// await this.prisma.userGROUP.create({
+			// 	data: {
+			// 		userid: user.id,
+			// 		groupId: group.id
+			// 	}
+			// });
 		}
 		catch {
 			return false;
@@ -296,7 +361,79 @@ export class ChatService {
 		})
 		return groups.map(x => ({
 			id: x.id,
-			name: x.name
+			name: x.name,
+			password: x.hash ? true : false 
 		}));
+	}
+	async getLeaveJoin(data: { userName: string, name: string}) {
+		const	user = await this.prisma.user.findUnique({
+			where: { username: data.userName },
+		});
+		const	group = await this.prisma.gROUP.findUnique({
+			where: { name: data.name }
+		});
+		const	chatHistory = await this.prisma.gROUP.findUnique({
+			where: { name: data.name }
+		});
+		if (user && group) {
+			const	userGroup = await this.prisma.userGROUP.findUnique({
+				where: {
+					userid_groupId: {
+						userid: user.id,
+						groupId: group.id
+					}
+				}
+			})
+			if (userGroup) {
+				await this.prisma.userGROUP.delete({
+					where: {
+						userid_groupId: {
+							userid: user.id,
+							groupId: group.id
+						}
+					}
+				});
+				await this.prisma.userCHATHISTORY.delete({
+					where: {
+						userid_chathistoryid: {
+							userid: user.id,
+							chathistoryid: chatHistory.id
+						}
+					}
+				});
+				
+			}
+			else {
+				await this.prisma.userGROUP.create({
+					data: {
+						userid: user.id,
+						groupId: group.id
+					}
+				});
+				await this.prisma.userCHATHISTORY.create({
+					data: {
+						userid: user.id,
+						chathistoryid: chatHistory.id
+					}
+				});
+			}
+		}
+		const	updatedUser = await this.prisma.user.findUnique({
+				where: { id: user.id },
+				include: { groups: { include: { group: true }}}
+			});
+		return updatedUser.groups.map(x => ({
+			id: x.group.id,
+			name: x.group.name,
+			password: x.group.hash ? true : false
+		}));
+	}
+	async getCheckPassword(data: { name: string, password: string}) {
+		const	group = await this.prisma.gROUP.findUnique({
+			where: { name: data.name }
+		});
+		const	match = await compare(data.password, group.hash);
+
+		return (match);
 	}
 }
