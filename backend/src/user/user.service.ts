@@ -412,7 +412,7 @@ export class UserService {
             })
             if (!matchhistory)
                 return [];
-            console.log(matchhistory);
+            //console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
                // console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
@@ -432,6 +432,7 @@ export class UserService {
     
     async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
         try {
+            console.log(result);
             const loserid = await this.prismaservice.user.findUnique({
                 where: {username: result.name},
                 select: {id: true},
@@ -447,6 +448,7 @@ export class UserService {
                 }    
             })
         } catch(error) {
+            console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }

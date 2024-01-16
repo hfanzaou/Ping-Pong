@@ -1,4 +1,5 @@
 import {
+	ConnectedSocket,
 	OnGatewayConnection,
 	OnGatewayDisconnect,
 	SubscribeMessage,
@@ -8,7 +9,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { MESSAGE, NEWCHAT } from "./myTypes";
-import { Req, UseGuards } from "@nestjs/common";
+import { Logger, Req, UseGuards } from "@nestjs/common";
 import JwtTwoFaGuard from "src/auth/guard/twoFaAuth.guard";
 import { AuthService } from "src/auth/auth.service";
 import { notifDto } from "src/auth/dto/notif.dto";
@@ -82,7 +83,7 @@ OnGatewayDisconnect {
 			client.broadcast.emit("online", {
 				username: user.username,
 				state: user.state
-			});
+			});		
 	}
 
 
@@ -91,18 +92,28 @@ OnGatewayDisconnect {
 	////////
 	@SubscribeMessage('addnotification')
 	async handleNotification(client: Socket, payload: notifDto) {
-		const {id} = await this.verifyClient(client);
-	  	const reciever = await this.prisma.user.findUnique({
-		where: {username: payload.reciever},
-		select: {id: true, socket: true}
-	  })
-	  await this.user.addNotification(id, payload);
-	  client.to(reciever.socket).emit('getnotification', 'hello');
+		try {	
+			const {id} = await this.verifyClient(client);
+	  		const reciever = await this.prisma.user.findUnique({
+			where: {username: payload.reciever},
+			select: {id: true, socket: true}
+	  		})
+	  		await this.user.addNotification(id, payload);
+	  		client.to(reciever.socket).emit('getnotification', 'hello');
+		} catch(error)
+		{
+			client.emit('error');
+		}
 	}
 	@SubscribeMessage("state")
     async handleOnline(client: Socket) {
-		const {username, state} = await this.verifyClient(client);
-        client.broadcast.emit("online", {username, state});
+		try {
+			const {username, state} = await this.verifyClient(client);
+        	client.broadcast.emit("online", {username, state});
+		} catch(error)
+		{
+			client.emit('error');
+		}
     }
 	async verifyClient(client: Socket) {
 		try {

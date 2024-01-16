@@ -40,7 +40,7 @@ export class JwtTwoFaStrategy extends PassportStrategy(Strategy, 'jwt-two-factor
           // You can perform additional logic with the decoded payload if needed
           return payload;
         } catch (error) {
-            console.log(error);
+            //console.log(error);
           throw new UnauthorizedException('Invalid token');
         }
     }

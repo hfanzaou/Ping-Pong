@@ -23,5 +23,6 @@ export class Player {
     this.racket = { x, y };
     this.score = score;
     this.roomName = roomName;
+
   }
 }

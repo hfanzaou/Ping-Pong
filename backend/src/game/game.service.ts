@@ -4,6 +4,7 @@ import { Ball } from "./classes/ball";
 import { User, Player } from "./classes/player";
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from "src/prisma/prisma.service";
+import { JwtTwoFaStrategy } from "src/strategy";
 
 const HEIGHT = 450;
 const WIDTH = 700;
@@ -22,7 +23,8 @@ let goalScored: boolean = false;
 @Injectable()
 export class GameService {
   constructor(private userService: UserService,
-    private prismaService: PrismaService) {}
+    private prismaService: PrismaService,
+    private strategy: JwtTwoFaStrategy) {}
 
   private logger: Logger = new Logger('GameService');
   users: Map<string, User> = new Map();
@@ -46,11 +48,37 @@ export class GameService {
     return this.users.get(client.id);
   }
 
-  initGame(wss: Server, client: Socket)
+  async verifyClient(wss: Server, client: Socket) {
+		try {
+			const token = client.handshake.headers.cookie.split('jwt=')[1];
+			const payload = await this.strategy.verifyToken(token);
+			return (await this.strategy.validate(payload));
+		}
+		catch (error) {
+			wss.to(client.id).emit('error', 'invalid token');
+		}
+	}
+  async findOpponent(wss: Server, SocketId: string)
+  {
+    try {
+        const user = await this.prismaService.user.findUnique({
+          where: {socket: SocketId}
+        })
+        return user;
+    } catch(error)
+    {
+      wss.to(SocketId).emit('error')
+    }
+  }
+  async initGame(wss: Server, client: Socket)
   {
     const opponent = this.waitingPlayers.shift();
     if (opponent.id === client.id) return;
     const roomName = `room${client.id}${opponent.id}`;
+    const {id: oppid} = await this.findOpponent(wss, opponent.id);
+    const {id: clientid} = await this.verifyClient(wss, client);
+    wss.to(client.id).emit("getData", oppid, false);
+    wss.to(opponent.id).emit("getData", clientid, true);
      // Create a unique room name
     client.join(roomName);
     opponent.join(roomName);

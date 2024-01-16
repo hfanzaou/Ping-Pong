@@ -13,7 +13,7 @@ import { Ball } from "./classes/ball";
 import { User, Player } from "./classes/player";
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { JwtTwoFaStrategy } from 'src/strategy';
 
 const HEIGHT = 450;
 const WIDTH = 700;
@@ -23,13 +23,12 @@ const GAME_INTERVAL = 1000/60;
 
 @WebSocketGateway({cors: true})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private gameService: GameService,
-    private userService: UserService,
-    private prismaService: PrismaService) {}
+  constructor(private gameService: GameService) {}
 
   private logger: Logger = new Logger('GameGateway');
 
   @WebSocketServer() wss: Server;
+  
   users: Map<string, User> = new Map();
   
   afterInit() {
@@ -50,11 +49,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.disconnectPlayer(this.wss, client);
   }
 
+
   @SubscribeMessage('join_room')
   async joinRoom(@ConnectedSocket() client: Socket, payload: any) {
     if (this.gameService.waitingPlayers.length > 0) {
       // Initialize the game for these two players
-      this.gameService.initGame(this.wss, client);
+      await this.gameService.initGame(this.wss, client);
     } else {
       // If there are no players waiting, add the new player to the queue
       this.gameService.waitingPlayers.push(client);

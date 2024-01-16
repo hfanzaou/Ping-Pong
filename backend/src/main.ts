@@ -5,7 +5,6 @@ import CorsModule from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ConfigService } from '@nestjs/config';
-// import * as cors from 'cors';
 const cors = require('cors');
 
 async function bootstrap() {
