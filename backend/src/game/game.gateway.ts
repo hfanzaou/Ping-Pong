@@ -23,10 +23,7 @@ const GAME_INTERVAL = 1000/60;
 
 @WebSocketGateway({cors: true})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private gameService: GameService,
-    private userService: UserService,
-    private prismaService: PrismaService,
-    private strategy: JwtTwoFaStrategy) {}
+  constructor(private gameService: GameService) {}
 
   private logger: Logger = new Logger('GameGateway');
 

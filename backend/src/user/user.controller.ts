@@ -12,11 +12,8 @@ export class UserController {
     @Get('game')
     async getGameInfo(@Req() req, @Query() query)
     {   
-        console.log(typeof query.opp);
         const username = await this.userService.getUsername(parseInt(query.opp));
-        console.log(username);
         const avatar = await this.userService.getUserAvatar(parseInt(query.opp));
-        //console.log(avatar);
         const level = 10;
         return ({username, avatar, level});
     }

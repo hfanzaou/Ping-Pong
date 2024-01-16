@@ -102,7 +102,6 @@ export async function selectMode(p5: p5Types, socket: Socket) {
 
 export function handleGameStates(p5: p5Types, socket: Socket) {
     if (countdown > 0) {
-        p5.fill("white");
         p5.textSize(32);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.textStyle(p5.BOLD);
@@ -149,7 +148,6 @@ export function handleGameStates(p5: p5Types, socket: Socket) {
 
 export function startCountdown(p5: p5Types) {
   p5.removeElements();
-  
   waitingForPlayer = false;
   countdown = 3;
   countdownInterval = setInterval(() => {
@@ -162,6 +160,7 @@ export function startCountdown(p5: p5Types) {
     p5.redraw();
   }, 1000);
 }
+
 export function gameOver(p5: p5Types, player1: Player, player2: Player) {
   p5.removeElements();
   play = false;
