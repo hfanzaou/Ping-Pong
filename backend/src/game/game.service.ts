@@ -175,7 +175,7 @@ export class GameService {
     if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
       const winner = player1.score == MAX_SCORE ? player1 : player2;
       const loser = player1.score == MAX_SCORE ? player2 : player1;
-
+      console.log(winner);
       this.userService.addMatchHistory(winner.user.id, {
          name: loser.user.username,
          playerScore: winner.score,

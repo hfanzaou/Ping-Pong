@@ -3,6 +3,7 @@ export class listDto {
         username: string;
         avatar: string;
         state: string;
+        level: number;
         friends?: {
             id: number;
         }[];

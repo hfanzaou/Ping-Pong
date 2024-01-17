@@ -41,7 +41,7 @@ interface Props {
 const Game: React.FC<Props> = ( {socket, avatar}) => {
   const   [oppAvatar, setOppAvatar] = useState<string>();
   const   [oppName, setOppName] = useState<string>();
-  const   [oppLevel, setOppLevel] = useState<string>();
+  const   [oppLevel, setOppLevel] = useState<number>();
   const   [side, setSide] = useState<boolean>()
   socket.on('getData', async (id: number, side: boolean) => 
   {
@@ -64,7 +64,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
             <div>
 
             <Grid>   
-            <Grid.Col span={1}><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} /></Grid.Col>
+            <Grid.Col span={1}><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} level={side === true? undefined: oppLevel} /></Grid.Col>
             <Grid.Col span={7}>
             <div 
             id="sketchHolder" className="flex items-center justify-center">
@@ -72,7 +72,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
             </div>
             </Grid.Col>
             <Grid.Col span={1}>
-              <PlayerCard name={side === false? 0: oppName} avatar={side === false? avatar: oppAvatar} />
+              <PlayerCard name={side === false? 0: oppName} avatar={side === false? avatar: oppAvatar} level={side === true? undefined: oppLevel}/>
               </Grid.Col>
            {/* <Space h="md" />  */}
             </Grid>

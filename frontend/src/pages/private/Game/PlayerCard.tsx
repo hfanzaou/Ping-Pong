@@ -30,8 +30,9 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function PlayerCard({name, avatar} : {name: string | number | undefined, avatar: string | undefined}) {
+function PlayerCard({name, avatar, level} : {name: string | number | undefined, avatar: string | undefined, level: string | undefined}) {
     const [userName, setUserName] = useState<string| undefined>();
+    const [userLevel, setLevel] = useState<string>();
     useEffect(() => {
        
         const getUserNmae = async () => {
@@ -39,6 +40,7 @@ function PlayerCard({name, avatar} : {name: string | number | undefined, avatar:
             .then((res) => {
                 console.log(res.data.name);
                 setUserName(res.data.name);
+                setLevel(res.data.level)
             })
             .catch((err) => {
               console.log("Error in geting data in edit profile :", err);
@@ -48,10 +50,16 @@ function PlayerCard({name, avatar} : {name: string | number | undefined, avatar:
           if (name === 0)
             getUserNmae();
           else if (typeof name === 'string')
+          {
+            setLevel(level);
             setUserName(name);
+          }
           else
+          {
+            setLevel("--");
             setUserName("----");
-      }, [name]);
+          }
+      }, [name, level]);
 
   const items = stats.map((stat) => (
     <div key={stat.label}>
@@ -95,7 +103,7 @@ function PlayerCard({name, avatar} : {name: string | number | undefined, avatar:
         {userName}
       </Text>
       <Text ta="center" c="indigo" fz="sm">
-      {"level "  + userInfo.level}
+      {"level "  + userLevel}
       </Text>
       {/* <Group mt="md" justify="center" gap={30}>
         {items}
