@@ -56,7 +56,7 @@ function PlayerCard({name, avatar, level} : {name: string | number | undefined, 
           }
           else
           {
-            setLevel(0);
+            setLevel("--");
             setUserName("----");
           }
       }, [name, level]);
