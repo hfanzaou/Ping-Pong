@@ -17,7 +17,7 @@ function  MatchHistory() {
             await axios.get("user/matchhistory")
             .then((res) => {
                 setMatchsHistory(res.data);
-                setMatchsHistory(data);
+                // setMatchsHistory(data);
                 // console.log("match history data: ", res.data);
             })
             .catch((err) => {

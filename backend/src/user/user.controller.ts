@@ -9,6 +9,14 @@ export class UserController {
     {
     }
     ///USER_INFO////
+    @Get('game')
+    async getGameInfo(@Req() req, @Query() query)
+    {  
+        const username = await this.userService.getUsername(parseInt(query.opp));
+        const avatar = await this.userService.getUserAvatar(parseInt(query.opp));
+        const level =  await this.userService.getLevel(parseInt(query.opp));
+        return ({username, avatar, level: level.toFixed(2)});
+    }
     @Get('avatar')
     async getImage(@Req() req) { 
         ////console.log(req.user.id)
@@ -17,7 +25,8 @@ export class UserController {
     @Get('name')
     async getName(@Req() req) {
         const name = await this.userService.getUsername(req.user.id)
-        return ({name: name});
+        const level = await this.userService.getLevel(req.user.id);
+        return ({name: name, level: level.toFixed(2)});
     }
     @Get('profile')
     async getProfile(@Req() req, @Query() query) {
@@ -117,6 +126,13 @@ export class UserController {
     async addMatchHistoy(@Req() req, @Body() body: {name: string, playerScore: number, player2Score: number}) {
         if (!body)
             throw new BadRequestException('unsupported data');
+        console.log("here");
+        console.log(body);
         return (await this.userService.addMatchHistory(req.user.id, body));
+    }
+    @Get('leaderboard')
+    async getLeaderBoard(@Req() req)
+    {
+        return (await this.userService.leaderBoard());
     }
 }

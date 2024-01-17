@@ -73,7 +73,10 @@ export class UserService {
                     username: true,
                     avatar: true,
                     achievement: true,
-                    state: true
+                    state: true,
+                    level: true,
+                    win: true,
+                    loss: true,
                 }
             })
             if (!user)
@@ -86,7 +89,9 @@ export class UserService {
                     username: user.username, 
                     avatar,
                     state: user.state,
-                    level: user.id,
+                    level: user.level,
+                    win: user.win,
+                    loss: user.loss,
                 },
                 matchhistory,
                 achievements: user.achievement
@@ -115,6 +120,21 @@ export class UserService {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
+    async getLevel(id: number)
+    {
+        try {
+            const user = await this.prismaservice.user.findUnique({
+                where: {
+                    id: id
+                }, select: {
+                    level: true,
+                }
+            })
+            return user.level;
+        } catch(error) {
+            throw HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
     ///friends, request and block lists///////
     async getUsersList(id: number) {
        // console.log(id);
@@ -129,6 +149,7 @@ export class UserService {
                     username: true,
                     avatar: true,
                     state: true,
+                    level: true,
                     friends: {where: {id: id}, select: {id: true}},
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
@@ -162,7 +183,8 @@ export class UserService {
                     id: true,
                     username: true,
                     avatar: true,
-                    state: true
+                    state: true,
+                    level: true,
                 }
             })
             return await this.extarctuserinfo(users, id);
@@ -184,7 +206,8 @@ export class UserService {
                     id: true,
                     username: true,
                     avatar: true,
-                    state: true
+                    state: true,
+                    level: true,
                 }
             })
             return await this.extarctuserinfo(users, id);
@@ -202,7 +225,8 @@ export class UserService {
                     id: true,
                     username: true,
                     avatar: true,
-                    state: true
+                    state: true,
+                    level: true,
                 }},
             }})
             return await this.extarctuserinfo(users.blocked, id);
@@ -391,7 +415,7 @@ export class UserService {
                     !obj.friends[0] && obj.friendOf[0] ? "remove request": 
                     obj.friends[0] && !obj.friendOf[0] ? "accept friend": "add friend";
                 }
-                return { level: obj.id, name: obj.username, avatar: avatar, state: obj.state, friendship };
+                return { level: obj.level, name: obj.username, avatar: avatar, state: obj.state, friendship };
               }));
                 return (usersre);     
     }
@@ -412,7 +436,7 @@ export class UserService {
             })
             if (!matchhistory)
                 return [];
-            console.log(matchhistory);
+            //console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
                // console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
@@ -432,6 +456,7 @@ export class UserService {
     
     async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
         try {
+            console.log(result);
             const loserid = await this.prismaservice.user.findUnique({
                 where: {username: result.name},
                 select: {id: true},
@@ -446,7 +471,9 @@ export class UserService {
 
                 }    
             })
+            this.toUpdatelevel(id, result.name);
         } catch(error) {
+            console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
@@ -497,6 +524,59 @@ export class UserService {
             return (notification);
         } catch(error) {
             throw new BadGatewayException('ERROR GETTING DATA');
+        }
+    }
+    async updatelevel(winId: number, newLevel: number, win: number, loss: number)
+    {
+        console.log(newLevel);
+        console.log(win);
+        console.log(loss);
+        try {
+            await this.prismaservice.user.update({
+                where : {id: winId},
+                data : {level: newLevel, win: win, loss: loss}
+            });
+        }
+        catch(error)
+        {
+        }
+    }
+    async toUpdatelevel(winId: number, lossName: string)
+    {
+        try {
+           const winner =  await this.prismaservice.user.findUnique({
+                where: {id: winId},
+                select: {
+                    level: true,
+                    win: true,
+                    loss: true,
+                }
+            })
+           this.updatelevel(winId,  (winner.level + 0.25 / (winner.level + 1)), ++winner.win, winner.loss);
+           const loser =  await this.prismaservice.user.findUnique({
+                where: {username: lossName},
+                select: {
+                    id: true,
+                    level: true,
+                    win: true,
+                    loss: true,
+                }
+            })
+            this.updatelevel(loser.id,  (loser.level + 0.10 / (loser.level + 1)), loser.win, ++loser.loss);
+        } catch(error)
+        {
+        }
+    }
+    async leaderBoard()
+    {
+        try {
+            const users = this.prismaservice.user.findMany({
+                
+            })
+        }
+        catch(error)
+        {
+
         }
     }
 }

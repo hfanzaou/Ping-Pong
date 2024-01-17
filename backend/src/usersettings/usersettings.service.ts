@@ -9,7 +9,6 @@ export class UsersettingsService {
     constructor(private prisma: PrismaService) {}
 
     async updateUsername(user: any, newName: string) {
-        //const userdb = await this.validateUser(user.id);
         try {
             const userFind = await this.prisma.user.findUnique({
                 where: {
@@ -34,11 +33,6 @@ export class UsersettingsService {
     }
     async updateAvater(id: number, path: string) {
         try {
-            // const base64Data = avatar.replace(/^data:image\/png;base64,/,"");
-            // const binaryData = Buffer.from(base64Data, 'base64').toString('binary');
-            // const path = "./uploads/avatar/" + id.toString() + '.png';
-            // const writestream = createWriteStream(path, 'binary');
-            // writestream.write(avatar);
             await this.prisma.user.update({
                 where: {
                     id: id,
