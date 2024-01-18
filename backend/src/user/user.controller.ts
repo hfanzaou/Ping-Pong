@@ -14,7 +14,7 @@ export class UserController {
     {  
         const username = await this.userService.getUsername(parseInt(query.opp));
         const avatar = await this.userService.getUserAvatar(parseInt(query.opp));
-        const level =  await this.userService.getLevel(parseInt(query.opp));
+        const { level }=  await this.userService.getLevel(parseInt(query.opp));
         return ({username, avatar, level: level.toFixed(2)});
     }
     @Get('avatar')
@@ -25,8 +25,8 @@ export class UserController {
     @Get('name')
     async getName(@Req() req) {
         const name = await this.userService.getUsername(req.user.id)
-        const level = await this.userService.getLevel(req.user.id);
-        return ({name: name, level: level.toFixed(2)});
+        const {level, win , loss} = await this.userService.getLevel(req.user.id);
+        return ({name: name, level: level.toFixed(2), win, loss});
     }
     @Get('profile')
     async getProfile(@Req() req, @Query() query) {
@@ -63,7 +63,6 @@ export class UserController {
     async acceptFriend(@Req() req, @Body() body) {
         if (!body.name)
             throw new BadRequestException('unsupported data');
-        //console.log(body.name);
         return (await this.userService.acceptFriend(req.user.id, body.name));
     }
     @Post('block')
@@ -131,8 +130,7 @@ export class UserController {
         return (await this.userService.addMatchHistory(req.user.id, body));
     }
     @Get('leaderboard')
-    async getLeaderBoard(@Req() req)
-    {
+    async getLeaderBoard(@Req() req) {
         return (await this.userService.leaderBoard());
     }
 }

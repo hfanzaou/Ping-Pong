@@ -12,7 +12,9 @@ services:
       - .env
     depends_on:
       - dev-db
-    restart: always   
+    restart: always
+    volumes: 
+    - /mnt/c/Users/PC/transcendence/uploads/:/usr/src/app/backend/uploads/
     networks:
       - mynet
 
@@ -25,6 +27,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
     networks:
       - mynet
+    volumes:
+      -  /mnt/c/Users/PC/transcendence/data/:/var/lib/postgresql/data/
 networks:
   mynet:  
 

@@ -60,9 +60,8 @@ export class UserService {
     }
     async getProfile(id: number, name: string) {
         try {
-           //console.log(name);
             if (!name)
-            throw new NotFoundException('USER NOT FOUND');
+                throw new NotFoundException('USER NOT FOUND');
             let user = await this.prismaservice.user.findUnique({
                 where: {
                     username: name,
@@ -89,7 +88,7 @@ export class UserService {
                     username: user.username, 
                     avatar,
                     state: user.state,
-                    level: user.level,
+                    level: user.level.toFixed(2),
                     win: user.win,
                     loss: user.loss,
                 },
@@ -128,9 +127,11 @@ export class UserService {
                     id: id
                 }, select: {
                     level: true,
+                    win: true,
+                    loss: true,
                 }
             })
-            return user.level;
+            return user;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -415,7 +416,7 @@ export class UserService {
                     !obj.friends[0] && obj.friendOf[0] ? "remove request": 
                     obj.friends[0] && !obj.friendOf[0] ? "accept friend": "add friend";
                 }
-                return { level: obj.level, name: obj.username, avatar: avatar, state: obj.state, friendship };
+                return { level: obj.level, name: obj.username, avatar: avatar, state: obj.state, friendship, win: obj.win, loss: obj.loss };
               }));
                 return (usersre);     
     }
@@ -570,9 +571,20 @@ export class UserService {
     async leaderBoard()
     {
         try {
-            const users = this.prismaservice.user.findMany({
-                
+            const users = await this.prismaservice.user.findMany({
+                orderBy : {level: 'desc'},
+                select: {
+                    id: true,
+                    state: true,
+                    username: true, 
+                    avatar: true,
+                    level: true,
+                    win: true,
+                    loss: true
+                }  
             })
+            const to_send = await this.extarctuserinfo(users, 0);
+            return to_send;
         }
         catch(error)
         {
