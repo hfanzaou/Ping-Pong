@@ -62,7 +62,15 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
-		setList(data.userData?.chatUsers)
+		setList(data.userData?.chatUsers.sort((x, y) => {
+			// console.log("here");
+			if (x.time && y.time) {
+				const	timeX = new Date(x.time);
+    			const	timeY = new Date(y.time);
+    			return timeY.getTime() - timeX.getTime();
+			}
+			return 0;
+		}))
 		data.socket?.on("newuser", callBack);
 		return () => {
 			data.socket?.off("newuser", callBack);
@@ -106,7 +114,14 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
 		if (event.target.value == "" && data.userData)
-			setList(data.userData.chatUsers);
+			setList(data.userData.chatUsers.sort((x, y) => {
+				if (x.time && y.time) {
+					const	timeX = new Date(x.time);
+    				const	timeY = new Date(y.time);
+    				return timeY.getTime() - timeX.getTime();
+				}
+				return 0;
+			}));
 		else if (data.userData){
 			const list	= [...data.userData?.chatUsers,
 				...data.userData?.friends]

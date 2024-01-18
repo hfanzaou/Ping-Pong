@@ -1,7 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconPingPong, IconSend2, IconUser } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { DATA, MESSAGE } from "../myTypes";
+import { DATA, MESSAGE, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
 
 interface Props {
@@ -79,7 +79,16 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 							userName: data.userData?.userName
 						})
 					});
-					const Data = await res0.json();
+					const Data: USERDATA = await res0.json();
+					Data.chatUsers.sort((x, y) => {
+						// console.log("here");
+						if (x.time && y.time) {
+							const	timeX = new Date(x.time);
+							const	timeY = new Date(y.time);
+							return timeY.getTime() - timeX.getTime();
+						}
+						return 0;
+					})
 					setData(prev => setUserData(prev, Data));
 					data.socket?.emit("newUser", data.talkingTo)
 			}

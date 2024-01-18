@@ -8,11 +8,7 @@ import { ChatGateway } from "./chat.gateway";
 
 @Injectable()
 export class ChatService {
-	// private rooms: string[];
-
-	constructor(private prisma: PrismaService, private user: UserService) {
-		// this.rooms = [];
-	}
+	constructor(private prisma: PrismaService, private user: UserService) {}
 	async getUserData(userName: string) {
 		const	user = await this.prisma.user.findUnique({
 			where: { username: userName },
@@ -30,11 +26,24 @@ export class ChatService {
 		if (user) {
 			const data: USERDATA = {
 				userName: user.username,
-				chatUsers: await Promise.all(user.chatUsers.map(async x => ({
-					id: x.id,
-					login: x.username,
-					avatar: await this.user.getUserAvatar(x.id)
-				}))),
+				chatUsers: await Promise.all(user.chatUsers.map(async x => {
+					const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+						where: {
+							OR: [
+								{ name: `&${userName}${x.username}` },
+								{ name: `&${x.username}${userName}`}
+							]
+						}
+					})
+					// console.log("test1");
+					// console.log(chatHistorie.updateAt);
+					return {
+						id: x.id,
+						login: x.username,
+						avatar: await this.user.getUserAvatar(x.id),
+						time: chatHistorie.updateAt
+					}
+				})),
 				friends: await Promise.all(user.friends.filter(x =>
 					user.friendOf.some(friend => friend.id == x.id))
 						.map(async x => ({
@@ -74,10 +83,10 @@ export class ChatService {
 		const	user = await this.prisma.user.findUnique({
 			where: {
 				username: data.sender,
-				chatUsers: { some: { username: data.recver }}
+				blockedFrom: { some: { username: data.recver }}
 			}
 		});
-		if (user) {
+		if (!user) {
 			let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 				where: {
 					OR: [
@@ -169,6 +178,10 @@ export class ChatService {
 				}
 			}
 		});
+		await this.prisma.cHATHISTORY.update({
+			where: { id: chatHistorie.id },
+			data: { updateAt: new Date() }
+		});
 		return {
 			id: message.id,
 			message: message.message,
@@ -193,7 +206,7 @@ export class ChatService {
 					connect: {
 						id: chatHistorie.id
 					}
-				}
+				},
 			}
 		});
 		return {
