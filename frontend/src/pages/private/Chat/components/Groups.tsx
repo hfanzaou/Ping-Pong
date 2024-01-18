@@ -71,7 +71,6 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 						setSettings(false);
 					}
 			function callBackResize() {
-				console.log(window.innerWidth);
 				if (window.innerWidth < 600)
 					setSize(false);
 				else
@@ -244,7 +243,6 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 				sender: data.userData ? data.userData.userName : "",
 				recver: tmp
 			}
-			// console.log("hello")
 			data.socket?.emit("newChatRoom", newChat);
 		}
 	}

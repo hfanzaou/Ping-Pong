@@ -14,11 +14,16 @@ module.exports = {
         out: {
           '0%': { "border-radius": "37%" },
           '100%': { "border-radius": "50%" },
+        },
+        fade: {
+          from: { "opacity": 1 },
+          to: { "opacity": 0 }
         }
       },
       animation: {
         in: 'in 250ms forwards',
-        out: 'out 250ms forwards'
+        out: 'out 250ms forwards',
+        fade: "fade 4s forwards"
       },
       colors: {
         discord1: "#1e2124",

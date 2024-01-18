@@ -31,15 +31,19 @@ OnGatewayDisconnect {
 	@WebSocketServer() server: Server
 	@SubscribeMessage("direct")
 	async handelMessage(client: Socket, data: MESSAGE) {
-		const room = this.chatService.getRoomDirect(data);
-		const message = await this.chatService.addMessagePrivate(data);
-		this.server.to(room).emit("clientPrivate", message);
+		const room = await this.chatService.getRoomDirect(data);
+		if (room) {
+			const message = await this.chatService.addMessagePrivate(data);
+			this.server.to(room).emit("clientPrivate", message);
+		}
+		else {
+			this.server.to(client.id).emit("chatError");
+		}
 	}
 	@SubscribeMessage("room")
 	async handelRoom(client: Socket, data: MESSAGE) {
-		const room = this.chatService.getRoomRoom(data);
+		const room = await this.chatService.getRoomRoom(data);
 		const message = await this.chatService.addMessageRoom(data);
-		// console.log(message);
 		this.server.to(room).emit("clientRoom", message);
 	}
 	@SubscribeMessage("newChatPrivate")
@@ -48,8 +52,9 @@ OnGatewayDisconnect {
 			.from(client.rooms)
 			.slice(1)
 			.forEach(room => client.leave(room));
-		const room = this.chatService.getRoomDirect(data);
-		client.join(room);
+		const room = await this.chatService.getRoomDirect(data);
+		if (room)
+			client.join(room);
 	}
 	@SubscribeMessage("newChatRoom")
 	async handelNewChatRoom(client: Socket, data: NEWCHAT) {
@@ -57,8 +62,7 @@ OnGatewayDisconnect {
 			.from(client.rooms)
 			.slice(1)
 			.forEach(room => client.leave(room));
-		const room = this.chatService.getRoomRoom(data);
-		console.log(room)
+		const room = await this.chatService.getRoomRoom(data);
 		client.join(room);
 	}
 	@SubscribeMessage("newUser")
@@ -69,7 +73,6 @@ OnGatewayDisconnect {
 			.emit("newuser");
 	}
 	handleConnection(client: Socket) {
-     // console.log("test");
 		// console.log(client.handshake.headers.cookie);
 	}
 	async handleDisconnect(client: Socket) {

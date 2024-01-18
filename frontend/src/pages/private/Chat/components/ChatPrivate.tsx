@@ -94,7 +94,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		avatar: string,
 	})
 	{
-		// console.log("here")
 		setData(x => ({
 			...x,
 			send: !x.send
@@ -130,7 +129,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
-	// console.log(data.talkingTo);
 	return data.talkingTo && (
 		<form
 			onSubmit={submit}

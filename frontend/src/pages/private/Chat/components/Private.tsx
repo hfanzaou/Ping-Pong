@@ -36,7 +36,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				setSettings(false);
 		}
 		function callBackResize() {
-			console.log(window.innerWidth);
 			if (window.innerWidth < 600)
 				setSize(false);
 			else
@@ -50,7 +49,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
-		// console.log(data.userData?.userName);
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
 			headers: {
@@ -83,6 +81,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}),
 					credentials: "include"
 				})
+				await callBack();
+				setData(x => ({ ...x, talkingTo: undefined }));
 			}
 			fetchData();
 			setBlockTrigger(false);
@@ -137,7 +137,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	function block() {
 		setBlockTrigger(true);
-		console.log(settingsXy.login);
 	}
 	function mute() {}
 	return (

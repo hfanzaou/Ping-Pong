@@ -55,7 +55,7 @@ model MatchHistory {
 model CHATHISTORY {
   id Int @id @unique @default(autoincrement())
 
-  name     String?           @unique
+  name     String    @unique
   messages MESSAGE[]
   users    UserCHATHISTORY[]
 }

@@ -1,7 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconEye, IconEyeOff, IconPingPong, IconSend2, IconSettings2, IconUser } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { DATA, MESSAGE } from "../myTypes";
+import { DATA, Group, MESSAGE, NEWCHAT } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
 
 interface Props {
@@ -71,7 +71,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					name: data.groupTo
 				})
 			});
-			const	Data = await res.json();
+			const	Data: Group[] = await res.json();
 			setData(x => {
 				if (x.userData)
 					return {
@@ -83,6 +83,15 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					}
 				return x;
 			});
+			if (Data.find(x => x.name == data.groupTo)) {
+				if (data.groupTo) {
+					const	newChat: NEWCHAT = {
+						sender: data.userData ? data.userData.userName : "",
+						recver: data.groupTo
+					}
+					data.socket?.emit("newChatRoom", newChat);
+				}
+			}
 			setData(x => ({
 				...x,
 				send: !x.send
@@ -156,15 +165,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		avatar: string,
 	})
 	{
-		// console.log(m);
 		setData(x => ({
 			...x,
 			send: !x.send
 		}))
-		// if (!dataRef.current.userData?.chatUsers.
-		// 	find(x => x.login == dataRef.current.talkingTo)) {
-		// 	setTrigger(true);
-		// }
 		setConversation(prev => [m, ...prev]);
 	}
 	if (data.groupTo) {

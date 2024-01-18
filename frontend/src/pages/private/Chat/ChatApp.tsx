@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Nav from "./components/Nav";
 import Private from "./components/Private";
 import { DATA } from "./myTypes";
@@ -18,8 +18,11 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		trigger: true,
 		send: true
 	});
-	const	[option, setOption] = useState("Rooms");
-	
+	const	[option, setOption] = useState("Private");
+	const	[error, setError] = useState(false);
+	const	errorRef = useRef(error);
+
+	errorRef.current = error;
 	useEffect(() => {
 		async function fetchData() {
 			setData(prev => setSocket(prev, socket));
@@ -53,9 +56,32 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			}
 		}
 		fetchData();
-	}, [data.trigger])
+	}, [data.trigger]);
+	useEffect(() => {
+		socket.on("chatError", callBack);
+		return () => {
+			socket.off("chatError", callBack);
+		}
+	}, []);
+	function callBack() {
+		if (!errorRef.current) {
+			setError(true);
+			setTimeout(() => {
+				setError(false);
+			}, 4000);
+		}
+	}
 	return (
 		<div className="flex h-[80vh]">
+			{
+				error && <div
+					className="fixed top-20 left-1/2 -translate-x-1/2 z-50 h-10 bg-red-500
+						text-white flex justify-center items-center p-5
+						rounded-full animate-fade"
+				>
+					an error has occurred, please reload the page
+				</div>
+			}
 			<Nav option={option} setOption={setOption} setData={setData}/>
 			{
 				option == "Private" ?
