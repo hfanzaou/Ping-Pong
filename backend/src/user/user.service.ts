@@ -303,6 +303,12 @@ export class UserService {
                         disconnect: {username: name}
                     }, friendOf: {
                         disconnect: {username: name}
+                    },
+                    chatUsers: {
+                        disconnect: {username: name}
+                    },
+                    chatUsersOf: {
+                        disconnect: {username: name}
                     }
                 }
             })
@@ -316,10 +322,37 @@ export class UserService {
                 where: {id: id},
                 data: {
                     blocked: {
-                       disconnect: {username: name},
+                        disconnect: {username: name},
                     },
                 },
-            })
+            });
+            const user = await this.prismaservice.user.findUnique({
+                where: { id: id }
+            });
+            const   chatHistorie = await this.prismaservice.cHATHISTORY.findFirst({
+                where: {
+                    OR: [
+                        {
+                            name: `&${user.username}${name}`
+                        },
+                        {
+                            name: `&${name}${user.username}`
+                        }
+                    ]
+                }
+            });
+            if (chatHistorie) {
+                await this.prismaservice.user.update({
+                    where: {id: id},
+                    data: {
+                        chatUsers: {
+                            connect: {username: name},
+                        },chatUsersOf: {
+                            connect: {username: name},
+                        },
+                    },
+                })
+            }
         } catch(error) {
             throw new NotFoundException('USER NOT FOUND');
         }
