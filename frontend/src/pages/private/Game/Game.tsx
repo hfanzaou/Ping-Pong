@@ -41,7 +41,7 @@ interface Props {
 const Game: React.FC<Props> = ( {socket, avatar}) => {
   const   [oppAvatar, setOppAvatar] = useState<string>();
   const   [oppName, setOppName] = useState<string>();
-  const   [oppLevel, setOppLevel] = useState<number>();
+  const   [oppLevel, setOppLevel] = useState<string>();
   const   [side, setSide] = useState<boolean>()
   socket.on('getData', async (id: number, side: boolean) => 
   {

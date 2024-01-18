@@ -8,7 +8,7 @@ import { Socket } from "socket.io-client";
 
 
 
-function Notification({socket}: Socket) {
+function Notification({socket}: {socket: Socket}) {
     const [notificationList, setNotificationList] = useState<NotificationInterface[]>([]);
     const [notification, setNotification] = useState<boolean>(false);
     const [opened, { open, close }] = useDisclosure(false);
