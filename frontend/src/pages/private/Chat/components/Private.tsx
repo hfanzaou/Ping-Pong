@@ -1,7 +1,7 @@
 import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
-import { IconDotsVertical, IconTrash, IconUser, IconVolume3 } from "@tabler/icons-react";
+import { IconCircleFilled, IconDotsVertical, IconTrash, IconUser, IconVolume3 } from "@tabler/icons-react";
 
 interface Props {
 	data:		DATA,
@@ -21,6 +21,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[blockTrigger, setBlockTrigger] = useState(false)
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
 	const	userNameRef = useRef(data.userData?.userName);
+	// const	[notification, setNotification] = useState
 
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
@@ -48,7 +49,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			window.removeEventListener("resize", callBackResize);
 		}
 	}, [])
-	async function callBack() {
+	async function callBack(username: string) {
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
 			headers: {
@@ -60,6 +61,23 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));
+		// setData(x => {
+		// 	return x.userData ? {
+		// 		...x,
+		// 		userData: {
+		// 			...x.userData,
+		// 			chatUsers: x.userData.chatUsers.map(x => {
+		// 				if (x.login == username)
+		// 					return {
+		// 						...x,
+		// 						read: true
+		// 					}
+		// 				return x;
+		// 			})
+		// 		}
+		// 	} : x
+		// });
+		// console.log(username);
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
@@ -89,7 +107,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}),
 					credentials: "include"
 				})
-				await callBack();
+				await callBack("");
 				setData(x => ({ ...x, talkingTo: undefined }));
 			}
 			fetchData();
@@ -210,6 +228,12 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 								>
 									<IconDotsVertical/ >
 								</button>
+								{/* {
+									x.read &&
+										<div className="absolute -top-2 -right-2">
+											<IconCircleFilled className="w-5"/>
+										</div>
+								} */}
 							</li>);
 					})
 				}
