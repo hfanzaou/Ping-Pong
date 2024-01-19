@@ -51,6 +51,6 @@ export class ChatController {
 	@Post("groupUsers")
 	async handleGroupUsers(@Body() data: { name: string }) {
 		const	users = await this.chatService.getGroupUsers(data.name);
-		return users;
+		return users; 
 	}
 }
