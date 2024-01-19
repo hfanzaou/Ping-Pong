@@ -435,4 +435,8 @@ export class ChatService {
 
 		return (match);
 	}
+	async whoIAm(id: string) {
+		const	user = await this.prisma.user.findFirst({ where: { socket: id }});
+		return user;
+	}
 }

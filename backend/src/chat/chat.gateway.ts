@@ -68,9 +68,10 @@ OnGatewayDisconnect {
 	@SubscribeMessage("newUser")
 	async handelUser(client: Socket, data: string) {
 		const recver = await this.chatService.newMessage(data);
+		const	{ username } = await this.chatService.whoIAm(client.id);
 		this.server
 			.to(recver)
-			.emit("newuser");
+			.emit("newuser", username);
 	}
 	handleConnection(client: Socket) {
 		// console.log(client.handshake.headers.cookie);

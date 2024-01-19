@@ -107,10 +107,11 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 			...x,
 			send: !x.send
 		}))
-		if (!dataRef.current.userData?.chatUsers.
-			find(x => x.login == dataRef.current.talkingTo)) {
+		// if (!dataRef.current.userData?.chatUsers.
+		// 	find(x => x.login == dataRef.current.talkingTo)) {
 			setTrigger(true);
-		}
+
+		// }
 		setConversation(prev => [m, ...prev]);
 	}
 	useEffect(() => {
