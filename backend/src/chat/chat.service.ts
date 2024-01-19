@@ -439,4 +439,32 @@ export class ChatService {
 		const	user = await this.prisma.user.findFirst({ where: { socket: id }});
 		return user;
 	}
+	async getGroupUsers(name: string) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: name },
+			include: {
+				members: {
+					include: { user: true }
+				}
+			}
+		});
+		const	users = await Promise.all(group.members.map(async x => {
+			let	role = "";
+			if (x.user.username == group.owner)
+				role = "owner";
+			else
+				for (let i = 0; i < group.admins.length; i++)
+					if (x.user.username == group.admins[i])
+						role = "admin";
+			if (!role.length)
+				role = "member"
+			return ({
+				id: x.user.id,
+				avatar: await this.user.getUserAvatar(x.user.id),
+				userName: x.user.username,
+				role: role
+			})
+		}));
+		return users;
+	}
 }
