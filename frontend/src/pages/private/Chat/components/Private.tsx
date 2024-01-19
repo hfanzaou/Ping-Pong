@@ -1,7 +1,13 @@
 import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
-import { IconCircleFilled, IconDotsVertical, IconTrash, IconUser, IconVolume3 } from "@tabler/icons-react";
+import {
+	IconDotsVertical,
+	IconTrash,
+	IconUser,
+	IconUserCircle,
+	IconVolume3
+} from "@tabler/icons-react";
 
 interface Props {
 	data:		DATA,
@@ -21,7 +27,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[blockTrigger, setBlockTrigger] = useState(false)
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
 	const	userNameRef = useRef(data.userData?.userName);
-	// const	[notification, setNotification] = useState
 
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
@@ -33,7 +38,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			if (event.clientX < settingsXyRef.current.x ||
 				event.clientX > settingsXyRef.current.x + 100 ||
 				event.clientY < settingsXyRef.current.y ||
-				event.clientY > settingsXyRef.current.y + 100)
+				event.clientY > settingsXyRef.current.y + 150)
 				setSettings(false);
 		}
 		function callBackResize() {
@@ -260,12 +265,25 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					<li>
 						<button
 							className="flex justify-center items-center w-[100px]
-								h-[50px] rounded-b-md hover:bg-discord3"
+								h-[50px] hover:bg-discord3"
 							onClick={mute}
 						>
 							<IconVolume3 />
 							<h2 className="">Mute</h2>
 						</button>
+					</li>
+					<li>
+						<a
+							href={`http://localhost:3000/UserProfile?name=${settingsXy.login}`}
+						>
+							<button
+								className="flex justify-center items-center w-[100px]
+									h-[50px] rounded-b-md hover:bg-discord3"
+							>
+								<IconUserCircle />
+								<h2 className="">Profile</h2>
+							</button>
+						</a>
 					</li>
 				</ul>
 			}
