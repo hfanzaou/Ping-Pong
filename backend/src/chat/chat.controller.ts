@@ -48,4 +48,9 @@ export class ChatController {
 		const	answer = await this.chatService.getCheckPassword(data);
 		return answer;
 	}
+	@Post("groupUsers")
+	async handleGroupUsers(@Body() data: { name: string }) {
+		const	users = await this.chatService.getGroupUsers(data.name);
+		return users;
+	}
 }
