@@ -527,20 +527,12 @@ export class UserService {
             throw new BadGatewayException('ERROR GETTING DATA');
         }
     }
-    async updatelevel(winId: number, newLevel: number, win: number, loss: number)
+    async updatelevel(id: number, newLevel: number, win: number, loss: number)
     {
-        console.log(newLevel);
-        console.log(win);
-        console.log(loss);
-        try {
-            await this.prismaservice.user.update({
-                where : {id: winId},
-                data : {level: newLevel, win: win, loss: loss}
-            });
-        }
-        catch(error)
-        {
-        }
+        await this.prismaservice.user.update({
+            where : {id: id},
+            data : {level: newLevel, win: win, loss: loss}
+         });
     }
     async toUpdatelevel(winId: number, lossName: string)
     {
@@ -564,8 +556,8 @@ export class UserService {
                 }
             })
             this.updatelevel(loser.id,  (loser.level + 0.10 / (loser.level + 1)), loser.win, ++loser.loss);
-        } catch(error)
-        {
+        } catch(error) {
+            throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
     async leaderBoard()
@@ -586,9 +578,8 @@ export class UserService {
             const to_send = await this.extarctuserinfo(users, 0);
             return to_send;
         }
-        catch(error)
-        {
-
+        catch(error) {
+            throw new BadGatewayException('ERROR GETTING DATA');
         }
     }
 }

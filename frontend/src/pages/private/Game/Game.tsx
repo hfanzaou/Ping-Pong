@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { LegacyRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Sketch from 'react-p5';
 import p5Types, { Image } from "p5";
@@ -64,14 +64,14 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
             <div>
 
             <Grid>   
-            <Grid.Col span={1}><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} level={side === true? undefined: oppLevel} /></Grid.Col>
+            <Grid.Col span="auto"><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} level={side === true? undefined: oppLevel} /></Grid.Col>
             <Grid.Col span={7}>
             <div 
             id="sketchHolder" className="flex items-center justify-center">
               <GameComponent socket={socket} avatar={avatar} />
             </div>
             </Grid.Col>
-            <Grid.Col span={1}>
+            <Grid.Col span="auto">
               <PlayerCard name={side === false? 0: oppName} avatar={side === false? avatar: oppAvatar} level={side === true? undefined: oppLevel}/>
               </Grid.Col>
            {/* <Space h="md" />  */}
@@ -84,7 +84,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
 
 const GameComponent: React.FC<Props> = ({socket, avatar}) => {
 
-  const sketchRef = useRef(document.getElementById('sketchHolder'));
+  const sketchRef = useRef<HTMLElement>(document.getElementById('sketchHolder'));
 
   useEffect(() => {
     new p5(p => {
@@ -97,7 +97,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar}) => {
         const data = await response.json();
         socket.emit('userName', data.name);
 
-        canvas = p.createCanvas(WIDTH, HEIGHT);
+        canvas = p.createCanvas( WIDTH, HEIGHT);
         // canvas.parent('');
         eventListeners(p, socket);
         p.noStroke();
@@ -105,6 +105,8 @@ const GameComponent: React.FC<Props> = ({socket, avatar}) => {
       };
   
       p.draw = () => {
+        p.windowWidth = WIDTH;
+        p.windowHeight = HEIGHT;
         p.background('rgb(40, 41, 55)');
         p.fill('white');
         handleGameStates(p, socket);
@@ -112,8 +114,8 @@ const GameComponent: React.FC<Props> = ({socket, avatar}) => {
         if (play) {
           p.textSize(32);
           p.textStyle(p.BOLD);
-          p.text(player1.score, 40, 60);
-          p.text(player2.score, WIDTH - 60, 60);
+          p.text(player1.score, p.width - (p.width - 60), 60);
+          p.text(player2.score, p.width - 60, 60);
         
           checkKeys(p, socket);
           if (mode == 3) {
@@ -134,10 +136,10 @@ const GameComponent: React.FC<Props> = ({socket, avatar}) => {
           p.noStroke();
         }
       };
-  }, 'sketchHolder');
+    }, document.getElementById('sketchHolder')!);
   }, []);
 
-  return <div ref={sketchRef} />;
+  return <div ref={sketchRef as LegacyRef<HTMLDivElement> | undefined} />;
 };
 
 export default Game
