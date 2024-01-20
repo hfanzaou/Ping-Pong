@@ -1,8 +1,12 @@
 import {
+	IconChessBishopFilled,
+	IconChessFilled,
+	IconChessKingFilled,
 	IconEye,
 	IconEyeOff,
 	IconSend2,
 	IconSettings2,
+	IconTrash,
 	IconUser,
 	IconX
 } from "@tabler/icons-react";
@@ -218,7 +222,47 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						{settings ?
 						users.map(x => {
 							return (
-								<li>{x.userName}</li>
+								<li
+									key={x.id}
+									className="p-1"
+								>
+									<div
+										className="flex items-center
+											hover:bg-discord2 rounded-full"
+									>
+										{
+											x.avatar ?
+												<img
+													className="w-10 h-10 rounded-full
+														mx-5 my-2"
+													src={x.avatar}
+												/> :
+												<IconUser
+													className="w-10 h-10 rounded-full
+														mx-5 my-2 bg-discord1"
+												/>
+
+										}
+											<h1 className="font-extrabold" >
+												{ x.userName }
+											</h1>
+											{
+												x.role == "owner" ?
+													<IconChessKingFilled /> :
+													x.role == "member" ?
+													<IconChessFilled /> :
+													<IconChessBishopFilled />
+											}
+											<button
+												className="flex justify-center
+													items-center font-extrabold
+													hover:text-red-500"
+											>
+												<IconTrash/>
+												<h1>block</h1>
+											</button>
+									</div>
+								</li>
 							)
 						}) :
 						conversation.map(x => {
