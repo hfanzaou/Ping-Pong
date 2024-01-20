@@ -1,14 +1,12 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { NEWCHAT, NEWGROUP } from "./myTypes";
-import { ChatGateway } from "./chat.gateway";
 
 @Controller()
 export class ChatController {
 	constructor(private chatService: ChatService) {}
 	@Post("chatUser")
 	async handleUser(@Body() data: { userName: string }) {
-		// console.log(data)
 		const	user = await this.chatService.getUserData(data.userName);
 		return user;
 	}
@@ -24,12 +22,10 @@ export class ChatController {
 	}
 	@Post("chatUsers")
 	async handleUsers(@Body() data: NEWCHAT) {
-		// console.log("here")
 		await this.chatService.getChatUsers(data);
 	}
 	@Post("createGroup")
 	async handleCreateGroup(@Body() data: {data: NEWGROUP}) {
-		// console.log(data);
 		const condition = await this.chatService.addGroup(data.data);
 		return condition;
 	}
@@ -51,5 +47,10 @@ export class ChatController {
 	async handleCheckPassword(@Body() data: { name: string, password: string}) {
 		const	answer = await this.chatService.getCheckPassword(data);
 		return answer;
+	}
+	@Post("groupUsers")
+	async handleGroupUsers(@Body() data: { name: string }) {
+		const	users = await this.chatService.getGroupUsers(data.name);
+		return users; 
 	}
 }
