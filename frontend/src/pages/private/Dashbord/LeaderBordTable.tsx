@@ -1,9 +1,12 @@
 import React from "react";
 import { Group, Menu, ScrollArea, Table, Avatar, rem, Text, ActionIcon } from "@mantine/core";
 import data from "./test.json";
+import axios from "axios";
 
 
 function LeaderbordTable() {
+
+
     const rows = data.map((item) => (
       <Table.Tr key={item.name}>
         <Table.Td c={'cyan'} >

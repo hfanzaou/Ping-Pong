@@ -28,16 +28,14 @@ export class UserService {
                 return "";
             if (avatar.upAvatar)
             {
-                ////console.log(avatar.avatar);
                 const file = readFileSync(avatar.avatar, 'base64');
-                ////console.log(file.toString('base64'));
                 return ("data:image/png;base64,"+ file.toString());
             }
             return (avatar.avatar);
         } catch(error) {
             if (error instanceof NotFoundException)
-                throw HttpStatus.NOT_FOUND; 
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
+                throw HttpStatus.NOT_FOUND;
+            return "";
         }
     }
     async getUsername(id: number) {
@@ -159,7 +157,7 @@ export class UserService {
            // console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
-            console.log(error);
+            // console.log(error);
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
@@ -260,7 +258,7 @@ export class UserService {
         }
     }
     async acceptFriend(id: number, name: string) {
-        console.log(name)
+        // console.log(name)
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
@@ -457,7 +455,7 @@ export class UserService {
                     !obj.friends[0] && obj.friendOf[0] ? "remove request": 
                     obj.friends[0] && !obj.friendOf[0] ? "accept friend": "add friend";
                 }
-                return { level: obj.level, name: obj.username, avatar: avatar, state: obj.state, friendship, win: obj.win, loss: obj.loss };
+                return { level: parseFloat(obj.level.toFixed(2)), name: obj.username, avatar: avatar, state: obj.state, friendship, win: obj.win, loss: obj.loss };
               }));
                 return (usersre);     
     }
@@ -515,7 +513,7 @@ export class UserService {
             })
             this.toUpdatelevel(id, result.name);
         } catch(error) {
-            console.log(error);
+            // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
@@ -532,7 +530,7 @@ export class UserService {
                     type: payload.type,
                 }
             })
-            console.log(already)
+            // console.log(already)
             if (!already[0])
             {
                 await this.prismaservice.notifications.create({
@@ -544,7 +542,7 @@ export class UserService {
                 })
             }
         } catch(error) {
-            console.log(error);
+            // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }

@@ -125,8 +125,8 @@ export class UserController {
     async addMatchHistoy(@Req() req, @Body() body: {name: string, playerScore: number, player2Score: number}) {
         if (!body)
             throw new BadRequestException('unsupported data');
-        console.log("here");
-        console.log(body);
+        // console.log("here");
+        // console.log(body);
         return (await this.userService.addMatchHistory(req.user.id, body));
     }
     @Get('leaderboard')
