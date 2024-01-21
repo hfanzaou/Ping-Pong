@@ -6,22 +6,17 @@ import leaderboardInterface from './Leaderboard';
 const image = '';
 
 function LeaderbordCard({data}: {data: leaderboardInterface}) {
-    console
   return (
-    <Paper radius="md"  >
+    <Paper radius="md">
       <Avatar
         src={data?.avatar}
-        // src={image}
         size={120}
         radius={120}
         mx="auto"
       />
       <Text ta="center" fz="lg" fw={500} mt="md">
-        {data?.username}
+        {data?.name}
       </Text>
-      {/* <Text ta="center" c="dimmed" fz="sm">
-        Level {data?.level}
-      </Text> */}
     <Text ta='center' variant="default"  mt="md">
         #{data?.level}
     </Text>

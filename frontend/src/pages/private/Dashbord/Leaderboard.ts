@@ -1,5 +1,5 @@
 interface leaderboardInterface {
-    username: string;
+    name: string;
     avatar: string;
     level: number;
     win: number;
