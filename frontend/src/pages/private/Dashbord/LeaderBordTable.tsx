@@ -5,14 +5,15 @@ import leaderboardInterface from "./Leaderboard";
 
 
 function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
-    const rows = data.map((item) => (
-      <Table.Tr key={item.username}>
+    const rows = data.map((item, index) => (
+        index > 2 &&
+      <Table.Tr key={item.name}>
         <Table.Td>
           <Group gap="sm">
             <Avatar size={40} src={item.avatar} radius={40} />
             <div>
               <Text fz="sm" fw={500}>
-                {item.username}
+                {item.name}
               </Text>
               <Text c="dimmed" fz="xs">
                 #{item.level}
@@ -32,14 +33,14 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
             Lost
           </Text>
         </Table.Td>
-        <Table.Td>
+        {/* <Table.Td>
           <Group gap={0} justify="flex-end">
               <Text fz="sm">{item.level}</Text>
               <Text fz="xs" c="dimmed">
                   Level
               </Text>
           </Group>
-        </Table.Td>
+        </Table.Td> */}
       </Table.Tr>
     ));
   
