@@ -106,6 +106,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		const	tmp = users.find(x => x.userName == data.userData?.userName)
 		if (tmp)
 			setRole(tmp.role)
+		// const	test = data.userData?.groups.find(x => {
+		// 		return x.name == data.groupTo;
+		// 	})?.muted.find(x => {
+		// 		return x == data.userData?.userName;
+		// 	});
+		// 	console
 	}, [users]);
 	// useEffect(() => {
 	// 	// function callBackMouse(event: MouseEvent) {
@@ -608,17 +614,34 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					<div className="flex m-2">
 						<input
 							type="text"
-							placeholder="Message..."
+							placeholder={
+								settings ?
+								"Setting" :
+								data.userData?.groups.find(x => {
+									return x.name == data.groupTo;
+								})?.muted.find(x => {
+									return x == data.userData?.userName;
+								}) == undefined ?
+								"Message..." :
+								"You are muted" }
 							className={
 								`bg-discord1 border-none outline-none w-full h-10
 									rounded-md mr-2 p-5
-									${settings && "cursor-not-allowed"}`
+									${( settings || data.userData?.groups.find(x => {
+										return x.name == data.groupTo;
+									})?.muted.find(x => {
+										return x == data.userData?.userName;
+									}) != undefined ) && "cursor-not-allowed"}`
 							}
 							onChange={changeMessage}
 							value={data.message}
 							autoFocus
 							ref={Reference}
-							readOnly={settings}
+							readOnly={settings || data.userData?.groups.find(x => {
+								return x.name == data.groupTo;
+							})?.muted.find(x => {
+								return x == data.userData?.userName;
+							}) != undefined}
 						/>
 						{
 							data.message.length ?
