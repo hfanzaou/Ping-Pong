@@ -1,24 +1,25 @@
 import React from 'react';
 import { Avatar, Text, Button, Paper } from '@mantine/core';
 import image from "./test.png";
+import leaderboardInterface from './Leaderboard';
 
-function LeaderbordCard() {
+function LeaderbordCard({data}: {data: leaderboardInterface}) {
   return (
-    <Paper radius="md"  >
+    <Paper radius="md" bg={'gray'}>
       <Avatar
-        src={image}
+        src={data?.avatar}
         size={120}
         radius={120}
         mx="auto"
       />
       <Text ta="center" fz="lg" fw={500} mt="md">
-        Jane Fingerlicker
+        {data?.name}
       </Text>
-      <Text ta="center" c="dimmed" fz="sm">
+      {/* <Text ta="center" c="dimmed" fz="sm">
         Level 2
-      </Text>
+      </Text> */}
     <Text ta='center' variant="default"  mt="md">
-        #1
+        #{data?.level}
     </Text>
     </Paper>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../Layout/Header/Header";
 import Footer from '../../../Layout/Footer/Footer';
-import LeaderbordCard from "./LeaderBordCard";
+import LeaderBordCard from "./LeaderBordCard";
 import LeaderbordTable from "./LeaderBordTable";
 import axios from "axios";
 import leaderboardInterface from "./Leaderboard";
@@ -30,9 +30,13 @@ function Leaderbord({avatar} : {avatar: string}) {
         <div className="h-full items-cente">
 
             <div className="flex  space-x-8  items-center justify-center mt-8">
-                <LeaderbordCard data={data[0]} />
-                    <LeaderbordCard data={data[1]}/>
-                <LeaderbordCard  data={data[2]}/>
+                    <div className="mt-8">
+                        <LeaderBordCard data={data[1]}/>
+                    </div>
+                    <LeaderBordCard data={data[0]} />
+                    <div className="mt-8">
+                        <LeaderBordCard  data={data[2]}/>
+                    </div>
             </div>
             <div className="flex items-center justify-center">
             <div className="mt-8 pt-8 w-[700px]"  >
