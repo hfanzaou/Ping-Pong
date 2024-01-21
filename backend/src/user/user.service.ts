@@ -47,6 +47,7 @@ export class UserService {
                      id: id
                  }, select: {
                      username: true,
+                     achievement: true,
                  }
              })
             if (!user)
@@ -258,7 +259,6 @@ export class UserService {
             throw new NotFoundException('USER NOT FOUND');
         }
     }
-
     async acceptFriend(id: number, name: string) {
         console.log(name)
         try {
@@ -268,16 +268,24 @@ export class UserService {
                     blocked: {every: {id: {not: id}}},
                     blockedFrom: {every: {id: {not: id}}},
                     friends: {some: {id: id}}
+                }, select: {
+                    id: true,
+                    friends: true,
+                    friendOf: true,
                 }
             });
             if (!user)
                 throw new NotFoundException('NO REQUEST')
-            await this.prismaservice.user.update({
+            const auser = await this.prismaservice.user.update({
                 where: {id: id},
                 data: {friends: {
                     connect: {id: user.id}
-                }}
+                }}, select: {id: true, friends: true, friendOf: true}
             })
+            if (user.friends.length == 1)
+                this.updateAch(user.id, "firstFriend");
+            if (auser.friends.length == 1)
+                this.updateAch(auser.id, "firstFriend");
         } catch(error) {
 				throw new NotFoundException('NO REQUEST');
         }
@@ -490,7 +498,7 @@ export class UserService {
     
     async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
         try {
-            console.log(result);
+           // console.log(result);
             const loserid = await this.prismaservice.user.findUnique({
                 where: {username: result.name},
                 select: {id: true},
@@ -567,27 +575,60 @@ export class UserService {
             data : {level: newLevel, win: win, loss: loss}
          });
     }
+    async updateAch(id: number, ach: string)
+    {
+        let user = await this.prismaservice.user.findUnique({
+            where: {id: id},
+            select: {achievement: true}
+        })
+        user.achievement[ach] = true,
+        await this.prismaservice.user.update({
+            where : {id: id},
+            data : {achievement: user.achievement},
+        })
+    }
+    async addLeaderAch(id: number, name: string)
+    {
+        const arr = (await this.leaderBoard()).slice(0, 2);
+       for (let i = 0; i < 2 ; i++)
+       {
+            if (name == arr[i].name)
+                this.updateAch(id, "lead" + (i+1).toString());
+            // console.log(arr[0].name);
+       }
+       //console.log(arr);
+    }
+
     async toUpdatelevel(winId: number, lossName: string)
     {
         try {
            const winner =  await this.prismaservice.user.findUnique({
                 where: {id: winId},
                 select: {
-                    level: true,
-                    win: true,
-                    loss: true,
-                }
-            })
-           this.updatelevel(winId,  (winner.level + 0.25 / (winner.level + 1)), ++winner.win, winner.loss);
-           const loser =  await this.prismaservice.user.findUnique({
-                where: {username: lossName},
-                select: {
+                    username: true,
                     id: true,
                     level: true,
                     win: true,
                     loss: true,
                 }
             })
+            if (winner.level == 0)
+                this.updateAch(winner.id, "firstMatch");
+            this.addLeaderAch(winner.id, winner.username);
+            this.updatelevel(winId,  (winner.level + 0.25 / (winner.level + 1)), ++winner.win, winner.loss);
+            const loser =  await this.prismaservice.user.findUnique({
+                where: {username: lossName},
+                select: {
+                    username: true, 
+                    id: true,
+                    level: true,
+                    win: true,
+                    loss: true,
+                }
+            });
+            if (loser.level == 0)
+                this.updateAch(loser.id, "firstMatch");
+            this.addLeaderAch(loser.id, loser.username);
             this.updatelevel(loser.id,  (loser.level + 0.10 / (loser.level + 1)), loser.win, ++loser.loss);
         } catch(error) {
             throw new BadGatewayException('ERROR UPDATING DATA');

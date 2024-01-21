@@ -6,7 +6,7 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config';
 import * as speakeasy from 'speakeasy';
-import { AuthDto, FAuthDto } from './dto';
+import { AuthDto, FAuthDto, achDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +26,8 @@ export class AuthService {
 				 username: body.name,
 				 email: body.email,
 				 twoFaAuth: false,
-				 hash
+				 hash,
+				 achievement: achDto,
 				},
 			});
 			//return saved user
@@ -71,11 +72,6 @@ export class AuthService {
 			const user = await this.prisma.user.create({
 				data: input, 
 			});
-			// fetch(user.avatar)
-			//   .then((response) => response.buffer())
-			//   .then((buffer) => {
-			// 	createWriteStream(path.join('../img/', user.id + '.png'), buffer);
-			//   });
 			return user;
 		}
 		catch (error) {
