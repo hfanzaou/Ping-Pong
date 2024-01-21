@@ -90,6 +90,8 @@ model GROUP {
   members UserGROUP[]
   state   String
   hash    String?
+  banded  String[]
+  muted   String[]
 }
 
 model UserGROUP {

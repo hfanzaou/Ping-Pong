@@ -20,7 +20,8 @@ export class ChatService {
 					include: {
 						group: true
 					}
-				}
+				},
+				blocked: true
 			}
 		});
 		if (user) {
@@ -55,7 +56,13 @@ export class ChatService {
 				groups: user.groups.map(x => ({
 					id: x.group.id,
 					name: x.group.name,
-					password: x.group.hash ? true : false
+					password: x.group.hash ? true : false,
+					banded: x.group.banded,
+					muted: x.group.muted
+				})),
+				blocked: user.blocked.map(x => ({
+					id: x.id,
+					login: x.username
 				}))
 			}
 			return data;
@@ -392,14 +399,15 @@ export class ChatService {
 						}
 					}
 				});
-				await this.prisma.userCHATHISTORY.delete({
-					where: {
-						userid_chathistoryid: {
-							userid: user.id,
-							chathistoryid: chatHistory.id
+				if (chatHistory)
+					await this.prisma.userCHATHISTORY.delete({
+						where: {
+							userid_chathistoryid: {
+								userid: user.id,
+								chathistoryid: chatHistory.id
+							}
 						}
-					}
-				});
+					});
 				
 			}
 			else {
@@ -409,23 +417,26 @@ export class ChatService {
 						groupId: group.id
 					}
 				});
-				await this.prisma.userCHATHISTORY.create({
-					data: {
-						userid: user.id,
-						chathistoryid: chatHistory.id
-					}
-				});
+				if (chatHistory)
+					await this.prisma.userCHATHISTORY.create({
+						data: {
+							userid: user.id,
+							chathistoryid: chatHistory.id
+						}
+					});
 			}
 		}
 		const	updatedUser = await this.prisma.user.findUnique({
-				where: { id: user.id },
+				where: { username: data.userName },
 				include: { groups: { include: { group: true }}}
 			});
-		return updatedUser.groups.map(x => ({
-			id: x.group.id,
-			name: x.group.name,
-			password: x.group.hash ? true : false
-		}));
+		if (updatedUser)
+			return updatedUser.groups.map(x => ({
+				id: x.group.id,
+				name: x.group.name,
+				password: x.group.hash ? true : false
+			}));
+		return ;
 	}
 	async getCheckPassword(data: { name: string, password: string}) {
 		const	group = await this.prisma.gROUP.findUnique({
@@ -448,23 +459,128 @@ export class ChatService {
 				}
 			}
 		});
-		const	users = await Promise.all(group.members.map(async x => {
-			let	role = "";
-			if (x.user.username == group.owner)
-				role = "owner";
-			else
-				for (let i = 0; i < group.admins.length; i++)
-					if (x.user.username == group.admins[i])
-						role = "admin";
-			if (!role.length)
-				role = "member"
-			return ({
-				id: x.user.id,
-				avatar: await this.user.getUserAvatar(x.user.id),
-				userName: x.user.username,
-				role: role
+		if (group) {
+			const	users = await Promise.all(group.members.map(async x => {
+				let	role = "";
+				if (x.user.username == group.owner)
+					role = "owner";
+				else
+					for (let i = 0; i < group.admins.length; i++)
+						if (x.user.username == group.admins[i])
+							role = "admin";
+				if (!role.length)
+					role = "member"
+				return ({
+					id: x.user.id,
+					avatar: await this.user.getUserAvatar(x.user.id),
+					userName: x.user.username,
+					role: role
+				})
+			}));
+			return users;
+		}
+		return [];
+	}
+	async addGroupAdmin(data: { name: string, userName: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		const	updatedAdmins = [ ...group.admins, data.userName ];
+		if (group) {
+			await this.prisma.gROUP.update({
+				where: { id: group.id },
+				data: { admins: updatedAdmins}
 			})
-		}));
-		return users;
+		};
+	}
+	async removeGroupAdmin(data: { name: string, userName: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		const	updatedAdmins = group.admins.filter(x => x != data.userName);
+		if (group) {
+			await this.prisma.gROUP.update({
+				where: { id: group.id },
+				data: { admins: updatedAdmins}
+			})
+		};
+	}
+	async addGroupMute(data: { name: string, userName: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		const	updatedMuted = [ ...group.muted, data.userName ];
+		if (group) {
+			await this.prisma.gROUP.update({
+				where: { id: group.id },
+				data: { muted: updatedMuted}
+			})
+		};
+	}
+	async removeGroupMute(data: { name: string, userName: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		const	updatedMuted = group.muted.filter(x => x != data.userName);
+		if (group) {
+			await this.prisma.gROUP.update({
+				where: { id: group.id },
+				data: { muted: updatedMuted}
+			})
+		};
+	}
+	async addGroupBan(data: { name: string, userName: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		const	updatedBaned = [ ...group.banded, data.userName ];
+		if (group) {
+			await this.prisma.gROUP.update({
+				where: { id: group.id },
+				data: { banded: updatedBaned}
+			})
+		};
+	}
+	async removeGroupBan(data: { name: string, userName: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		const	updatedBaned = group.banded.filter(x => x != data.userName);
+		if (group) {
+			await this.prisma.gROUP.update({
+				where: { id: group.id },
+				data: { banded: updatedBaned}
+			})
+		};
+	}
+	async groupKick(data: { name: string, userName: string }) {
+		const	user = await this.prisma.user.findFirst({
+			where: { username: data.userName}
+		});
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name}
+		});
+		const	chatHistory = await this.prisma.cHATHISTORY.findFirst({
+			where: { name: data.name}
+		});
+		if (user && group) {
+			const	userGroup = await this.prisma.userGROUP.findFirst({
+				where: { userid: user.id, groupId: group.id }
+			})
+			if (userGroup) {
+				await this.prisma.userGROUP.delete({
+					where: { userid_groupId: { userid: user.id, groupId: group.id }}
+				});
+				if (chatHistory)
+					await this.prisma.userCHATHISTORY.delete({
+						where: {
+							userid_chathistoryid: {
+								userid: user.id,
+								chathistoryid: chatHistory.id
+							}
+						}
+					});
+			}
+		}
 	}
 }

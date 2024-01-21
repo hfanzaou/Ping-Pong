@@ -54,7 +54,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			window.removeEventListener("resize", callBackResize);
 		}
 	}, [])
-	async function callBack(username: string) {
+	async function callBack() {
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
 			headers: {
@@ -66,23 +66,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));
-		// setData(x => {
-		// 	return x.userData ? {
-		// 		...x,
-		// 		userData: {
-		// 			...x.userData,
-		// 			chatUsers: x.userData.chatUsers.map(x => {
-		// 				if (x.login == username)
-		// 					return {
-		// 						...x,
-		// 						read: true
-		// 					}
-		// 				return x;
-		// 			})
-		// 		}
-		// 	} : x
-		// });
-		// console.log(username);
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
@@ -112,7 +95,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}),
 					credentials: "include"
 				})
-				await callBack("");
+				await callBack();
 				setData(x => ({ ...x, talkingTo: undefined }));
 			}
 			fetchData();
