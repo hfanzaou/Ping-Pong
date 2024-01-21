@@ -12,6 +12,7 @@ import {
 	IconTrash,
 	IconTrashOff,
 	IconUser,
+	IconUserPlus,
 	IconVolume,
 	IconVolume3,
 	IconX
@@ -46,6 +47,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}>>([])
 	const	[role, setRole] = useState("member");
 	const	userNameRef = useRef(data.userData?.userName);
+	const	[invite, setInvite] = useState(false);
 
 	userNameRef.current = data.userData?.userName;
 	dataRef.current = data;
@@ -314,6 +316,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			await callBackBlock();
 		}
 	}
+	function clickInvite() {
+		setInvite(x => !x);
+	}
+	function submitInvite(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+	}
 	if (data.groupTo) {
 		if (data.userData?.groups.find(x => x.name == data.groupTo))
 			return (
@@ -322,6 +330,35 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					className="w-[57%] bg-discord4 flex flex-col
 						justify-end text-discord6 p-0"
 				>
+					{
+						settings &&
+							<button
+								className="flex justify-center items-center
+									hover:text-green-500 font-extrabold"
+								onClick={clickInvite}
+							>
+								<IconUserPlus />
+								<h1 className="mt-2">invite</h1>
+							</button>
+					}
+					{
+						invite &&
+							<form className="flex" onSubmit={submitInvite} >
+								<input
+									type="text"
+									className="bg-discord1 border-none outline-none
+										w-96 h-10 rounded-md mr-2 p-5 text-white"
+									placeholder="userName..."
+								/>
+								<button
+									className="bg-discord1 w-10 h-10 flex
+										justify-center items-center rounded-md"
+									type="submit"
+								>
+									<IconUserPlus />
+								</button>
+							</form>
+					}
 					<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 						{settings ?
 						users.map(x => {
@@ -617,19 +654,19 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 							placeholder={
 								settings ?
 								"Setting" :
-								data.userData?.groups.find(x => {
+								(data.userData?.groups.find(x => {
 									return x.name == data.groupTo;
-								})?.muted.find(x => {
+								})?.muted?.find(x => {
 									return x == data.userData?.userName;
 								}) == undefined ?
 								"Message..." :
-								"You are muted" }
+								"You are muted") }
 							className={
 								`bg-discord1 border-none outline-none w-full h-10
 									rounded-md mr-2 p-5
 									${( settings || data.userData?.groups.find(x => {
 										return x.name == data.groupTo;
-									})?.muted.find(x => {
+									})?.muted?.find(x => {
 										return x == data.userData?.userName;
 									}) != undefined ) && "cursor-not-allowed"}`
 							}
@@ -637,11 +674,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 							value={data.message}
 							autoFocus
 							ref={Reference}
-							readOnly={settings || data.userData?.groups.find(x => {
+							readOnly={settings || ( data.userData?.groups.find(x => {
 								return x.name == data.groupTo;
-							})?.muted.find(x => {
+							})?.muted?.find(x => {
 								return x == data.userData?.userName;
-							}) != undefined}
+							}) != undefined )}
 						/>
 						{
 							data.message.length ?
