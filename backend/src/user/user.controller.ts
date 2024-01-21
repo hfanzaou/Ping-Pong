@@ -26,7 +26,7 @@ export class UserController {
     async getName(@Req() req) {
         const name = await this.userService.getUsername(req.user.id)
         const {level, win , loss} = await this.userService.getLevel(req.user.id);
-        return ({name: name, level: level.toFixed(2), win, loss});
+        return ({name: name, level: parseFloat(level.toFixed(2)), win, loss});
     }
     @Get('profile')
     async getProfile(@Req() req, @Query() query) {
