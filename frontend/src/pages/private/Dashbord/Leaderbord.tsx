@@ -13,7 +13,7 @@ function Leaderbord({avatar} : {avatar: string}) {
                 spacing='md'
             >
                 <Card 
-                    style={{backgroundColor: 'rgb(31 41 55)'}} 
+                    style={{backgroundColor: 'rgb(31 41 55)'}}
                     radius="lg"
                 >
             <div className="flex  space-x-8  items-center justify-center">

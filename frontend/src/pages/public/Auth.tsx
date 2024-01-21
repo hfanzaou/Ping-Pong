@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, TextInput } from "@mantine/core";
+import { Button, Card, SimpleGrid, TextInput } from "@mantine/core";
 import axios from "axios";
 
 function Auth() {
@@ -35,35 +35,30 @@ function Auth() {
     };
 
     return (
-        <div className="h-[605px] space-y-8 items-center">
-            <div className="flex items-center justify-center  pt-20">
-            <TextInput
-                onChange={handleSaveCode}
-                label="Entre Code of Virification"
-                error={invalidCode ? "set a valid code" : false}
-            />
-            </div>
-            <div className="flex items-center justify-center">
-
-                <Button onClick={handleDisableSendCode} disabled={send}>Send</Button>
-
-            </div>
+        <>
+        <div className="h-10"></div>
+        <div className='flex justify-center mx-[50px] h-[497px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
+            <SimpleGrid className='w-1/2 grid place-items-center'>       
+                <Card
+                    style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg"
+                    >
+                <SimpleGrid 
+                    spacing='lg'
+                    className='grid place-items-center'
+                    >
+                    <TextInput
+                        c='blue'
+                        onChange={handleSaveCode}
+                        description="Entre Code of Virification"
+                        placeholder="entre your 2fa code"
+                        error={invalidCode ? "set a valid code" : false}
+                        />
+                    <Button c={'blur'} color="blue" radius='xl' size="xs" onClick={handleDisableSendCode} disabled={send}>Send</Button>
+                </SimpleGrid>
+                </Card>
+            </SimpleGrid>
         </div>
-
-
-
-
-        // <div className="flex items-center h-[605px]">
-        //     <div className="space-y-4 ml-40">
-        //     <TextInput
-        //         onChange={handleSaveCode}
-        //         label="Entre Code of Virification"
-        //         error={invalidCode ? "set a valid code" : false}
-        //     />
-        //     <Button onClick={handleDisableSendCode} disabled={send}>Send</Button>
-        //         </div>
-        //     {/* <Button onClick={handleCancel} >Cancel</Button> */}
-        // </div>
+        </>
     );
 }
 
