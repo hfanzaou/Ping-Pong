@@ -62,6 +62,10 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
     );
 }
 
+// export function FriendshipButton({socket, name, friendship}: {socket: Socket, name: string, friendship: string}) {
+
+// }
+
 function Users({socket, setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {socket: Socket, setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
 //   const [userList, setUsersList] = useState<UsersInterface[]>([]);
 //   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
@@ -85,6 +89,18 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
             console.error("Error in fetching Users list: ", err);
         })
     };
+
+    useEffect(() => {
+        socket?.on("getnotification", () => {
+            // setNotification(true);
+            getUsers();
+            // console.log("get notification");
+            return () => {
+                socket.off("getnotification");
+            }
+        });
+    }, [socket]);
+
 
     useEffect(() => {
         getUsers();
