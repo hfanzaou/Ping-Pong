@@ -19,18 +19,18 @@ interface UserCardProps {
         avatar: string;
         level: number;
         win: number;
-        losses: number;
+        loss: number;
 }
 
-const stats = [
-  {value: '5', label: 'Wins'},
-  {value: '7', label: 'Total'},
-  {value: '3', label: 'losses'},
-];
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
     const [userName, setUserName] = useState<string>();
-
+    
+    const stats = [
+      {value: usercard?.win, label: 'Wins'},
+      {value: (usercard?.win) + (usercard?.loss), label: 'Total'},
+      {value: usercard?.loss, label: 'losses'},
+    ];
 
     useEffect(() => { // Just to check if the same user profile or not to show the friendship button or not
         const getUserNmae = async () => {
@@ -81,7 +81,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
       {usercard?.username}
     </Text>
     <Text ta="center" c="indigo" fz="sm">
-    {"level "  + userInfo.level}
+    {"level "  + usercard?.level}
     </Text>
     <Group mt="md" justify="center" gap={30}>
       {items}
