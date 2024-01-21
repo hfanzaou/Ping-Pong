@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { LegacyRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Sketch from 'react-p5';
 import p5Types, { Image } from "p5";
@@ -64,14 +64,14 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
             <div>
 
             <Grid>   
-            <Grid.Col span={1}><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} level={side === true? undefined: oppLevel} /></Grid.Col>
+            <Grid.Col span="auto"><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} level={side === true? undefined: oppLevel} /></Grid.Col>
             <Grid.Col span={7}>
             <div 
             id="sketchHolder" className="flex items-center justify-center">
               <GameComponent socket={socket} avatar={avatar} />
             </div>
             </Grid.Col>
-            <Grid.Col span={1}>
+            <Grid.Col span="auto">
               <PlayerCard name={side === false? 0: oppName} avatar={side === false? avatar: oppAvatar} level={side === true? undefined: oppLevel}/>
               </Grid.Col>
            {/* <Space h="md" />  */}
@@ -80,7 +80,6 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         </div>
     );
 }
-
 
 const GameComponent: React.FC<Props> = ({socket, avatar}) => {
 
