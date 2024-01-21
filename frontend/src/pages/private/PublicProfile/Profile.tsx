@@ -71,8 +71,8 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
             </SimpleGrid>
             <div>
                 <Achievements  achievement={profile?.achievements}/>
-                {/* <MatchHistory matchhistory={profile?.matchhistory} /> */}
-                <MatchHistory matchhistory={data}/>
+                <MatchHistory matchhistory={profile?.matchhistory} />
+                {/* <MatchHistory matchhistory={data}/> */}
             </div>
         </SimpleGrid>
     );
