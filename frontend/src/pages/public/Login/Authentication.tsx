@@ -79,8 +79,12 @@ function Authentication(props: PaperProps) {
     };
 
     return (
-        // <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
-        <div className='mx-[50px] mt-7 p-5 rounded-xl bg-slate-900 shadow-5'>
+        <div>
+
+        <div className='sticky top-0 z-50'>
+
+        </div>
+        <div className='mx-[50px] my-5 p-5 rounded-xl bg-slate-900 shadow-5'>
             <SimpleGrid
                 className='grid place-items-center'
                 cols={{base: 1, md:2, lg: 2, xl: 2}}
@@ -121,7 +125,7 @@ function Authentication(props: PaperProps) {
                             value={form.values.email}
                             error={form.errors.email && 'Invalid email'}
                             onChange={(event) => {
-                                    form.setFieldValue('email', event.currentTarget.value);
+                                form.setFieldValue('email', event.currentTarget.value);
                                     setIncorect(false);
                                 }
                             }
@@ -158,6 +162,7 @@ function Authentication(props: PaperProps) {
                 <img className='rounded-lg' src={image} alt="ping pong image" />
             </SimpleGrid>
         </div>
+                            </div>
     );
 }
 
