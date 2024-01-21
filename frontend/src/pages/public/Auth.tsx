@@ -49,7 +49,7 @@ function Auth() {
                     <TextInput
                         c='blue'
                         onChange={handleSaveCode}
-                        description="Entre Code of Virification"
+                        description="Entre Code of Verification"
                         placeholder="entre your 2fa code"
                         error={invalidCode ? "set a valid code" : false}
                         />

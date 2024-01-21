@@ -30,7 +30,9 @@ const stats = [
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
     const [userName, setUserName] = useState<string>();
-    useEffect(() => {
+
+
+    useEffect(() => { // Just to check if the same user profile or not to show the friendship button or not
         const getUserNmae = async () => {
             await axios.get("user/name")
             .then((res) => {
@@ -84,7 +86,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     <Group mt="md" justify="center" gap={30}>
       {items}
     </Group>
-    {/* {usercard?.username !== userName &&
+    {/* {usercard?.username !== userName &&    // if the user is not the same user profile show the friendship button
       <div className='flex justify-center items-center mt-2'>
             <FriendshipButton name={usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
       </div>
