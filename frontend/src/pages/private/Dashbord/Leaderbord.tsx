@@ -30,9 +30,9 @@ function Leaderbord({avatar} : {avatar: string}) {
         <div className="h-full items-cente">
 
             <div className="flex  space-x-8  items-center justify-center mt-8">
-                <LeaderbordCard />
-                    <LeaderbordCard />
-                <LeaderbordCard />
+                <LeaderbordCard data={data[0]} />
+                    {/* <LeaderbordCard data={data[0]}/> */}
+                {/* <LeaderbordCard  data={data[0]}/> */}
             </div>
             <div className="flex items-center justify-center">
             <div className="mt-8 pt-8 w-[700px]"  >

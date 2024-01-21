@@ -32,14 +32,14 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
             Lost
           </Text>
         </Table.Td>
-        <Table.Td>
+        {/* <Table.Td>
           <Group gap={0} justify="flex-end">
               <Text fz="sm">{item.level}</Text>
               <Text fz="xs" c="dimmed">
                   Level
               </Text>
           </Group>
-        </Table.Td>
+        </Table.Td> */}
       </Table.Tr>
     ));
   
