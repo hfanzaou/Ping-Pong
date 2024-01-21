@@ -81,14 +81,12 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     );
 }
 
-
 const GameComponent: React.FC<Props> = ({socket, avatar}) => {
 
-  const sketchRef = useRef<HTMLElement>(document.getElementById('sketchHolder'));
-  const [canvass, setCanvas] = useState<p5Types>();
+  const sketchRef = useRef(document.getElementById('sketchHolder'));
 
   useEffect(() => {
-    const sketch = new p5(p => {
+    new p5(p => {
       //let canvas: p5.Renderer;
 
       p.setup = async () => {
@@ -98,32 +96,29 @@ const GameComponent: React.FC<Props> = ({socket, avatar}) => {
         const data = await response.json();
         socket.emit('userName', data.name);
 
-        canvas = p.createCanvas( WIDTH, HEIGHT);
+        canvas = p.createCanvas(WIDTH, HEIGHT);
         // canvas.parent('');
         eventListeners(p, socket);
         p.noStroke();
         selectMode(p, socket);
-        // p.removeElements();
       };
   
       p.draw = () => {
-        p.windowWidth = WIDTH;
-        p.windowHeight = HEIGHT;
         p.background('rgb(40, 41, 55)');
+        p.fill('white');
         handleGameStates(p, socket);
-        p.fill('rgb(40, 41, 55)');
+      
         if (play) {
-          p.fill('white');
           p.textSize(32);
           p.textStyle(p.BOLD);
-          p.text(player1.score, p.width - (p.width - 60), 60);
-          p.text(player2.score, p.width - 60, 60);
+          p.text(player1.score, 40, 60);
+          p.text(player2.score, WIDTH - 60, 60);
         
           checkKeys(p, socket);
           if (mode == 3) {
             computerPlayer();
             gameLoop(p, socket);
-          }          }
+          }
           else if (mode == 2) {
             gameLoop(p, socket);
           }
@@ -138,10 +133,10 @@ const GameComponent: React.FC<Props> = ({socket, avatar}) => {
           p.noStroke();
         }
       };
-    }, document.getElementById('sketchHolder')!);
+  }, 'sketchHolder');
   }, []);
 
-  return <div ref={sketchRef as LegacyRef<HTMLDivElement> | undefined} />;
+  return <div ref={sketchRef} />;
 };
 
 export default Game
