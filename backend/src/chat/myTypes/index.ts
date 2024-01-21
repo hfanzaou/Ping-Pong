@@ -8,7 +8,8 @@ export interface USERDATA {
 	userName: string,
 	chatUsers: User[],
 	friends: User[],
-	groups: Group[]
+	groups: Group[],
+	blocked: User[]
 }
 
 export interface MESSAGE extends NEWCHAT {
