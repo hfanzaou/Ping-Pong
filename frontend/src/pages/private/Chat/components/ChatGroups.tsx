@@ -1,18 +1,24 @@
 import {
+	IconBan,
 	IconChessBishopFilled,
 	IconChessFilled,
 	IconChessKingFilled,
+	IconDoorExit,
 	IconEye,
 	IconEyeOff,
+	IconLockOpen,
 	IconSend2,
 	IconSettings2,
 	IconTrash,
+	IconTrashOff,
 	IconUser,
+	IconVolume,
+	IconVolume3,
 	IconX
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, MESSAGE, NEWCHAT } from "../myTypes";
-import { setMessageData } from "../utils";
+import { setMessageData, setUserData } from "../utils";
 
 interface Props {
 	data: DATA,
@@ -38,7 +44,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		userName: string,
 		role: string
 	}>>([])
-	
+	const	[role, setRole] = useState("member");
+	const	userNameRef = useRef(data.userData?.userName);
+
+	userNameRef.current = data.userData?.userName;
 	dataRef.current = data;
 	useEffect(() => {
 		if (Reference.current)
@@ -93,6 +102,33 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		}
 		fetchData();
 	}, [data])
+	useEffect(() => {
+		const	tmp = users.find(x => x.userName == data.userData?.userName)
+		if (tmp)
+			setRole(tmp.role)
+	}, [users]);
+	// useEffect(() => {
+	// 	// function callBackMouse(event: MouseEvent) {
+	// 	// 	if (event.clientX < settingsXyRef.current.x ||
+	// 	// 		event.clientX > settingsXyRef.current.x + 100 ||
+	// 	// 		event.clientY < settingsXyRef.current.y ||
+	// 	// 		event.clientY > settingsXyRef.current.y + 150)
+	// 	// 		setSettings(false);
+	// 	// }
+	// 	function callBackResize() {
+	// 		// if (window.innerWidth < 600)
+	// 		// 	setSize(false);
+	// 		// else
+	// 		// 	setSize(true);
+	// 		console.log()
+	// 	}
+	// 	// document.addEventListener("mousedown", callBackMouse);
+	// 	window.addEventListener("resize", callBackResize);
+	// 	return () => {
+	// 		// document.removeEventListener("mousedown", callBackMouse);
+	// 		window.removeEventListener("resize", callBackResize);
+	// 	}
+	// }, [])
 	async function clickJoinCallBack(state: boolean) {
 		if (!state) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
@@ -210,6 +246,68 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		if (Reference.current)
 			Reference.current.focus();
 	}
+	function clickBlock(event: React.MouseEvent<HTMLButtonElement>) {
+		async function fetchData() {
+			await fetch(`http://localhost:3001/user/${event.currentTarget.value}`, {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					name: event.currentTarget.name
+				}),
+				credentials: "include"
+			})
+			await callBackBlock();
+		}
+		fetchData();
+	}
+	async function callBackBlock() {
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userName: userNameRef.current
+			})
+		});
+		const Data = await res0.json();
+		setData(prev => setUserData(prev, Data));
+		// async function fetchData() {
+		// 	const	res = await fetch("http://localhost:3001/groupUsers", {
+		// 		method: "POST",
+		// 		headers: {
+		// 			"content-type": "application/json"
+		// 		},
+		// 		body: JSON.stringify({
+		// 			name: data.groupTo
+		// 		})
+		// 	});
+		// 	const	Data = await res.json();
+		// 	console.log(Data);
+		// 	if (Data.length)
+		// 		setUsers(Data);
+		// }
+		// fetchData();
+	}
+	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
+		const	tmp = event.currentTarget.value;
+		if (tmp) {
+			await fetch(`http://localhost:3001/${tmp}`, {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					name: data.groupTo,
+					userName: event.currentTarget.name
+				}),
+				credentials: "include"
+			})
+			await callBackBlock();
+		}
+	}
 	if (data.groupTo) {
 		if (data.userData?.groups.find(x => x.name == data.groupTo))
 			return (
@@ -221,28 +319,37 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 						{settings ?
 						users.map(x => {
+							if(x.userName == data.userData?.userName)
+								return;
 							return (
 								<li
 									key={x.id}
 									className="p-1"
 								>
 									<div
-										className="flex items-center
-											hover:bg-discord2 rounded-full"
+										className="flex items-center justify-between
+											hover:bg-discord2 rounded-md"
 									>
-										{
-											x.avatar ?
-												<img
-													className="w-10 h-10 rounded-full
-														mx-5 my-2"
-													src={x.avatar}
-												/> :
-												<IconUser
-													className="w-10 h-10 rounded-full
-														mx-5 my-2 bg-discord1"
-												/>
+										<div className="flex items-center">
+											<a
+												href={`http://localhost:3000/UserProfile?name=${x.userName}`}
+											>
+												{
+													x.avatar ?
+														<img
+															className="w-10 h-10
+																rounded-full ml-5
+																mr-2 my-2"
+															src={x.avatar}
+														/> :
+														<IconUser
+															className="w-10 h-10
+															rounded-full ml-5
+															mr-2 my-2 bg-discord1"
+														/>
 
-										}
+												}
+											</a>
 											<h1 className="font-extrabold" >
 												{ x.userName }
 											</h1>
@@ -253,14 +360,218 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													<IconChessFilled /> :
 													<IconChessBishopFilled />
 											}
-											<button
-												className="flex justify-center
-													items-center font-extrabold
-													hover:text-red-500"
-											>
-												<IconTrash/>
-												<h1>block</h1>
-											</button>
+										</div>
+										<div className="flex mr-5">
+											{
+												x.role != "owner" &&
+												role != "member" &&
+												<div className="flex">
+													<button
+														className="flex justify-center
+															items-center
+															font-extrabold
+															hover:text-red-500
+															group mx-2"
+														onClick={clickAdmin}
+														name={x.userName}
+														value="groupKick"
+													>
+														<IconDoorExit />
+														<h1
+															className="mt-2 mr-5
+																hidden
+																group-hover:block"
+														>
+															kick
+														</h1>
+													</button>
+													{
+														data.
+															userData?.
+															groups.
+															find(y => {
+																return y.name ==
+																	data.groupTo
+															})?.banded.find(y => {
+																return y == x.userName
+															}) == undefined ?
+															<button
+																className="flex
+																	justify-center
+																	items-center
+																	font-extrabold
+																	hover:text-red-500
+																	group mx-2"
+																onClick={clickAdmin}
+																name={x.userName}
+																value="addGroupBan"
+															>
+																<IconBan />
+																<h1
+																	className="mt-2
+																		mr-5
+																		hidden
+																		group-hover:block"
+																>
+																	ban
+																</h1>
+															</button> :
+															<button
+																className="flex
+																	justify-center
+																	items-center
+																	font-extrabold
+																	hover:text-green-500
+																	group mx-2"
+																onClick={clickAdmin}
+																name={x.userName}
+																value="removeGroupBan"
+															>
+																<IconLockOpen />
+																<h1
+																	className="mt-2
+																		mr-5
+																		hidden
+																		group-hover:block"
+																>
+																	unban
+																</h1>
+															</button>
+													}
+													{
+														data.
+														userData?.
+														groups.
+														find(y => {
+															return y.name ==
+																data.groupTo
+														})?.muted.find(y => {
+															return y == x.userName
+														}) == undefined ?
+															<button
+																className="flex
+																	justify-center
+																	items-center
+																	font-extrabold
+																	hover:text-red-500
+																	group mx-2"
+																onClick={clickAdmin}
+																name={x.userName}
+																value="addGroupMute"
+															>
+																<IconVolume3 />
+																<h1
+																	className="mr-5
+																		hidden
+																		group-hover:block"
+																>
+																	mute
+																</h1>
+															</button> :
+															<button
+																className="flex
+																	justify-center
+																	items-center
+																	font-extrabold
+																	hover:text-green-500
+																	group mx-2"
+																onClick={clickAdmin}
+																name={x.userName}
+																value="removeGroupMute"
+															>
+																<IconVolume />
+																<h1
+																	className="mr-5
+																		hidden
+																		group-hover:block"
+																>
+																	unmute
+																</h1>
+															</button>
+													}
+													{
+														x.role == "member" ?
+														<button
+															className="flex
+																justify-center
+																items-center
+																font-extrabold
+																hover:text-green-500
+																group mx-2"
+															onClick={clickAdmin}
+															name={x.userName}
+															value="addGroupAdmin"
+														>
+															<IconChessBishopFilled />
+															<h1
+																className="mr-5 hidden
+																	group-hover:block"
+															>
+																admin
+															</h1>
+														</button> :
+														<button
+															className="flex
+																justify-center
+																items-center
+																font-extrabold
+																hover:text-red-500
+																group mx-2"
+															onClick={clickAdmin}
+															name={x.userName}
+															value="removeGroupAdmin"
+														>
+															<IconChessFilled />
+															<h1
+																className="mr-5 hidden
+																	group-hover:block"
+															>
+																member
+															</h1>
+														</button>
+													}
+												</div>
+											}
+											{
+												data.userData?.blocked.find(y => {
+													return y.login == x.userName
+												}) == undefined ?
+												<button
+													className="flex justify-center
+														items-center font-extrabold
+														hover:text-red-500 group
+														mx-2"
+													onClick={clickBlock}
+													name={x.userName}
+													value="block"
+												>
+													<IconTrash />
+													<h1
+														className="mt-2 hidden
+															group-hover:block"
+													>
+														block
+													</h1>
+												</button> :
+												<button
+													className="flex justify-center
+														items-center font-extrabold
+														hover:text-green-500 group
+														mx-2"
+													onClick={clickBlock}
+													name={x.userName}
+													value="inblock"
+												>
+													<IconTrashOff/>
+													<h1
+														className="mt-2 mr-5 hidden
+															group-hover:block"
+													>
+														unblock
+													</h1>
+												</button>	
+											}
+										</div>
 									</div>
 								</li>
 							)

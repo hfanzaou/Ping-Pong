@@ -51,6 +51,34 @@ export class ChatController {
 	@Post("groupUsers")
 	async handleGroupUsers(@Body() data: { name: string }) {
 		const	users = await this.chatService.getGroupUsers(data.name);
-		return users; 
+		return users;
+	}
+	@Post("addGroupAdmin")
+	async handleAddGroupAdmin(@Body() data: { name: string, userName: string }) {
+		await this.chatService.addGroupAdmin(data);
+	}
+	@Post("removeGroupAdmin")
+	async handleRemoveGroupAdmin(@Body() data: { name: string, userName: string }) {
+		await this.chatService.removeGroupAdmin(data);
+	}
+	@Post("addGroupMute")
+	async handleAddGroupMute(@Body() data: { name: string, userName: string }) {
+		await this.chatService.addGroupMute(data);
+	}
+	@Post("removeGroupMute")
+	async handleRemoveGroupMute(@Body() data: { name: string, userName: string }) {
+		await this.chatService.removeGroupMute(data);
+	}
+	@Post("addGroupBan")
+	async handleAddGroupBan(@Body() data: { name: string, userName: string }) {
+		await this.chatService.addGroupBan(data);
+	}
+	@Post("removeGroupBan")
+	async handleRemoveGroupBan(@Body() data: { name: string, userName: string }) {
+		await this.chatService.removeGroupBan(data);
+	}
+	@Post("groupKick")
+	async handleGroupKick(@Body() data: { name: string, userName: string }) {
+		await this.chatService.groupKick(data);
 	}
 }
