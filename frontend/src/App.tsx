@@ -26,7 +26,7 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
-    const [hasToken, setHasToken] = useState<Boolean>(true); // true Just for Frontend test
+    const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
     const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
     const [urlName, setUrlName] = useState<string | undefined>();
 
