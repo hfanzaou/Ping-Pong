@@ -130,7 +130,9 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	}, [createTrigger])
 	useEffect(() => {
 		if (searchText == "")
-			setList(data.userData?.groups);
+			setList(data.userData?.groups.filter(x => {
+				return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			}));
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
@@ -147,7 +149,9 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	}, [settingsXy])
 	useEffect(() => {
 		setSearchText("");
-		setList(data.userData?.groups);
+		setList(data.userData?.groups.filter(x => {
+			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+		}));
 	}, [data.send])
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
 		setCreate(true);
@@ -223,7 +227,9 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 					return true;
 				}).filter(x => x.name.includes(event.target.value));
 		}
-		setList(List);
+		setList(List?.filter(x => {
+			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+		}));
 		if (List && !List.find(x => x.name == data.groupTo))
 			setData(prev => ({
 				...prev,

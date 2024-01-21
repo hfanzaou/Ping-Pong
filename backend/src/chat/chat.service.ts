@@ -144,11 +144,9 @@ export class ChatService {
 				}
 			}
 		});
-		// console.log(group);
 		if ( group &&
 			group.banded.find(x => x == data.sender) == undefined &&
 			group.muted.find(x => x == data.sender) == undefined ) {
-				// console.log(group.muted.find(x => x == data.sender));
 				let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 				where: { name: data.recver }
 			});
