@@ -37,15 +37,18 @@ OnGatewayDisconnect {
 			const message = await this.chatService.addMessagePrivate(data);
 			this.server.to(room).emit("clientPrivate", message);
 		}
-		else {
+		else
 			this.server.to(client.id).emit("chatError");
-		}
 	}
 	@SubscribeMessage("room")
 	async handelRoom(client: Socket, data: MESSAGE) {
 		const room = await this.chatService.getRoomRoom(data);
-		const message = await this.chatService.addMessageRoom(data);
-		this.server.to(room).emit("clientRoom", message);
+		if (room) {
+			const message = await this.chatService.addMessageRoom(data);
+			this.server.to(room).emit("clientRoom", message);
+		}
+		else
+			this.server.to(client.id).emit("chatError");
 	}
 	@SubscribeMessage("newChatPrivate")
 	async handelNewChatPrivate(client: Socket, data: NEWCHAT) {

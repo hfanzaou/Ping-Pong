@@ -132,28 +132,47 @@ export class ChatService {
 		return null;
 	}
 	async getRoomRoom(data: NEWCHAT) {
-		let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
-			where: { name: data.recver }
-		});
-		if (!chatHistorie) {
-			chatHistorie = await this.prisma.cHATHISTORY.create({
-				data: {
-					name: data.recver,
-					users: {
-						create: [
-							{
-								user: {
-									connect: {
-										username: data.sender
-									}
-								}
-							}
-						]
+		const	group = await this.prisma.gROUP.findFirst({
+			where: {
+				name: data.recver,
+				members: {
+					some: {
+						user: {
+							username: data.sender
+						}
 					}
 				}
+			}
+		});
+		// console.log(group);
+		if ( group &&
+			group.banded.find(x => x == data.sender) == undefined &&
+			group.muted.find(x => x == data.sender) == undefined ) {
+				// console.log(group.muted.find(x => x == data.sender));
+				let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+				where: { name: data.recver }
 			});
+			if (!chatHistorie) {
+				chatHistorie = await this.prisma.cHATHISTORY.create({
+					data: {
+						name: data.recver,
+						users: {
+							create: [
+								{
+									user: {
+										connect: {
+											username: data.sender
+										}
+									}
+								}
+							]
+						}
+					}
+				});
+			}
+			return chatHistorie.name;
 		}
-		return chatHistorie.name;
+		return null;
 	}
 	async addMessagePrivate(data: MESSAGE) {
 		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
