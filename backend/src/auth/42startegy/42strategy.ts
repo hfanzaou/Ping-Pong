@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { FTUser } from "../42dto";
+import { achDto } from "../dto";
 const Strategy = require('passport-42').Strategy;
 
 @Injectable()
@@ -21,13 +22,7 @@ export class FTAuth extends PassportStrategy(Strategy, '42') {
             username: profile.username,
             avatar: profile._json.image.link,
             twoFaAuth: false,
-            achievement: {
-                achievement1: false, 
-                achievement2: false,
-                achievement3: false,
-                achievement4: false,
-                achievement5: false
-            }
+            achievement : achDto,
         }
         ////console.log(user);
         return (user || null);

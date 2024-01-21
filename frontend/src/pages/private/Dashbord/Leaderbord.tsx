@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../Layout/Header/Header";
 import Footer from '../../../Layout/Footer/Footer';
-import LeaderbordCard from "./LeaderBordCard";
+import LeaderbordCard from "./LeaderbordCard";
 import LeaderbordTable from "./LeaderBordTable";
 import axios from "axios";
 import leaderboardInterface from "./Leaderboard";
