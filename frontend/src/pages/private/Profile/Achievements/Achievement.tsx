@@ -28,7 +28,7 @@ function  Achievement() {
         const getAchievements = async () => {
             await axios.get("user/achievements")
             .then((res) => {
-            // console.log("Achievement from res: ", res.data.achievement1);
+            console.log("Achievement from res: ", res.data);
             setAchievements(res.data);
         })
         .catch((err) => {
@@ -38,11 +38,11 @@ function  Achievement() {
     getAchievements();
 }, []);
 
-data[0].type = achievements['achievement1'];
-data[1].type = achievements['achievement2'];
-data[2].type = achievements['achievement3'];
-data[3].type = achievements['achievement4'];
-data[4].type = achievements['achievement5'];
+data[0].type = achievements['firstMatch'];
+data[1].type = achievements['firstFriend'];
+data[2].type = achievements['lead1'];
+data[3].type = achievements['lead2'];
+data[4].type = achievements['lead3'];
 
     const achievementsData = data.map((item) => (
         <div key={item.name}>

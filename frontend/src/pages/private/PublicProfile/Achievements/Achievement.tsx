@@ -19,11 +19,11 @@ import AchievementsInterface from './AchievementInterface';
 
 function  Achievement({achievement}: {achievement: AchievementsInterface}) {
 
-data[0].type = achievement?.achievement1;
-data[1].type = achievement?.achievement2;
-data[2].type = achievement?.achievement3;
-data[3].type = achievement?.achievement4;
-data[4].type = achievement?.achievement5;
+data[0].type = achievement?.firstMatch;
+data[1].type = achievement?.firstFriend;
+data[2].type = achievement?.lead1;
+data[3].type = achievement?.lead2;
+data[4].type = achievement?.lead3;
 
     const achievementsData = data.map((item) => (
         <div key={item.name}>

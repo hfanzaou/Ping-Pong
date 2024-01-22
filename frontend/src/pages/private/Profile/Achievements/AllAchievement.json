@@ -1,35 +1,35 @@
 [
     {
         "id": 1,
-        "name": "Achievement1",
+        "name": "firstMatch",
         "type": false,
         "image": "./4640283_award_first_medal_place_premium_icon.png",
         "title": "win in 3 game and go to level 1"
     },
     {
         "id": 2,
-        "name": "Achievement2",
+        "name": "firstFriend",
         "type": true,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
         "title": "win in 3 game and go to level 1"
     },
     {
         "id": 3,
-        "name": "Achievement3",
+        "name": "lead1",
         "type": true,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
         "title": "win in 3 game and go to level 1"
     },
     {
         "id": 4,
-        "name": "Achievement4",
+        "name": "lead2",
         "type": true,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
         "title": "win in 3 game and go to level 1"
     },
     {
         "id": 5,
-        "name": "Achievement5",
+        "name": "lead3",
         "type": true,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
         "title": "win in 3 game and go to level 1"

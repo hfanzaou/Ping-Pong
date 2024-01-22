@@ -5,23 +5,13 @@ import axios from 'axios';
 import FriendshipButton from '../../Home/Users/FriendshipButton';
 // import { Cookies } from 'react-cookie';
 
-const userInfo = {
-    userName: 'rarahhal',
-    avatar: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-    email: 'rizqyrahhal8@gmail.com',
-    level: '1',   // when wine 3 matches move from level to next level
-    win: 5,
-    losses: 3
-}
-
-interface UserCardProps {
+    interface UserCardProps {
         username: string;
         avatar: string;
         level: number;
         win: number;
         loss: number;
-}
-
+    }
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
     const [userName, setUserName] = useState<string>();
