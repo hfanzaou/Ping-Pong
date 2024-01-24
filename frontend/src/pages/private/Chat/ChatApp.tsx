@@ -29,9 +29,9 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[loading, setLoading] = useState(false);
 
 	//
-	// useEffect(() => {
-	// 	console.log("CHAT");
-	// }, [])
+	useEffect(() => {
+		console.log("CHAT");
+	}, [])
 	//
 	errorRef.current = error;
 	useEffect(() => {
