@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { NEWCHAT, NEWGROUP } from "./myTypes";
+import JwtTwoFaGuard from "src/auth/guard/twoFaAuth.guard";
 
+// @UseGuards(JwtTwoFaGuard)
 @Controller()
 export class ChatController {
 	constructor(private chatService: ChatService) {}
@@ -80,5 +82,17 @@ export class ChatController {
 	@Post("groupKick")
 	async handleGroupKick(@Body() data: { name: string, userName: string }) {
 		await this.chatService.groupKick(data);
+	}
+	@Post("inviteGroup")
+	async handleInviteGroup(@Body() data: { userName: string, name: string }) {
+		return await this.chatService.inviteGroup(data);
+	}
+	@Post("checkUserGroup")
+	async handleCheckUserGroup(@Body() data: { userName: string, name: string }) {
+		return await this.chatService.checkUserGroup(data);
+	}
+	@Post("privateJoin")
+	async handlePrivateJoin(@Body() data: { name: string }) {
+		return await this.chatService.privateJoin(data);
 	}
 }

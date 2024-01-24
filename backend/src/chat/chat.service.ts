@@ -5,6 +5,7 @@ import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
 import { compare, hash } from "bcrypt";
 import { ChatGateway } from "./chat.gateway";
+import { notifDto } from "src/auth/dto/notif.dto";
 
 @Injectable()
 export class ChatService {
@@ -434,6 +435,15 @@ export class ChatService {
 						groupId: group.id
 					}
 				});
+				if ( group.invited.find(x => x == user.username )) {
+					const	updatedInvited = group.invited.filter(x => {
+						return x != user.username;
+					});
+					await this.prisma.gROUP.update({
+						where: { id: group.id },
+						data: { invited: updatedInvited }
+					});
+				}
 				if (chatHistory)
 					await this.prisma.userCHATHISTORY.create({
 						data: {
@@ -599,5 +609,53 @@ export class ChatService {
 					});
 			}
 		}
+	}
+	async inviteGroup(data: { userName: string, name: string }) {
+		const	user = await this.prisma.user.findFirst({
+			where: {
+				username: data.userName,
+				groups: { none: { group: { name: data.name }}}
+			}
+		});
+		if (user)
+		{
+			const	group = await this.prisma.gROUP.findFirst({
+				where: { name: data.name }
+			});
+			if (!group)
+				return false;
+			if ( !group.invited.find( x => x == data.userName )) {
+				const	updaterGroupInvited = [ ...group.invited, data.userName ];
+				await this.prisma.gROUP.update({
+					where: { name: data.name },
+					data: { invited: updaterGroupInvited }
+				});
+				return true;
+			}
+		}
+		return false;
+	}
+	async checkUserGroup(data: { userName: string, name: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+			include: {members: {include: { user: true}}}
+		});
+		if (group &&
+			(group.invited.find(x => x == data.userName) ||
+				group.members.find(x => x.user.username == data.userName)))
+			return true;
+		return false;
+	}
+	async privateJoin(data: { name: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name }
+		})
+		return [{
+			id: group.id,
+			name: group.name,
+			password: group.hash ? true : false,
+			banded: group.banded,
+			muted: group.muted
+		}];
 	}
 }

@@ -23,7 +23,6 @@ import { UserService } from "src/user/user.service";
     credentials: true
 } })
 export class ChatGateway implements
-OnGatewayConnection,
 OnGatewayDisconnect {
 	constructor(private chatService: ChatService, 
 				private prisma: PrismaService, 
@@ -77,9 +76,6 @@ OnGatewayDisconnect {
 			.to(recver)
 			.emit("newuser", username);
 	}
-	handleConnection(client: Socket) {
-		// console.log(client.handshake.headers.cookie);
-	}
 	async handleDisconnect(client: Socket) {
 		Array
 			.from(client.rooms)
@@ -102,12 +98,12 @@ OnGatewayDisconnect {
 	async handleNotification(client: Socket, payload: notifDto) {
 		try {	
 			const {id} = await this.verifyClient(client);
-	  		const reciever = await this.prisma.user.findUnique({
+			  const reciever = await this.prisma.user.findUnique({
 			where: {username: payload.reciever},
 			select: {id: true, socket: true}
-	  		})
-	  		await this.user.addNotification(id, payload);
-	  		client.to(reciever.socket).emit('getnotification', 'hello');
+			  })
+			  await this.user.addNotification(id, payload);
+			  client.to(reciever.socket).emit('getnotification', 'hello');
 		} catch(error)
 		{
 			client.emit('error');
