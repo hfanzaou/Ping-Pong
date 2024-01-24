@@ -110,35 +110,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		const	tmp = users.find(x => x.userName == data.userData?.userName)
 		if (tmp)
 			setRole(tmp.role)
-		// const	test = data.userData?.groups.find(x => {
-		// 		return x.name == data.groupTo;
-		// 	})?.muted.find(x => {
-		// 		return x == data.userData?.userName;
-		// 	});
-		// 	console
 	}, [users]);
-	// useEffect(() => {
-	// 	// function callBackMouse(event: MouseEvent) {
-	// 	// 	if (event.clientX < settingsXyRef.current.x ||
-	// 	// 		event.clientX > settingsXyRef.current.x + 100 ||
-	// 	// 		event.clientY < settingsXyRef.current.y ||
-	// 	// 		event.clientY > settingsXyRef.current.y + 150)
-	// 	// 		setSettings(false);
-	// 	// }
-	// 	function callBackResize() {
-	// 		// if (window.innerWidth < 600)
-	// 		// 	setSize(false);
-	// 		// else
-	// 		// 	setSize(true);
-	// 		console.log()
-	// 	}
-	// 	// document.addEventListener("mousedown", callBackMouse);
-	// 	window.addEventListener("resize", callBackResize);
-	// 	return () => {
-	// 		// document.removeEventListener("mousedown", callBackMouse);
-	// 		window.removeEventListener("resize", callBackResize);
-	// 	}
-	// }, [])
 	async function clickJoinCallBack(state: boolean) {
 		if (!state) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
@@ -163,7 +135,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					}
 				return x;
 			});
-			if (Data.find(x => x.name == data.groupTo)) {
+			if (Data?.find(x => x.name == data.groupTo)) {
 				if (data.groupTo) {
 					const	newChat: NEWCHAT = {
 						sender: data.userData ? data.userData.userName : "",
@@ -182,7 +154,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		}
 	}
 	async function clickJoin() {
-		console.log(data);
 		if (data.password != undefined)
 			await clickJoinCallBack(data.password)
 		if (data.password) {
@@ -286,22 +257,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));
-		// async function fetchData() {
-		// 	const	res = await fetch("http://localhost:3001/groupUsers", {
-		// 		method: "POST",
-		// 		headers: {
-		// 			"content-type": "application/json"
-		// 		},
-		// 		body: JSON.stringify({
-		// 			name: data.groupTo
-		// 		})
-		// 	});
-		// 	const	Data = await res.json();
-		// 	console.log(Data);
-		// 	if (Data.length)
-		// 		setUsers(Data);
-		// }
-		// fetchData();
 	}
 	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
 		const	tmp = event.currentTarget.value;
@@ -324,7 +279,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setInvite(x => !x);
 	}
 	async function submitInvite() {
-		// console.log(userInvite);
 		if (userInvite.length) {
 			const	res = await fetch("http://localhost:3001/inviteGroup", {
 				method: "POST",
@@ -357,7 +311,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setError("");
 	}
 	if (data.groupTo) {
-		if (data.userData?.groups.find(x => x.name == data.groupTo))
+		if (data.userData?.groups?.find(x => x.name == data.groupTo))
 			return (
 				<form
 					onSubmit={submitMessage}
@@ -490,7 +444,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													{
 														data.
 															userData?.
-															groups.
+															groups?.
 															find(y => {
 																return y.name ==
 																	data.groupTo
@@ -543,11 +497,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													{
 														data.
 														userData?.
-														groups.
+														groups?.
 														find(y => {
 															return y.name ==
 																data.groupTo
-														})?.muted.find(y => {
+														})?.muted?.find(y => {
 															return y == x.userName
 														}) == undefined ?
 															<button
@@ -635,7 +589,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												</div>
 											}
 											{
-												data.userData?.blocked.find(y => {
+												data.userData?.blocked?.find(y => {
 													return y.login == x.userName
 												}) == undefined ?
 												<button
@@ -713,7 +667,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 							placeholder={
 								settings ?
 								"Setting" :
-								(data.userData?.groups.find(x => {
+								(data.userData?.groups?.find(x => {
 									return x.name == data.groupTo;
 								})?.muted?.find(x => {
 									return x == data.userData?.userName;
@@ -723,7 +677,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 							className={
 								`bg-discord1 border-none outline-none w-full h-10
 									rounded-md mr-2 p-5
-									${( settings || data.userData?.groups.find(x => {
+									${( settings || data.userData?.groups?.find(x => {
 										return x.name == data.groupTo;
 									})?.muted?.find(x => {
 										return x == data.userData?.userName;
@@ -733,7 +687,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 							value={data.message}
 							autoFocus
 							ref={Reference}
-							readOnly={settings || ( data.userData?.groups.find(x => {
+							readOnly={settings || ( data.userData?.groups?.find(x => {
 								return x.name == data.groupTo;
 							})?.muted?.find(x => {
 								return x == data.userData?.userName;
