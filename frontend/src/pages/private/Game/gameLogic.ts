@@ -2,35 +2,24 @@ import { Ball } from "./classes/ball";
 import { Player } from "./classes/player";
 import p5Types from "p5";
 import { Socket } from "socket.io-client";
-import { startCountdown, gameOver, opponentDisconnect, mode, difficulty } from "./gameStates"
-
-
-const WIDTH = 700;
-const HEIGHT = 450;
-const RACKET_HEIGHT = 100;
-const RACKET_WIDTH = 15;
-const RACKET_DY = 10;
-const INITIAL_SPEED = 8;
-const MAX_SPEED = 50;
-const INC_SPEED = 0.75;
-const BALL_DIAMETER = 15;
-const BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER;
-const MAX_SCORE = 10;
+import { startCountdown, gameOver, opponentDisconnect } from "./gameStates";
+import { RACKET_DY, RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, WIDTH, BALL_DIAMETER, INITIAL_SPEED, MAX_SPEED, INC_SPEED, MAX_SCORE, BALL_DIAMETER_SQUARED, gameConfig } from "./classes/constants";
 
 let goalScored: boolean = false,
     update: boolean = false,
     waitingForPlayer = false,
-    side: number = 1; // 1: left, 2:
+    side: number = 1, // 1: left, 2:
+    countdown = 0;
 
 export let player1: Player,
     player2: Player,
     ball: Ball;
 
 
-export function  gameLoop(p5: p5Types, socket: Socket)
+export function  gameLoop(p5: p5Types, socket: Socket, config: gameConfig)
 {
   if (!goalScored) {
-    updateBallPos(p5, socket);
+    updateBallPos(p5, socket, config);
     updatePosition();
   }
 }
@@ -40,7 +29,7 @@ export function  updatePosition() {
     ball.y += (ball.ydir * ball.speed);
 }
 
-export function  updateBallPos(p5: p5Types, socket: Socket)
+export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig)
 {
   if (update) return;
   let nextY = ball.y + (ball.ydir * ball.speed);
@@ -51,32 +40,32 @@ export function  updateBallPos(p5: p5Types, socket: Socket)
   if (checkCollision(player1, ball)) {
     ball.xdir = 1;
     ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
-    if (ball.speed < MAX_SPEED)
+    if (ball.speed < MAX_SPEED && config.boost)
       ball.speed += INC_SPEED;
   }
   else if (checkCollision(player2, ball)) {
     ball.xdir = -1;
     ball.ydir = (ball.y - (player2.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
-    if (ball.speed < MAX_SPEED)
+    if (ball.speed < MAX_SPEED && config.boost)
       ball.speed += INC_SPEED;
   }
   else if (ball.x > WIDTH) {
     player1.score += 1;
-    ft_goalScored(p5, socket);
+    ft_goalScored(p5, socket, config);
   }
   else if (ball.x < (BALL_DIAMETER >> 1)) {
     player2.score += 1;
-    ft_goalScored(p5, socket);
+    ft_goalScored(p5, socket, config);
   }
 }
 
-function ft_goalScored(p5: p5Types, socket: Socket) {
+function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig) {
   ball.x = WIDTH / 2;
   ball.y = HEIGHT / 2;
   ball.xdir *= -1;
   ball.ydir = 0;
-  ball.speed = INITIAL_SPEED;
-  if (player1.score == MAX_SCORE || player2.score == MAX_SCORE) {
+  ball.speed = config.ballSpeed;
+  if (player1.score == config.maxScore || player2.score == config.maxScore) {
       socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
       gameOver(p5, player1, player2);
   }
@@ -109,7 +98,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export function checkKeys(p5: p5Types, socket: Socket) {
+export function checkKeys(p5: p5Types, socket: Socket, mode: number) {
     
   if (p5.keyIsDown(87) || p5.keyIsDown(p5.UP_ARROW)) {
     if ((side == 2 || (p5.keyIsDown(p5.UP_ARROW) && mode === 2))
@@ -157,7 +146,14 @@ export function  _mouseDragged(p5: p5Types, socket: Socket)
       }
 }
 
-export function computerPlayer() {
+export function initGame(p5: p5Types, socket: Socket, config: gameConfig, user: any) {
+  player1 = new Player({id: user.id, username: user.username, socket: socket.id || '', level: user.level}, 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, "");
+  player2 = new Player({id: -1, username: 'Computer', socket: socket.id || '', level: user.level}, WIDTH - 30, HEIGHT / 2 - RACKET_HEIGHT/2, 0, "");
+  ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, config.ballSpeed);
+  startCountdown(p5);
+}
+
+export function computerPlayer(difficulty: number) {
   let speed = difficulty * 3; // Adjust this multiplier as needed
 
   if (ball.x > WIDTH / 4) {
@@ -207,7 +203,7 @@ export function eventListeners(p5: p5Types, socket: Socket) {
   socket.on('updateBall', (ballPos) => {
     ball.x = ballPos.x;
     ball.y = ballPos.y;
-    p5.redraw();
+    //p5.redraw();
   });
 
   socket.on('updateScore', (payload) => {
