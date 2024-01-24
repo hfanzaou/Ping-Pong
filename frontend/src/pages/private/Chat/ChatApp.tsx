@@ -26,6 +26,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[notFound, setNotFound] = useState(false);
 	const	[name, setName] = useState<string>("");
 	const	query = useQuery();
+	const	[loading, setLoading] = useState(false);
 	
 	errorRef.current = error;
 	useEffect(() => {
@@ -33,6 +34,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		if (tmp) {
 			setName(tmp);
 			async function fetchData() {
+				console.log(data.userData?.userName, tmp);
 				const res = await fetch("http://localhost:3001/checkUserGroup", {
 					method: "POST",
 					headers: {
@@ -44,11 +46,15 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 							})
 						});
 						const Data = await res.json()
-						if (!Data)
+						if (!Data) {
 							setNotFound(true);
+							if (!data.userData?.userName)
+								setLoading(true);
+							else
+								setLoading(false);
+						}
 						else
 							setNotFound(false);
-	
 			}
 			fetchData();
 		}
@@ -104,8 +110,12 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			}, 4000);
 		}
 	}
-	if (notFound)
-		return <NotFound />
+	if (notFound) {
+		if (loading)
+			return ;
+		else
+			return <NotFound />
+	}
 	return (
 		<div className="flex h-[80vh]">
 			{

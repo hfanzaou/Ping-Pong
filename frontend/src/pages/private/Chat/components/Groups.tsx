@@ -65,12 +65,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 					})
 				});
 				const	Data = await res.json();
-				console.log(Data);
+				// console.log(Data);
 				setList(Data);
-				setData(x => ({
-					...x,
-					groupTo: Data[0].name
-				}));
 			}
 			fetchData();
 		}

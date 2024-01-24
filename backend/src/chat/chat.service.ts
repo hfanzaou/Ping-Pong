@@ -435,6 +435,15 @@ export class ChatService {
 						groupId: group.id
 					}
 				});
+				if ( group.invited.find(x => x == user.username )) {
+					const	updatedInvited = group.invited.filter(x => {
+						return x != user.username;
+					});
+					await this.prisma.gROUP.update({
+						where: { id: group.id },
+						data: { invited: updatedInvited }
+					});
+				}
 				if (chatHistory)
 					await this.prisma.userCHATHISTORY.create({
 						data: {
@@ -615,20 +624,25 @@ export class ChatService {
 			});
 			if (!group)
 				return false;
-			const	updaterGroupInvited = [ ...group.invited ];
-			await this.prisma.gROUP.update({
-				where: { name: data.name },
-				data: { invited: updaterGroupInvited }
-			});
-			return true;
+			if ( !group.invited.find( x => x == data.userName )) {
+				const	updaterGroupInvited = [ ...group.invited, data.userName ];
+				await this.prisma.gROUP.update({
+					where: { name: data.name },
+					data: { invited: updaterGroupInvited }
+				});
+				return true;
+			}
 		}
 		return false;
 	}
 	async checkUserGroup(data: { userName: string, name: string }) {
 		const	group = await this.prisma.gROUP.findFirst({
 			where: { name: data.name },
+			include: {members: {include: { user: true}}}
 		});
-		if (group && group.invited.find(x => x == data.userName))
+		if (group &&
+			(group.invited.find(x => x == data.userName) ||
+				group.members.find(x => x.user.username == data.userName)))
 			return true;
 		return false;
 	}
