@@ -1,8 +1,6 @@
-import { LegacyRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import Sketch from 'react-p5';
+import React, { useEffect, useState, LegacyRef } from 'react';
+import { Socket } from 'socket.io-client';
 import p5Types, { Image } from "p5";
-import React, { useEffect, useRef } from 'react';
 import Header from '../../../Layout/Header/Header';
 import p5 from "p5";
 import { selectMode, handleGameStates, mode, play } from "./gameStates";
@@ -20,123 +18,133 @@ import { Center, Grid, GridCol, SimpleGrid, Space } from '@mantine/core';
 import UserCard from '../Profile/ProfileInfo/UserCard';
 import PlayerCard from './PlayerCard';
 import axios from 'axios';
+import GameComponent from './GameComponent';
+import GameSettings from './GameSettings';
+import { gameConfig } from './classes/constants'
 
-const WIDTH = 700;
-const HEIGHT = 450;
-const RACKET_HEIGHT = 100;
-const RACKET_WIDTH = 15;
-const INITIAL_SPEED = 8;
-const BALL_DIAMETER = 15;
-const MOVE = 200;
-
-
-
-export let canvas: p5Types.Renderer;
-let img: Image;
 interface Props {
   socket: Socket;
   avatar: string;
 }
 
-const Game: React.FC<Props> = ( {socket, avatar}) => {
-  const   [oppAvatar, setOppAvatar] = useState<string>();
-  const   [oppName, setOppName] = useState<string>();
-  const   [oppLevel, setOppLevel] = useState<string>();
-  const   [side, setSide] = useState<boolean>()
-  socket.on('getData', async (id: number, side: boolean) => 
-  {
-    setSide(side);
-    console.log("hello");
-    console.log(id)
-    await axios.get('user/game', {params: {opp: id}})
-    .then((res) => {
-      setOppAvatar(res.data.avatar);
-      console.log(res.data.username)
-      setOppName(res.data.username);
-      setOppLevel(res.data.level);
-    }).catch((err)=> {
-      console.log(err);
-    })
-  })
-  return (
-    <div className='mx-[50px] mt-[25px] p-5 rounded-lg bg-slate-900 shadow-5'>
-            {/* <Header avatar={avatar}/> */}
-            <div>
-
-            <Grid>   
-            <Grid.Col span="auto"><PlayerCard name={side === true? 0: oppName} avatar={side === true? avatar: oppAvatar} level={side === true? undefined: oppLevel} /></Grid.Col>
-            <Grid.Col span={7}>
-            <div 
-            id="sketchHolder" className="flex items-center justify-center">
-              <GameComponent socket={socket} avatar={avatar} />
-            </div>
-            </Grid.Col>
-            <Grid.Col span="auto">
-              <PlayerCard name={side === false? 0: oppName} avatar={side === false? avatar: oppAvatar} level={side === true? undefined: oppLevel}/>
-              </Grid.Col>
-           {/* <Space h="md" />  */}
-            </Grid>
-            </div>
-        </div>
-    );
+export interface userData {
+  username: string;
+  id?: number;
+  level: string;
+  avatar?: string;
 }
 
-const GameComponent: React.FC<Props> = ({socket, avatar}) => {
+interface OppData {
+  username: string;
+  level: string;
+  avatar: string;
+}
 
-  const sketchRef = useRef(document.getElementById('sketchHolder'));
+const Game: React.FC<Props> = ( {socket, avatar}) => {
+  const [config, setGameConfig] = useState<gameConfig>({ mode: 1, maxScore: 10, ballSpeed: 8, boost: false, difficulty: 1 });
+  const [side, setSide] = useState<boolean>(true);
+  const [opp, setOpp] = useState<OppData>({ username: "--", level: "----", avatar: "" });
+  const [user, setUser] = useState<userData>({
+    username: "",
+    level: "",
+    avatar: avatar
+  });
+  const [gameStarted, setGameStarted] = useState(false);
+  
+  const startGame = () => {
+    console.log('startGame!');
+    console.log(user);
+    console.log(opp);
+    console.log(config);
+    console.log(side);
+    setGameStarted(true);
+    if (config.mode == 3) {
+      console.log('Here');
+      setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
+    }
+  };
+
+  const endGame = () => {
+    console.log('endGame!');
+    setOpp({username: "--", level: "----", avatar: ""});
+    setSide(true);
+    setGameStarted(false);
+  };
+
+  const fetchUserName = async () => {
+    const res = await axios.get('user/name')
+    .then((res) => {
+      //console.log(res.data);
+      socket.emit('userName', res.data.name);
+    });
+  };
+
+  const fetchOppData = async (id: number) => {
+    try {
+      const res = await axios.get('user/game', {params: {opp: id}})
+      .then((res) => {
+        // console.log(res.data);
+        setOpp({ username: res.data.username, level: res.data.level, avatar: res.data.avatar });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    new p5(p => {
-      //let canvas: p5.Renderer;
-
-      p.setup = async () => {
-        const response = await fetch('http://localhost:3001/user/name', {
-          credentials: "include"
-        });
-        const data = await response.json();
-        socket.emit('userName', data.name);
-
-        canvas = p.createCanvas(WIDTH, HEIGHT);
-        // canvas.parent('');
-        eventListeners(p, socket);
-        p.noStroke();
-        selectMode(p, socket);
-      };
-  
-      p.draw = () => {
-        p.background('rgb(40, 41, 55)');
-        p.fill('white');
-        handleGameStates(p, socket);
-      
-        if (play) {
-          p.textSize(32);
-          p.textStyle(p.BOLD);
-          p.text(player1.score, 40, 60);
-          p.text(player2.score, WIDTH - 60, 60);
-        
-          checkKeys(p, socket);
-          if (mode == 3) {
-            computerPlayer();
-            gameLoop(p, socket);
-          }
-          else if (mode == 2) {
-            gameLoop(p, socket);
-          }
-          p.circle(ball.x, ball.y, BALL_DIAMETER);
-          p.rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
-          p.rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT);
-          p.stroke('white');
-          p.strokeWeight(4);
-          p.drawingContext.setLineDash([5, 15]);
-          p.line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
-          p.drawingContext.setLineDash([0, 0]);
-          p.noStroke();
-        }
-      };
-  }, 'sketchHolder');
+    fetchUserName();
+    setSide(true);
+    socket.on('userId', async (id: number) => {
+      const res = await axios.get('user/game', {params: {opp: id}})
+      .then((res) => {
+        console.log(res.data);
+        setUser({ username: res.data.username, id: id, level: res.data.level, avatar: res.data.avatar });
+      });
+    });
+    socket.on('getData', (id: number, side: boolean) => {
+      setSide(side);
+      fetchOppData(id);
+    });
+    return (() => {
+      socket.off('getData', (id: number, side: boolean) => {
+      setSide(side);
+      fetchOppData(id);
+      });
+    });
   }, []);
 
-  return <div ref={sketchRef} />;
-};
+  useEffect(() => {
+    if (config.mode == 3) {
+    setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
+    }
+  }, [config]);
 
-export default Game
+  return (
+    <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
+      <div className="mr-10">
+        <PlayerCard 
+          name={side ? user.username : opp?.username} 
+          avatar={side ? user.avatar : opp?.avatar} 
+          level={side ? user.level : opp?.level?.toString()} />
+      </div>
+      <div
+        id="sketchHolder"
+        className="rounded-lg border-2 border-gray-700"
+        >
+        {gameStarted ? (
+          <GameComponent socket={socket} avatar={avatar} config={config} user={user} endGame={endGame} />
+        ) : (
+          <GameSettings socket={socket} setGameConfig={setGameConfig} startGame={startGame} />
+        )}
+      </div>
+      <div className="ml-10">
+        <PlayerCard 
+          name={(side || config.mode == 3) ? opp.username : user.username} 
+          avatar={(side || config.mode == 3) ? opp?.avatar : user.avatar} 
+          level={(side || config.mode == 3) ? opp.level.toString() : user.level} />
+      </div>
+    </div>
+  );
+}
+
+export default Game;

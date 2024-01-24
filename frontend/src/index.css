@@ -26,10 +26,11 @@ html body {
 	border-radius: 10px;
 }
 
-canvas {
+/*canvas {
 	border-radius: 12px;
-	height: 100vh;
+	height: 100vh; 
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
+*/

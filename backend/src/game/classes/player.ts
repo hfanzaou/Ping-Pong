@@ -14,15 +14,18 @@ export class User {
 
 export class Player {
   user: User;
-  roomName: string;
   racket: { x: number, y: number };
   score: number;
+  roomName: string;
+  ready: boolean = false;
 
   constructor(user: User, x: number, y: number, score: number, roomName: string) {
     this.user = user;
     this.racket = { x, y };
     this.score = score;
     this.roomName = roomName;
-
+  }
+  setReady() {
+    this.ready = true;
   }
 }
