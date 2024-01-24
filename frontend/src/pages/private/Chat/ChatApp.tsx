@@ -27,14 +27,18 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[name, setName] = useState<string>("");
 	const	query = useQuery();
 	const	[loading, setLoading] = useState(false);
-	
+
+	//
+	useEffect(() => {
+		console.log("CHAT");
+	}, [])
+	//
 	errorRef.current = error;
 	useEffect(() => {
 		const	tmp = query.get("name")
 		if (tmp) {
 			setName(tmp);
 			async function fetchData() {
-				console.log(data.userData?.userName, tmp);
 				const res = await fetch("http://localhost:3001/checkUserGroup", {
 					method: "POST",
 					headers: {
