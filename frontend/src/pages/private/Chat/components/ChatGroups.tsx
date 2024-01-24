@@ -8,6 +8,7 @@ import {
 	IconEyeOff,
 	IconLockOpen,
 	IconSend2,
+	IconSettings,
 	IconSettings2,
 	IconTrash,
 	IconTrashOff,
@@ -50,7 +51,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[invite, setInvite] = useState(false);
 	const	[userInvite, setUserInvite] = useState("");
 	const	[error, setError] = useState("");
-	const	history = useNavigate()
+	const	history = useNavigate();
+	const	[ownersettings, setOwnersettings] = useState(false);
 
 	userNameRef.current = data.userData?.userName;
 	useEffect(() => {
@@ -276,7 +278,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		}
 	}
 	function clickInvite() {
+		if (!invite)
+			setOwnersettings(false);
 		setInvite(x => !x);
+		setError("")
 	}
 	async function submitInvite() {
 		if (userInvite.length) {
@@ -310,68 +315,127 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setUserInvite(event.target.value);
 		setError("");
 	}
+	function clickOwnersettings() {
+		if (!ownersettings)
+			setInvite(false);
+		setOwnersettings(x => !x);
+	}
 	if (data.groupTo) {
 		if (data.userData?.groups?.find(x => x.name == data.groupTo))
 			return (
 				<form
 					onSubmit={submitMessage}
 					className="w-[57%] bg-discord4 flex flex-col
-						justify-end text-discord6 p-0"
+						justify-end text-discord6 p-0 relative"
 				>
 					{
 						settings &&
-							<button
-								className={
-									`flex justify-center items-center font-extrabold
-									${
-										!invite ?
-										"hover:text-green-500" :
-										"hover:text-red-500"
-									}`
-								}
-								onClick={clickInvite}
+							<div className={`font-extrabold absolute top-5 right-1/4
+								left-1/4 flex justify-around`}
 							>
-								{ !invite ? <IconUserPlus /> : <IconX /> }
-								{
-									!invite ?
-									<h1 className="mt-2" >invite</h1> :
-									<h1>cancel</h1>
-								}
-							</button>
-					}
-					{
-						invite &&
-							<div className="flex" >
-								<input
-									type="text"
-									className={
-										`bg-discord1 border-none outline-none w-96
-										h-10 p-5 text-white mr-0 rounded-l-full z-10
+								<button
+									className={`flex justify-center items-center group
+										w-[42px] h-[50px]
 										${
-											error.length == 0 ?
-											"" :
-											"outline-red-500"
+											!invite ?
+											"hover:text-green-500" :
+											"hover:text-red-500"
 										}`
 									}
-									placeholder="userName..."
-									onKeyDown={(event) => {
-										if (event.key == "Enter") {
-											event.preventDefault();
-											submitInvite();
-										}
-									}}
-									onChange={changeInvite}
-									value={userInvite}
-								/>
-								<button
-									className="bg-discord1 w-10 h-10 flex
-										justify-center items-center rounded-r-full hover:bg-discord3"
-									onClick={submitInvite}
+									onClick={clickInvite}
 								>
-									<IconUserPlus />
+									{ 
+										!invite ?
+											<IconUserPlus
+												className="block group-hover:hidden"
+											/> :
+											<IconX/>
+									}
+									{
+										!invite &&
+										<h1 className="hidden group-hover:block">
+											invite
+										</h1>
+									}
 								</button>
+								{
+									role == "owner" &&
+										<button
+											className={`flex justify-center
+												items-center group w-[62px] h-[50px]
+												${
+													!ownersettings ?
+													"hover:text-green-500" :
+													"hover:text-red-500"
+												}`
+											}
+											onClick={clickOwnersettings}
+										>
+											{
+												!ownersettings ?
+													<IconSettings
+														className={
+															!invite ?
+															"block group-hover:hidden" :
+															""
+														}
+													/> :
+													<IconX />
+											}
+											{
+												!invite && !ownersettings &&
+													<div
+														className="hidden
+															group-hover:block"
+													>
+														<h1>owner</h1><h1>settings</h1>
+													</div>
+											}
+										</button>
+								}
+								{
+									invite &&
+										<div className="flex" >
+											<input
+												type="text"
+												className={
+													`bg-discord1 border-none
+														outline-none w-96 h-10 p-5
+														text-white mr-0
+														rounded-l-full z-10
+														${
+															error.length == 0 ?
+															"" :
+															"outline-red-500"
+														}`
+												}
+												placeholder="userName..."
+												onKeyDown={(event) => {
+													if (event.key == "Enter") {
+														event.preventDefault();
+														submitInvite();
+													}
+												}}
+												onChange={changeInvite}
+												value={userInvite}
+											/>
+											<button
+												className="bg-discord1 w-10 h-10
+													flex justify-center items-center
+													rounded-r-full
+													hover:bg-discord3"
+												onClick={submitInvite}
+											>
+												<IconUserPlus />
+											</button>
+										</div>
+								}
+								{
+									ownersettings && <div className="bg-black w-1/2 h-10 z-10"></div>
+								}
 							</div>
 					}
+					
 					<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 						{settings ?
 						users.map(x => {
