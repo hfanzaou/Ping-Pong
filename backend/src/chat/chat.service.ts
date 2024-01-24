@@ -5,6 +5,7 @@ import { Socket } from "socket.io"
 import { UserService } from "src/user/user.service";
 import { compare, hash } from "bcrypt";
 import { ChatGateway } from "./chat.gateway";
+import { notifDto } from "src/auth/dto/notif.dto";
 
 @Injectable()
 export class ChatService {
@@ -599,5 +600,48 @@ export class ChatService {
 					});
 			}
 		}
+	}
+	async inviteGroup(data: { userName: string, name: string }) {
+		const	user = await this.prisma.user.findFirst({
+			where: {
+				username: data.userName,
+				groups: { none: { group: { name: data.name }}}
+			}
+		});
+		if (user)
+		{
+			const	group = await this.prisma.gROUP.findFirst({
+				where: { name: data.name }
+			});
+			if (!group)
+				return false;
+			const	updaterGroupInvited = [ ...group.invited ];
+			await this.prisma.gROUP.update({
+				where: { name: data.name },
+				data: { invited: updaterGroupInvited }
+			});
+			return true;
+		}
+		return false;
+	}
+	async checkUserGroup(data: { userName: string, name: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+		});
+		if (group && group.invited.find(x => x == data.userName))
+			return true;
+		return false;
+	}
+	async privateJoin(data: { name: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name }
+		})
+		return [{
+			id: group.id,
+			name: group.name,
+			password: group.hash ? true : false,
+			banded: group.banded,
+			muted: group.muted
+		}];
 	}
 }

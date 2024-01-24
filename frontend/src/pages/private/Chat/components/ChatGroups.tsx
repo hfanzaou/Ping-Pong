@@ -20,6 +20,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, MESSAGE, NEWCHAT } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -31,7 +32,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[passwordText, setPasswordText] = useState("");
 	const	[passwordError, setPasswordError] = useState(false);
 	const	Reference = useRef<HTMLInputElement | null>(null);
-	const	dataRef = useRef(data);
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
 		message: string,
@@ -48,9 +48,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[role, setRole] = useState("member");
 	const	userNameRef = useRef(data.userData?.userName);
 	const	[invite, setInvite] = useState(false);
+	const	[userInvite, setUserInvite] = useState("");
+	const	[error, setError] = useState("");
+	const	history = useNavigate()
 
 	userNameRef.current = data.userData?.userName;
-	dataRef.current = data;
 	useEffect(() => {
 		if (Reference.current)
 			Reference.current.focus();
@@ -176,9 +178,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			}))
 			setPasswordText("");
 			setInputType("password");
+			history("/Chat");
 		}
 	}
 	async function clickJoin() {
+		console.log(data);
 		if (data.password != undefined)
 			await clickJoinCallBack(data.password)
 		if (data.password) {
@@ -319,8 +323,38 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	function clickInvite() {
 		setInvite(x => !x);
 	}
-	function submitInvite(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+	async function submitInvite() {
+		// console.log(userInvite);
+		if (userInvite.length) {
+			const	res = await fetch("http://localhost:3001/inviteGroup", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						userName: userInvite,
+						name: data.groupTo
+					}),
+				});
+				const	Data = await res.json();
+			if (Data) {
+				setInvite(x => !x);
+				setUserInvite("");
+				data.socket?.emit(
+					"addnotification",
+					{reciever: userInvite, type: "groupInvite"}
+				);
+			}
+			else {
+				setError("wrongUser");
+			}
+		}
+		else
+			setError("emptyUser");
+	}
+	function changeInvite(event: React.ChangeEvent<HTMLInputElement>) {
+		setUserInvite(event.target.value);
+		setError("");
 	}
 	if (data.groupTo) {
 		if (data.userData?.groups.find(x => x.name == data.groupTo))
@@ -333,31 +367,56 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					{
 						settings &&
 							<button
-								className="flex justify-center items-center
-									hover:text-green-500 font-extrabold"
+								className={
+									`flex justify-center items-center font-extrabold
+									${
+										!invite ?
+										"hover:text-green-500" :
+										"hover:text-red-500"
+									}`
+								}
 								onClick={clickInvite}
 							>
-								<IconUserPlus />
-								<h1 className="mt-2">invite</h1>
+								{ !invite ? <IconUserPlus /> : <IconX /> }
+								{
+									!invite ?
+									<h1 className="mt-2" >invite</h1> :
+									<h1>cancel</h1>
+								}
 							</button>
 					}
 					{
 						invite &&
-							<form className="flex" onSubmit={submitInvite} >
+							<div className="flex" >
 								<input
 									type="text"
-									className="bg-discord1 border-none outline-none
-										w-96 h-10 rounded-md mr-2 p-5 text-white"
+									className={
+										`bg-discord1 border-none outline-none w-96
+										h-10 p-5 text-white mr-0 rounded-l-full z-10
+										${
+											error.length == 0 ?
+											"" :
+											"outline-red-500"
+										}`
+									}
 									placeholder="userName..."
+									onKeyDown={(event) => {
+										if (event.key == "Enter") {
+											event.preventDefault();
+											submitInvite();
+										}
+									}}
+									onChange={changeInvite}
+									value={userInvite}
 								/>
 								<button
 									className="bg-discord1 w-10 h-10 flex
-										justify-center items-center rounded-md"
-									type="submit"
+										justify-center items-center rounded-r-full hover:bg-discord3"
+									onClick={submitInvite}
 								>
 									<IconUserPlus />
 								</button>
-							</form>
+							</div>
 					}
 					<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 						{settings ?
@@ -435,7 +494,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															find(y => {
 																return y.name ==
 																	data.groupTo
-															})?.banded.find(y => {
+															})?.banded?.find(y => {
 																return y == x.userName
 															}) == undefined ?
 															<button

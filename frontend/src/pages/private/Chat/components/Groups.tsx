@@ -1,13 +1,21 @@
-import { IconCirclePlus, IconDotsVertical, IconLogin, IconLogout2, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
+import {
+	IconCirclePlus,
+	IconDotsVertical,
+	IconLogin,
+	IconLogout2,
+	IconUsersGroup,
+	IconVolume3
+} from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, NEWCHAT } from "../myTypes";
 
 interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
+	privateJoin: string
 }
 
-const Groups: React.FC<Props> = ({ data, setData }) => {
+const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	const	[createXy, setCreateXy] = useState({
 		x: 0,
 		y: 0,
@@ -44,6 +52,29 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	createXyRef.current = createXy;
 	nameRef.current = name;
 	settingsXyRef.current = settingsXy;
+	useEffect(() => {
+		if (privateJoin.length) {
+			async function fetchData() {
+				const	res = await fetch("http://localhost:3001/privateJoin", {
+					method: "POST",
+					headers: {
+						"content-type": "application/json"
+					},
+					body: JSON.stringify({
+						name: privateJoin
+					})
+				});
+				const	Data = await res.json();
+				console.log(Data);
+				setList(Data);
+				setData(x => ({
+					...x,
+					groupTo: Data[0].name
+				}));
+			}
+			fetchData();
+		}
+	}, [privateJoin])
 	useEffect(() => {
 		function callBackMouse(event: MouseEvent) {
 			if (event.clientX < createXyRef.current.x ||

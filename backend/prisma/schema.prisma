@@ -92,6 +92,7 @@ model GROUP {
   hash    String?
   banded  String[]
   muted   String[]
+  invited String[]
 }
 
 model UserGROUP {
