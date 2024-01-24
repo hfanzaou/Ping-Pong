@@ -163,7 +163,7 @@ export class GameService {
       const winner = player1.score == config.maxScore ? player1 : player2;
       const loser = player1.score == config.maxScore ? player2 : player1;
       console.log(winner);
-      this.userService.addMatchHistory(winner.user.id, {
+      await this.userService.addMatchHistory(winner.user.id, {
          name: loser.user.username,
          playerScore: winner.score,
          player2Score: loser.score,
@@ -226,5 +226,5 @@ export class GameService {
     else
       this.logger.log(`Client ${client.id} Vs Computer game ended`);
   }
-
+  // async inGame()
 }

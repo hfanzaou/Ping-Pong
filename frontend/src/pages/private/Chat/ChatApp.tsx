@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Nav from "./components/Nav";
 import Private from "./components/Private";
 import { DATA } from "./myTypes";
@@ -7,6 +7,8 @@ import { setSocket, setUserData } from "./utils";
 import Groups from "./components/Groups";
 import ChatPrivate from "./components/ChatPrivate";
 import ChatGroups from "./components/ChatGroups";
+import { useLocation } from "react-router-dom";
+import NotFound from "../../public/NotFound/NotFound";
 
 interface Props {
 	socket: Socket
@@ -19,7 +21,44 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		send: true
 	});
 	const	[option, setOption] = useState("Rooms");
+	const	[error, setError] = useState(false);
+	const	errorRef = useRef(error);
+	const	[notFound, setNotFound] = useState(false);
+	const	[name, setName] = useState<string>("");
+	const	query = useQuery();
+	const	[loading, setLoading] = useState(false);
 	
+	errorRef.current = error;
+	useEffect(() => {
+		const	tmp = query.get("name")
+		if (tmp) {
+			setName(tmp);
+			async function fetchData() {
+				console.log(data.userData?.userName, tmp);
+				const res = await fetch("http://localhost:3001/checkUserGroup", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+								userName: data.userData?.userName,
+								name: tmp
+							})
+						});
+						const Data = await res.json()
+						if (!Data) {
+							setNotFound(true);
+							if (!data.userData?.userName)
+								setLoading(true);
+							else
+								setLoading(false);
+						}
+						else
+							setNotFound(false);
+			}
+			fetchData();
+		}
+	}, [data.userData?.userName])
 	useEffect(() => {
 		async function fetchData() {
 			setData(prev => setSocket(prev, socket));
@@ -53,14 +92,46 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			}
 		}
 		fetchData();
-	}, [data.trigger])
+	}, [data.trigger]);
+	useEffect(() => {
+		socket.on("chatError", callBack);
+		return () => {
+			socket.off("chatError", callBack);
+		}
+	}, []);
+	function useQuery() {
+		return new URLSearchParams(useLocation().search);
+	}
+	function callBack() {
+		if (!errorRef.current) {
+			setError(true);
+			setTimeout(() => {
+				setError(false);
+			}, 4000);
+		}
+	}
+	if (notFound) {
+		if (loading)
+			return ;
+		else
+			return <NotFound />
+	}
 	return (
 		<div className="flex h-[80vh]">
+			{
+				error && <div
+					className="fixed top-20 left-1/2 -translate-x-1/2 z-50 h-10 bg-red-500
+						text-white flex justify-center items-center p-5
+						rounded-full animate-fade"
+				>
+					an error has occurred, please reload the page
+				</div>
+			}
 			<Nav option={option} setOption={setOption} setData={setData}/>
 			{
 				option == "Private" ?
 					<Private data={data} setData={setData} /> :
-					<Groups data={data} setData={setData} />
+					<Groups data={data} setData={setData} privateJoin={name} />
 				}
 			{
 				option == "Private" ?

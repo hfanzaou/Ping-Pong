@@ -1,13 +1,21 @@
-import { IconCirclePlus, IconDotsVertical, IconLogin, IconLogout2, IconUsersGroup, IconVolume3 } from "@tabler/icons-react";
+import {
+	IconCirclePlus,
+	IconDotsVertical,
+	IconLogin,
+	IconLogout2,
+	IconUsersGroup,
+	IconVolume3
+} from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, NEWCHAT } from "../myTypes";
 
 interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
+	privateJoin: string
 }
 
-const Groups: React.FC<Props> = ({ data, setData }) => {
+const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	const	[createXy, setCreateXy] = useState({
 		x: 0,
 		y: 0,
@@ -45,6 +53,25 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	nameRef.current = name;
 	settingsXyRef.current = settingsXy;
 	useEffect(() => {
+		if (privateJoin.length) {
+			async function fetchData() {
+				const	res = await fetch("http://localhost:3001/privateJoin", {
+					method: "POST",
+					headers: {
+						"content-type": "application/json"
+					},
+					body: JSON.stringify({
+						name: privateJoin
+					})
+				});
+				const	Data = await res.json();
+				// console.log(Data);
+				setList(Data);
+			}
+			fetchData();
+		}
+	}, [privateJoin])
+	useEffect(() => {
 		function callBackMouse(event: MouseEvent) {
 			if (event.clientX < createXyRef.current.x ||
 				event.clientX > createXyRef.current.x + 400 ||
@@ -71,7 +98,6 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 						setSettings(false);
 					}
 			function callBackResize() {
-				console.log(window.innerWidth);
 				if (window.innerWidth < 600)
 					setSize(false);
 				else
@@ -131,7 +157,9 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	}, [createTrigger])
 	useEffect(() => {
 		if (searchText == "")
-			setList(data.userData?.groups);
+			setList(data.userData?.groups.filter(x => {
+				return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			}));
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
@@ -148,7 +176,9 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 	}, [settingsXy])
 	useEffect(() => {
 		setSearchText("");
-		setList(data.userData?.groups);
+		setList(data.userData?.groups.filter(x => {
+			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+		}));
 	}, [data.send])
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
 		setCreate(true);
@@ -224,7 +254,9 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 					return true;
 				}).filter(x => x.name.includes(event.target.value));
 		}
-		setList(List);
+		setList(List?.filter(x => {
+			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+		}));
 		if (List && !List.find(x => x.name == data.groupTo))
 			setData(prev => ({
 				...prev,
@@ -244,7 +276,6 @@ const Groups: React.FC<Props> = ({ data, setData }) => {
 				sender: data.userData ? data.userData.userName : "",
 				recver: tmp
 			}
-			// console.log("hello")
 			data.socket?.emit("newChatRoom", newChat);
 		}
 	}

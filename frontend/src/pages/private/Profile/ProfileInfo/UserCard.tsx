@@ -15,29 +15,30 @@ const userInfo = {
     losses: 3
 }
 
-interface UserCardProps {
-    userName: string;
+interface UserCardInterface {
+    name: string;
     avatar: string;
-    email: string;
-    level: string;
+    level: number;
     win: number;
-    losses: number;
+    loss: number;
 }
 
-const stats = [
-  {value: '5', label: 'Wins'},
-  {value: '7', label: 'Played game'},
-  {value: '3', label: 'losses'},
-];
 
 function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }) {
-    const [userName, setUserName] = useState<string| undefined>();
+    // const [userName, setUserName] = useState<string| undefined>();
+    const [data, setData] = useState<UserCardInterface>();
+    const stats = [
+      {value: data?.win, label: 'Wins'},
+      {value: (data?.win) + (data?.loss), label: 'Played game'},
+      {value: data?.loss, label: 'losses'},
+    ];
     useEffect(() => {
         const getUserNmae = async () => {
             await axios.get("user/name")
             .then((res) => {
                 console.log(res.data.name);
-                setUserName(res.data.name);
+                // setUserName(res.data.name);
+                setData(res.data);
             })
             .catch((err) => {
               console.log("Error in geting data in edit profile :", err);
@@ -58,7 +59,7 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
   ));
 
     const handleClick = () => {
-        setUrlName(userName);
+        setUrlName(data?.name);
         // <Link to={'/'+ window.location.pathname.split("/")[1] +'/public/profile'}></Link>
         // window.location.href = '/'+userName+'/public/profile';
     }
@@ -84,10 +85,10 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
         />
       <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
 
-        {userName}
+        {data?.name}
       </Text>
       <Text ta="center" c="indigo" fz="sm">
-      {"level "  + userInfo.level}
+      {"level "  + data?.level}
       </Text>
       <Group mt="md" justify="center" gap={30}>
         {items}

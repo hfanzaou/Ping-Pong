@@ -1,7 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, LegacyRef } from 'react';
 import { Socket } from 'socket.io-client';
-import axios from 'axios';
+import p5Types, { Image } from "p5";
+import Header from '../../../Layout/Header/Header';
+import p5 from "p5";
+import { selectMode, handleGameStates, mode, play } from "./gameStates";
+import { eventListeners,
+        checkKeys, 
+        computerPlayer,
+        gameLoop,
+        _mouseDragged,
+        player1,
+        player2,
+        ball 
+      } from "./gameLogic";
+import Avatar from 'react-avatar-edit';
+import { Center, Grid, GridCol, SimpleGrid, Space } from '@mantine/core';
+import UserCard from '../Profile/ProfileInfo/UserCard';
 import PlayerCard from './PlayerCard';
+import axios from 'axios';
 import GameComponent from './GameComponent';
 import GameSettings from './GameSettings';
 import { gameConfig } from './classes/constants'
@@ -74,11 +90,6 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    // This code will run after config changes
-    console.log(config);
-  }, [config]);
 
   useEffect(() => {
     fetchUserName();

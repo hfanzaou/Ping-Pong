@@ -1,41 +1,150 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../Layout/Header/Header";
 import Footer from '../../../Layout/Footer/Footer';
+import LeaderBordCard from "./LeaderBordCard";
 import LeaderbordTable from "./LeaderBordTable";
-import LeaderbordCard from "./LeaderbordCard";
-import { Card, ScrollArea, SimpleGrid } from "@mantine/core";
+import axios from "axios";
+import leaderboardInterface from "./Leaderboard";
 
 function Leaderbord({avatar} : {avatar: string}) {
-    return (
-        <div className='mx-[50px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
-            <SimpleGrid 
-                cols={{base: 1, md: 1, lg: 2, xl: 2, xxl: 2}}
-                spacing='md'
-            >
-                <Card 
-                    style={{backgroundColor: 'rgb(31 41 55)'}} 
-                    radius="lg"
-                >
-            <div className="flex  space-x-8  items-center justify-center">
-                    <LeaderbordCard />
-                        {/* <LeaderbordCard />
-                    <LeaderbordCard /> */}
-            </div>
-                </Card>
-            <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+    const [data, setData] = useState<leaderboardInterface[]>([]);
 
-            <div className="flex items-center justify-center">
-            {/* <div className="mt-8 pt-8 w-[700px]"> */}
-            <ScrollArea h={425}>
-                <LeaderbordTable/>
-            </ScrollArea>
-        
-            {/* </div> */}
+    const getData = async () => {
+        await axios.get('user/leaderboard')
+        .then((res) => {
+            setData(res.data);
+            console.log("res.data: ", res.data);
+        }).catch((err) => {
+            console.log("error in fetching leadrbord data: ", err);
+        })
+    };
+    
+    useEffect(() => {
+        getData();
+    }, []);
+    
+    console.log("data in state:  ", data); 
+
+    return (
+        // <div className="bg-[url('./4304494.jpg')] h-full items-cente">
+        <div className="h-full items-cente">
+
+            <div className="flex  space-x-8  items-center justify-center mt-8">
+                    <div className="mt-8">
+                        <LeaderBordCard data={data[1]}/>
+                    </div>
+                    <LeaderBordCard data={data[0]} />
+                    <div className="mt-8">
+                        <LeaderBordCard  data={data[2]}/>
+                    </div>
             </div>
-            </Card>
-            </SimpleGrid>
+            <div className="flex items-center justify-center">
+            <div className="mt-8 pt-8 w-[700px]"  >
+                <LeaderbordTable data={data} />
+            </div>
+            </div>
         </div>
     );
 }
 
 export default Leaderbord
+
+// import React from 'react';
+// import { Avatar, Text, Button, Paper } from '@mantine/core';
+// import image from "./test.png";
+// import leaderboardInterface from './Leaderboard';
+
+// function LeaderbordCard({data}: {data: leaderboardInterface}) {
+//   return (
+//     <Paper radius="md" bg={'gray'}>
+//       <Avatar
+//         src={data?.avatar}
+//         size={120}
+//         radius={120}
+//         mx="auto"
+//       />
+//       <Text ta="center" fz="lg" fw={500} mt="md">
+//         {data?.name}
+//       </Text>
+//       {/* <Text ta="center" c="dimmed" fz="sm">
+//         Level 2
+//       </Text> */}
+//     <Text ta='center' variant="default"  mt="md">
+//         #{data?.level}
+//     </Text>
+//     </Paper>
+//   );
+// }
+// export default LeaderbordCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React from "react";
+// import Header from "../../../Layout/Header/Header";
+// import Footer from '../../../Layout/Footer/Footer';
+// import LeaderbordTable from "./LeaderBordTable";
+// import LeaderbordCard from "./LeaderbordCard";
+// import { Card, ScrollArea, SimpleGrid } from "@mantine/core";
+
+// function Leaderbord({avatar} : {avatar: string}) {
+//     return (
+//         <div className='mx-[50px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
+//             <SimpleGrid 
+//                 cols={{base: 1, md: 1, lg: 2, xl: 2, xxl: 2}}
+//                 spacing='md'
+//             >
+//                 <Card 
+//                     style={{backgroundColor: 'rgb(31 41 55)'}}
+//                     radius="lg"
+//                 >
+//             <div className="flex  space-x-8  items-center justify-center">
+//                     <LeaderbordCard />
+//                         {/* <LeaderbordCard />
+//                     <LeaderbordCard /> */}
+//             </div>
+//                 </Card>
+//             <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+
+//             <div className="flex items-center justify-center">
+//             {/* <div className="mt-8 pt-8 w-[700px]"> */}
+//             <ScrollArea h={425}>
+//                 <LeaderbordTable/>
+//             </ScrollArea>
+        
+//             {/* </div> */}
+//             </div>
+//             </Card>
+//             </SimpleGrid>
+//         </div>
+//     );
+// }
+
+// export default Leaderbord

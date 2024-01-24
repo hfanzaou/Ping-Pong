@@ -53,9 +53,11 @@ model MatchHistory {
 }
 
 model CHATHISTORY {
-  id Int @id @unique @default(autoincrement())
+  id       Int      @id @unique @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 
-  name     String?           @unique
+  name     String            @unique
   messages MESSAGE[]
   users    UserCHATHISTORY[]
 }
@@ -88,6 +90,9 @@ model GROUP {
   members UserGROUP[]
   state   String
   hash    String?
+  banded  String[]
+  muted   String[]
+  invited String[]
 }
 
 model UserGROUP {

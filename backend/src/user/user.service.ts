@@ -28,16 +28,14 @@ export class UserService {
                 return "";
             if (avatar.upAvatar)
             {
-                ////console.log(avatar.avatar);
                 const file = readFileSync(avatar.avatar, 'base64');
-                ////console.log(file.toString('base64'));
                 return ("data:image/png;base64,"+ file.toString());
             }
             return (avatar.avatar);
         } catch(error) {
             if (error instanceof NotFoundException)
-                throw HttpStatus.NOT_FOUND; 
-            throw HttpStatus.INTERNAL_SERVER_ERROR;
+                throw HttpStatus.NOT_FOUND;
+            return "";
         }
     }
     async getUsername(id: number) {
@@ -47,6 +45,7 @@ export class UserService {
                      id: id
                  }, select: {
                      username: true,
+                     achievement: true,
                  }
              })
             if (!user)
@@ -60,9 +59,8 @@ export class UserService {
     }
     async getProfile(id: number, name: string) {
         try {
-           //console.log(name);
             if (!name)
-            throw new NotFoundException('USER NOT FOUND');
+                throw new NotFoundException('USER NOT FOUND');
             let user = await this.prismaservice.user.findUnique({
                 where: {
                     username: name,
@@ -89,7 +87,7 @@ export class UserService {
                     username: user.username, 
                     avatar,
                     state: user.state,
-                    level: user.level,
+                    level: user.level.toFixed(2),
                     win: user.win,
                     loss: user.loss,
                 },
@@ -128,9 +126,11 @@ export class UserService {
                     id: id
                 }, select: {
                     level: true,
+                    win: true,
+                    loss: true,
                 }
             })
-            return user.level;
+            return user;
         } catch(error) {
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -157,7 +157,7 @@ export class UserService {
            // console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
-            console.log(error);
+            // console.log(error);
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
@@ -257,9 +257,8 @@ export class UserService {
             throw new NotFoundException('USER NOT FOUND');
         }
     }
-
     async acceptFriend(id: number, name: string) {
-        console.log(name)
+        // console.log(name)
         try {
             const user = await this.prismaservice.user.findUnique({
                 where: { 
@@ -267,16 +266,24 @@ export class UserService {
                     blocked: {every: {id: {not: id}}},
                     blockedFrom: {every: {id: {not: id}}},
                     friends: {some: {id: id}}
+                }, select: {
+                    id: true,
+                    friends: true,
+                    friendOf: true,
                 }
             });
             if (!user)
                 throw new NotFoundException('NO REQUEST')
-            await this.prismaservice.user.update({
+            const auser = await this.prismaservice.user.update({
                 where: {id: id},
                 data: {friends: {
                     connect: {id: user.id}
-                }}
+                }}, select: {id: true, friends: true, friendOf: true}
             })
+            if (user.friends.length == 1)
+                this.updateAch(user.id, "firstFriend");
+            if (auser.friends.length == 1)
+                this.updateAch(auser.id, "firstFriend");
         } catch(error) {
 				throw new NotFoundException('NO REQUEST');
         }
@@ -302,6 +309,12 @@ export class UserService {
                         disconnect: {username: name}
                     }, friendOf: {
                         disconnect: {username: name}
+                    },
+                    chatUsers: {
+                        disconnect: {username: name}
+                    },
+                    chatUsersOf: {
+                        disconnect: {username: name}
                     }
                 }
             })
@@ -315,10 +328,37 @@ export class UserService {
                 where: {id: id},
                 data: {
                     blocked: {
-                       disconnect: {username: name},
+                        disconnect: {username: name},
                     },
                 },
-            })
+            });
+            const user = await this.prismaservice.user.findUnique({
+                where: { id: id }
+            });
+            const   chatHistorie = await this.prismaservice.cHATHISTORY.findFirst({
+                where: {
+                    OR: [
+                        {
+                            name: `&${user.username}${name}`
+                        },
+                        {
+                            name: `&${name}${user.username}`
+                        }
+                    ]
+                }
+            });
+            if (chatHistorie) {
+                await this.prismaservice.user.update({
+                    where: {id: id},
+                    data: {
+                        chatUsers: {
+                            connect: {username: name},
+                        },chatUsersOf: {
+                            connect: {username: name},
+                        },
+                    },
+                })
+            }
         } catch(error) {
             throw new NotFoundException('USER NOT FOUND');
         }
@@ -415,7 +455,7 @@ export class UserService {
                     !obj.friends[0] && obj.friendOf[0] ? "remove request": 
                     obj.friends[0] && !obj.friendOf[0] ? "accept friend": "add friend";
                 }
-                return { level: obj.level, name: obj.username, avatar: avatar, state: obj.state, friendship };
+                return { level: parseFloat(obj.level.toFixed(2)), name: obj.username, avatar: avatar, state: obj.state, friendship, win: obj.win, loss: obj.loss };
               }));
                 return (usersre);     
     }
@@ -456,7 +496,7 @@ export class UserService {
     
     async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
         try {
-            console.log(result);
+           // console.log(result);
             const loserid = await this.prismaservice.user.findUnique({
                 where: {username: result.name},
                 select: {id: true},
@@ -473,7 +513,7 @@ export class UserService {
             })
             this.toUpdatelevel(id, result.name);
         } catch(error) {
-            console.log(error);
+            // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
@@ -490,7 +530,7 @@ export class UserService {
                     type: payload.type,
                 }
             })
-            console.log(already)
+            // console.log(already)
             if (!already[0])
             {
                 await this.prismaservice.notifications.create({
@@ -502,7 +542,7 @@ export class UserService {
                 })
             }
         } catch(error) {
-            console.log(error);
+            // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
@@ -526,57 +566,92 @@ export class UserService {
             throw new BadGatewayException('ERROR GETTING DATA');
         }
     }
-    async updatelevel(winId: number, newLevel: number, win: number, loss: number)
+    async updatelevel(id: number, newLevel: number, win: number, loss: number)
     {
-        console.log(newLevel);
-        console.log(win);
-        console.log(loss);
-        try {
-            await this.prismaservice.user.update({
-                where : {id: winId},
-                data : {level: newLevel, win: win, loss: loss}
-            });
-        }
-        catch(error)
-        {
-        }
+        await this.prismaservice.user.update({
+            where : {id: id},
+            data : {level: newLevel, win: win, loss: loss}
+         });
     }
+    async updateAch(id: number, ach: string)
+    {
+        let user = await this.prismaservice.user.findUnique({
+            where: {id: id},
+            select: {achievement: true}
+        })
+        user.achievement[ach] = true,
+        await this.prismaservice.user.update({
+            where : {id: id},
+            data : {achievement: user.achievement},
+        })
+    }
+    async addLeaderAch(id: number, name: string)
+    {
+        const arr = (await this.leaderBoard()).slice(0, 2);
+       for (let i = 0; i < 2 ; i++)
+       {
+            if (name == arr[i].name)
+                this.updateAch(id, "lead" + (i+1).toString());
+            // console.log(arr[0].name);
+       }
+       //console.log(arr);
+    }
+
     async toUpdatelevel(winId: number, lossName: string)
     {
         try {
            const winner =  await this.prismaservice.user.findUnique({
                 where: {id: winId},
                 select: {
-                    level: true,
-                    win: true,
-                    loss: true,
-                }
-            })
-           this.updatelevel(winId,  (winner.level + 0.25 / (winner.level + 1)), ++winner.win, winner.loss);
-           const loser =  await this.prismaservice.user.findUnique({
-                where: {username: lossName},
-                select: {
+                    username: true,
                     id: true,
                     level: true,
                     win: true,
                     loss: true,
                 }
             })
+            if (winner.level == 0)
+                this.updateAch(winner.id, "firstMatch");
+            this.addLeaderAch(winner.id, winner.username);
+            this.updatelevel(winId,  (winner.level + 0.25 / (winner.level + 1)), ++winner.win, winner.loss);
+            const loser =  await this.prismaservice.user.findUnique({
+                where: {username: lossName},
+                select: {
+                    username: true, 
+                    id: true,
+                    level: true,
+                    win: true,
+                    loss: true,
+                }
+            });
+            if (loser.level == 0)
+                this.updateAch(loser.id, "firstMatch");
+            this.addLeaderAch(loser.id, loser.username);
             this.updatelevel(loser.id,  (loser.level + 0.10 / (loser.level + 1)), loser.win, ++loser.loss);
-        } catch(error)
-        {
+        } catch(error) {
+            throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
     async leaderBoard()
     {
         try {
-            const users = this.prismaservice.user.findMany({
-                
+            const users = await this.prismaservice.user.findMany({
+                orderBy : {level: 'desc'},
+                select: {
+                    id: true,
+                    state: true,
+                    username: true, 
+                    avatar: true,
+                    level: true,
+                    win: true,
+                    loss: true
+                }  
             })
+            const to_send = await this.extarctuserinfo(users, 0);
+            return to_send;
         }
-        catch(error)
-        {
-
+        catch(error) {
+            throw new BadGatewayException('ERROR GETTING DATA');
         }
     }
 }

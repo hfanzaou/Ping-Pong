@@ -5,32 +5,24 @@ import axios from 'axios';
 import FriendshipButton from '../../Home/Users/FriendshipButton';
 // import { Cookies } from 'react-cookie';
 
-const userInfo = {
-    userName: 'rarahhal',
-    avatar: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-    email: 'rizqyrahhal8@gmail.com',
-    level: '1',   // when wine 3 matches move from level to next level
-    win: 5,
-    losses: 3
-}
-
-interface UserCardProps {
+    interface UserCardProps {
         username: string;
         avatar: string;
         level: number;
         win: number;
-        losses: number;
-}
-
-const stats = [
-  {value: '5', label: 'Wins'},
-  {value: '7', label: 'Total'},
-  {value: '3', label: 'losses'},
-];
+        loss: number;
+    }
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
     const [userName, setUserName] = useState<string>();
-    useEffect(() => {
+    
+    const stats = [
+      {value: usercard?.win, label: 'Wins'},
+      {value: (usercard?.win) + (usercard?.loss), label: 'Total'},
+      {value: usercard?.loss, label: 'losses'},
+    ];
+
+    useEffect(() => { // Just to check if the same user profile or not to show the friendship button or not
         const getUserNmae = async () => {
             await axios.get("user/name")
             .then((res) => {
@@ -79,12 +71,12 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
       {usercard?.username}
     </Text>
     <Text ta="center" c="indigo" fz="sm">
-    {"level "  + userInfo.level}
+    {"level "  + usercard?.level}
     </Text>
     <Group mt="md" justify="center" gap={30}>
       {items}
     </Group>
-    {/* {usercard?.username !== userName &&
+    {/* {usercard?.username !== userName &&    // if the user is not the same user profile show the friendship button
       <div className='flex justify-center items-center mt-2'>
             <FriendshipButton name={usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
       </div>

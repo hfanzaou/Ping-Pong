@@ -1,7 +1,13 @@
 import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
-import { IconDotsVertical, IconTrash, IconUser, IconVolume3 } from "@tabler/icons-react";
+import {
+	IconDotsVertical,
+	IconTrash,
+	IconUser,
+	IconUserCircle,
+	IconVolume3
+} from "@tabler/icons-react";
 
 interface Props {
 	data:		DATA,
@@ -32,11 +38,10 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			if (event.clientX < settingsXyRef.current.x ||
 				event.clientX > settingsXyRef.current.x + 100 ||
 				event.clientY < settingsXyRef.current.y ||
-				event.clientY > settingsXyRef.current.y + 100)
+				event.clientY > settingsXyRef.current.y + 150)
 				setSettings(false);
 		}
 		function callBackResize() {
-			console.log(window.innerWidth);
 			if (window.innerWidth < 600)
 				setSize(false);
 			else
@@ -50,7 +55,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
-		// console.log(data.userData?.userName);
 		const res0 = await fetch("http://localhost:3001/chatUser", {
 			method: "POST",
 			headers: {
@@ -64,7 +68,15 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
-		setList(data.userData?.chatUsers)
+		setList(data.userData?.chatUsers.sort((x, y) => {
+			// console.log("here");
+			if (x.time && y.time) {
+				const	timeX = new Date(x.time);
+    			const	timeY = new Date(y.time);
+    			return timeY.getTime() - timeX.getTime();
+			}
+			return 0;
+		}))
 		data.socket?.on("newuser", callBack);
 		return () => {
 			data.socket?.off("newuser", callBack);
@@ -83,6 +95,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}),
 					credentials: "include"
 				})
+				await callBack();
+				setData(x => ({ ...x, talkingTo: undefined }));
 			}
 			fetchData();
 			setBlockTrigger(false);
@@ -106,7 +120,14 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
 		if (event.target.value == "" && data.userData)
-			setList(data.userData.chatUsers);
+			setList(data.userData.chatUsers.sort((x, y) => {
+				if (x.time && y.time) {
+					const	timeX = new Date(x.time);
+    				const	timeY = new Date(y.time);
+    				return timeY.getTime() - timeX.getTime();
+				}
+				return 0;
+			}));
 		else if (data.userData){
 			const list	= [...data.userData?.chatUsers,
 				...data.userData?.friends]
@@ -137,7 +158,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	function block() {
 		setBlockTrigger(true);
-		console.log(settingsXy.login);
 	}
 	function mute() {}
 	return (
@@ -196,6 +216,12 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 								>
 									<IconDotsVertical/ >
 								</button>
+								{/* {
+									x.read &&
+										<div className="absolute -top-2 -right-2">
+											<IconCircleFilled className="w-5"/>
+										</div>
+								} */}
 							</li>);
 					})
 				}
@@ -222,12 +248,25 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					<li>
 						<button
 							className="flex justify-center items-center w-[100px]
-								h-[50px] rounded-b-md hover:bg-discord3"
+								h-[50px] hover:bg-discord3"
 							onClick={mute}
 						>
 							<IconVolume3 />
 							<h2 className="">Mute</h2>
 						</button>
+					</li>
+					<li>
+						<a
+							href={`http://localhost:3000/UserProfile?name=${settingsXy.login}`}
+						>
+							<button
+								className="flex justify-center items-center w-[100px]
+									h-[50px] rounded-b-md hover:bg-discord3"
+							>
+								<IconUserCircle />
+								<h2 className="">Profile</h2>
+							</button>
+						</a>
 					</li>
 				</ul>
 			}

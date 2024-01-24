@@ -10,4 +10,6 @@ export class listDto {
         friendOf?: {
             id: number;
         }[];
+        win?: number;
+        loss?: number;
 }

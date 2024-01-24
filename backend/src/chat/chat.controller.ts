@@ -1,14 +1,14 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { NEWCHAT, NEWGROUP } from "./myTypes";
-import { ChatGateway } from "./chat.gateway";
+import JwtTwoFaGuard from "src/auth/guard/twoFaAuth.guard";
 
+// @UseGuards(JwtTwoFaGuard)
 @Controller()
 export class ChatController {
 	constructor(private chatService: ChatService) {}
 	@Post("chatUser")
 	async handleUser(@Body() data: { userName: string }) {
-		// console.log(data)
 		const	user = await this.chatService.getUserData(data.userName);
 		return user;
 	}
@@ -24,12 +24,10 @@ export class ChatController {
 	}
 	@Post("chatUsers")
 	async handleUsers(@Body() data: NEWCHAT) {
-		// console.log("here")
 		await this.chatService.getChatUsers(data);
 	}
 	@Post("createGroup")
 	async handleCreateGroup(@Body() data: {data: NEWGROUP}) {
-		// console.log(data);
 		const condition = await this.chatService.addGroup(data.data);
 		return condition;
 	}
@@ -51,5 +49,50 @@ export class ChatController {
 	async handleCheckPassword(@Body() data: { name: string, password: string}) {
 		const	answer = await this.chatService.getCheckPassword(data);
 		return answer;
+	}
+	@Post("groupUsers")
+	async handleGroupUsers(@Body() data: { name: string }) {
+		const	users = await this.chatService.getGroupUsers(data.name);
+		return users;
+	}
+	@Post("addGroupAdmin")
+	async handleAddGroupAdmin(@Body() data: { name: string, userName: string }) {
+		await this.chatService.addGroupAdmin(data);
+	}
+	@Post("removeGroupAdmin")
+	async handleRemoveGroupAdmin(@Body() data: { name: string, userName: string }) {
+		await this.chatService.removeGroupAdmin(data);
+	}
+	@Post("addGroupMute")
+	async handleAddGroupMute(@Body() data: { name: string, userName: string }) {
+		await this.chatService.addGroupMute(data);
+	}
+	@Post("removeGroupMute")
+	async handleRemoveGroupMute(@Body() data: { name: string, userName: string }) {
+		await this.chatService.removeGroupMute(data);
+	}
+	@Post("addGroupBan")
+	async handleAddGroupBan(@Body() data: { name: string, userName: string }) {
+		await this.chatService.addGroupBan(data);
+	}
+	@Post("removeGroupBan")
+	async handleRemoveGroupBan(@Body() data: { name: string, userName: string }) {
+		await this.chatService.removeGroupBan(data);
+	}
+	@Post("groupKick")
+	async handleGroupKick(@Body() data: { name: string, userName: string }) {
+		await this.chatService.groupKick(data);
+	}
+	@Post("inviteGroup")
+	async handleInviteGroup(@Body() data: { userName: string, name: string }) {
+		return await this.chatService.inviteGroup(data);
+	}
+	@Post("checkUserGroup")
+	async handleCheckUserGroup(@Body() data: { userName: string, name: string }) {
+		return await this.chatService.checkUserGroup(data);
+	}
+	@Post("privateJoin")
+	async handlePrivateJoin(@Body() data: { name: string }) {
+		return await this.chatService.privateJoin(data);
 	}
 }
