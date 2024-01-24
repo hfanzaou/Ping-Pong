@@ -10,11 +10,8 @@ import { GameService } from './game.service';
 import { Socket, Server } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { Ball } from "./classes/ball";
-import { User, Player } from "./classes/player";
-import { UserService } from 'src/user/user.service';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { JwtTwoFaStrategy } from 'src/strategy';
-import { GAME_INTERVAL, GAME_START_DELAY, HEIGHT, WIDTH, INITIAL_SPEED, gameConfig } from './classes/constants';
+import { Player } from "./classes/player";
+import { GAME_INTERVAL, GAME_START_DELAY, HEIGHT, WIDTH, gameConfig } from './classes/constants';
 
 @WebSocketGateway({cors: true})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -55,7 +52,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('join_room')
-  async joinRoom(client :Socket, payload: any) {
+  async joinRoom(client: Socket) {
     if (this.gameService.waitingPlayers.length > 0) {
       const opponent = this.gameService.waitingPlayers.shift();
       if (opponent) {

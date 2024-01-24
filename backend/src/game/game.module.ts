@@ -7,7 +7,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { JwtTwoFaStrategy } from "src/strategy";
 
 @Module({
-	providers: [GameService, GameGateway, UserService, PrismaService, UserService, JwtTwoFaStrategy],
+	providers: [GameService, GameGateway, UserService, PrismaService, JwtTwoFaStrategy],
 	controllers: [GameController]
 })
 export class GameModule {}

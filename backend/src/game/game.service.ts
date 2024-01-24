@@ -5,7 +5,7 @@ import { User, Player } from "./classes/player";
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from "src/prisma/prisma.service";
 import { JwtTwoFaStrategy } from "src/strategy";
-import { RACKET_HEIGHT, RACKET_WIDTH, BALL_DIAMETER, BALL_DIAMETER_SQUARED, HEIGHT, WIDTH, INITIAL_SPEED, MAX_SPEED, INC_SPEED, MAX_SCORE, GAME_START_DELAY, gameConfig } from "./classes/constants";
+import { RACKET_HEIGHT, RACKET_WIDTH, BALL_DIAMETER, BALL_DIAMETER_SQUARED, HEIGHT, WIDTH, MAX_SPEED, INC_SPEED, gameConfig } from "./classes/constants";
 
 let goalScored: boolean = false;
 
