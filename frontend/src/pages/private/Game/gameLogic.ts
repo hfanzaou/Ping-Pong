@@ -3,13 +3,11 @@ import { Player } from "./classes/player";
 import p5Types from "p5";
 import { Socket } from "socket.io-client";
 import { startCountdown, gameOver, opponentDisconnect } from "./gameStates";
-import { RACKET_DY, RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, WIDTH, BALL_DIAMETER, INITIAL_SPEED, MAX_SPEED, INC_SPEED, MAX_SCORE, BALL_DIAMETER_SQUARED, gameConfig } from "./classes/constants";
+import { RACKET_DY, RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, WIDTH, BALL_DIAMETER, INITIAL_SPEED, MAX_SPEED, INC_SPEED, BALL_DIAMETER_SQUARED, gameConfig } from "./classes/constants";
 
 let goalScored: boolean = false,
     update: boolean = false,
-    waitingForPlayer = false,
-    side: number = 1, // 1: left, 2:
-    countdown = 0;
+    side: number = 1; // 1: left, 2 :right
 
 export let player1: Player,
     player2: Player,
@@ -173,7 +171,6 @@ export function eventListeners(p5: p5Types, socket: Socket) {
   socket.on('gameStart', () => {
     p5.removeElements();
     p5.loop();
-    waitingForPlayer = false;
     startCountdown(p5);
   });
 
