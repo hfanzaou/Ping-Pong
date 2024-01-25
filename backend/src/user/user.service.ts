@@ -465,7 +465,7 @@ export class UserService {
                 }
                 return { level: parseFloat(obj.level.toFixed(2)), name: obj.username, avatar: avatar, state: obj.state, friendship, win: obj.win, loss: obj.loss };
               }));
-                return (usersre);     
+            return (usersre);     
     }
 
     /////match history/////

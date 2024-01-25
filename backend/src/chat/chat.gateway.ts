@@ -86,7 +86,7 @@ OnGatewayDisconnect {
 		if (user)
 			client.broadcast.emit("online", {
 				username: user.username,
-				state: user.state
+				state: "Offline",
 			});		
 	}
 
