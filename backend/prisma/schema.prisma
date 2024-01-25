@@ -106,6 +106,7 @@ model UserGROUP {
 
 model Notifications {
   id        Int     @id @unique @default(autoincrement())
+  createAt  DateTime @default(now())
   userId    Int
   user      User    @relation(fields: [userId], references: [id])
   senderId  Int
