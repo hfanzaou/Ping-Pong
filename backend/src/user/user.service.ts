@@ -284,6 +284,13 @@ export class UserService {
                 this.updateAch(user.id, "firstFriend");
             if (auser.friends.length == 1)
                 this.updateAch(auser.id, "firstFriend");
+            // await this.prismaservice.notifications.deleteMany({
+            //     where: {
+            //         userId: id,
+            //         senderId: user.id,
+            //         type: "friend request"
+            //     }
+            // })
         } catch(error) {
 				throw new NotFoundException('NO REQUEST');
         }
@@ -381,13 +388,13 @@ export class UserService {
                     disconnect: {id: user.id}
                 }}
             })
-            // await this.prismaservice.notifications.delete({
-            //     where: {
-            //         userId: user.id,
-            //         senderId: id,
-            //         type: "friend request"
-            //     }
-            // })
+            await this.prismaservice.notifications.deleteMany({
+                where: {
+                    userId: user.id,
+                    senderId: id,
+                    type: "friend request"
+                }
+            })
         } catch(error) {
             throw new NotFoundException('USER NOT FOUND');
         }
@@ -470,7 +477,7 @@ export class UserService {
                     OR: [
                         {playerId: id},
                         {player2Id: id}
-                    ]},
+                    ]},orderBy: {createAt: 'desc'},
                 select : {players: {where: {
                         NOT: {id: id},
                 }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true},
@@ -533,7 +540,7 @@ export class UserService {
             })
             // console.log(already)
             // console.log(payload);
-            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat")
+            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat")
             {
                 // console.log("notif")
                 await this.prismaservice.notifications.create({
@@ -557,7 +564,7 @@ export class UserService {
             const notif = await this.prismaservice.notifications.findMany({
                 where: {
                     userId: id,
-                },
+                },orderBy: {createAt: 'desc'},
                 select: {senderId: true, type: true}
             })
             const notification = await Promise.all(notif.map(async (obj) => {
