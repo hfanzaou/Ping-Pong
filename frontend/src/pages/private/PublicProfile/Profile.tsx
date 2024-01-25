@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Button, Container, Group, LoadingOverlay, ScrollArea, SimpleGrid, Text, Title} from '@mantine/core'
+import {Button, Card, Container, Group, LoadingOverlay, ScrollArea, SimpleGrid, Text, Title} from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
@@ -8,6 +8,7 @@ import Footer from '../../../Layout/Footer/Footer'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
 import data from './MatchHistory/test.json'
+import image from './assite/bg.gif'
 
 export function ProfileSections({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
     // const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
@@ -48,7 +49,7 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
 
     if (notFound)
         return (
-            <Container  mb={200} m={200}>
+            <Container h={430}>
                 <Title ta='center' m={5} size='xl' >User not found</Title>
                 <Text size='xl' bg='red' ta='center' className='rounded-md' >404</Text>
             </Container>
@@ -64,10 +65,9 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
                 spacing={'md'}
             >
                 <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip} />
-                {/* <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
-
-                    <UsersRelation socket={socket} setUrlName={setUrlName}/>
-                </Card> */}
+                <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+                    <img  className='h-full rounded-xl' src={image} /> {/* make this image in the same color as app*/}
+                </Card>
             </SimpleGrid>
             <div>
                 <Achievements  achievement={profile?.achievements}/>

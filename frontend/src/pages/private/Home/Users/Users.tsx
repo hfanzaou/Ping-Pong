@@ -121,7 +121,12 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
             console.error("error when send post request to block friend: ", err);
         })
     };
-
+    
+    const handleSendMessage = (name: string) => {
+        setReceverName(name);
+        open();
+    };
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         const inputValue = e.target.value;
@@ -137,10 +142,6 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         }
     };
 
-    const handleSendMessage = (name: string) => {
-        setReceverName(name);
-        open();
-    };
 
     const search = searchList.map((item) => (
         <Table.Tr key={item.name} m={2}>
@@ -149,7 +150,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                     <Group gap="md">
                         <Menu position='right-start' offset={2}>
                             <Menu.Target >
-                                <div dir="rtl" className="relative"  >
+                                <div dir="rtl" className="relative" >
                                     <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
                                         <Avatar size={50} src={item.avatar} radius={50} />
                                         <StateComponent userName={item.name} socket={socket} userstate={item.state}/>
