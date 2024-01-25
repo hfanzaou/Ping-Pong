@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
 import { FaArrowLeft } from 'react-icons/fa';
 import { gameConfig } from './classes/constants';
+import { Text } from '@mantine/core';
+import './loader.css';
 
 interface Props {
   socket: Socket;
@@ -22,6 +24,8 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   const [playAgainstComputer, setPlayAgainstComputer] = useState(false);
   const [play1vs1Click, setPlay1vs1Click] = useState(false);
   const [difficulty, setDifficulty] = useState('Easy');
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
 
   function handleCreateNewGameClick() {
     setCreatingGame(true);
@@ -29,6 +33,8 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   }
 
   function handleCreateGame() {
+    setIsLoading(true);
+    setLoadingMessage('Waiting for a second player ...');
     setWaitingForPlayer(true);
     let speed: number;
     switch (ballSpeed) {
@@ -79,6 +85,8 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   }
 
   function handleJoinGameClick() {
+    setIsLoading(true);
+    setLoadingMessage('Looking for games ...');
     setJoinGame(true);
     socket.emit('join_room');
   }
@@ -102,20 +110,44 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
     setPlayAgainstComputer(false);
     setChallengePlayer(false);
     setWaitingForPlayer(false);
+    if (isLoading) {
+      setIsLoading(false);
+      socket.emit('cancele');
+    }
   }
 
   useEffect(() => {
     socket.on('startGame', () => {
+      setIsLoading(false);
       setWaitingForPlayer(false);
       setJoinGame(false);
       startGame();
     });
+    socket.on('NoGames', () => {
+      setTimeout(() => {
+        setLoadingMessage('No Games Found :(');
+      }, 2000);
+    })
   }, []);
 
   return (
     <div 
       className="flex w-[700px] h-[450px] bg-gray-800 rounded justify-center items-center relative"
     >
+      {isLoading ? (
+        <div className="flex flex-col justify-center items-center">
+        <div className="loader"></div>
+          <Text ta='center' mt='xl' c='white' fz='xl' fw={800} >
+           {loadingMessage}
+          </Text>
+          <button
+            className="absolute top-0 left-0 m-4 color-white hover:bg-gray-900 p-4 px-4 rounded"
+            onClick={handleBackClick}
+          >
+          <FaArrowLeft size={24} color='white'/>
+          </button>
+        </div>
+      ) : (
       <div 
         className="flex flex-col p-4 rounded">
         {creatingGame ? (
@@ -124,7 +156,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
               className="absolute top-0 left-0 m-4 color-white hover:bg-gray-900 p-4 px-4 rounded"
               onClick={handleBackClick}
             >
-              <FaArrowLeft size={24} />
+              <FaArrowLeft size={24} color='white'/>
             </button>
             {showSettings && (
               <div className="flex flex-col">
@@ -190,7 +222,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
             >
               Create Game
             </button>
-            {waitingForPlayer && <p>Waiting for a second player...</p>}
             <button
               className="bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
               onClick={handleChallengePlayer}
@@ -213,7 +244,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
             >
               Join a Game
             </button>
-            {joinGame && <p>Looking for Games...</p>}
             <button
               className=" bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
               onClick={handlePlayAgainstComputerClick}
@@ -226,11 +256,11 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
             >
               Play 1vs1 on same device
             </button>
-            {countdown > 0 && <p>Game starts in: {countdown}</p>}
             {/* Other buttons */}
           </>
         )}
       </div>
+      )}
     </div>
   );
 };
