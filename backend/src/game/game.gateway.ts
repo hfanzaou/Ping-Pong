@@ -51,19 +51,25 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.waitingPlayers.push(client);
   }
 
+  @SubscribeMessage('cancele')
+  cancele(client: Socket) {
+    this.configs.delete(client.id);
+  }
+
   @SubscribeMessage('join_room')
   async joinRoom(client: Socket) {
     if (this.gameService.waitingPlayers.length > 0) {
       const opponent = this.gameService.waitingPlayers.shift();
-      if (opponent) {
+      if (opponent && opponent.id !== client.id) {
         await this.gameService.initGame(this.wss, client, opponent, this.configs.get(opponent.id));
         this.wss.to(client.id).emit('startGame');
         this.wss.to(opponent.id).emit('startGame');
       }
     } else {
       // If there are no players waiting, add the new player to the queue
-      this.gameService.waitingPlayers.push(client);
-      this.logger.log(`Client ${client.id} added to the waiting queue`);
+      //this.gameService.waitingPlayers.push(client);
+      this.logger.log(`No games found for ${client.id}`);
+      this.wss.emit('NoGames');
     }
   }
 

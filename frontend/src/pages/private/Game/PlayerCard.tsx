@@ -40,8 +40,8 @@ function PlayerCard({name, avatar, level} : PlayerCardProps) {
         />
       <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed' style={{textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'}}>
         {userName}
-      </Text>
-      <Text ta="center" c="indigo" fz="sm" style={{textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'}}>
+      </Text>      <Text ta="center" c="indigo" fz="sm" mb='md' style={{textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)', font: 'bold'}}>
+
       {"level "  + userLevel}
       </Text>
       <div className='flex justify-center items-centerw-12'>

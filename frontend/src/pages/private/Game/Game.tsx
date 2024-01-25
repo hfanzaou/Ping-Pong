@@ -76,7 +76,8 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
   };
 
   useEffect(() => {
-    fetchUserName();
+    if (user.username == "")
+      fetchUserName();
     setSide(true);
     socket.on('userId', async (id: number) => {
       const res = await axios.get('user/game', {params: {opp: id}})
@@ -99,7 +100,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
 
   useEffect(() => {
     if (config.mode == 3) {
-    setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
+      setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
     }
   }, [config]);
 
