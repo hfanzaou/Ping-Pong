@@ -5,13 +5,14 @@ import { Socket } from "socket.io-client";
 import { startCountdown, gameOver, opponentDisconnect } from "./gameStates";
 import { RACKET_DY, RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, WIDTH, BALL_DIAMETER, INITIAL_SPEED, MAX_SPEED, INC_SPEED, BALL_DIAMETER_SQUARED, gameConfig } from "./classes/constants";
 
-let goalScored: boolean = false,
-    update: boolean = false,
+let update: boolean = false,
     side: number = 1; // 1: left, 2 :right
 
 export let player1: Player,
-    player2: Player,
-    ball: Ball;
+  player2: Player,
+  ball: Ball,
+  sparks: Spark[] = [],
+  goalScored: boolean = false;
 
 
 export function  gameLoop(p5: p5Types, socket: Socket, config: gameConfig)
@@ -36,12 +37,14 @@ export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig)
   }
 
   if (checkCollision(player1, ball)) {
+    player1.racket.forcePush = true;
     ball.xdir = 1;
     ball.ydir = (ball.y - (player1.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
     if (ball.speed < MAX_SPEED && config.boost)
       ball.speed += INC_SPEED;
   }
   else if (checkCollision(player2, ball)) {
+    player2.racket.forcePush = true;
     ball.xdir = -1;
     ball.ydir = (ball.y - (player2.racket.y + RACKET_HEIGHT/2)) / RACKET_HEIGHT;
     if (ball.speed < MAX_SPEED && config.boost)
@@ -58,21 +61,23 @@ export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig)
 }
 
 function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig) {
-  ball.x = WIDTH / 2;
-  ball.y = HEIGHT / 2;
-  ball.xdir *= -1;
-  ball.ydir = 0;
-  ball.speed = config.ballSpeed;
   if (player1.score == config.maxScore || player2.score == config.maxScore) {
-      socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-      gameOver(p5, player1, player2);
+    socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
+    gameOver(p5, player1, player2);
   }
   else {
     // socket.emit('goalScored', { player1Score: player1.score, player2Score: player2.score });
     goalScored = true;
+    var xSpot = ball.x - BALL_DIAMETER/2 < 0 ? 0 : WIDTH;
+    shootSparks(xSpot, ball.y, -ball.xdir, p5);
     setTimeout(() => {
       goalScored = false;
     }, 500);
+    ball.x = WIDTH / 2;
+    ball.y = HEIGHT / 2;
+    ball.xdir *= -1;
+    ball.ydir = 0;
+    ball.speed = config.ballSpeed;
   }
 }
 
@@ -206,6 +211,8 @@ export function eventListeners(p5: p5Types, socket: Socket) {
   socket.on('updateScore', (payload) => {
     player1.score = payload.player1Score;
     player2.score = payload.player2Score;
+    let xSpot = ball.x - BALL_DIAMETER/2 < 0 ? 0 : WIDTH;
+    shootSparks(xSpot, ball.y, -ball.xdir, p5);
     ball.x = WIDTH / 2;
     ball.y = HEIGHT / 2;
     ball.xdir *= -1;
@@ -214,7 +221,71 @@ export function eventListeners(p5: p5Types, socket: Socket) {
     goalScored = true;
       setTimeout(() => {
         goalScored = false;
-      }, 500);
+      }, 1000);
     p5.redraw();
   });
+}
+
+
+function shootSparks(x: number, y: number, xVel: number, p5: p5Types) {
+  for (var i = 0; i < 50; i++) {
+    var s = new Spark(x, y, xVel, p5);
+    sparks.push(s);
+ }
+}
+
+class Spark {
+  x: number; y: number; xVel: number;
+  pos; vel; lifespan; p5: p5Types;
+  constructor(x: number, y: number, xVel: number, p5: p5Types) {
+    this.x = x;
+    this.y = y;
+    this.xVel = xVel;
+    this.p5 = p5;
+    this.pos = p5.createVector(x, y);
+    this.lifespan = 255;
+    this.vel = p5.createVector(p5.random(0, xVel), p5.random(-xVel, xVel));
+    this.vel.normalize();
+    this.vel.mult(p5.random(0, 10));
+  }
+
+  // we just want the direction
+  // then add random speed
+
+  update() {
+    this.vel.mult(0.95);
+    this.lifespan -= 5;
+    this.pos.add(this.vel);
+  }
+
+  done() {
+    return this.lifespan < 0;
+  }
+
+  show() {
+    if (!this.done()) {
+      this.p5.noStroke();
+      this.p5.fill(255, this.lifespan);
+      this.p5.rect(this.pos.x, this.pos.y, this.lifespan/20, this.lifespan/20, 3);
+    }
+  }
+}
+
+export function forceUpdate (player: Player) {
+  if (player.racket.forcePushTime < 6) {
+    player.racket.x -= 1;
+    player.racket.width += 2;
+    player.racket.y -= 1;
+    player.racket.height += 2;
+    player.racket.forcePushTime += 1;
+  } else if (player.racket.forcePushTime < 12) {
+    player.racket.x += 1;
+    player.racket.width -= 2;
+    player.racket.y += 1;
+    player.racket.height -= 2;
+    player.racket.forcePushTime += 1;
+  } else {
+    player.racket.forcePush = false;
+    player.racket.forcePushTime = 0;
+  }
 }
