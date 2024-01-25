@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import PlayerCard from './PlayerCard';
+import PlayerCard from './components/PlayerCard';
 import axios from 'axios';
-import GameComponent from './GameComponent';
-import GameSettings from './GameSettings';
+import GameComponent from './components/GameComponent';
+import GameSettings from './components/GameSettings';
 import { gameConfig } from './classes/constants'
 
 interface Props {
@@ -114,7 +114,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
       </div>
       <div
         id="sketchHolder"
-        className="rounded-lg border-2 border-gray-700"
+        className="rounded-xl shadow-2xl"
         >
         {gameStarted ? (
           <GameComponent socket={socket} avatar={avatar} config={config} user={user} endGame={endGame} />
