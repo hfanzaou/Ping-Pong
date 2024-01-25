@@ -63,9 +63,9 @@ function Notification({socket}: {socket: Socket}) {
               </Text>
           </Group>
           {type === 'chat' ?
-            <Text >Sent you a Message</Text>
+            <Text >{item.type}</Text>
            :
-            <Text >Sent you a friend request</Text>
+            <Text >{item.type}</Text>
             }
             </div>
         //   {/* <Button radius='xl' color='gray' onClick={() => handleAccepteFriend(item.name)}>
