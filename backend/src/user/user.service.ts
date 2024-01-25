@@ -381,12 +381,13 @@ export class UserService {
                     disconnect: {id: user.id}
                 }}
             })
-            await this.prismaservice.notifications.delete({
-                where: {
-                    userId_senderId: {userId: user.id, senderId: id},
-                    type: "friend request"
-                }
-            })
+            // await this.prismaservice.notifications.delete({
+            //     where: {
+            //         userId: user.id,
+            //         senderId: id,
+            //         type: "friend request"
+            //     }
+            // })
         } catch(error) {
             throw new NotFoundException('USER NOT FOUND');
         }
@@ -531,8 +532,10 @@ export class UserService {
                 }
             })
             // console.log(already)
-            if (!already[0] || payload.type == "groupInvite")
+            // console.log(payload);
+            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat")
             {
+                // console.log("notif")
                 await this.prismaservice.notifications.create({
                     data: {
                         user: {connect: {username: payload.reciever}},
@@ -580,6 +583,8 @@ export class UserService {
             where: {id: id},
             select: {achievement: true}
         })
+        // console.log(user.achievement);
+        // console.log(user.achievement[ach]);
         user.achievement[ach] = true,
         await this.prismaservice.user.update({
             where : {id: id},
