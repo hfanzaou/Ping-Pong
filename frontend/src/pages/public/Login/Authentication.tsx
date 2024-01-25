@@ -81,10 +81,8 @@ function Authentication(props: PaperProps) {
     return (
         <div>
 
-        <div className='sticky top-0 z-50'>
-
-        </div>
-        <div className='mx-[50px] my-5 p-5 rounded-xl bg-slate-900 shadow-5'>
+        <div className='sticky top-0 z-50 p-2'></div>
+        <div className='mx-[50px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
             <SimpleGrid
                 className='grid place-items-center'
                 cols={{base: 1, md:2, lg: 2, xl: 2}}

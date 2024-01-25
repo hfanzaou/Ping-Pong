@@ -1,32 +1,37 @@
 [
     {
-        "name": "Achievement1",
-        "type": true,
-        "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-        "title": "win in 3 game and go to level 1"
-    },
-    {
-        "name": "Achievement2",
+        "id": 1,
+        "name": "firstMatch",
         "type": false,
-        "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-        "title": "win in 3 game and go to level 1"
+        "image": "./4640283_award_first_medal_place_premium_icon.png",
+        "title": "Play First Match"
     },
     {
-        "name": "Achievement3",
-        "type": true,
-        "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-        "title": "win in 3 game and go to level 1"
-    },
-    {
-        "name": "Achievement4",
+        "id": 2,
+        "name": "firstFriend",
         "type": false,
-        "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-        "title": "win in 3 game and go to level 1"
+        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "title": "Add First Friend"
     },
     {
-        "name": "Achievement5",
-        "type": true,
-        "image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-        "title": "win in 3 game and go to level 1"
+        "id": 3,
+        "name": "lead1",
+        "type": false,
+        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "title": "Lead 1"
+    },
+    {
+        "id": 4,
+        "name": "lead2",
+        "type": false,
+        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "title": "Lead 2"
+    },
+    {
+        "id": 5,
+        "name": "lead3",
+        "type": false,
+        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "title": "Lead 3"
     }
 ]

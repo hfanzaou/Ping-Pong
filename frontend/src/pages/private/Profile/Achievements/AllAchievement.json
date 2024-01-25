@@ -4,34 +4,34 @@
         "name": "firstMatch",
         "type": false,
         "image": "./4640283_award_first_medal_place_premium_icon.png",
-        "title": "win in 3 game and go to level 1"
+        "title": "Play First Match"
     },
     {
         "id": 2,
         "name": "firstFriend",
-        "type": true,
+        "type": false,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
-        "title": "win in 3 game and go to level 1"
+        "title": "Add First Friend"
     },
     {
         "id": 3,
         "name": "lead1",
-        "type": true,
+        "type": false,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
-        "title": "win in 3 game and go to level 1"
+        "title": "Lead 1"
     },
     {
         "id": 4,
         "name": "lead2",
-        "type": true,
+        "type": false,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
-        "title": "win in 3 game and go to level 1"
+        "title": "Lead 2"
     },
     {
         "id": 5,
         "name": "lead3",
-        "type": true,
+        "type": false,
         "image": "./4640282_award_first_medal_place_premium_icon.png",
-        "title": "win in 3 game and go to level 1"
+        "title": "Lead 3"
     }
 ]

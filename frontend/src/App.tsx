@@ -32,7 +32,7 @@ function App()  {
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
-    const   [socket, setSocket] = useState<Socket | null>(null);
+    const [socket, setSocket] = useState<Socket | null>(null);
     // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
