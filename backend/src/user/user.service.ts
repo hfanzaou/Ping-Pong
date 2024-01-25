@@ -531,13 +531,14 @@ export class UserService {
                 }
             })
             // console.log(already)
-            if (!already[0])
+            if (!already[0] || payload.type == "groupInvite")
             {
                 await this.prismaservice.notifications.create({
                     data: {
                         user: {connect: {username: payload.reciever}},
                         senderId: id,
-                        type: payload.type
+                        type: payload.type,
+                        groupname: payload.groupname
                     }
                 })
             }

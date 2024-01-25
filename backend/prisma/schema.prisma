@@ -109,6 +109,6 @@ model Notifications {
   user     User   @relation(fields: [userId], references: [id])
   senderId Int
   type     String
-
+  groupname String?
   @@id([userId, senderId])
 }

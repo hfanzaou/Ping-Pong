@@ -307,10 +307,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			if (Data) {
 				setInvite(x => !x);
 				setUserInvite("");
-				// data.socket?.emit(
-				// 	"addnotification",
-				// 	{reciever: userInvite, type: "groupInvite"}
-				// );
+				data.socket?.emit(
+					"addnotification",
+					{reciever: userInvite, type: "groupInvite", groupname: data.groupTo}
+				);
 			}
 			else {
 				setError("wrongUser");
