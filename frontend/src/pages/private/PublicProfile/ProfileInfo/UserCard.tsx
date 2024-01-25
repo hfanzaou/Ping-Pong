@@ -88,6 +88,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
             m="auto"
             mt={12}
             />
+                    {usercard?.username !== userName &&    // if the user is not the same user profile show the friendship button
             <Menu position='right-start' offset={2}>
                 <Menu.Target >
 
@@ -110,15 +111,14 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
                     >
                         Block user
                     </Menu.Item>
-                        {usercard?.username !== userName &&    // if the user is not the same user profile show the friendship button
                     <Menu.Item>
                         {/* <div className='flex justify-center items-center mt-2'> */}
                                 <FriendshipButton name={usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
                         {/* </div> */}
                     </Menu.Item>
-                        }
                 </Menu.Dropdown>
             </Menu>
+                        }
             </div>
       {/* </div> */}
     <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
