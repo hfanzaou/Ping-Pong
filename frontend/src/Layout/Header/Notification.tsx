@@ -6,12 +6,12 @@ import NotificationInterface from "./NotificationInterface";
 import { useDisclosure } from "@mantine/hooks";
 import { Socket } from "socket.io-client";
 
-
-
 function Notification({socket}: {socket: Socket}) {
     const [notificationList, setNotificationList] = useState<NotificationInterface[]>([]);
     const [notification, setNotification] = useState<boolean>(false);
     const [opened, { open, close }] = useDisclosure(false);
+
+    const [type, setType] = useState<string>();
 
     const getRequests = async () => {
         await axios.get("user/notification")
@@ -36,10 +36,13 @@ function Notification({socket}: {socket: Socket}) {
     //     };
     // }, [socket]);
     useEffect(() => {
-    socket?.on("getnotification", () => {
+    socket?.on("getnotification", (data) => {
         setNotification(true);
         getRequests();
-        console.log("get notification");
+        console.log("get notification ::: this type :: ", data);
+        if (data.type) {
+            setType(data.type);
+        }
         return () => {
             socket.off("getnotification");
         }
@@ -59,17 +62,18 @@ function Notification({socket}: {socket: Socket}) {
                 {item.username}
               </Text>
           </Group>
+          {type === 'chat' ?
+            <Text >Sent you a Message</Text>
+           :
             <Text >Sent you a friend request</Text>
+            }
             </div>
         //   {/* <Button radius='xl' color='gray' onClick={() => handleAccepteFriend(item.name)}>
         //     Accept friend
         //   </Button> */}
         // </div>
-
-
       ));
     
-
     return (
 
         <>
