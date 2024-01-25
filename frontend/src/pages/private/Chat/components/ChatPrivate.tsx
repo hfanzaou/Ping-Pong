@@ -130,6 +130,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				message: data.message
 			}
 			data.socket?.emit("direct", Message);
+			data.socket?.emit("notification", {reciever: Message.recver, type: "chat"});
 			setData(prev => setMessageData(prev, ""))
 			if (Reference.current)
 				Reference.current.focus();
