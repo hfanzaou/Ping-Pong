@@ -58,6 +58,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
             gameLoop(p, socket, config);
           }
           if (goalScored) {
+            p.translate(p.random(-13, 13), p.random(-13, 13));
             for (var i = sparks.length - 1; i >= 0; i--) {
               sparks[i].update();
               sparks[i].show();
