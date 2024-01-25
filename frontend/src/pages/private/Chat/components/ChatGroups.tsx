@@ -53,6 +53,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[error, setError] = useState("");
 	const	history = useNavigate();
 	const	[ownersettings, setOwnersettings] = useState(false);
+	const	[settingsName, setSettingsName] = useState("");
+	const	[settingsPassword, setSettingsPassword] = useState("");
+	const	[settingsVerify, setSettingsVerify] = useState("");
+	const	[settingsOld, setSettingsOld] = useState("");
 
 	userNameRef.current = data.userData?.userName;
 	useEffect(() => {
@@ -113,6 +117,9 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		if (tmp)
 			setRole(tmp.role)
 	}, [users]);
+	useEffect(() => {
+		resrtartSettings();
+	}, [data.groupTo])
 	async function clickJoinCallBack(state: boolean) {
 		if (!state) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
@@ -278,10 +285,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		}
 	}
 	function clickInvite() {
-		if (!invite)
+		if (!invite) {
 			setOwnersettings(false);
+			resrtartSettings();
+		}
 		setInvite(x => !x);
-		setError("")
 	}
 	async function submitInvite() {
 		if (userInvite.length) {
@@ -316,9 +324,75 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setError("");
 	}
 	function clickOwnersettings() {
-		if (!ownersettings)
+		if (!ownersettings) {
 			setInvite(false);
+			resrtartSettings();
+		}
 		setOwnersettings(x => !x);
+	}
+	function changeSettingsName(event: React.ChangeEvent<HTMLInputElement>) {
+		setSettingsName(event.target.value);
+		if (error == "wrongUser")
+			setError("");
+	}
+	async function clickSave() {
+		if (settingsName.length || settingsOld || settingsPassword) {
+			const	res = await fetch("http://localhost:3001/groupsChage", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					name: settingsName,
+					old: settingsOld,
+					password: settingsPassword,
+					oldName: data.groupTo
+				})
+			});
+			const	Data = await res.text();
+			if (Data == "DONE") {
+				resrtartSettings();
+				await callBackBlock();
+				if (settingsName.length)
+					setData(x => ({
+						...x,
+						groupTo: settingsName
+					}));
+			}
+			else
+				setError(Data);
+		}
+		else
+			setError("wrongUser");
+	}
+	function changeSettingsPassword(event: React.ChangeEvent<HTMLInputElement>) {
+		setSettingsPassword(event.target.value);
+		if (event.target.value.length && event.target.value.length < 6)
+			setError("wrongNew");
+		else
+			setError("");
+	}
+	function changeSettingsVerify(event: React.ChangeEvent<HTMLInputElement>) {
+		setSettingsVerify(event.target.value);
+		if (event.target.value != settingsPassword)
+			setError("wrongValidate");
+		else
+			setError("");
+	}
+	function changeSettingsOld(event: React.ChangeEvent<HTMLInputElement>) {
+		setSettingsOld(event.target.value);
+		if (error == "wrongPassword")
+			setError("");
+	}
+	function resrtartSettings() {
+		setInvite(false);
+		setOwnersettings(false);
+		setUserInvite("");
+		setSettingsName("");
+		setSettingsOld("");
+		setSettingsPassword("");
+		setSettingsVerify("");
+		setError("");
 	}
 	if (data.groupTo) {
 		if (data.userData?.groups?.find(x => x.name == data.groupTo))
@@ -326,7 +400,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				<form
 					onSubmit={submitMessage}
 					className="w-[57%] bg-discord4 flex flex-col
-						justify-end text-discord6 p-0 relative"
+						justify-end text-discord6 p-0 relative rounded-r-3xl"
 				>
 					{
 						settings &&
@@ -395,7 +469,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 								}
 								{
 									invite &&
-										<div className="flex" >
+										<div className="flex font-extralight" >
 											<input
 												type="text"
 												className={
@@ -431,7 +505,127 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 										</div>
 								}
 								{
-									ownersettings && <div className="bg-black w-1/2 h-10 z-10"></div>
+									ownersettings &&
+										<div
+											className="font-extralight bg-discord3
+												flex flex-col justify-center
+												items-center p-5 rounded-md"
+										>
+											{
+												error == "wrongUser" &&
+													<h1
+														className="text-red-500
+															font-extrabold"
+													>
+														user already exists
+													</h1>
+											}
+											<input
+												type="text"
+												placeholder="new group name..."
+												className={
+													`h-10 bg-discord1
+													rounded-full outline-none p-5
+													mb-5
+													${
+														error == "wrongUser" &&
+														"outline-red-500"
+													}`
+												}
+												onChange={changeSettingsName}
+												value={settingsName}
+												onKeyDown={event => {
+													if (event.key == "Enter")
+														event.preventDefault();
+												}}
+											/>
+											{
+												error == "wrongPassword" &&
+													<h1
+														className="text-red-500
+															font-extrabold"
+													>
+														wrong password
+													</h1>
+											}
+											{
+												data.password &&
+													<input
+														type="password"
+														placeholder="old password..."
+														className={
+															`h-10 bg-discord1
+															rounded-full outline-none
+															p-5 mb-5
+															${
+																error == "wrongPassword" &&
+																"outline-red-500"
+															}`
+														}
+														onChange={changeSettingsOld}
+														value={settingsOld}
+														onKeyDown={event => {
+															if (event.key == "Enter")
+																event.
+																	preventDefault();
+														}}
+													/>
+											}
+											{
+												error == "wrongNew" &&
+													<h1
+														className="text-red-500
+															font-extrabold"
+													>
+														at least 6 characters or none
+													</h1>
+											}
+											<input
+												type="password"
+												placeholder="set password..."
+												className={
+													`h-10 bg-discord1
+													rounded-full outline-none p-5
+													mb-5
+													${
+														error == "wrongNew" &&
+														"outline-red-500"
+													}`
+												}
+												onChange={changeSettingsPassword}
+												value={settingsPassword}
+												onKeyDown={event => {
+													if (event.key == "Enter")
+														event.preventDefault();
+												}}
+											/>
+											<input
+												type="password"
+												placeholder="verify password..."
+												className={
+													`h-10 bg-discord1
+													rounded-full outline-none p-5
+													mb-5
+													${
+														error == "wrongValidate" &&
+														"outline-red-500"
+													}`
+												}
+												onKeyDown={event => {
+													if (event.key == "Enter")
+														event.preventDefault();
+												}}
+												onChange={changeSettingsVerify}
+												value={settingsVerify}
+											/>
+											<button
+												className="bg-discord1 h-10 px-5
+													rounded-md hover:bg-discord5"
+													onClick={clickSave}
+											>
+												SAVE
+											</button>
+										</div>
 								}
 							</div>
 					}

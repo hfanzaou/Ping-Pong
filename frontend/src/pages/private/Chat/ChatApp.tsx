@@ -121,7 +121,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			return <NotFound />
 	}
 	return (
-		<div className="flex h-[80vh]">
+		<div className="flex h-[80vh] mx-4 p-5 rounded-lg bg-slate-900">
 			{
 				error && <div
 					className="fixed top-20 left-1/2 -translate-x-1/2 z-50 h-10 bg-red-500

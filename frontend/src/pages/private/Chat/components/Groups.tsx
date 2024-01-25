@@ -8,6 +8,8 @@ import {
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, NEWCHAT } from "../myTypes";
+import { setUserData } from "../utils";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -48,6 +50,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	});
 	const	nameRef = useRef(name);
 	const	settingsXyRef = useRef(settingsXy);
+	const	history = useNavigate();
 	
 	createXyRef.current = createXy;
 	nameRef.current = name;
@@ -65,7 +68,6 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 					})
 				});
 				const	Data = await res.json();
-				// console.log(Data);
 				setList(Data);
 			}
 			fetchData();
@@ -149,6 +151,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 						trigger: !x.trigger
 					}))
 				}
+				// console.log(Data);
 				setName(Data);
 			}
 			fetchData()
@@ -279,29 +282,43 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 			data.socket?.emit("newChatRoom", newChat);
 		}
 	}
-	function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
+	async function checkGroup(name: string) {
+		const	res = await fetch("http://localhost:3001/checkGroup", {
+				method: "POST",
+				headers: {
+					"content-type": "application/json"
+				},
+				body: JSON.stringify({
+					name: name
+				})
+			});
+		const	Data = await res.json();
+		return Data;
+	}
+	async function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
 		const	x = event.clientX;
 		const	y = event.clientY;
 		const	login = event.currentTarget.name;
 
-		setSettings(true);
-		setSettingsXy(() => {
-			if (data.userData?.groups.find(x => x.name == login))
-				return {
-					joined: true,
-					x: x,
-					y: y,
-					login: login
-				}
-			else
-				return {
-					joined: false,
-					x: x,
-					y: y,
-					login: login
-				}
-
-		});
+		if (await checkGroup(login)) {
+			setSettings(true);
+			setSettingsXy(() => {
+				if (data.userData?.groups.find(x => x.name == login))
+					return {
+						joined: true,
+						x: x,
+						y: y,
+						login: login
+					}
+				else
+					return {
+						joined: false,
+						x: x,
+						y: y,
+						login: login
+					}
+			});
+		}
 	}
 	async function leaveJoin() {
 		const	res = await fetch("http://localhost:3001/leaveJoin", {
@@ -329,6 +346,20 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		setSettings(false);
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
+		history("/Chat");
+	}
+	async function update() {
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userName: data.userData?.userName
+			})
+		});
+		const Data = await res0.json();
+		setData(prev => setUserData(prev, Data));
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
@@ -489,7 +520,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 			{
 				settings && <ul
 					className={`fixed border-none
-						bg-discord1 rounded-md`}
+						bg-discord1 rounded-md z-10`}
 					style={{
 						top: settingsXy.y,
 						left: settingsXy.x

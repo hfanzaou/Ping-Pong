@@ -143,7 +143,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		<form
 			onSubmit={submit}
 			className="w-[57%] bg-discord4 flex flex-col
-				justify-end text-discord6  p-0"
+				justify-end text-discord6 p-0 rounded-r-3xl"
 		>
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {

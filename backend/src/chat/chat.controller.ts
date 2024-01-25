@@ -95,4 +95,17 @@ export class ChatController {
 	async handlePrivateJoin(@Body() data: { name: string }) {
 		return await this.chatService.privateJoin(data);
 	}
+	@Post("groupsChage")
+	async handleGroupsChage(@Body() data: {
+		name: string,
+		old: string,
+		password: string,
+		oldName: string
+	}) {
+		return await this.chatService.groupsChage(data);
+	}
+	@Post("checkGroup")
+	async handleCheckGroup(@Body() data: { name: string }) {
+		return await this.chatService.checkGroup(data);
+	}
 }
