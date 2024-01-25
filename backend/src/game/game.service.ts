@@ -177,8 +177,8 @@ export class GameService {
       goalScored = true;
       setTimeout(() => {
         goalScored = false;
-      }, 1000);
-      return ball;
+      }, 2500);
+      return ball; 
     }
   }
 
