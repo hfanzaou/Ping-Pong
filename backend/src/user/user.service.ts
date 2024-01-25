@@ -284,6 +284,13 @@ export class UserService {
                 this.updateAch(user.id, "firstFriend");
             if (auser.friends.length == 1)
                 this.updateAch(auser.id, "firstFriend");
+            // await this.prismaservice.notifications.deleteMany({
+            //     where: {
+            //         userId: id,
+            //         senderId: user.id,
+            //         type: "friend request"
+            //     }
+            // })
         } catch(error) {
 				throw new NotFoundException('NO REQUEST');
         }
@@ -381,13 +388,13 @@ export class UserService {
                     disconnect: {id: user.id}
                 }}
             })
-            // await this.prismaservice.notifications.delete({
-            //     where: {
-            //         userId: user.id,
-            //         senderId: id,
-            //         type: "friend request"
-            //     }
-            // })
+            await this.prismaservice.notifications.deleteMany({
+                where: {
+                    userId: user.id,
+                    senderId: id,
+                    type: "friend request"
+                }
+            })
         } catch(error) {
             throw new NotFoundException('USER NOT FOUND');
         }
