@@ -86,7 +86,7 @@ OnGatewayDisconnect {
 		if (user)
 			client.broadcast.emit("online", {
 				username: user.username,
-				state: user.state
+				state: "Offline",
 			});		
 	}
 
@@ -97,13 +97,32 @@ OnGatewayDisconnect {
 	@SubscribeMessage('addnotification')
 	async handleNotification(client: Socket, payload: notifDto) {
 		try {	
-			const {id} = await this.verifyClient(client);
-			  const reciever = await this.prisma.user.findUnique({
-			where: {username: payload.reciever},
-			select: {id: true, socket: true}
-			  })
-			  await this.user.addNotification(id, payload);
-			  client.to(reciever.socket).emit('getnotification', 'hello');
+			const { id } = await this.verifyClient(client);
+			if (payload.type == "groupChat") {
+				const	users = await this.chatService.getNotificationUsers(
+					payload,
+					id
+				);
+				if (users) {
+					users.forEach(async x => {
+						if (x) {
+							await this.user.addNotification(
+								id,
+								{ reciever: x.userName, type: payload.type }
+							);
+							this.server.to(x.socket).emit("getnotification", "hello");
+						}
+					});
+				}
+			}
+			else {
+				const reciever = await this.prisma.user.findUnique({
+					where: {username: payload.reciever},
+					select: {id: true, socket: true}
+				});
+				await this.user.addNotification(id, payload);
+				client.to(reciever.socket).emit('getnotification', 'hello');
+			}
 		} catch(error)
 		{
 			client.emit('error');

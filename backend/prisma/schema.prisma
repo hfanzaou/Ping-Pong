@@ -105,10 +105,11 @@ model UserGROUP {
 }
 
 model Notifications {
-  userId   Int
-  user     User   @relation(fields: [userId], references: [id])
-  senderId Int
-  type     String
-
-  @@id([userId, senderId])
+  id        Int     @id @unique @default(autoincrement())
+  createAt  DateTime @default(now())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  senderId  Int
+  type      String
+  groupname String?
 }

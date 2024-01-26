@@ -32,7 +32,7 @@ function App()  {
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
-    const   [socket, setSocket] = useState<Socket | null>(null);
+    const [socket, setSocket] = useState<Socket | null>(null);
     // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -40,8 +40,6 @@ function App()  {
 
     axios.defaults.withCredentials = true;
     axios.defaults.baseURL = apiUrl;
-
-
 
 const handleRequest = async (name: string) => {
 
@@ -111,6 +109,7 @@ const handleRequest = async (name: string) => {
         setSearchList(updatedUserList);
         await axios.post("user/accept/friend", {name: name})
         .then((res) => {
+            socket?.emit("addnotification", {reciever: name, type: "accept friend"})
           console.log(res.data);
         })
         .catch((err) => {
@@ -203,7 +202,7 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-             <Header socket={socket} setSocket={setSocket} avatar={avatar}/>
+             <Header socket={socket} setSocket={setSocket} avatar={avatar} handleRequest={handleRequest}/>
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>

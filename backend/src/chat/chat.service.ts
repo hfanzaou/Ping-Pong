@@ -36,15 +36,14 @@ export class ChatService {
 								{ name: `&${x.username}${userName}`}
 							]
 						}
-					})
-					// console.log("test1");
-					// console.log(chatHistorie.updateAt);
-					return {
-						id: x.id,
-						login: x.username,
-						avatar: await this.user.getUserAvatar(x.id),
-						time: chatHistorie.updateAt
-					}
+					});
+					if (chatHistorie)
+						return {
+							id: x.id,
+							login: x.username,
+							avatar: await this.user.getUserAvatar(x.id),
+							time: chatHistorie.updateAt
+						};
 				})),
 				friends: await Promise.all(user.friends.filter(x =>
 					user.friendOf.some(friend => friend.id == x.id))
@@ -407,7 +406,7 @@ export class ChatService {
 						groupId: group.id
 					}
 				}
-			})
+			});
 			if (userGroup) {
 				await this.prisma.userGROUP.delete({
 					where: {
@@ -417,15 +416,26 @@ export class ChatService {
 						}
 					}
 				});
-				if (chatHistory)
-					await this.prisma.userCHATHISTORY.delete({
-						where: {
-							userid_chathistoryid: {
-								userid: user.id,
-								chathistoryid: chatHistory.id
+				if (chatHistory) {
+					const	userchatHistory = await this.
+						prisma.userCHATHISTORY.findUnique({
+							where: {
+								userid_chathistoryid: {
+									userid: user.id,
+									chathistoryid: chatHistory.id
+								}
 							}
-						}
 					});
+					if (userchatHistory)
+						await this.prisma.userCHATHISTORY.delete({
+							where: {
+								userid_chathistoryid: {
+									userid: user.id,
+									chathistoryid: chatHistory.id
+								}
+							}
+						});
+				}
 				
 			}
 			else {
@@ -650,12 +660,83 @@ export class ChatService {
 		const	group = await this.prisma.gROUP.findFirst({
 			where: { name: data.name }
 		})
-		return [{
-			id: group.id,
-			name: group.name,
-			password: group.hash ? true : false,
-			banded: group.banded,
-			muted: group.muted
-		}];
+		if (group) {
+			return [{
+				id: group.id,
+				name: group.name,
+				password: group.hash ? true : false,
+				banded: group.banded,
+				muted: group.muted
+			}];
+		}
+		return [];
+	}
+	async groupsChage(data: {
+		name: string,
+		old: string,
+		password: string,
+		oldName: string
+	}) {
+		const	oldGroup = await this.prisma.gROUP.findFirst({
+			where: { name: data.oldName }
+		});
+		if (oldGroup) {
+			if (data.name.length) {
+				const	group = await this.prisma.gROUP.findFirst({
+					where: { name: data.name }
+				});
+				if (group)
+					return "wrongUser";
+				await this.prisma.gROUP.update({
+					where: { id: oldGroup.id },
+					data: { name: data.name }
+				});
+				await this.prisma.cHATHISTORY.update({
+					where: { name: oldGroup.name },
+					data: { name: data.name }
+				});
+			}
+			if (data.old.length) {
+				const	match = await compare(data.old, oldGroup.hash);
+				if (!match)
+					return "wrongPassword";
+				let	hashed : string | null;
+				if (data.password.length)
+					hashed = await hash(data.password, 10);
+				else
+					hashed = null;
+				await this.prisma.gROUP.update({
+					where: { id: oldGroup.id },
+					data: { hash: hashed }
+				});
+			}
+			else if (data.password.length)
+				await this.prisma.gROUP.update({
+					where: { id: oldGroup.id },
+					data: { hash: await hash(data.password, 10) }
+				});
+			return "DONE";
+		}
+	}
+	async checkGroup(data: { name: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name }
+		});
+		if (group)
+			return true;
+		return false
+	}
+	async getNotificationUsers(payload: notifDto, id: number) {
+		const group = await this.prisma.gROUP.findFirst({
+			where: { name: payload.reciever },
+			include: { members: { include: { user: true }}}
+		});
+		if (group) {
+			return group.members.map(x => {
+				if (x.user.id != id)
+					return { socket: x.user.socket, userName: x.user.username };
+			});
+		}
+		return null;
 	}
 }

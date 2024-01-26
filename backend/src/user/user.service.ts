@@ -284,6 +284,13 @@ export class UserService {
                 this.updateAch(user.id, "firstFriend");
             if (auser.friends.length == 1)
                 this.updateAch(auser.id, "firstFriend");
+            // await this.prismaservice.notifications.deleteMany({
+            //     where: {
+            //         userId: id,
+            //         senderId: user.id,
+            //         type: "friend request"
+            //     }
+            // })
         } catch(error) {
 				throw new NotFoundException('NO REQUEST');
         }
@@ -381,9 +388,10 @@ export class UserService {
                     disconnect: {id: user.id}
                 }}
             })
-            await this.prismaservice.notifications.delete({
+            await this.prismaservice.notifications.deleteMany({
                 where: {
-                    userId_senderId: {userId: user.id, senderId: id},
+                    userId: user.id,
+                    senderId: id,
                     type: "friend request"
                 }
             })
@@ -457,7 +465,7 @@ export class UserService {
                 }
                 return { level: parseFloat(obj.level.toFixed(2)), name: obj.username, avatar: avatar, state: obj.state, friendship, win: obj.win, loss: obj.loss };
               }));
-                return (usersre);     
+            return (usersre);     
     }
 
     /////match history/////
@@ -469,7 +477,7 @@ export class UserService {
                     OR: [
                         {playerId: id},
                         {player2Id: id}
-                    ]},
+                    ]},orderBy: {createAt: 'desc'},
                 select : {players: {where: {
                         NOT: {id: id},
                 }, select: {id: true, username: true }}, playerId: true, playerScore: true, player2Score: true},
@@ -531,13 +539,16 @@ export class UserService {
                 }
             })
             // console.log(already)
-            if (!already[0])
+            // console.log(payload);
+            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat")
             {
+                // console.log("notif")
                 await this.prismaservice.notifications.create({
                     data: {
                         user: {connect: {username: payload.reciever}},
                         senderId: id,
-                        type: payload.type
+                        type: payload.type,
+                        groupname: payload.groupname
                     }
                 })
             }
@@ -553,7 +564,7 @@ export class UserService {
             const notif = await this.prismaservice.notifications.findMany({
                 where: {
                     userId: id,
-                },
+                },orderBy: {createAt: 'desc'},
                 select: {senderId: true, type: true}
             })
             const notification = await Promise.all(notif.map(async (obj) => {
@@ -579,6 +590,8 @@ export class UserService {
             where: {id: id},
             select: {achievement: true}
         })
+        // console.log(user.achievement);
+        // console.log(user.achievement[ach]);
         user.achievement[ach] = true,
         await this.prismaservice.user.update({
             where : {id: id},

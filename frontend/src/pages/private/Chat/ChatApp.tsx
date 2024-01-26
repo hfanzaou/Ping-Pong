@@ -27,14 +27,18 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[name, setName] = useState<string>("");
 	const	query = useQuery();
 	const	[loading, setLoading] = useState(false);
-	
+
+	//
+	useEffect(() => {
+		console.log("CHAT");
+	}, [])
+	//
 	errorRef.current = error;
 	useEffect(() => {
 		const	tmp = query.get("name")
 		if (tmp) {
 			setName(tmp);
 			async function fetchData() {
-				console.log(data.userData?.userName, tmp);
 				const res = await fetch("http://localhost:3001/checkUserGroup", {
 					method: "POST",
 					headers: {
@@ -117,7 +121,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			return <NotFound />
 	}
 	return (
-		<div className="flex h-[80vh]">
+		<div className="flex h-[80vh] mx-4 p-5 rounded-lg bg-slate-900">
 			{
 				error && <div
 					className="fixed top-20 left-1/2 -translate-x-1/2 z-50 h-10 bg-red-500

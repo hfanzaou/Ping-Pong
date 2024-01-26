@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, MenuDropdown, rem } from "@mantine/core";
-import { IconChartInfographic, IconDeviceGamepad2, IconLogout, IconMessages, IconPresentationAnalytics, IconSettings, IconUserCircle } from "@tabler/icons-react";
+import { Menu, rem } from "@mantine/core";
+import { IconDeviceGamepad2, IconLogout, IconMessages, IconPresentationAnalytics, IconSettings, IconUserCircle } from "@tabler/icons-react";
 import { IconHome } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
 import Notification from "./Notification";
 import { Socket } from "socket.io-client";
 // import { IconButton, Typography } from "@mui/material";
 
-const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];
-
+// const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];  // to make it in map
 
 function NavigationItem() {
     return (
@@ -43,19 +42,44 @@ function NavigationItem() {
             </Menu.Target>
           <Menu.Dropdown bg='gray'>
             <Menu.Item  className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-                <Link className="flex items-center" to={"/"}><IconHome style={{ width: rem(20), height: rem(20) }} />Home</Link>
+                <Link className="flex items-center space-x-1" to={"/"}>
+                    <IconHome style={{ width: rem(20), height: rem(20) }} />
+                    <div>
+                        Home
+                    </div>
+                    </Link>
             </Menu.Item>
             <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-              <Link className="flex items-center" to={"/Leaderbord"} ><IconDashboard style={{ width: rem(20), height: rem(20) }} />Leaderboard</Link>
+              <Link className="flex items-center space-x-1" to={"/Leaderbord"} >
+                <IconDashboard style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                Leaderboard
+                </div>
+                </Link>
             </Menu.Item >
             <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-              <Link className="flex items-center" to={"/Profile"} ><IconUserCircle style={{ width: rem(20), height: rem(20) }} />Profile</Link>
+              <Link className="flex items-center space-x-1" to={"/Profile"} >
+                <IconUserCircle style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                Profile
+                </div>
+                </Link>
             </Menu.Item>
             <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-              <Link className="flex items-center" to={"/Game"} ><IconDeviceGamepad2 style={{ width: rem(20), height: rem(20) }} />Game</Link>
+              <Link className="flex items-center space-x-1" to={"/Game"} >
+                <IconDeviceGamepad2 style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Game
+                </div>
+                </Link>
             </Menu.Item>
             <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-              <Link className="flex items-center" to={"/Chat"} ><IconMessages style={{ width: rem(20), height: rem(20) }} />Chat</Link>
+              <Link className="flex items-center space-x-1" to={"/Chat"} >
+                <IconMessages style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Chat
+                </div>
+                </Link>
             </Menu.Item>
           </Menu.Dropdown>
 
@@ -69,12 +93,37 @@ function NavigationItem() {
         </div> */}
 
         <div className="hidden md:ml-0 md:block">
-          <div className="flex space-x-4">
-              <Link to={"/"} className="flex items-center text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"><IconHome style={{ width: rem(20), height: rem(20) }} />Home</Link>
-              <Link to={"/Leaderbord"} className="flex items-center text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"><IconPresentationAnalytics style={{ width: rem(20), height: rem(20) }} />Leaderboard</Link>
-              <Link to={"/Profile"} className="flex items-center text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"><IconUserCircle style={{ width: rem(20), height: rem(20) }} />Profile</Link>
-              <Link to={"/Game"} className="flex items-center text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"><IconDeviceGamepad2 style={{ width: rem(20), height: rem(20) }} />Game</Link>
-              <Link to={"/Chat"} className="flex items-center text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"><IconMessages style={{ width: rem(20), height: rem(20) }} />Chat</Link>
+          <div className="flex space-x-3">
+              <Link to={"/"} className="flex items-center space-x-1 text-gray-300  hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                <IconHome style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Home
+                </div>
+              </Link>
+              <Link to={"/Leaderbord"} className="flex items-center space-x-1 text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                <IconPresentationAnalytics style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Leaderboard
+                </div>
+                </Link>
+              <Link to={"/Profile"} className="flex items-center space-x-1 text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                <IconUserCircle style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Profile
+                </div>
+                </Link>
+              <Link to={"/Game"} className="flex items-center space-x-1 text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                <IconDeviceGamepad2 style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Game
+                </div>
+                </Link>
+              <Link to={"/Chat"} className="flex items-center space-x-1 text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                <IconMessages style={{ width: rem(20), height: rem(20) }} />
+                <div>
+                    Chat
+                </div>
+                </Link>
           </div>
         </div>
       
@@ -84,7 +133,7 @@ function NavigationItem() {
 }
 
 
-const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
+const LeftSide = ({socket, avatar, handleRequest} : {socket: Socket, avatar: string, handleRequest: Function}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
 
 
@@ -98,7 +147,7 @@ const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
 
             {/* <button type="button" className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"> */}
 
-        <Notification socket={socket}/>
+        <Notification socket={socket} handleRequest={handleRequest}/>
 
         <Menu trigger="hover"  openDelay={100} closeDelay={400} opened={disabled} onChange={setDisabled} shadow="md" position="bottom-end" offset={5}>
 
@@ -125,14 +174,14 @@ const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
 }
 
 
-function Nav({socket, avatar} : {socket: Socket, avatar: string}) {
+function Nav({socket, avatar, handleRequest} : {socket: Socket, avatar: string, handleRequest: Function}) {
     return (
     <div className="bg-gray-800">
         <nav className="bg-slate-900 rounded-full mx-8 mb-2">
             <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <NavigationItem/>
-                    <LeftSide socket={socket} avatar={avatar}/>
+                    <LeftSide socket={socket} avatar={avatar} handleRequest={handleRequest}/>
                 </div>
             </div>
         </nav>

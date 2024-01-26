@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Avatar, Text, Group } from '@mantine/core';
+import { Card, Avatar, Text, Group, Menu, rem } from '@mantine/core';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
 import FriendshipButton from '../../Home/Users/FriendshipButton';
+import { IconMessages, IconTrash, IconUserCircle } from '@tabler/icons-react';
+import { Link } from 'react-router-dom';
 // import { Cookies } from 'react-cookie';
 
     interface UserCardProps {
@@ -14,27 +16,12 @@ import FriendshipButton from '../../Home/Users/FriendshipButton';
     }
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
-    const [userName, setUserName] = useState<string>();
     
     const stats = [
-      {value: usercard?.win, label: 'Wins'},
-      {value: (usercard?.win) + (usercard?.loss), label: 'Total'},
-      {value: usercard?.loss, label: 'losses'},
-    ];
-
-    useEffect(() => { // Just to check if the same user profile or not to show the friendship button or not
-        const getUserNmae = async () => {
-            await axios.get("user/name")
-            .then((res) => {
-                console.log(res.data.name);
-                setUserName(res.data.name);
-            })
-            .catch((err) => {
-                console.log("Error in geting data in edit profile :", err);
-            })
-        };
-        getUserNmae();
-    }, []);
+        {value: usercard?.win, label: 'Wins'},
+        {value: (usercard?.win) + (usercard?.loss), label: 'Played game'},
+        {value: usercard?.loss, label: 'losses'},
+      ];
 
 
     const items = stats.map((stat) => (
@@ -47,7 +34,6 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
           </Text>
         </div>
       ));
-    
 
   return (
     <Card p={2} style={{backgroundColor: 'rgb(31 41 55)'}}    radius="lg">
@@ -59,13 +45,13 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
         backgroundPosition: 'center center',
       }}
       /> */}
-    <Avatar
-      src={usercard?.avatar}
-      size={250}
-      radius={250}
-      m="auto"
-      mt={12}
-      />
+        <Avatar
+            src={usercard?.avatar}
+            size={250}
+            radius={250}
+            m="auto"
+            mt={12}
+            />
     <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
 
       {usercard?.username}
@@ -76,11 +62,6 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     <Group mt="md" justify="center" gap={30}>
       {items}
     </Group>
-    {/* {usercard?.username !== userName &&    // if the user is not the same user profile show the friendship button
-      <div className='flex justify-center items-center mt-2'>
-            <FriendshipButton name={usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
-      </div>
-    } */}
     </Card>
   );
 }
