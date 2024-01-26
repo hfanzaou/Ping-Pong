@@ -1,13 +1,32 @@
 import React from "react";
 import { Card, Group, HoverCard, Image, Text } from "@mantine/core";
 import OneAchievementInterface from "./OneAchievementInterface";
-import imagge from "./4640282_award_first_medal_place_premium_icon.png"
-import firstGameImage from "./4640282_award_first_medal_place_premium_icon.png"
-import images from "./AllAchievement.json"
+import firstGameImage from "./assite/firstGame.png"
+import firstFriendImage from "./assite/firstFriend.png"
+
+import lead1Image from "./assite/lead1.png"
+import lead2Image from "./assite/lead2.png"
+import lead3Image from "./assite/lead3.png"
+
+// import firstGameImage from "./4640282_award_first_medal_place_premium_icon.png"
+// import images from "./AllAchievement.json"
 
 function AchievementCards({type, image, title, name}: OneAchievementInterface) {
 
-    const source = images.find((item) => item.id === image);
+    if (name === "firstMatch") {
+        image = firstGameImage;
+    } else if (name === "firstFriend") {
+        image = firstFriendImage;
+    } 
+    else if (name === "lead1") {
+        image = lead1Image;
+    } else if (name === "lead2") {
+        image = lead2Image;
+    } else if (name === "lead3") {
+        image = lead3Image;
+    }
+
+    // const source = images.find((item) => item.id === image);
     // console.log("Type: ", type);
     return (
     <div className='w-[100px] '>
@@ -18,12 +37,12 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
     <Card.Section>
     {type ?
                 <Image
-                    src={imagge}
+                    src={image}
                     // height={200}
-                    alt="Norway"
+                    alt={title}
                     /> :
                 <Image className="blur-sm"
-                src={imagge}
+                src={image}
                     // height={200}
                     alt="Norway"
                     />

@@ -27,7 +27,7 @@ data[4].type = achievement?.lead3;
 
     const achievementsData = data.map((item) => (
         <div key={item.name}>
-            <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.name}/>        
+            <AchievementsCards type={item.type} name={item.name} title={item.title} image={item.image}/>        
         </div>
   ));
   
