@@ -45,8 +45,10 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
     ));
   
     return (
-        <Table verticalSpacing="md" highlightOnHover withRowBorders={false} horizontalSpacing='xl'>
+        <Table verticalSpacing="md" highlightOnHover withRowBorders={false} horizontalSpacing='xl' className='h-full w-full'>
+            <ScrollArea h={425}>
           <Table.Tbody>{rows}</Table.Tbody>
+            </ScrollArea>
         </Table>
     );
   }
