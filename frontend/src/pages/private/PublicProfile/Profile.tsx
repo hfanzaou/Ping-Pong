@@ -24,7 +24,6 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
         const getUserNmae = async () => {
             await axios.get("user/name")
             .then((res) => {
-                console.log(res.data.name);
                 setUserName(res.data.name);
             })
             .catch((err) => {
@@ -41,7 +40,6 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
             .then((res) => {
                 if (res.status === 200) {
                     setProfile(res.data);
-                    console.log("user profile: ", res.data);
                     setIsLoading(false);
                 }
             })
@@ -55,8 +53,6 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
         };
         getUserProfile();
     }, []);
-
-
 
     // if (isLoading)
     //     return (
@@ -89,20 +85,10 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
                     <Buttons profile={profile} handleRequest={handleRequest} friendShip={friendShip}/> :
                     <img  className='h-full rounded-xl' src={image} /> // make this image in the same color as app
                 }
-                {/* <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
-                    {profile?.usercard.username !== userName ? 
-                        <div className='flex flex-col space-y-3'>
-                            <FriendshipButton name={profile?.usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
-                            <Button color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
-                        </div> :
-                        <img  className='h-full rounded-xl' src={image} /> // make this image in the same color as app
-                    }
-                </Card> */}
             </SimpleGrid>
             <div>
                 <Achievements  achievement={profile?.achievements}/>
                 <MatchHistory matchhistory={profile?.matchhistory} />
-                {/* <MatchHistory matchhistory={data}/> */}
             </div>
         </SimpleGrid>
     );
@@ -112,9 +98,9 @@ function Profile({profileName, handleRequest, friendShip}: {profileName: string 
 
     console.log("profileName: ", profileName);
     return (
-            <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
-                <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
-             </div>
+        <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
+            <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
+        </div>
     );
 }
 
