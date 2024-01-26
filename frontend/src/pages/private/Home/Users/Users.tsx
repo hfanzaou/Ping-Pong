@@ -149,7 +149,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                 <div className='flex justify-between'>
                     <Group gap="md">
                         <Menu position='right-start' offset={2}>
-                            <Menu.Target >
+                            <Menu.Target>
                                 <div dir="rtl" className="relative" >
                                     <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
                                         <Avatar size={50} src={item.avatar} radius={50} />

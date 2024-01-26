@@ -3,14 +3,14 @@
         "id": 1,
         "name": "firstMatch",
         "type": false,
-        "image": "./4640283_award_first_medal_place_premium_icon.png",
+        "image": "./firstGame.png",
         "title": "Play First Match"
     },
     {
         "id": 2,
         "name": "firstFriend",
         "type": false,
-        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "image": "./firstFriend.png",
         "title": "Add First Friend"
     },
     {
