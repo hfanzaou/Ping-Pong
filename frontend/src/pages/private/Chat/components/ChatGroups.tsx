@@ -218,6 +218,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			setData(prev => setMessageData(prev, ""))
 			if (Reference.current)
 				Reference.current.focus();
+			data.socket?.emit(
+				"addnotification",
+				{reciever: data.groupTo, type: "groupChat"}
+			);
 		}
 	}
 	function callBack(m: {
@@ -309,7 +313,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				setUserInvite("");
 				data.socket?.emit(
 					"addnotification",
-					{reciever: userInvite, type: "groupInvite", groupname: data.groupTo}
+					{
+						reciever: userInvite,
+						type: "groupInvite",
+						groupname: data.groupTo
+					}
 				);
 			}
 			else {

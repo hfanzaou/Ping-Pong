@@ -133,7 +133,10 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 			setData(prev => setMessageData(prev, ""))
 			if (Reference.current)
 				Reference.current.focus();
-			data.socket?.emit("addnotification", {reciever: Message.recver, type: "chat"});
+			data.socket?.emit(
+				"addnotification",
+				{reciever: Message.recver, type: "chat"}
+			);
 		}
 	}
 	function change(event: ChangeEvent<HTMLInputElement>)

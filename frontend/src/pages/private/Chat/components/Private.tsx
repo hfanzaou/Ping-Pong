@@ -133,12 +133,12 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				...data.userData?.friends]
 				.filter((value, index, self) => {
 					for (let i = index + 1; i < self.length; i++) {
-						if (value.id == self[i].id)
+						if (value && self[i] && value.id == self[i].id)
 							return false;
 					}
 					return true;
 				})
-				.filter((value => value.login
+				.filter((value => value && value.login
 					.includes(event.target.value)));
 			setList(list);
 			if (!list.find(x => x.login == data.talkingTo))
@@ -176,53 +176,55 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			<ul>
 				{
 					List?.map(x => {
-						return (
-							<li key={x.id} className="flex relative">
-								<button
-									onClick={click}
-									name={x.login}
-									className={`w-full px-7 py-3 rounded-md
-									select-none ${data.talkingTo == x.login
-										? "bg-discord5"
-										: "hover:bg-discord4"}
-										flex justify-center items-center`}
-								>
-									{
-										x.avatar ?
-											<img
-												src={x.avatar}
-												className={`w-10 h-10 mr-3
-													rounded-full
-													${
-														data.talkingTo == x.login &&
-															"shadow-black shadow-lg"
-													}`}
-											/> :
-											<IconUser
-												className={`w-10 h-10 mr-3
-													rounded-full bg-discord1
-													${
-														data.talkingTo == x.login &&
-															"shadow-black shadow-lg"
-													}`}
-											/>
-									}
-									{size && x.login}
-								</button>
-								<button
-									className="absolute top-5 right-0 w-10 flex justify-center"
-									onClick={clickSettings}
-									name={x.login}
-								>
-									<IconDotsVertical/ >
-								</button>
-								{/* {
-									x.read &&
-										<div className="absolute -top-2 -right-2">
-											<IconCircleFilled className="w-5"/>
-										</div>
-								} */}
-							</li>);
+						if (x)
+							return (
+								<li key={x.id} className="flex relative">
+									<button
+										onClick={click}
+										name={x.login}
+										className={`w-full px-7 py-3 rounded-md
+										select-none ${data.talkingTo == x.login
+											? "bg-discord5"
+											: "hover:bg-discord4"}
+											flex justify-center items-center`}
+									>
+										{
+											x.avatar ?
+												<img
+													src={x.avatar}
+													className={`w-10 h-10 mr-3
+														rounded-full
+														${
+															data.talkingTo == x.login &&
+																"shadow-black shadow-lg"
+														}`}
+												/> :
+												<IconUser
+													className={`w-10 h-10 mr-3
+														rounded-full bg-discord1
+														${
+															data.talkingTo == x.login &&
+																"shadow-black shadow-lg"
+														}`}
+												/>
+										}
+										{size && x.login}
+									</button>
+									<button
+										className="absolute top-5 right-0 w-10 flex justify-center"
+										onClick={clickSettings}
+										name={x.login}
+									>
+										<IconDotsVertical/ >
+									</button>
+									{/* {
+										x.read &&
+											<div className="absolute -top-2 -right-2">
+												<IconCircleFilled className="w-5"/>
+											</div>
+									} */}
+								</li>
+							);
 					})
 				}
 			</ul>
