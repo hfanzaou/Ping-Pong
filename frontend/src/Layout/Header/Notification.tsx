@@ -5,13 +5,14 @@ import FriendInterface from "../../pages/private/Profile/UsersRelation/FriendsIn
 import NotificationInterface from "./NotificationInterface";
 import { useDisclosure } from "@mantine/hooks";
 import { Socket } from "socket.io-client";
+import FriendshipButton from "../../pages/private/Home/Users/FriendshipButton";
 
-function Notification({socket}: {socket: Socket}) {
+function Notification({socket, handleRequest}: {socket: Socket, handleRequest: Function}) {
     const [notificationList, setNotificationList] = useState<NotificationInterface[]>([]);
     const [notification, setNotification] = useState<boolean>(false);
     const [opened, { open, close }] = useDisclosure(false);
 
-    const [type, setType] = useState<string>();
+    // const [type, setType] = useState<string>();
 
     const getRequests = async () => {
         await axios.get("user/notification")
@@ -41,7 +42,7 @@ function Notification({socket}: {socket: Socket}) {
         getRequests();
         console.log("get notification ::: this type :: ", data);
         if (data.type) {
-            setType(data.type);
+            // setType(data.type);
         }
         return () => {
             socket.off("getnotification");
@@ -54,34 +55,32 @@ function Notification({socket}: {socket: Socket}) {
     }, [socket, setNotification]);
 
     const requestRows = notificationList.map((item) => (
-        // <div className=" h-[700px] bg-gray-500">
-          <div className="flex items-center justify-evenly">
+        <div className="bg-gray-500 m-1 p-2 rounded-md">
+
+          <div className="flex items-center justify-evenly m-1">
           <Group gap="sm">
                 <Avatar size={40} src={item.avatar} radius={40}/>
-              <Text fz="sm" fw={500} c='indigo'>
+              <Text fz="sm" fw={500} c={'white'}>
                 {item.username}
               </Text>
           </Group>
-          {type === 'chat' ?
-            <Text >{item.type}</Text>
-           :
-            <Text >{item.type}</Text>
+          {item.type === "friend request" && <Text c={'blue'}> sent you a friend request </Text>}
+          {item.type === "groupInvite" && <Text c={'grape'} > Invite you to a group</Text>}
+          {item.type === "accept friend" && <Text c={'green'}>accept friend request</Text>}
+            {(item.type !== "friend request" && item.type !== "groupInvite" && item.type !== "accept friend") &&
+                <Text>{item.type}</Text>
             }
-            </div>
-        //   {/* <Button radius='xl' color='gray' onClick={() => handleAccepteFriend(item.name)}>
-        //     Accept friend
-        //   </Button> */}
-        // </div>
+        {/* //   <FriendshipButton name={item.username} friendship={"accept friend"} handleRequest={handleRequest}/> : */}
+        </div>
+        </div>
+
       ));
     
     return (
-
         <>
             {/* <Modal radius='md' opened={opened} onClose={close} title="Notification" centered>
                 {requestRows}
             </Modal> */}
-
-
 
             <Drawer 
                 // offset={20}
@@ -89,12 +88,12 @@ function Notification({socket}: {socket: Socket}) {
                 position="right"
                 opened={opened}
                 onClose={close}
-                title="Notification"
+                // title="Notification"
                 scrollAreaComponent={ScrollArea.Autosize}
-                c={'blue'}
+                // c={'red'}
             >
+                    {requestRows}
 
-                {requestRows}
             </Drawer>
 
             <button onClick={open} type="button" className={notification ? "relative rounded-full bg-gray-800 text-blue-500 hover:text-white": "relative rounded-full bg-gray-800 text-gray-400 hover:text-white"}>
@@ -102,7 +101,6 @@ function Notification({socket}: {socket: Socket}) {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
             </button>
-
         </>
 
 

@@ -88,7 +88,7 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
         m="auto"
         mt={12}
         />
-            <Menu position='right-start' offset={2}>
+            <Menu position='left-start' offset={2}>
                 <Menu.Target >
 
             <button className="absolute top-1 start-0 m-2">

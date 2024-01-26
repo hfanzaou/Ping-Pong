@@ -9,12 +9,30 @@ import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
 import data from './MatchHistory/test.json'
 import image from './assite/bg.gif'
+import FriendshipButton from '../Home/Users/FriendshipButton'
 
 export function ProfileSections({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
     // const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
     const [profile, setProfile] = useState<any>(null);
     const [notFound, setNotFound] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const [userName, setUserName] = useState<string>();
+
+    useEffect(() => { // Just to check if the same user profile or not to show the friendship button or not
+        const getUserNmae = async () => {
+            await axios.get("user/name")
+            .then((res) => {
+                console.log(res.data.name);
+                setUserName(res.data.name);
+            })
+            .catch((err) => {
+                console.log("Error in geting data in edit profile :", err);
+            })
+        };
+        getUserNmae();
+    }, []);
+
 
     useEffect(() => {
         // console.log("name: in public profile fitcheng data", name);
@@ -37,6 +55,26 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
         };
         getUserProfile();
     }, []);
+
+////////////////////////////////////////////////////////////////////////// new card
+    const handleBlockUser = async (name: string) => {
+        await axios.post("user/block", {name: name})
+        .then((res) => {
+            if (res.status === 201) {
+                // getUsers();
+            }
+        })
+        .catch((err) => {
+            console.error("error when send post request to block friend: ", err);
+        })
+    };
+
+    const handleSendMessage = (name: string) => {
+        // setReceverName(name);
+        open();
+    };
+
+//////////////////////////////////////////////////////////////////////////
 
     // if (isLoading)
     //     return (
@@ -66,7 +104,13 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
             >
                 <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip} />
                 <Card  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
-                    <img  className='h-full rounded-xl' src={image} /> {/* make this image in the same color as app*/}
+                    {profile?.usercard.username !== userName ? 
+                        <div className='flex flex-col space-y-3'>
+                            <FriendshipButton name={profile?.usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
+                            <Button color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
+                        </div> :
+                        <img  className='h-full rounded-xl' src={image} /> // make this image in the same color as app
+                    }
                 </Card>
             </SimpleGrid>
             <div>

@@ -41,8 +41,6 @@ function App()  {
     axios.defaults.withCredentials = true;
     axios.defaults.baseURL = apiUrl;
 
-
-
 const handleRequest = async (name: string) => {
 
     console.log("Name from handle Request: ", name);
@@ -204,7 +202,7 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-             <Header socket={socket} setSocket={setSocket} avatar={avatar}/>
+             <Header socket={socket} setSocket={setSocket} avatar={avatar} handleRequest={handleRequest}/>
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>
