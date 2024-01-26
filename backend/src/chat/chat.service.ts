@@ -296,43 +296,74 @@ export class ChatService {
 		}
 		return null;
 	}
+	async updateChatUsers(data: MESSAGE) {
+		const	sender = await this.prisma.user.findUnique({
+			where: {
+				username: data.sender,
+				chatUsers: { none: { username: data.recver}}
+			}
+		});
+		if (sender) {
+			const	recver = await this.prisma.user.findUnique({
+				where: { username: data.recver }
+			});
+			if (recver) {
+				await this.prisma.user.update({
+					where: {
+						id: sender.id
+					},
+					data: {
+						chatUsers: {
+							connect: {
+								id: recver.id
+							}
+						},
+						chatUsersOf: {
+							connect: {
+								id: recver.id
+							}
+						}
+					}
+				});
+			}
+		}
+	}
 	async getChatUsers(data: NEWCHAT) {
 		const	recver = await this.prisma.user.findUnique({
 			where: { username: data.recver }
 		});
-		const	sender = await this.prisma.user.findUnique({
-			where: { username: data.sender }
-		});
-		await this.prisma.user.update({
-			where: {
-				id: sender.id
-			},
-			data: {
-				chatUsers: {
-					connect: {
-						id: recver.id
-					}
-				}
-			}
-		});
-		await this.prisma.user.update({
-			where: {
-				id: recver.id
-			},
-			data: {
-				chatUsers: {
-					connect: {
+		if (recver) {
+			const	sender = await this.prisma.user.findUnique({
+				where: { username: data.sender }
+			});
+			if (sender) {
+				await this.prisma.user.update({
+					where: {
 						id: sender.id
+					},
+					data: {
+						chatUsers: {
+							connect: {
+								id: recver.id
+							}
+						},
+						chatUsersOf: {
+							connect: {
+								id: recver.id
+							}
+						}
 					}
-				}
+				});
 			}
-		});
+		}
 	}
 	async newMessage(recver: string) {
 		const user = await this.prisma.user.findUnique({
 			where: { username: recver },
 		});
-		return (user.socket);
+		if (user)
+			return (user.socket);
+		return ;
 	}
 	async addGroup(data: NEWGROUP) {
 		const	user = await this.prisma.user.findUnique({
