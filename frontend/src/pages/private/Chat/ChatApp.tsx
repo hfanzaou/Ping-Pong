@@ -131,7 +131,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 					an error has occurred, please reload the page
 				</div>
 			}
-			<Nav option={option} setOption={setOption} setData={setData}/>
+			<Nav option={option} setOption={setOption} setData={setData} data={data}/>
 			{
 				option == "Private" ?
 					<Private data={data} setData={setData} /> :

@@ -179,7 +179,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                     Block user
                                 </Menu.Item>
                             </Menu.Dropdown>
-                            <SerndMessage name={receverName} opened={opened} close={close}/>
+                            <SerndMessage name={receverName} opened={opened} close={close} socket={socket}/>
                         </Menu>
                         <div>
                             <Text fz="md" fw={800} c='indigo'>

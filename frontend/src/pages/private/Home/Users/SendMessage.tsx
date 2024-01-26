@@ -1,25 +1,29 @@
-import React, { useState } from "react";
-import { Button, Modal, TextInput, Textarea } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal, Textarea } from "@mantine/core";
+import { Socket } from "socket.io-client";
 
-function SerndMessage({name, opened, close}: {name: string, opened: boolean, close: () => void}) {
+function SerndMessage({name, opened, close, socket}: {name: string, opened: boolean, close: () => void, socket: Socket}) {
     const [disabled, setDisabled] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('');
+    const   nameRef = useRef(name);
 
-    console.log("name: ", name);
-    // sent message to server
-    const handleSentMessage = async () => {
-        await axios.post('message', {name: name, message: message})
-        .then(res => {
-            if (res.status === 201) {
-                console.log("Message sent to server");
-                close();
-            }
-        })
-        .catch(err => {
-            console.error("Error in send message to server: ", err);
-        })
+    nameRef.current = name;
+    function callBack() {
+        console.log(nameRef.current);
+        socket.emit("newUser", nameRef.current);
+        socket.emit(
+            "addnotification",
+            {reciever: nameRef.current, type: "chat"}
+        );
+    }
+    useEffect(() => {
+        socket.on("DONE", callBack);
+        return () => {
+            socket.off("DONE", callBack);
+        }
+    }, []);
+    const handleSentMessage = () => {
+        socket.emit("directTmp", { recver: name, message: message });
         setDisabled(true);
         close();
     };

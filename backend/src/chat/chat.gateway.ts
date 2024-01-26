@@ -39,6 +39,30 @@ OnGatewayDisconnect {
 		else
 			this.server.to(client.id).emit("chatError");
 	}
+	//
+	@SubscribeMessage("directTmp")
+	async handelMessageTmp(
+		client: Socket,
+		dataTmp: { recver: string, message: string }
+	) {
+		const { username: sender } = await this.verifyClient(client);
+		const	data: MESSAGE = {
+			sender: sender,
+			recver: dataTmp.recver,
+			message: dataTmp.message
+		}
+		const room = await this.chatService.getRoomDirect(data);
+		if (room) {
+			const message = await this.chatService.addMessagePrivate(data);
+			this.server.to(room).emit("clientPrivate", message);
+			await this.chatService.updateChatUsers(data);
+			// console.log(client.id);
+			this.server.to(client.id).emit("DONE");
+		}
+		else
+			this.server.to(client.id).emit("chatError");
+	}
+	//
 	@SubscribeMessage("room")
 	async handelRoom(client: Socket, data: MESSAGE) {
 		const room = await this.chatService.getRoomRoom(data);
@@ -70,11 +94,15 @@ OnGatewayDisconnect {
 	}
 	@SubscribeMessage("newUser")
 	async handelUser(client: Socket, data: string) {
+		console.log(data);
 		const recver = await this.chatService.newMessage(data);
-		const	{ username } = await this.chatService.whoIAm(client.id);
-		this.server
-			.to(recver)
-			.emit("newuser", username);
+		if (recver) {
+			const	{ username } = await this.chatService.whoIAm(client.id);
+			this.server
+				.to(recver)
+				.emit("newuser", username);
+		}
+		// console.log(recver);
 	}
 	async handleDisconnect(client: Socket) {
 		Array
