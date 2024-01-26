@@ -36,15 +36,14 @@ export class ChatService {
 								{ name: `&${x.username}${userName}`}
 							]
 						}
-					})
-					// console.log("test1");
-					// console.log(chatHistorie.updateAt);
-					return {
-						id: x.id,
-						login: x.username,
-						avatar: await this.user.getUserAvatar(x.id),
-						time: chatHistorie.updateAt
-					}
+					});
+					if (chatHistorie)
+						return {
+							id: x.id,
+							login: x.username,
+							avatar: await this.user.getUserAvatar(x.id),
+							time: chatHistorie.updateAt
+						};
 				})),
 				friends: await Promise.all(user.friends.filter(x =>
 					user.friendOf.some(friend => friend.id == x.id))
@@ -726,5 +725,18 @@ export class ChatService {
 		if (group)
 			return true;
 		return false
+	}
+	async getNotificationUsers(payload: notifDto, id: number) {
+		const group = await this.prisma.gROUP.findFirst({
+			where: { name: payload.reciever },
+			include: { members: { include: { user: true }}}
+		});
+		if (group) {
+			return group.members.map(x => {
+				if (x.user.id != id)
+					return { socket: x.user.socket, userName: x.user.username };
+			});
+		}
+		return null;
 	}
 }
