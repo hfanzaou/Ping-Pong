@@ -133,7 +133,7 @@ function NavigationItem() {
 }
 
 
-const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
+const LeftSide = ({socket, avatar, handleRequest} : {socket: Socket, avatar: string, handleRequest: Function}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
 
 
@@ -147,7 +147,7 @@ const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
 
             {/* <button type="button" className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"> */}
 
-        <Notification socket={socket}/>
+        <Notification socket={socket} handleRequest={handleRequest}/>
 
         <Menu trigger="hover"  openDelay={100} closeDelay={400} opened={disabled} onChange={setDisabled} shadow="md" position="bottom-end" offset={5}>
 
@@ -174,14 +174,14 @@ const LeftSide = ({socket, avatar} : {socket: Socket, avatar: string}) => {
 }
 
 
-function Nav({socket, avatar} : {socket: Socket, avatar: string}) {
+function Nav({socket, avatar, handleRequest} : {socket: Socket, avatar: string, handleRequest: Function}) {
     return (
     <div className="bg-gray-800">
         <nav className="bg-slate-900 rounded-full mx-8 mb-2">
             <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <NavigationItem/>
-                    <LeftSide socket={socket} avatar={avatar}/>
+                    <LeftSide socket={socket} avatar={avatar} handleRequest={handleRequest}/>
                 </div>
             </div>
         </nav>

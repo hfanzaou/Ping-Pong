@@ -6,9 +6,10 @@ interface Props {
     setSocket: React.Dispatch<React.SetStateAction<Socket | null>>,
     socket: Socket | null,
     avatar: string,
+    handleRequest: Function,
 }
 
-const   Header: React.FC<Props> = ({ setSocket, socket, avatar }) => {
+const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest }) => {
     async function callBack(socket: Socket) {
         try {
             const res0 = await fetch("http://localhost:3001/user/name", {
@@ -76,7 +77,7 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar }) => {
     
     return (
         <div className='sticky top-0 z-50'>
-            {socket && <Nav socket={socket} avatar={avatar}/>}
+            {socket && <Nav socket={socket} avatar={avatar} handleRequest={handleRequest}/>}
         </div>
     );
 }
