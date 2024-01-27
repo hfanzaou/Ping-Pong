@@ -177,7 +177,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			<ul>
 				{
 					List?.map(x => {
-						if (x)
+						if (x) {
+							
 							return (
 								<li key={x.id} className="flex relative">
 									<button
@@ -226,6 +227,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									} */}
 								</li>
 							);
+						}
 					})
 				}
 			</ul>

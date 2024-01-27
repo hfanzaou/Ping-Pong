@@ -193,16 +193,16 @@ export class ChatService {
 				]
 			}
 		});
-		const avatar = await this.prisma.user.findUnique({
-			where: {
-				username: data.sender
-			}
-		})
+		// const avatar = await this.prisma.user.findUnique({
+		// 	where: {
+		// 		username: data.sender
+		// 	}
+		// })
 		const message = await this.prisma.mESSAGE.create({
 			data: {
 				sender: data.sender,
 				message: data.message,
-				avatar: await this.user.getUserAvatar(avatar.id),
+				// avatar: await this.user.getUserAvatar(avatar.id),
 				chathistory: {
 					connect: {
 						id: chatHistorie.id
@@ -217,8 +217,8 @@ export class ChatService {
 		return {
 			id: message.id,
 			message: message.message,
-			sender: message.sender,
-			avatar: message.avatar,
+			sender: message.sender
+			// avatar: message.avatar,
 			// recver: data.recver
 		}
 	}
@@ -226,9 +226,9 @@ export class ChatService {
 		const	chatHistorie = await this.prisma.cHATHISTORY.findUnique({
 			where: { name: data.recver }
 		})
-		const avatar = await this.prisma.user.findUnique({
-			where: { username: data.sender }
-		})
+		// const avatar = await this.prisma.user.findUnique({
+		// 	where: { username: data.sender }
+		// })
 		await this.prisma.cHATHISTORY.update({
 			where: { id: chatHistorie.id },
 			data: { updateAt: new Date() }
@@ -237,7 +237,7 @@ export class ChatService {
 			data: {
 				sender: data.sender,
 				message: data.message,
-				avatar: await this.user.getUserAvatar(avatar.id),
+				// avatar: await this.user.getUserAvatar(avatar.id),
 				chathistory: {
 					connect: {
 						id: chatHistorie.id
@@ -249,7 +249,7 @@ export class ChatService {
 			id: message.id,
 			message: message.message,
 			sender: message.sender,
-			avatar: message.avatar,
+			// avatar: message.avatar,
 			// recver: data.recver
 		}
 	}
@@ -275,8 +275,8 @@ export class ChatService {
 					return {
 						id: x.id,
 						message: x.message,
-						sender: x.sender,
-						avatar: x.avatar
+						sender: x.sender
+						// avatar: x.avatar
 					}
 				})].reverse();
 				return chatHistory;
@@ -298,7 +298,7 @@ export class ChatService {
 						id: x.id,
 						message: x.message,
 						sender: x.sender,
-						avatar: x.avatar
+						// avatar: x.avatar
 					}
 				})].reverse();
 				return chatHistory;
@@ -529,6 +529,44 @@ export class ChatService {
 	async whoIAm(id: string) {
 		const	user = await this.prisma.user.findFirst({ where: { socket: id }});
 		return user;
+	}
+	async chatAvatarPrivate(data: { userName1: string, userName2: string }) {
+		const	user1 = await this.prisma.user.findFirst({
+			where: { username: data.userName1 }
+		});
+		if (user1) {
+			const	user2 = await this.prisma.user.findFirst({
+				where: { username: data.userName2 }
+			});
+			if (user2)
+				return [
+					{
+						userName: user1.username,
+						avatar: await this.user.getUserAvatar(user1.id)
+					},
+					{
+						userName: user2.username,
+						avatar: await this.user.getUserAvatar(user2.id)
+					}
+				];
+		}
+		return null;
+	}
+	async chatAvatarRoom(data: { name: string }) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data.name },
+			include: { members: { include: { user: true}}}
+		});
+		// console.log("here");
+		if (group) {
+			const	users = await Promise.all(group.members.map(async x => ({
+				userName: x.user.username,
+				avatar: await this.user.getUserAvatar(x.user.id)
+			})));
+			// console.log(users.map(x => x.userName));
+			return users;
+		}
+		return null;
 	}
 	async getGroupUsers(name: string) {
 		const	group = await this.prisma.gROUP.findFirst({
