@@ -530,6 +530,9 @@ export class ChatService {
 		const	user = await this.prisma.user.findFirst({ where: { socket: id }});
 		return user;
 	}
+	// chatAvatar(data: { userName: string }) {
+
+	// }
 	async getGroupUsers(name: string) {
 		const	group = await this.prisma.gROUP.findFirst({
 			where: { name: name },

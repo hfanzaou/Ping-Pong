@@ -1,7 +1,7 @@
 export interface User {
 	id:		number,
 	login:	string,
-	avatar?: string
+	// avatar?: string
 }
 
 export interface USERDATA {

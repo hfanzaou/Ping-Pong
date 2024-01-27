@@ -35,6 +35,22 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
 	useEffect(() => {
+		async function fetchData() {
+			const	res = await fetch("http://localhost:3001/chatAvatar", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				})
+			});
+			const	Data = await res.json();
+			setAvatars(Data);
+		}
+		fetchData();
+	}, [data.userData?.chatUsers])
+	useEffect(() => {
 		setText("");
 	}, [data.send])
 	useEffect(() => {
