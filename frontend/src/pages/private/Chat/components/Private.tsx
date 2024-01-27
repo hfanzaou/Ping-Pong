@@ -27,6 +27,10 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[blockTrigger, setBlockTrigger] = useState(false)
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
 	const	userNameRef = useRef(data.userData?.userName);
+	const	[avatars, setAvatars] = useState<Array<{
+		userName: string,
+		avatar: string
+	}>>([]);
 
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
@@ -177,7 +181,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			<ul>
 				{
 					List?.map(x => {
-						if (x)
+						if (x) {
+							
 							return (
 								<li key={x.id} className="flex relative">
 									<button
@@ -226,6 +231,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									} */}
 								</li>
 							);
+						}
 					})
 				}
 			</ul>
