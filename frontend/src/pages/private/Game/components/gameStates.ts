@@ -1,10 +1,10 @@
 
-import { Player } from "./classes/player";
+import { Player } from "../classes/player";
 import p5Types from "p5";
 import { canvas } from "./GameComponent";
 import { player1, player2 } from "./gameLogic";
 import { Socket } from "socket.io-client";
-import { WIDTH, HEIGHT } from "./classes/constants";
+import { WIDTH, HEIGHT } from "../classes/constants";
 
 export let play: boolean = false;
 export let mode: number = 0;

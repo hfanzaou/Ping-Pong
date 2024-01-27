@@ -67,7 +67,7 @@ model MESSAGE {
 
   sender        String
   message       String
-  avatar        String?
+  // avatar        String?
   chathistoryid Int
   chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
 }
@@ -106,6 +106,7 @@ model UserGROUP {
 
 model Notifications {
   id        Int     @id @unique @default(autoincrement())
+  createAt  DateTime @default(now())
   userId    Int
   user      User    @relation(fields: [userId], references: [id])
   senderId  Int

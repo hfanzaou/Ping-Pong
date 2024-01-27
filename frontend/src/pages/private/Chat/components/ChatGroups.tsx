@@ -19,7 +19,7 @@ import {
 	IconX
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
-import { DATA, Group, MESSAGE, NEWCHAT } from "../myTypes";
+import { DATA, Group, MESSAGE, NEWCHAT, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
 import { useNavigate } from "react-router-dom";
 
@@ -36,8 +36,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
 		message: string,
-		sender: string,
-		avatar: string
+		sender: string
+		// avatar: string
 	}>>([]);
 	const	[settings, setSettings] = useState(false);
 	const	[users, setUsers] = useState<Array<{
@@ -57,8 +57,34 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[settingsPassword, setSettingsPassword] = useState("");
 	const	[settingsVerify, setSettingsVerify] = useState("");
 	const	[settingsOld, setSettingsOld] = useState("");
+	const	[trigger, setTrigger] = useState(false);
+	const	[avatars, setAvatars] = useState<Array<{
+		userName: string,
+		avatar: string
+	}>>([]);
 
+	
 	userNameRef.current = data.userData?.userName;
+	useEffect(() => {
+		if (data.groupTo) {
+			async function fetchData() {
+				const	res = await fetch("http://localhost:3001/chatAvatarRoom", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						name: data.groupTo
+					})
+				});
+				// console.log(res);
+				const	Data = await res.json();
+				if (Data)
+					setAvatars(Data);
+			}
+			fetchData();
+		}
+	}, [data.groupTo, data.userData?.groups]);
 	useEffect(() => {
 		if (Reference.current)
 			Reference.current.focus();
@@ -206,6 +232,34 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			message: event.target.value
 		}));
 	}
+	useEffect(() => {
+		if (trigger) {
+			async function fetchData() {
+				const res0 = await fetch("http://localhost:3001/chatUser", {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							userName: data.userData?.userName
+						})
+					});
+					const Data: USERDATA = await res0.json();
+					Data.groups.sort((x, y) => {
+						if (x.time && y.time) {
+							const	timeX = new Date(x.time);
+							const	timeY = new Date(y.time);
+							return timeY.getTime() - timeX.getTime();
+						}
+						return 0;
+					})
+					setData(prev => setUserData(prev, Data));
+					data.socket?.emit("newGroup", data.groupTo)
+			}
+			fetchData()
+			setTrigger(false);
+		}
+	}, [trigger])
 	function submitMessage(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (data.message.length) {
@@ -218,13 +272,17 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			setData(prev => setMessageData(prev, ""))
 			if (Reference.current)
 				Reference.current.focus();
+			data.socket?.emit(
+				"addnotification",
+				{reciever: data.groupTo, type: "groupChat"}
+			);
 		}
 	}
 	function callBack(m: {
 		id: number,
 		message: string,
 		sender: string,
-		avatar: string,
+		// avatar: string,
 	})
 	{
 		setData(x => ({
@@ -232,6 +290,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			send: !x.send
 		}))
 		setConversation(prev => [m, ...prev]);
+		setTrigger(true);
 	}
 	function clickSettings() {
 		setSettings(x => !x);
@@ -309,7 +368,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				setUserInvite("");
 				data.socket?.emit(
 					"addnotification",
-					{reciever: userInvite, type: "groupInvite", groupname: data.groupTo}
+					{
+						reciever: userInvite,
+						type: "groupInvite",
+						groupname: data.groupTo
+					}
 				);
 			}
 			else {
@@ -891,32 +954,35 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 							)
 						}) :
 						conversation.map(x => {
-							return (
-								<li
-									key={x.id}
-									className="flex hover:bg-discord3
-										rounded-md m-2 p-3"
-								>
-									<a
-										href={`http://localhost:3000/UserProfile?name=${x.sender}`}
+							const	avatar = avatars.find(y => y.userName == x.sender);
+							if (avatar)
+								return (
+									<li
+										key={x.id}
+										className="flex hover:bg-discord3
+											rounded-md m-2 p-3"
 									>
-										{
-											x.avatar ?
-												<img
-													src={x.avatar}
-													className="h-12 w-12 rounded-full mr-3"
-												/> :
-												<IconUser
-													className="h-12 w-12 rounded-full mr-3
-														bg-discord1"
-												/>
-										}
-									</a>
-									<div className="w-[80%]">
-										<div className="font-extrabold">{x.sender}</div>
-										<div className="break-words">{x.message}</div>
-									</div>
-								</li>)
+										<a
+											href={`http://localhost:3000/UserProfile?name=${x.sender}`}
+										>
+											{
+												avatar.avatar ?
+													<img
+														src={avatar.avatar}
+														className="h-12 w-12 rounded-full mr-3"
+													/> :
+													<IconUser
+														className="h-12 w-12 rounded-full mr-3
+															bg-discord1"
+													/>
+											}
+										</a>
+										<div className="w-[80%]">
+											<div className="font-extrabold">{x.sender}</div>
+											<div className="break-words">{x.message}</div>
+										</div>
+									</li>
+								)
 						})}
 					</ul>
 					<div className="flex m-2">
@@ -1026,7 +1092,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				</div>
 			)
 	}
-	return ;
+	return <div></div>;
 }
 export default ChatGroups;
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import p5 from "p5";
 import { Socket } from 'socket.io-client';
-import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forceUpdate } from "./gameLogic";
-import { WIDTH, HEIGHT, RACKET_HEIGHT, RACKET_WIDTH, INITIAL_SPEED, BALL_DIAMETER, MOVE } from './classes/constants';
+import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forge } from "./gameLogic";
+import { WIDTH, HEIGHT, RACKET_HEIGHT, RACKET_WIDTH, INITIAL_SPEED, BALL_DIAMETER, MOVE } from '../classes/constants';
 import { handleGameStates, play } from './gameStates';
-import { gameConfig } from './classes/constants';
-import { userData } from './Game';
+import { gameConfig } from '../classes/constants';
+import { userData } from '../Game';
 
 
 
@@ -28,7 +28,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
     new p5(p => {
       p.setup = async () => {
         canvas = p.createCanvas(WIDTH, HEIGHT);
-        eventListeners(p, socket);
+        eventListeners(p, socket, config);
         if (config.mode == 3 || config.mode == 2) {
           initGame(p, socket, config, user);
         }
@@ -44,6 +44,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
         handleGameStates(p, socket, endGame);
         
         if (play) {
+          socket.emit('state', "Ingame");
           p.textSize(32);
           p.textStyle(p.BOLD);
           p.text(player1.score, 40, 60);
@@ -52,10 +53,6 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
           checkKeys(p, socket, config.mode);
           if (config.mode == 3) {
             computerPlayer(config.difficulty);
-            gameLoop(p, socket, config);
-          }
-          else if (config.mode == 2) {
-            gameLoop(p, socket, config);
           }
           if (goalScored) {
             p.translate(p.random(-13, 13), p.random(-13, 13));
@@ -67,16 +64,34 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
               }
             }
           }
-
+          
           if (player1.racket.forcePush) {
-            forceUpdate(player1);
+            player1.racket.forceUpdate();
           } else if (player2.racket.forcePush) {
-            forceUpdate(player2);
+            player2.racket.forceUpdate();
+          }
+          
+          if (forge.forgeIsFormed()) {
+            if (config.mode == 2 || config.mode == 3) {
+              gameLoop(p, socket, config);
+            }
+            ball.show(p);
+          } else {
+            forge.update(p);
+            forge.show(p);
           }
 
-          p.circle(ball.x, ball.y, BALL_DIAMETER);
-          p.rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT, 5);
-          p.rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT, 5);
+          player1.show(p);
+          if (player1.racket.forcePush) {
+            player1.racket.forceUpdate();
+          }
+
+          player2.show(p);
+          if (player2.racket.forcePush) {
+            player2.racket.forceUpdate();
+          }
+          // p.rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT, 5);
+          // p.rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT, 5);
           p.stroke('white');
           p.strokeWeight(4);
           p.drawingContext.setLineDash([5, 15]);

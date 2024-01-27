@@ -13,14 +13,36 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	const	[conversation, setConversation] = useState<Array<{
 		id: number,
 		message: string,
-		sender: string,
-		avatar: string
+		sender: string
+		// avatar: string
 	}>>([]);
 	const	dataRef = useRef(data);
 	dataRef.current = data;
 	const	Reference = useRef<HTMLInputElement | null>(null);
-	const	[trigger, setTrigger] = useState(false)
+	const	[trigger, setTrigger] = useState(false);
+	const	[avatars, setAvatars] = useState<Array<{
+		userName: string,
+		avatar: string
+	}>>([]);
 
+	useEffect(() => {
+		async function fetchData() {
+			const	res = await fetch("http://localhost:3001/chatAvatarPrivate", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName1: data.userData?.userName,
+					userName2: data.talkingTo
+				})
+			});
+			const	Data = await res.json();
+			if (Data)
+				setAvatars(Data);
+		}
+		fetchData();
+	}, [data.talkingTo]);
 	useEffect(() => {
 		if (Reference.current)
 			Reference.current.focus();
@@ -99,8 +121,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	function callBack(m: {
 		id: number,
 		message: string,
-		sender: string,
-		avatar: string,
+		sender: string
+		// avatar: string,
 	})
 	{
 		setData(x => ({
@@ -133,14 +155,17 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 			setData(prev => setMessageData(prev, ""))
 			if (Reference.current)
 				Reference.current.focus();
-			data.socket?.emit("addnotification", {reciever: Message.recver, type: "chat"});
+			data.socket?.emit(
+				"addnotification",
+				{reciever: Message.recver, type: "chat"}
+			);
 		}
 	}
 	function change(event: ChangeEvent<HTMLInputElement>)
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
-	return data.talkingTo && (
+	return data.talkingTo ? (
 		<form
 			onSubmit={submit}
 			className="w-[57%] bg-discord4 flex flex-col
@@ -148,32 +173,36 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		>
 			<ul className="max-h-90 overflow-auto flex flex-col-reverse">
 				{conversation.map(x => {
-					return (
-						<li
-							key={x.id}
-							className="flex hover:bg-discord3
-								rounded-md m-2 p-3"
-						>
-							<a
-								href={`http://localhost:3000/UserProfile?name=${x.sender}`}
+					const	avatar = avatars.find(y => y.userName == x.sender);
+					if (avatar) {
+						return (
+							<li
+								key={x.id}
+								className="flex hover:bg-discord3
+									rounded-md m-2 p-3"
 							>
-								{
-									x.avatar ?
-										<img
-											src={x.avatar}
-											className="h-12 w-12 rounded-full mr-3"
-										/> :
-										<IconUser
-											className="h-12 w-12 rounded-full mr-3
-												bg-discord1"
-										/>
-								}
-							</a>
-							<div className="w-[80%]">
-								<div className="font-extrabold">{x.sender}</div>
-								<div className="break-words">{x.message}</div>
-							</div>
-						</li>)
+								<a
+									href={`http://localhost:3000/UserProfile?name=${x.sender}`}
+								>
+									{
+										avatar.avatar ?
+											<img
+												src={avatar.avatar}
+												className="h-12 w-12 rounded-full mr-3"
+											/> :
+											<IconUser
+												className="h-12 w-12 rounded-full mr-3
+													bg-discord1"
+											/>
+									}
+								</a>
+								<div className="w-[80%]">
+									<div className="font-extrabold">{x.sender}</div>
+									<div className="break-words">{x.message}</div>
+								</div>
+							</li>
+						)
+					}
 				})}
 			</ul>
 			<div className="flex m-2">
@@ -195,6 +224,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				</button>
 			</div>
 		</form>
-	);
+	) : <div></div>;
 }
 export default ChatPrivate;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
 import { FaArrowLeft } from 'react-icons/fa';
-import { gameConfig } from './classes/constants';
+import { gameConfig } from '../classes/constants';
 import { Text } from '@mantine/core';
 import './loader.css';
 
@@ -26,6 +26,8 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   const [difficulty, setDifficulty] = useState('Easy');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [ballSize, setBallSize] = useState('medium');
+  const [ballType, setBallType] = useState('ghost');
 
   function handleCreateNewGameClick() {
     setCreatingGame(true);
@@ -42,7 +44,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
         speed = 7;
         break;
       case 'normal':
-        speed = 10;
+        speed = 9;
         break;
       case 'fast':
         speed = 15;
@@ -132,7 +134,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
 
   return (
     <div 
-      className="flex w-[700px] h-[450px] bg-gray-800 rounded justify-center items-center relative"
+      className="flex w-[600px] h-[450px] bg-gray-800 rounded justify-center items-center relative"
     >
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">
@@ -184,6 +186,35 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
                     <option value="slow">Slow</option>
                     <option value="normal">Normal</option>
                     <option value="fast">Fast</option>
+                  </select>
+                </label>
+                <label 
+                  className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                  title="Choose the speed of the ball (slow, normal, fast)"
+                >
+                  Ball Size: 
+                  <select 
+                    className="ml-20 rounded text-center w-36 bg-slate-700 text-white" 
+                    value={ballSize} 
+                    onChange={e => setBallSize(e.target.value)}
+                  >
+                    <option value="smal">Smal</option>
+                    <option value="medium">Medium</option>
+                    <option value="big">Big</option>
+                  </select>
+                </label>
+                <label 
+                  className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                  title="Choose the speed of the ball (slow, normal, fast)"
+                >
+                  Ball Type: 
+                  <select 
+                    className="ml-20 rounded text-center w-36 bg-slate-700 text-white" 
+                    value={ballType} 
+                    onChange={e => setBallType(e.target.value)}
+                  >
+                    <option value="simple">Simple</option>
+                    <option value="ghost">Ghost</option>
                   </select>
                 </label>
                 <label 

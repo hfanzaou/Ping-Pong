@@ -1,26 +1,55 @@
 import { IconMessages, IconUsersGroup } from "@tabler/icons-react";
 import React from "react";
 import { DATA } from "../myTypes";
+import { setUserData } from "../utils";
 
 interface Props {
 	option: string,
 	setOption: React.Dispatch<React.SetStateAction<string>>
 	setData: React.Dispatch<React.SetStateAction<DATA>>
+	data: DATA
 }
 
-const	Nav: React.FC<Props> = ({ option, setOption, setData}) => {
-	function clickPrivate()
+const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
+	async function clickPrivate()
 	{
 		setOption("Private");
-	}
-	function clickRooms()
-	{
-		setOption("Rooms");
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userName: data.userData?.userName
+			})
+		});
+		const Data = await res0.json();
+		setData(prev => setUserData(prev, Data));
 		setData(x => ({
 			...x,
+			groupTo: undefined,
 			talkingTo: undefined
 		}));
-
+	}
+	async function clickRooms()
+	{
+		setOption("Rooms");
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userName: data.userData?.userName
+			})
+		});
+		const Data = await res0.json();
+		setData(prev => setUserData(prev, Data));
+		setData(x => ({
+			...x,
+			talkingTo: undefined,
+			groupTo: undefined
+		}));
 	}
 	return (
 		<nav className="ml-2 mr-2">

@@ -31,7 +31,7 @@ function Buttons({profile, friendShip, handleRequest, socket}: {profile: any, fr
                     <FriendshipButton name={profile?.usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
                     <Button color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
                     <Button color='gray' radius='xl' onClick={handleSendMessage}>Send message</Button>
-                    <SerndMessage name={receverName} opened={opened} close={close} socket={socket}/>
+                    <SerndMessage name={receverName} opened={opened} close={close} socket={socket} />
                 </div>
         </Card>
   );
