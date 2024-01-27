@@ -1065,7 +1065,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				</div>
 			)
 	}
-	return ;
+	return <div></div>;
 }
 export default ChatGroups;
 
