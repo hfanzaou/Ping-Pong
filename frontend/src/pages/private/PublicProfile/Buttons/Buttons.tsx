@@ -4,9 +4,10 @@ import { Button, Card } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import FriendshipButton from "../../Home/Users/FriendshipButton";
 import SerndMessage from "../../Home/Users/SendMessage";
+import { Socket } from "socket.io-client";
 
 
-function Buttons({profile, friendShip, handleRequest}: {profile: any, friendShip: string, handleRequest: any}) {
+function Buttons({profile, friendShip, handleRequest, socket}: {profile: any, friendShip: string, handleRequest: any, socket: Socket}) {
     const [opened, { open, close }] = useDisclosure(false);
     const [receverName, setReceverName] = React.useState<string>("");
 
@@ -30,7 +31,7 @@ function Buttons({profile, friendShip, handleRequest}: {profile: any, friendShip
                     <FriendshipButton name={profile?.usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
                     <Button color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
                     <Button color='gray' radius='xl' onClick={handleSendMessage}>Send message</Button>
-                    <SerndMessage name={receverName} opened={opened} close={close}/>
+                    <SerndMessage name={receverName} opened={opened} close={close} socket={socket} />
                 </div>
         </Card>
   );

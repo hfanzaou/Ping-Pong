@@ -212,7 +212,7 @@ const handleRequest = async (name: string) => {
                     <Route path='/Game' element={socket && <Game socket={socket} avatar={avatar}/>}/>
                     <Route path='/Chat' element={socket && <ChatApp socket={socket}/>}/>
                     <Route path='/Setting' element={<Setting setAvatar={setAvatar} avatar={avatar}/>}/>
-                    <Route path={'/UserProfile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
+                    <Route path={'/UserProfile'} element={socket && <PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} socket={socket}/>} />
                     {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
                     {/* <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
                 </Routes>

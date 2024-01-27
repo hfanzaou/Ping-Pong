@@ -11,8 +11,9 @@ import data from './MatchHistory/test.json'
 import Buttons from './Buttons/Buttons'
 
 import image from './assite/bg.gif'
+import { Socket } from 'socket.io-client'
 
-export function ProfileSections({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
+export function ProfileSections({profileName, handleRequest, friendShip, socket}: {profileName: string | undefined, handleRequest: any, friendShip: string, socket: Socket}) {
     // const name = window.location.pathname.split("/")[1];  // get the name from the url use this and remove the userName from the props and cookies storage
     const [profile, setProfile] = useState<any>(null);
     const [notFound, setNotFound] = useState<boolean>(false);
@@ -82,7 +83,7 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
             >
                 <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip}/>
                 {profile?.usercard.username !== userName ?
-                    <Buttons profile={profile} handleRequest={handleRequest} friendShip={friendShip}/> :
+                    <Buttons profile={profile} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/> :
                     <img  className='h-full rounded-xl' src={image} /> // make this image in the same color as app
                 }
             </SimpleGrid>
@@ -94,12 +95,12 @@ export function ProfileSections({profileName, handleRequest, friendShip}: {profi
     );
 }
 
-function Profile({profileName, handleRequest, friendShip}: {profileName: string | undefined, handleRequest: any, friendShip: string}) {
+function Profile({profileName, handleRequest, friendShip, socket}: {profileName: string | undefined, handleRequest: any, friendShip: string, socket: Socket}) {
 
     console.log("profileName: ", profileName);
     return (
         <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
-            <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
+            <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/>
         </div>
     );
 }
