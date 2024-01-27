@@ -1,5 +1,5 @@
-import { Ball } from "./ball";
-import { Player } from "./player";
+import { Ball } from "./Ball";
+import { Player } from "./Player";
 
 export const WIDTH = 700,
              HEIGHT = 450,
@@ -13,34 +13,3 @@ export const WIDTH = 700,
              INC_SPEED = 0.75,
              BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER,
              MAX_SCORE = 10;
-
-export class gameConfig {
-    mode: number;
-    maxScore: number;
-    ballSpeed: number;
-    boost: boolean;
-    difficulty: number;
-    // player1 : Player;
-    // player2 : Player;
-    // ball : Ball;
-    // side : number;
-    constructor( mode: number, 
-        maxScore: number, 
-        ballSpeed: number, 
-        boost: boolean, 
-        difficulty: number) {
-        // player1: Player, 
-        // player2: Player, 
-        // ball: Ball, 
-        // side: number) {
-        this.mode = mode;
-        this.maxScore = maxScore;
-        this.ballSpeed = ballSpeed;
-        this.boost = boost;
-        this.difficulty = difficulty;
-        // this.player1 = player1;
-        // this.player2 = player2;
-        // this.ball = ball;
-        // this.side = side;
-    }
-}

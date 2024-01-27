@@ -7,11 +7,13 @@ import { SubscribeMessage,
   WebSocketServer
 } from '@nestjs/websockets';
 import { GameService } from './game.service';
-import { Socket, Server } from 'socket.io';
+import { Socket, Server, RemoteSocket} from 'socket.io';
 import { Logger } from '@nestjs/common';
-import { Ball } from "./classes/ball";
-import { Player } from "./classes/player";
-import { GAME_INTERVAL, GAME_START_DELAY, HEIGHT, WIDTH, gameConfig } from './classes/constants';
+import { Ball } from "./classes/Ball";
+import { Player } from "./classes/Player";
+import { GAME_INTERVAL, GAME_START_DELAY, HEIGHT, WIDTH } from './classes/constants';
+import { gameConfig } from './classes/gameConfig';
+
 
 @WebSocketGateway({cors: true})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -43,17 +45,18 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('create_room')
-  createRoom(client: Socket, payload: any)
+  createRoom(client: Socket, config: gameConfig)
   {
     this.logger.log(`Client ${client.id} wants to create a room`);
-    this.logger.log(payload);
-    this.configs.set(client.id, new gameConfig(payload.maxScore, payload.ballSpeed, payload.boost));
+    this.logger.log(config);
+    this.configs.set(client.id, config);
     this.gameService.waitingPlayers.push(client);
   }
 
   @SubscribeMessage('cancele')
   cancele(client: Socket) {
     this.configs.delete(client.id);
+    this.gameService.waitingPlayers = this.gameService.waitingPlayers.filter((player) => player.id !== client.id);
   }
 
   @SubscribeMessage('join_room')
@@ -66,8 +69,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.wss.to(opponent.id).emit('startGame');
       }
     } else {
-      // If there are no players waiting, add the new player to the queue
-      //this.gameService.waitingPlayers.push(client);
       this.logger.log(`No games found for ${client.id}`);
       this.wss.emit('NoGames');
     }
@@ -80,28 +81,45 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.wss.to(client.id).emit('userId', user.id);
   }
 
+  @SubscribeMessage('createGame')
+  async createGame(client: Socket, payload: any) {
+    const user1 = await this.gameService.setUser(client, payload.user1);
+    const user2 = await this.gameService.setUser(client, payload.user2);
+    if (user1 && user2) {
+      this.logger.log(`${user1.username} (${user1.socket}) Challenges ${user2.username} (${user2.socket})`);
+      this.logger.log(user2.socket);
+      const sockets = await this.wss.in(user2.socket).fetchSockets();
+      let oppSocket: any;
+      for (const socket of sockets) {
+        if (socket.id === user2.socket) {
+          oppSocket = socket;
+          this.logger.log('socket Found');
+        }
+      }
+      if (oppSocket) {
+        await this.gameService.initGame(this.wss, client, oppSocket, payload.config);
+        this.wss.to(client.id).emit('startGame');
+        this.wss.to(oppSocket.id).emit('startGame');
+      }
+      else {
+        this.logger.log('Opp socket Not found');
+      }
+    }
+  }
+
   @SubscribeMessage('VsComputer')
   VsComputer(client: Socket, payload: any) {
     this.logger.log(`Client ${client.id} wants to play against computer`);
-    let player1 = new Player(this.gameService.getUser(client), 10, HEIGHT / 2, 0, client.id);
-    let player2 = new Player({id: -1, username: 'Computer', socket: ""}, WIDTH - 30, HEIGHT / 2, 0, client.id);
-    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, payload.ballSpeed);
-    this.wss.to(client.id).emit('initGame', {side: 1, player1: player1, player2: player2, ball: ball});
   }
 
   @SubscribeMessage('VsComputerGameOver')
   gameOverVsComputer(client: Socket) {
     this.logger.log(`Client ${client.id} Vs Computer game ended`);
-    // this.wss.to(client.id).emit('gameOver');
   }
 
   @SubscribeMessage('1Vs1 on same device')
   oneVsOne(client: Socket, payload: any) {
     this.logger.log(`Client ${client.id} wants to play 1Vs1 on same device`);
-    let player1 = new Player(this.gameService.getUser(client), 10, HEIGHT / 2, 0, client.id);
-    let player2 = new Player({id: -1, username: "Player2", socket: ""}, WIDTH - 30, HEIGHT / 2, 0, client.id);
-    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, payload.ballSpeed);
-    this.wss.to(client.id).emit('initGame', {side: 1, player1: player1, player2: player2, ball: ball});
   }
 
   @SubscribeMessage('gameOver')

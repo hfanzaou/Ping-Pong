@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forge } from "./gameLogic";
 import { WIDTH, HEIGHT, RACKET_HEIGHT, RACKET_WIDTH, INITIAL_SPEED, BALL_DIAMETER, MOVE } from '../classes/constants';
 import { handleGameStates, play } from './gameStates';
-import { gameConfig } from '../classes/constants';
+import { gameConfig } from '../classes/gameConfig';
 import { userData } from '../Game';
 
 
@@ -14,7 +14,7 @@ interface Props {
   avatar: string;
   config: gameConfig;
   user: userData;
-  endGame: () => void;
+  endGame: (gameOverMess: string) => void;
 }
 
 export let canvas: p5.Renderer;
@@ -41,7 +41,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
       p.draw = () => {
         p.background('rgb(31, 41, 55)');
         p.fill('white');
-        handleGameStates(p, socket, endGame);
+        handleGameStates(p, config, socket, endGame);
         
         if (play) {
           p.textSize(32);
@@ -78,6 +78,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
           } else {
             forge.update(p);
             forge.show(p);
+            p.translate(p.random(-3, 3), p.random(-3, 3));
           }
 
           player1.show(p);
@@ -89,8 +90,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
           if (player2.racket.forcePush) {
             player2.racket.forceUpdate();
           }
-          // p.rect(player1.racket.x, player1.racket.y, RACKET_WIDTH, RACKET_HEIGHT, 5);
-          // p.rect(player2.racket.x, player2.racket.y, RACKET_WIDTH, RACKET_HEIGHT, 5);
+
           p.stroke('white');
           p.strokeWeight(4);
           p.drawingContext.setLineDash([5, 15]);

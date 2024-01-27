@@ -548,7 +548,7 @@ export class UserService {
                         user: {connect: {username: payload.reciever}},
                         senderId: id,
                         type: payload.type,
-                        groupname: payload.groupname
+                        //groupname: payload.groupname
                     }
                 })
             }
@@ -564,7 +564,7 @@ export class UserService {
             const notif = await this.prismaservice.notifications.findMany({
                 where: {
                     userId: id,
-                },orderBy: {createAt: 'desc'},
+                },/*orderBy: {createAt: 'desc'},*/
                 select: {senderId: true, type: true}
             })
             const notification = await Promise.all(notif.map(async (obj) => {

@@ -1,10 +1,11 @@
 
-import { Player } from "../classes/player";
+import { Player } from "../classes/Player";
 import p5Types from "p5";
 import { canvas } from "./GameComponent";
-import { player1, player2 } from "./gameLogic";
+import { initGame, player1, player2, removeEventListeners } from "./gameLogic";
 import { Socket } from "socket.io-client";
 import { WIDTH, HEIGHT } from "../classes/constants";
+import { gameConfig } from "../classes/gameConfig";
 
 export let play: boolean = false;
 export let mode: number = 0;
@@ -34,7 +35,7 @@ function ft_style(Button: p5Types.Element) {
   Button.style('font-family', 'system-ui');
 }
 
-export function handleGameStates(p5: p5Types, socket: Socket, endGame: () => void) {
+export function handleGameStates(p5: p5Types, config: gameConfig, socket: Socket, endGame: (gameOverMess: string) => void) {
     if (countdown > 0) {
         p5.textSize(32);
         p5.textAlign(p5.CENTER, p5.CENTER);
@@ -54,10 +55,11 @@ export function handleGameStates(p5: p5Types, socket: Socket, endGame: () => voi
       p5.textSize(20);
       p5.text(gameOverMessage, WIDTH / 2, HEIGHT / 2 - 60);
       p5.text(winnerMessage, WIDTH / 2, HEIGHT / 2);
+      //endGame(winnerMessage);
     }
 
     if (playAgain) {
-        let playAgainButt = p5.createButton('Main menu');
+        let playAgainButt = p5.createButton('Play Again?');
         positionButton(playAgainButt, 40, -60);
         ft_style(playAgainButt);
         playAgainButt.parent('sketchHolder');
@@ -70,7 +72,10 @@ export function handleGameStates(p5: p5Types, socket: Socket, endGame: () => voi
           winnerMessage = null;
           playAgain = false;
           playAgainButt.remove();
-          endGame();
+          if (config.mode == 2 || config.mode == 3) {
+            initGame(p5, socket, config, player1.user);
+            startCountdown(p5);
+          }
         });
     }
 }
@@ -90,7 +95,8 @@ export function startCountdown(p5: p5Types) {
   }, 1000);
 }
 
-export function gameOver(p5: p5Types, player1: Player, player2: Player) {
+export function gameOver(p5: p5Types, player1: Player, player2: Player, socket: Socket) {
+  removeEventListeners(socket);
   p5.removeElements();
   play = false;
   gameOverMessage = 'Game Over!';

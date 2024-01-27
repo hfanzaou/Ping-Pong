@@ -1,11 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { UserService } from '../user/user.service';
-import { Ball } from "./classes/ball";
-import { User, Player } from "./classes/player";
+import { Ball } from "./classes/Ball";
+import { User, Player } from "./classes/Player";
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from "src/prisma/prisma.service";
 import { JwtTwoFaStrategy } from "src/strategy";
-import { RACKET_HEIGHT, RACKET_WIDTH, BALL_DIAMETER, BALL_DIAMETER_SQUARED, HEIGHT, WIDTH, MAX_SPEED, INC_SPEED, gameConfig } from "./classes/constants";
+import { RACKET_HEIGHT, RACKET_WIDTH, BALL_DIAMETER, BALL_DIAMETER_SQUARED, HEIGHT, WIDTH, MAX_SPEED, INC_SPEED } from "./classes/constants";
+import { gameConfig } from "./classes/gameConfig";
 
 let goalScored: boolean = false;
 
@@ -27,8 +28,16 @@ export class GameService {
     });
   
     if (userData) {
-      const user = new User(userData.id, userName, client.id);
-      this.users.set(client.id, user);
+      let user: User;
+      if (userData.socket) {
+        user = new User(userData.id, userName, userData.socket);
+        this.users.set(userData.socket, user);
+      }
+      else {
+        this.logger.log(`${userData.username} socket id Not Found`);
+        user = new User(userData.id, userName, client.id);
+        this.users.set(client.id, user);
+      }
       this.logger.log(`Client ${client.id} set username to ${userName}`);
       return user;
     }
@@ -66,8 +75,10 @@ export class GameService {
     // const opponent = this.waitingPlayers.shift();
     if (!opponent || opponent.id === client.id) return;
     const roomName = `room${client.id}${opponent.id}`;
+
     const {id: oppid} = await this.findOpponent(wss, opponent.id);
     const {id: clientid} = await this.verifyClient(wss, client);
+  
     wss.to(client.id).emit("getData", oppid, false);
     wss.to(opponent.id).emit("getData", clientid, true);
     client.join(roomName);
@@ -81,7 +92,7 @@ export class GameService {
   
     let player1 = new Player(this.users.get(opponent.id), 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, roomName);
     let player2 = new Player(this.users.get(client.id), WIDTH - 30, HEIGHT/2 - RACKET_HEIGHT/2, 0, roomName);
-    let ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, config.ballSpeed);
+    let ball = new Ball(config.ballSpeed, config.ballSize, config.ballType);
     
     this.players.set(opponent.id, player1);
     this.players.set(client.id, player2);
@@ -90,6 +101,7 @@ export class GameService {
     player2 = this.players.get(client.id);
     
     this.games.set(roomName, {config: config, ball: ball, player1: player1, player2: player2, gameStart: false});
+    this.logger.log(`Game ${player1.user.username} Vs ${player2.user.username} Initialized!`)
   }
 
   disconnectPlayer(wss: Server, client: Socket) {
@@ -113,17 +125,17 @@ export class GameService {
     ball = await this.updateBallPos(wss, ball, player1, player2, config);
     if (ball == null) return;
     ball.updatePosition();
-    this.emitUpdate(wss, ball, player1.roomName);
+    await this.emitUpdate(wss, ball, player1.roomName);
   }
 
-  emitUpdate(wss: Server, ball: Ball, roomName: string) {
+  async emitUpdate(wss: Server, ball: Ball, roomName: string) {
     wss.to(roomName).emit('updateBall', ball);
   }
 
   async updateBallPos(wss: Server, ball: Ball, player1: Player, player2: Player, config: gameConfig)
   {
     let nextY = ball.y + (ball.ydir * ball.speed);
-    if (nextY + (BALL_DIAMETER >> 1) >= HEIGHT || nextY - (BALL_DIAMETER >> 1) <= 0) {
+    if (nextY + (ball.radius >> 1) >= HEIGHT || nextY - (ball.radius >> 1) <= 0) {
       ball.ydir *= -1;
     }
 
@@ -143,7 +155,7 @@ export class GameService {
       player1.score += 1;
       ball = await this.ft_goalScored(wss, ball, player1, player2, config);
     }
-    else if (ball.x < (BALL_DIAMETER >> 1)) {
+    else if (ball.x < (ball.radius >> 1)) {
       player2.score += 1;
       ball = await this.ft_goalScored(wss, ball, player1, player2, config);
     }
@@ -152,11 +164,7 @@ export class GameService {
 
   async ft_goalScored(wss: Server, ball: Ball, player1: Player, player2: Player, config: gameConfig)
   {
-    ball.x = WIDTH / 2;
-    ball.y = HEIGHT / 2;
-    ball.xdir *= -1;
-    ball.ydir = 0;
-    ball.speed = config.ballSpeed;
+    ball.reset(config.ballSpeed);
     wss.to(player1.roomName).emit('updateScore', {player1Score: player1.score, player2Score: player2.score, ball: ball} );
     if (player1.score == config.maxScore || player2.score == config.maxScore) {
       wss.to(player1.roomName).emit('gameOver');
