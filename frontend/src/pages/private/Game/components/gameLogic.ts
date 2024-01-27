@@ -195,11 +195,13 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig) 
   socket.on('gameOver', () => {
     // socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
     gameOver(p5, player1, player2);
+    socket.emit('state');
   });
 
   socket.on('opponentDisconnected', () => {
     p5.removeElements();
     opponentDisconnect();
+    socket.emit('state');
   });
 
   socket.on('updateRacket', (pos) => {

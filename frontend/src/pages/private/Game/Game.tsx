@@ -53,6 +53,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     setOpp({username: "--", level: "----", avatar: ""});
     setSide(true);
     setGameStarted(false);
+    socket.emit('state');
   };
 
   const fetchUserName = async () => {
