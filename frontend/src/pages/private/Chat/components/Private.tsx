@@ -65,7 +65,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			})
 		});
 		const Data = await res0.json();
-		console.log(Data);
+		// console.log(Data);
 		setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
