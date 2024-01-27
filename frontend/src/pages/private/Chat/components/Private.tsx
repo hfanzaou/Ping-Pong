@@ -30,6 +30,25 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
+	async function onlineCallback(message: {username: string, state: string}) {
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userName: userNameRef.current
+			})
+		});
+		const Data = await res0.json();
+		setData(prev => setUserData(prev, Data));
+	}
+	useEffect(() => {
+		data.socket?.on("online", onlineCallback);
+		return () => {
+			data.socket?.off("online", onlineCallback)
+		}
+	}, [data.socket]);
 	useEffect(() => {
 		setText("");
 	}, [data.send])
@@ -188,27 +207,70 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 										select-none ${data.talkingTo == x.login
 											? "bg-discord5"
 											: "hover:bg-discord4"}
-											flex justify-center items-center`}
+											flex justify-center items-center group`}
 									>
 										{
 											x.avatar ?
-												<img
-													src={x.avatar}
-													className={`w-10 h-10 mr-3
-														rounded-full
-														${
-															data.talkingTo == x.login &&
-																"shadow-black shadow-lg"
-														}`}
-												/> :
-												<IconUser
-													className={`w-10 h-10 mr-3
-														rounded-full bg-discord1
-														${
-															data.talkingTo == x.login &&
-																"shadow-black shadow-lg"
-														}`}
-												/>
+												<div className="relative">
+													<img
+														src={x.avatar}
+														className={`w-10 h-10 mr-3
+															rounded-full
+															${
+																data.talkingTo == x.login &&
+																	"shadow-black shadow-lg"
+															}`}
+													/>
+													<div
+														className={
+															`w-4 absolute -top-1
+															-left-1 h-4 rounded-full
+															z-10 border-4 ${
+																x.login != data.talkingTo ?
+																	`border-discord3
+																	group-hover:border-discord4 ${
+																		x.state == "Online" ?
+																			"bg-green-500" :
+																			"bg-red-500"
+																	}` :
+																	`border-discord5 ${
+																		x.state == "Online" &&
+																			"bg-green-300"
+																	}`
+															}`
+														}
+													></div>
+												</div> :
+												<div className="relative">
+													<IconUser
+														className={`w-10 h-10 mr-3
+															rounded-full bg-discord1
+															${
+																data.talkingTo == x.login &&
+																	"shadow-black shadow-lg"
+															}`}
+													/>
+													<div
+														className={
+															`w-4 absolute -top-1
+															-left-1 h-4 rounded-full
+															z-10 border-4 ${
+																x.login != data.talkingTo ?
+																	`border-discord3
+																	group-hover:border-discord4 ${
+																		x.state == "Online" ?
+																			"bg-green-500" :
+																			"bg-red-500"
+																	}` :
+																	`border-discord5 ${
+																		x.state == "Online" ?
+																			"bg-green-300" :
+																			"bg-red-500"
+																	}`
+															}`
+														}
+													></div>
+												</div>
 										}
 										{size && x.login}
 									</button>

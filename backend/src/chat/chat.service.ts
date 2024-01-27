@@ -42,7 +42,8 @@ export class ChatService {
 							id: x.id,
 							login: x.username,
 							avatar: await this.user.getUserAvatar(x.id),
-							time: chatHistorie.updateAt
+							time: chatHistorie.updateAt,
+							state: x.state
 						};
 				})),
 				friends: await Promise.all(user.friends.filter(x =>
@@ -50,7 +51,8 @@ export class ChatService {
 						.map(async x => ({
 							id: x.id,
 							login: x.username,
-							avatar: await this.user.getUserAvatar(x.id)
+							avatar: await this.user.getUserAvatar(x.id),
+							state: x.state
 						}))
 				),
 				groups: await Promise.all(user.groups.map(async x => {
@@ -755,9 +757,7 @@ export class ChatService {
 			where: { name: data.name },
 			include: {members: {include: { user: true}}}
 		});
-		if (group &&
-			(group.invited.find(x => x == data.userName) ||
-				group.members.find(x => x.user.username == data.userName)))
+		if (group && group.invited.find(x => x == data.userName))
 			return true;
 		return false;
 	}
