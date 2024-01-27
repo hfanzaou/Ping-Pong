@@ -168,9 +168,11 @@ OnGatewayDisconnect {
 		}
 	}
 	@SubscribeMessage("state")
-    async handleOnline(client: Socket) {
+    async handleOnline(client: Socket, payload: string) {
 		try {
-			const {username, state} = await this.verifyClient(client);
+			let {username, state} = await this.verifyClient(client);
+			if (payload == "Ingame")
+				state = "Ongame"
         	client.broadcast.emit("online", {username, state});
 		} catch(error)
 		{

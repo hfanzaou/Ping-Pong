@@ -44,6 +44,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
         handleGameStates(p, socket, endGame);
         
         if (play) {
+          socket.emit('state', "Ingame");
           p.textSize(32);
           p.textStyle(p.BOLD);
           p.text(player1.score, 40, 60);
