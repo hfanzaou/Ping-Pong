@@ -31,7 +31,7 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
     
     const stats = [
       {value: data?.win, label: 'Wins'},
-      {value: (data?.win) + (data?.loss), label: 'Played game'},
+      {value: data?.win && (data?.win) + (data?.loss), label: 'Played game'},
       {value: data?.loss, label: 'losses'},
     ];
 

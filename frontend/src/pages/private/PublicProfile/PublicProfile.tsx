@@ -4,8 +4,9 @@ import Profile from "./Profile";
 import axios from "axios";
 import UsersInterface from './UsersInterface';
 import { LoadingOverlay } from "@mantine/core";
+import { Socket } from "socket.io-client";
 
-function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersList}: {profileName: string | undefined,avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function}) {
+function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersList, socket}: {profileName: string | undefined,avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function, socket: Socket}) {
     useEffect(() => {
         const getUsers = async () => {
             await axios.get("user/list")
@@ -25,7 +26,7 @@ function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersL
         return (
             <div>
                 {/* <Header avatar={avatar}/> */}
-                <Profile profileName={profileName} handleRequest={handleRequest} friendShip={friendShip}/>
+                <Profile profileName={profileName} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/>
             </div>
     );
 }
