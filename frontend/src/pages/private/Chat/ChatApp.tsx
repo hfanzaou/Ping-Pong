@@ -116,7 +116,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	}
 	if (notFound) {
 		if (loading)
-			return ;
+			return <div></div>;
 		else
 			return <NotFound />
 	}
