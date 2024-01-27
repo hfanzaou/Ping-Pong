@@ -108,4 +108,8 @@ export class ChatController {
 	async handleCheckGroup(@Body() data: { name: string }) {
 		return await this.chatService.checkGroup(data);
 	}
+	// @Post("chatAvatar")
+	// async handleChatAvatar(@Body() data: { userName: string }) {
+	// 	return await this.chatService.chatAvatar(data);
+	// }
 }

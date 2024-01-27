@@ -27,9 +27,29 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	const	[blockTrigger, setBlockTrigger] = useState(false)
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
 	const	userNameRef = useRef(data.userData?.userName);
+	const	[avatars, setAvatars] = useState<Array<{
+		userName: string,
+		avatar: string
+	}>>([]);
 
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
+	useEffect(() => {
+		async function fetchData() {
+			const	res = await fetch("http://localhost:3001/chatAvatar", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				})
+			});
+			const	Data = await res.json();
+			setAvatars(Data);
+		}
+		fetchData();
+	}, [data.userData?.chatUsers])
 	useEffect(() => {
 		setText("");
 	}, [data.send])
@@ -177,7 +197,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			<ul>
 				{
 					List?.map(x => {
-						if (x)
+						if (x) {
+							
 							return (
 								<li key={x.id} className="flex relative">
 									<button
@@ -226,6 +247,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									} */}
 								</li>
 							);
+						}
 					})
 				}
 			</ul>
