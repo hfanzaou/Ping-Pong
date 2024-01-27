@@ -53,12 +53,20 @@ export class ChatService {
 							avatar: await this.user.getUserAvatar(x.id)
 						}))
 				),
-				groups: user.groups.map(x => ({
-					id: x.group.id,
-					name: x.group.name,
-					password: x.group.hash ? true : false,
-					banded: x.group.banded,
-					muted: x.group.muted
+				groups: await Promise.all(user.groups.map(async x => {
+					const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+						where: { name: x.group.name }
+					});
+					if (chatHistorie) {
+						return {
+							id: x.group.id,
+							name: x.group.name,
+							password: x.group.hash ? true : false,
+							banded: x.group.banded,
+							muted: x.group.muted,
+							time: chatHistorie.updateAt
+						};
+					}
 				})),
 				blocked: user.blocked.map(x => ({
 					id: x.id,
@@ -221,6 +229,10 @@ export class ChatService {
 		const avatar = await this.prisma.user.findUnique({
 			where: { username: data.sender }
 		})
+		await this.prisma.cHATHISTORY.update({
+			where: { id: chatHistorie.id },
+			data: { updateAt: new Date() }
+		});
 		const message = await this.prisma.mESSAGE.create({
 			data: {
 				sender: data.sender,
@@ -548,6 +560,30 @@ export class ChatService {
 			return users;
 		}
 		return [];
+	}
+	async usersToUpdate(data: string, socket: string) {
+		const	group = await this.prisma.gROUP.findFirst({
+			where: { name: data },
+			include: { members: { include: { user: true}}}
+		});
+		if (group) {
+			const	user = await this.prisma.user.findFirst({
+				where: { socket: socket }
+			});
+			if (user) {
+				const users = group.members.filter(
+					x => x.user.username != user.username
+				).filter(x => {
+						return group.banded.find(y => x.user.username == y) ==
+							undefined;
+					}).filter(x => {
+							return group.muted.find(y => x.user.username == y) ==
+								undefined;
+						}).map(x => x.user.username);
+				return users;
+			}
+		}
+		return null;
 	}
 	async addGroupAdmin(data: { name: string, userName: string }) {
 		const	group = await this.prisma.gROUP.findFirst({

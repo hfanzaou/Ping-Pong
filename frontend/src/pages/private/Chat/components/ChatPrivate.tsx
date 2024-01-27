@@ -143,7 +143,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
-	return data.talkingTo && (
+	return data.talkingTo ? (
 		<form
 			onSubmit={submit}
 			className="w-[57%] bg-discord4 flex flex-col
@@ -198,6 +198,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				</button>
 			</div>
 		</form>
-	);
+	) : <div></div>;
 }
 export default ChatPrivate;
