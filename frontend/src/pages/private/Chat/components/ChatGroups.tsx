@@ -19,7 +19,7 @@ import {
 	IconX
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
-import { DATA, Group, MESSAGE, NEWCHAT } from "../myTypes";
+import { DATA, Group, MESSAGE, NEWCHAT, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
 import { useNavigate } from "react-router-dom";
 
@@ -57,6 +57,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[settingsPassword, setSettingsPassword] = useState("");
 	const	[settingsVerify, setSettingsVerify] = useState("");
 	const	[settingsOld, setSettingsOld] = useState("");
+	const	[trigger, setTrigger] = useState(false);
 
 	userNameRef.current = data.userData?.userName;
 	useEffect(() => {
@@ -206,6 +207,35 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			message: event.target.value
 		}));
 	}
+	useEffect(() => {
+		if (trigger) {
+			async function fetchData() {
+				const res0 = await fetch("http://localhost:3001/chatUser", {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							userName: data.userData?.userName
+						})
+					});
+					const Data: USERDATA = await res0.json();
+					Data.groups.sort((x, y) => {
+						// console.log("here");
+						if (x.time && y.time) {
+							const	timeX = new Date(x.time);
+							const	timeY = new Date(y.time);
+							return timeY.getTime() - timeX.getTime();
+						}
+						return 0;
+					})
+					setData(prev => setUserData(prev, Data));
+					data.socket?.emit("newGroup", data.groupTo)
+			}
+			fetchData()
+			setTrigger(false);
+		}
+	}, [trigger])
 	function submitMessage(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (data.message.length) {
@@ -236,6 +266,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			send: !x.send
 		}))
 		setConversation(prev => [m, ...prev]);
+		setTrigger(true);
 	}
 	function clickSettings() {
 		setSettings(x => !x);
