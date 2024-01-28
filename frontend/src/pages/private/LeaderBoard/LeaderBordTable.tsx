@@ -12,18 +12,22 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
                     <Avatar size={40} src={item.avatar} radius={40} />
                     <div>
                         <Text fz="sm" fw={500}>{item.name}</Text>
-                        <Text c="dimmed" fz="xs">#{item.level}</Text>
+                        <Text c="dimmed" fz="xs">#{index + 1}</Text>
                     </div>
                 </Group>
             </Table.Td>
             <Table.Td>
+                <Text fz="sm">{item.level}</Text>
+                <Text fz="xs" c="dimmed">Level</Text>
+            </Table.Td>
+            {/* <Table.Td>
                 <Text fz="sm">{item.win}</Text>
                 <Text fz="xs" c="dimmed">Wins</Text>
             </Table.Td>
             <Table.Td>
                 <Text fz="sm">{item.loss}</Text>
                 <Text fz="xs" c="dimmed">Lost</Text>
-            </Table.Td>
+            </Table.Td> */}
         </Table.Tr>
     ));
 

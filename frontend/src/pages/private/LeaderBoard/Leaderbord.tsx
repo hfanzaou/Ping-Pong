@@ -28,13 +28,13 @@ function Leaderbord({avatar} : {avatar: string}) {
                 <Card  className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg" >
                     <SimpleGrid cols={3}>
                         <div className="mt-8">
-                            <LeaderBordCard data={data[1]}/>
+                            <LeaderBordCard data={data[1]} rank={2}/>
                         </div>
                         <div className="mb-8">
-                            <LeaderBordCard data={data[0]}/>
+                            <LeaderBordCard data={data[0]} rank={1}/>
                         </div>
                         <div className="mt-8">
-                            <LeaderBordCard data={data[2]}/>
+                            <LeaderBordCard data={data[2]} rank={3}/>
                         </div>
                     </SimpleGrid>
                 </Card>
