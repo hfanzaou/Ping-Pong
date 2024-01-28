@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Table, Group, Text, Blockquote, Button } from '@mantine/core';
-import FriendInterface from './FriendsInterface';
+import FriendInterface from '../friends/FriendsInterface';
 
 import axios from 'axios';
 

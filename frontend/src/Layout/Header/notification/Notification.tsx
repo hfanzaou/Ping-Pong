@@ -16,7 +16,6 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
         await axios.get("user/notification")
         .then((res) => {
             setNotificationList(res.data);
-            console.log(res.data);
         }).catch(err => {
             console.error("Error in fetching friend requests: ", err);
         })

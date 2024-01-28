@@ -7,8 +7,3 @@ interface MatchHistoryInterface {
 }
 
 export default MatchHistoryInterface
-
-// avatar: string;
-// name: string;
-// wine: boolean;
-// rate: string;
