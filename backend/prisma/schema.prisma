@@ -67,7 +67,7 @@ model MESSAGE {
 
   sender        String
   message       String
-  avatar        String?
+  // avatar        String?
   chathistoryid Int
   chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
 }

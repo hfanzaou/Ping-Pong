@@ -15,7 +15,7 @@ import Setting from './pages/private/Settings/Settings'
 import ScrollUp from './componenet/ScrollUp';
 import Home from './pages/private/Home/Home'
 import Profile from './pages/private/Profile/Profile'
-import Leaderbord from './pages/private/Dashbord/Leaderbord'
+import Leaderbord from './pages/private/LeaderBoard/Leaderbord'
 import Game from './pages/private/Game/Game'
 import ChatApp from './pages/private/Chat/ChatApp'
 import PublicProfile from './pages/private/PublicProfile/PublicProfile'
@@ -212,7 +212,7 @@ const handleRequest = async (name: string) => {
                     <Route path='/Game' element={socket && <Game socket={socket} avatar={avatar}/>}/>
                     <Route path='/Chat' element={socket && <ChatApp socket={socket}/>}/>
                     <Route path='/Setting' element={<Setting setAvatar={setAvatar} avatar={avatar}/>}/>
-                    <Route path={'/UserProfile'} element={<PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList}/>} />
+                    <Route path={'/UserProfile'} element={socket && <PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} socket={socket}/>} />
                     {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
                     {/* <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
                 </Routes>

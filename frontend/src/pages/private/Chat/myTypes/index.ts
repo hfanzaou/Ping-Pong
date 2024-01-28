@@ -16,7 +16,8 @@ export interface User {
 	login:	string,
 	avatar?: string,
 	time?:	Date,
-	read?: boolean
+	read?: boolean,
+	state?: string
 }
 
 export interface USERDATA {
@@ -42,5 +43,6 @@ export interface Group {
 	size:		boolean,
 	password:	boolean,
 	banded:		string[],
-	muted:		string[]
+	muted:		string[],
+	time:		Date
 }

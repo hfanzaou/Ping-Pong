@@ -108,4 +108,12 @@ export class ChatController {
 	async handleCheckGroup(@Body() data: { name: string }) {
 		return await this.chatService.checkGroup(data);
 	}
+	@Post("chatAvatarPrivate")
+	async handleChatAvatarPrivate(@Body() data: { userName1: string, userName2: string }) {
+		return await this.chatService.chatAvatarPrivate(data);
+	}
+	@Post("chatAvatarRoom")
+	async handleChatAvatarRoom(@Body() data: { name: string }) {
+		return await this.chatService.chatAvatarRoom(data);
+	}
 }

@@ -4,11 +4,11 @@ import UsersInterface from './UsersInterface';
 import axios from 'axios';
 import testdata from './test.json'
 import { IconMessages, IconTent, IconTrash, IconUserCircle } from '@tabler/icons-react';
-import FriendshipButton from './FriendshipButton';
+import FriendshipButton from '../../../../componenet/FriendshipButton';
 import { Link, unstable_HistoryRouter, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { useDisclosure } from '@mantine/hooks';
-import SerndMessage from './SendMessage';
+import SerndMessage from '../../../../componenet/SendMessage';
 
 interface stateprops {
     username: string,
@@ -179,7 +179,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                     Block user
                                 </Menu.Item>
                             </Menu.Dropdown>
-                            <SerndMessage name={receverName} opened={opened} close={close}/>
+                            <SerndMessage name={receverName} opened={opened} close={close} socket={socket}/>
                         </Menu>
                         <div>
                             <Text fz="md" fw={800} c='indigo'>

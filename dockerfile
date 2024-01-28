@@ -22,6 +22,6 @@ RUN apt-get update -y && apt-get install openssl -y
 
 EXPOSE 3001
 
-run chmod +x init.sh
+RUN chmod +x start.sh
 
-cmd [ "sh", "init.sh" ]
+CMD [ "sh", "start.sh" ]

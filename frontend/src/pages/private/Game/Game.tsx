@@ -77,7 +77,8 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     setGameStarted(false);
     setOpp({username: "--", level: "----", avatar: ""});
     setSide(true);
-  }
+    socket.emit('state');
+  };
 
   const fetchUserName = async () => {
     const res = await axios.get('user/name')

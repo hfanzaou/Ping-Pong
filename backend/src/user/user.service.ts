@@ -542,7 +542,7 @@ export class UserService {
             // console.log(payload);
             if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat")
             {
-                // console.log("notif")
+                console.log(payload);
                 await this.prismaservice.notifications.create({
                     data: {
                         user: {connect: {username: payload.reciever}},
@@ -564,13 +564,13 @@ export class UserService {
             const notif = await this.prismaservice.notifications.findMany({
                 where: {
                     userId: id,
-                },/*orderBy: {createAt: 'desc'},*/
-                select: {senderId: true, type: true}
+                },orderBy: {createAt: 'desc'},
+                select: {senderId: true, type: true, groupname: true}
             })
             const notification = await Promise.all(notif.map(async (obj) => {
                 const username = await this.getUsername(obj.senderId);
                 const avatar = await this.getUserAvatar(obj.senderId);
-                return {username, avatar, type: obj.type}
+                return {username, avatar, type: obj.type, groupname: obj.groupname}
             }))
             return (notification);
         } catch(error) {

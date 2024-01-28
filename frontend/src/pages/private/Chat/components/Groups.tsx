@@ -51,7 +51,9 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	const	nameRef = useRef(name);
 	const	settingsXyRef = useRef(settingsXy);
 	const	history = useNavigate();
-	
+	const	userNameRef = useRef(data.userData?.userName);
+
+	userNameRef.current = data.userData?.userName;
 	createXyRef.current = createXy;
 	nameRef.current = name;
 	settingsXyRef.current = settingsXy;
@@ -69,6 +71,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 				});
 				const	Data = await res.json();
 				setList(Data);
+				history("/Chat");
 			}
 			fetchData();
 		}
@@ -151,7 +154,6 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 						trigger: !x.trigger
 					}))
 				}
-				// console.log(Data);
 				setName(Data);
 			}
 			fetchData()
@@ -162,6 +164,13 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		if (searchText == "")
 			setList(data.userData?.groups.filter(x => {
 				return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			}).sort((x, y) => {
+				if (x.time && y.time) {
+					const	timeX = new Date(x.time);
+					const	timeY = new Date(y.time);
+					return timeY.getTime() - timeX.getTime();
+				}
+				return 0;
 			}));
 	}, [data.userData?.groups])
 	useEffect(() => {
@@ -181,8 +190,43 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		setSearchText("");
 		setList(data.userData?.groups.filter(x => {
 			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+		}).sort((x, y) => {
+			if (x.time && y.time) {
+				const	timeX = new Date(x.time);
+    			const	timeY = new Date(y.time);
+    			return timeY.getTime() - timeX.getTime();
+			}
+			return 0;
 		}));
-	}, [data.send])
+	}, [data.send]);
+	async function callBackNewGroup() {
+		const res0 = await fetch("http://localhost:3001/chatUser", {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userName: userNameRef.current
+			})
+		});
+		const Data = await res0.json();
+		// console.log("Data");
+		setData(prev => setUserData(prev, Data));
+	}
+	useEffect(() => {
+		setList(data.userData?.groups.sort((x, y) => {
+			if (x.time && y.time) {
+				const	timeX = new Date(x.time);
+    			const	timeY = new Date(y.time);
+    			return timeY.getTime() - timeX.getTime();
+			}
+			return 0;
+		}))
+		data.socket?.on("newgroup", callBackNewGroup);
+		return () => {
+			data.socket?.off("newuser", callBackNewGroup);
+		}
+	}, [data.userData?.groups]);
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
 		setCreate(true);
 		setCreateXy({ x: event.clientX, y: event.clientY})
@@ -259,6 +303,13 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		}
 		setList(List?.filter(x => {
 			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+		}).sort((x, y) => {
+			if (x.time && y.time) {
+				const	timeX = new Date(x.time);
+    			const	timeY = new Date(y.time);
+    			return timeY.getTime() - timeX.getTime();
+			}
+			return 0;
 		}));
 		if (List && !List.find(x => x.name == data.groupTo))
 			setData(prev => ({
@@ -346,7 +397,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		setSettings(false);
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
-		history("/Chat");
+		// history("/Chat");
 	}
 	async function update() {
 		const res0 = await fetch("http://localhost:3001/chatUser", {

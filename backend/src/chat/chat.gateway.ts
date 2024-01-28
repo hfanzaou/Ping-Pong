@@ -39,6 +39,29 @@ OnGatewayDisconnect {
 		else
 			this.server.to(client.id).emit("chatError");
 	}
+	//
+	@SubscribeMessage("directTmp")
+	async handelMessageTmp(
+		client: Socket,
+		dataTmp: { recver: string, message: string }
+	) {
+		const { username: sender } = await this.verifyClient(client);
+		const	data: MESSAGE = {
+			sender: sender,
+			recver: dataTmp.recver,
+			message: dataTmp.message
+		}
+		const room = await this.chatService.getRoomDirect(data);
+		if (room) {
+			const message = await this.chatService.addMessagePrivate(data);
+			this.server.to(room).emit("clientPrivate", message);
+			await this.chatService.updateChatUsers(data);
+			this.server.to(client.id).emit("DONE");
+		}
+		else
+			this.server.to(client.id).emit("chatError");
+	}
+	//
 	@SubscribeMessage("room")
 	async handelRoom(client: Socket, data: MESSAGE) {
 		const room = await this.chatService.getRoomRoom(data);
@@ -71,10 +94,26 @@ OnGatewayDisconnect {
 	@SubscribeMessage("newUser")
 	async handelUser(client: Socket, data: string) {
 		const recver = await this.chatService.newMessage(data);
-		const	{ username } = await this.chatService.whoIAm(client.id);
-		this.server
-			.to(recver)
-			.emit("newuser", username);
+		if (recver) {
+			this.server
+				.to(recver)
+				.emit("newuser");
+		}
+	}
+	@SubscribeMessage("newGroup")
+	async handelNewGroup(client: Socket, data: string) {
+		const	users = await this.chatService.usersToUpdate(data, client.id);
+		if (users) {
+			users.forEach(async x => {
+				const recver = await this.chatService.newMessage(x);
+				if (recver) {
+					this.server
+						.to(recver)
+						.emit("newgroup");
+				}
+
+			})
+		}
 	}
 	async handleDisconnect(client: Socket) {
 		Array
@@ -108,7 +147,7 @@ OnGatewayDisconnect {
 						if (x) {
 							await this.user.addNotification(
 								id,
-								{ reciever: x.userName, type: payload.type }
+								{ reciever: x.userName, type: payload.type, groupname: payload.reciever }
 							);
 							this.server.to(x.socket).emit("getnotification", "hello");
 						}
@@ -129,9 +168,11 @@ OnGatewayDisconnect {
 		}
 	}
 	@SubscribeMessage("state")
-    async handleOnline(client: Socket) {
+    async handleOnline(client: Socket, payload: string) {
 		try {
-			const {username, state} = await this.verifyClient(client);
+			let {username, state} = await this.verifyClient(client);
+			if (payload == "Ingame")
+				state = "Ongame"
         	client.broadcast.emit("online", {username, state});
 		} catch(error)
 		{
