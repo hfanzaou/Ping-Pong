@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Nav from './Nav'
+import Nav from './navBar/Nav'
 import { Socket, io } from "socket.io-client";
 
 interface Props {
