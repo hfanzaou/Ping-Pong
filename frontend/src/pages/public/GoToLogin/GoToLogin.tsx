@@ -8,10 +8,10 @@ function GoToLogin() {
                 <Container h={450} mt='xl' className="flex flex-col items-center justify-center rounded-md p-5" style={{backgroundColor: 'rgb(31 41 55)'}}>
                     <Title size="lg" ta="center" c={'blue'} >Already have an account ?</Title>
                     <Group justify="center">
-                        <Button radius='xl' mt={5} color="white"
+                        <Button size="xs" radius='xl' mt={5} color="gray"
                             onClick={() => window.location.href = '/login'}
                         >
-                            <Text c="blue" size="xl" ta="center">
+                            <Text size="xl" ta="center">
                                 login
                             </Text>
                         </Button>
