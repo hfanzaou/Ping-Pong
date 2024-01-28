@@ -16,7 +16,8 @@ export interface User {
 	login:	string,
 	avatar?: string,
 	time?:	Date,
-	read?: boolean
+	read?: boolean,
+	state?: string
 }
 
 export interface USERDATA {

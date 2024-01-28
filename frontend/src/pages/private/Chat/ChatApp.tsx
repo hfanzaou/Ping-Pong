@@ -45,20 +45,21 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-								userName: data.userData?.userName,
-								name: tmp
-							})
-						});
-						const Data = await res.json()
-						if (!Data) {
-							setNotFound(true);
-							if (!data.userData?.userName)
-								setLoading(true);
-							else
-								setLoading(false);
-						}
-						else
-							setNotFound(false);
+						userName: data.userData?.userName,
+						name: tmp
+					})
+				});
+				const Data = await res.json()
+				if (!Data) {
+					setNotFound(true);
+					if (!data.userData?.userName)
+						setLoading(true);
+					else
+						setLoading(false);
+				}
+				else
+					setNotFound(false);
+				setOption("Rooms");
 			}
 			fetchData();
 		}

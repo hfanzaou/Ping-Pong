@@ -147,7 +147,7 @@ OnGatewayDisconnect {
 						if (x) {
 							await this.user.addNotification(
 								id,
-								{ reciever: x.userName, type: payload.type }
+								{ reciever: x.userName, type: payload.type, groupname: payload.reciever }
 							);
 							this.server.to(x.socket).emit("getnotification", "hello");
 						}
