@@ -51,7 +51,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	const	[invite, setInvite] = useState(false);
 	const	[userInvite, setUserInvite] = useState("");
 	const	[error, setError] = useState("");
-	const	history = useNavigate();
 	const	[ownersettings, setOwnersettings] = useState(false);
 	const	[settingsName, setSettingsName] = useState("");
 	const	[settingsPassword, setSettingsPassword] = useState("");
@@ -185,7 +184,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			}))
 			setPasswordText("");
 			setInputType("password");
-			history("/Chat");
 		}
 	}
 	async function clickJoin() {
