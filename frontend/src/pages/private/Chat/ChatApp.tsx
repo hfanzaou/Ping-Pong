@@ -7,7 +7,7 @@ import { setSocket, setUserData } from "./utils";
 import Groups from "./components/Groups";
 import ChatPrivate from "./components/ChatPrivate";
 import ChatGroups from "./components/ChatGroups";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NotFound from "../../public/NotFound/NotFound";
 
 interface Props {
@@ -27,6 +27,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[name, setName] = useState<string>("");
 	const	query = useQuery();
 	const	[loading, setLoading] = useState(false);
+	const	history = useNavigate();
 
 	//
 	useEffect(() => {
@@ -57,8 +58,10 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 					else
 						setLoading(false);
 				}
-				else
+				else {
 					setNotFound(false);
+					history("/Chat");
+				}
 				setOption("Rooms");
 			}
 			fetchData();
