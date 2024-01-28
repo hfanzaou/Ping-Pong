@@ -548,7 +548,7 @@ export class UserService {
                         user: {connect: {username: payload.reciever}},
                         senderId: id,
                         type: payload.type,
-                        groupname: payload.groupname
+                        //groupname: payload.groupname
                     }
                 })
             }

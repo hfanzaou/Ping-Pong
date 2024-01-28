@@ -10,14 +10,3 @@ export const    HEIGHT = 450,
                 BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER,
                 GAME_START_DELAY = 3100,
                 GAME_INTERVAL = 1000/60;
-
-export class gameConfig {
-    maxScore: number;
-    ballSpeed: number;
-    boost: boolean;
-    constructor(maxScore: number, ballSpeed: number, boost: boolean) {
-        this.maxScore = maxScore;
-        this.ballSpeed = ballSpeed;
-        this.boost = boost;
-    }
-}

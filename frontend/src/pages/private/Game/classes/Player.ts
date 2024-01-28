@@ -1,5 +1,6 @@
-import { RACKET_HEIGHT, RACKET_WIDTH } from './constants';
+import { RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, RACKET_DY} from './constants';
 import p5Types from 'p5';
+import { Socket } from 'socket.io-client';
 
 export class User {
   id : number;
@@ -35,11 +36,29 @@ class Racket {
 
   show (p5: p5Types) {
     if (this.forcePush) {
-      p5.fill(240);
-    } else {
       p5.fill(255);
+    } else {
+      p5.fill(240);
     }
     p5.rect(this.x, this.y, this.width, this.height, 5);
+  }
+
+  moveUp(socket: Socket) {
+    if (this.y - RACKET_DY > 0) {
+      this.y -= RACKET_DY;
+    }
+    if (socket) {
+      socket.emit("updateRacket", this.y);
+    }
+  }
+
+  moveDown(socket: Socket) {
+    if (this.y < HEIGHT - this.height) {
+      this.y += RACKET_DY;
+    }
+    if (socket) {
+      socket.emit("updateRacket", this.y);
+    }
   }
   
   forceUpdate() {
@@ -67,13 +86,11 @@ export class Player {
   user: User;
   racket: Racket;
   score: number;
-  roomName: string;
 
-  constructor(user: User, x: number, y: number, score: number, roomName: string) {
+  constructor(user: User, x: number, y: number, score: number) {
     this.user = user;
     this.racket = new Racket (x, y, RACKET_WIDTH, RACKET_HEIGHT, 0, false);
     this.score = score;
-    this.roomName = roomName;
   }
 
   show(p5: p5Types) {

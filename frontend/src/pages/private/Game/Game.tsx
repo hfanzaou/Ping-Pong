@@ -4,7 +4,8 @@ import PlayerCard from './components/PlayerCard';
 import axios from 'axios';
 import GameComponent from './components/GameComponent';
 import GameSettings from './components/GameSettings';
-import { gameConfig } from './classes/constants'
+import { gameConfig } from './classes/gameConfig';
+// import { Text } from '@mantine/core';
 
 interface Props {
   socket: Socket;
@@ -25,15 +26,29 @@ interface OppData {
 }
 
 const Game: React.FC<Props> = ( {socket, avatar}) => {
-  const [config, setGameConfig] = useState<gameConfig>({ mode: 1, maxScore: 10, ballSpeed: 8, boost: false, difficulty: 1 });
-  const [side, setSide] = useState<boolean>(true);
-  const [opp, setOpp] = useState<OppData>({ username: "--", level: "----", avatar: "" });
+  const [config, setGameConfig] = useState<gameConfig>( new gameConfig( 
+    1, 
+    10, 
+    8, 
+    'medium',
+    'ghost',
+    false, 
+    1
+  ));
   const [user, setUser] = useState<userData>({
     username: "",
     level: "",
     avatar: avatar
   });
+  const [opp, setOpp] = useState<OppData>({ 
+    username: "--", 
+    level: "----", 
+    avatar: "" 
+  });
+  const [side, setSide] = useState<boolean>(true);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [gameOverMess, setGameOverMess] = useState("");
   
   const startGame = () => {
     console.log('startGame!');
@@ -48,11 +63,20 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     }
   };
 
-  const endGame = () => {
+  const endGame = (gameOverMes: string) => {
     console.log('endGame!');
+    setGameEnded(true);
+    setGameOverMess(gameOverMes);
+    // setGameStarted(false);
+    // setOpp({username: "--", level: "----", avatar: ""});
+    // setSide(true);
+  };
+
+  const MainMenuClick = () => {
+    setGameEnded(false);
+    setGameStarted(false);
     setOpp({username: "--", level: "----", avatar: ""});
     setSide(true);
-    setGameStarted(false);
     socket.emit('state');
   };
 
@@ -77,6 +101,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
   };
 
   useEffect(() => {
+
     if (user.username == "")
       fetchUserName();
     setSide(true);
@@ -87,16 +112,17 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         setUser({ username: res.data.username, id: id, level: res.data.level, avatar: res.data.avatar });
       });
     });
+
     socket.on('getData', (id: number, side: boolean) => {
       setSide(side);
       fetchOppData(id);
     });
-    return (() => {
-      socket.off('getData', (id: number, side: boolean) => {
-      setSide(side);
-      fetchOppData(id);
-      });
-    });
+    return () => {
+      socket.off('startGame');
+      socket.off('CannotStartGame');
+      socket.off('userId');
+      socket.off('getData');
+    };
   }, []);
 
   useEffect(() => {
@@ -104,6 +130,39 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
       setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
     }
   }, [config]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userParam = params.get('user');
+    const oppParam = params.get('opp');
+
+    if (userParam && oppParam) {
+      // setUser({ ...user, username: userParam });
+      // setOpp({ ...opp, username: oppParam })  ;
+      if (userParam == user.username) {
+        socket.emit('createGame', { user1: userParam, user2: oppParam, config: config });
+      }
+    }
+
+    socket.on('startGame', () => {
+      console.log('Game started!');
+      setGameConfig(new gameConfig(
+        1, 
+        10, 
+        8, 
+        'medium',
+        'ghost',
+        false, 
+        1
+      ));
+      setGameStarted(true);
+    });
+
+    socket.on('CannotStartGame', () => {
+      console.log('Cannot start game!');
+      setGameStarted(false);
+    });
+  }, [user]);
 
   return (
     <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
@@ -117,10 +176,11 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         id="sketchHolder"
         className="rounded-xl shadow-2xl"
         >
-        {gameStarted ? (
+        {( gameStarted ? (
           <GameComponent socket={socket} avatar={avatar} config={config} user={user} endGame={endGame} />
         ) : (
           <GameSettings socket={socket} setGameConfig={setGameConfig} startGame={startGame} />
+        )
         )}
       </div>
       <div className="ml-10">

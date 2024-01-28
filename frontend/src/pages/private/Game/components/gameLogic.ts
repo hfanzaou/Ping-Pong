@@ -1,11 +1,12 @@
-import { Ball } from "../classes/ball";
-import { Player } from "../classes/player";
+import { Ball } from "../classes/Ball";
+import { Player } from "../classes/Player";
 import { Spark } from "../classes/Sparks";
 import { LightningForge } from "../classes/Forge";
 import p5Types from "p5";
 import { Socket } from "socket.io-client";
 import { startCountdown, gameOver, opponentDisconnect } from "./gameStates";
-import { RACKET_DY, RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, WIDTH, BALL_DIAMETER, INITIAL_SPEED, MAX_SPEED, INC_SPEED, BALL_DIAMETER_SQUARED, gameConfig } from "../classes/constants";
+import { RACKET_DY, RACKET_HEIGHT, RACKET_WIDTH, HEIGHT, WIDTH, BALL_DIAMETER, INITIAL_SPEED, MAX_SPEED, INC_SPEED, BALL_DIAMETER_SQUARED} from "../classes/constants";
+import { gameConfig } from "../classes/gameConfig";
 
 let update: boolean = false,
     side: number = 1; // 1: left, 2 :right
@@ -63,15 +64,16 @@ export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig)
 }
 
 function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig) {
+  var xSpot = ball.x - BALL_DIAMETER/2 < 0 ? 0 : WIDTH;
+  shootSparks(xSpot, ball.y, -ball.xdir, p5);
   if (player1.score == config.maxScore || player2.score == config.maxScore) {
+    //goalScored = true;
     socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-    gameOver(p5, player1, player2);
+    gameOver(p5, player1, player2, socket);
   }
   else {
     // socket.emit('goalScored', { player1Score: player1.score, player2Score: player2.score });
     goalScored = true;
-    var xSpot = ball.x - BALL_DIAMETER/2 < 0 ? 0 : WIDTH;
-    shootSparks(xSpot, ball.y, -ball.xdir, p5);
     setTimeout(() => {
       forge.resetLightningForge();
       goalScored = false;
@@ -107,26 +109,20 @@ function clamp(value: number, min: number, max: number) {
 export function checkKeys(p5: p5Types, socket: Socket, mode: number) {
     
   if (p5.keyIsDown(87) || p5.keyIsDown(p5.UP_ARROW)) {
-    if ((side == 2 || (p5.keyIsDown(p5.UP_ARROW) && mode === 2))
-      && (player2.racket.y - RACKET_DY > 0)) {
-      socket.emit("updateRacket", player2.racket.y - RACKET_DY);
-      player2.racket.y -= RACKET_DY;
+    if (side == 2 || (p5.keyIsDown(p5.UP_ARROW) && mode === 2)) {
+      player2.racket.moveUp(socket);
     }
-    else if (side == 1 && (player1.racket.y - RACKET_DY > 0)) {
-      socket.emit("updateRacket", player1.racket.y - RACKET_DY);
-      player1.racket.y -= RACKET_DY;
+    else if (side == 1) {
+      player1.racket.moveUp(socket);
     }
   }
   
   else if (p5.keyIsDown(83) || p5.keyIsDown(p5.DOWN_ARROW)) {
-    if ((side == 2 || (p5.keyIsDown(p5.DOWN_ARROW) && mode === 2))
-      && (player2.racket.y + RACKET_DY < HEIGHT - RACKET_HEIGHT)) {
-        socket.emit("updateRacket", player2.racket.y + RACKET_DY);
-        player2.racket.y += RACKET_DY;
+    if (side == 2 || (p5.keyIsDown(p5.DOWN_ARROW) && mode === 2)) {
+        player2.racket.moveDown(socket);
     }
-    else if (side == 1 && (player1.racket.y + RACKET_DY < HEIGHT - RACKET_HEIGHT)) {
-      socket.emit("updateRacket", player1.racket.y + RACKET_DY);
-      player1.racket.y += RACKET_DY;
+    else if (side == 1) {
+      player1.racket.moveDown(socket);
     }
   }
 }
@@ -153,9 +149,24 @@ export function  _mouseDragged(p5: p5Types, socket: Socket)
 }
 
 export function initGame(p5: p5Types, socket: Socket, config: gameConfig, user: any) {
-  player1 = new Player({id: user.id, username: user.username, socket: socket.id || '', level: user.level}, 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, "");
- player2 = new Player({id: -1, username: 'Computer', socket: socket.id || '', level: user.level}, WIDTH - 30, HEIGHT / 2 - RACKET_HEIGHT/2, 0, "");
-  ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, config.ballSpeed, p5);
+  player1 = new Player(
+    user, 
+    10,
+    HEIGHT / 2 - RACKET_HEIGHT/2, 
+    0,
+  );
+  player2 = new Player(
+    {
+    id: -1, 
+    username: 'Computer', 
+    socket: socket.id || '', 
+    level: config.difficulty
+    },
+    WIDTH - 30, 
+    HEIGHT / 2 - RACKET_HEIGHT/2, 
+    0, 
+  );
+  ball = new Ball(p5, config.ballSpeed, config.ballSize, config.ballType);
   forge = new LightningForge();
   startCountdown(p5);
 }
@@ -185,16 +196,16 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig) 
 
   socket.on('initGame', (data) => {
     side = data.side;
-    player1 = new Player(data.player1.user, 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, "");
-    player2 = new Player(data.player2.user, WIDTH - 30, HEIGHT / 2 - RACKET_HEIGHT/2, 0, "");
-    ball = new Ball(WIDTH / 2, HEIGHT / 2, 1, 0, config.ballSpeed, p5);
+    player1 = new Player(data.player1.user, 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0);
+    player2 = new Player(data.player2.user, WIDTH - 30, HEIGHT / 2 - RACKET_HEIGHT/2, 0);
+    ball = new Ball(p5, config.ballSpeed, config.ballSize, config.ballType);
     forge = new LightningForge();
     
   });
   
   socket.on('gameOver', () => {
     // socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-    gameOver(p5, player1, player2);
+    gameOver(p5, player1, player2, socket);
     socket.emit('state');
   });
 
@@ -238,6 +249,16 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig) 
       }, 1000);
     p5.redraw();
   });
+}
+
+export function removeEventListeners(socket: Socket) {
+  socket.off('gameStart');
+  socket.off('initGame');
+  socket.off('gameOver');
+  socket.off('opponentDisconnected');
+  socket.off('updateRacket');
+  socket.off('updateBall');
+  socket.off('updateScore');
 }
 
 

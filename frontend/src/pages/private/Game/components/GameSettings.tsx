@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
 import { FaArrowLeft } from 'react-icons/fa';
-import { gameConfig } from '../classes/constants';
+import { gameConfig } from '../classes/gameConfig';
 import { Text } from '@mantine/core';
 import './loader.css';
 
@@ -16,6 +16,8 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   const [countdown, setCountdown] = useState<number>(0);
   const [numGoals, setNumGoals] = useState(10);
   const [ballSpeed, setBallSpeed] = useState('normal');
+  const [ballSize, setBallSize] = useState('medium');
+  const [ballType, setBallType] = useState('ghost');
   const [boost, setBoost] = useState(false);
   const [creatingGame, setCreatingGame] = useState(false);
   const [waitingForPlayer, setWaitingForPlayer] = useState(false);
@@ -26,8 +28,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   const [difficulty, setDifficulty] = useState('Easy');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
-  const [ballSize, setBallSize] = useState('medium');
-  const [ballType, setBallType] = useState('ghost');
 
   function handleCreateNewGameClick() {
     setCreatingGame(true);
@@ -67,18 +67,44 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
         default:
           diff = 1;
       }
-      setGameConfig({ mode: 3, maxScore: numGoals, ballSpeed: speed, boost: boost, difficulty: diff });
-      //socket.emit('VsComputer', { maxScore: numGoals, ballSpeed: speed, boost: boost, difficulty: diff });
+      
+      setGameConfig(new gameConfig (
+        3,
+        numGoals, 
+        speed,
+        ballSize,
+        ballType, 
+        boost, 
+        diff
+      ));
+      socket.emit('VsComputer');
       startGame();
     }
     else if (play1vs1Click) {
-      setGameConfig({ mode: 2, maxScore: numGoals, ballSpeed: speed, boost: boost, difficulty: 0});
+      setGameConfig( new gameConfig (
+        2,
+        numGoals,
+        speed,
+        ballSize,
+        ballType,
+        boost,
+        0
+      ));
       socket.emit('1vs1 on same device');
       startGame();
     }
     else {
-      setGameConfig({ mode: 1, maxScore: numGoals, ballSpeed: speed, boost: boost, difficulty: 0});
-      socket.emit('create_room', { maxScore: numGoals, ballSpeed: speed, boost: boost });
+      let config = new gameConfig( 
+        1, 
+        numGoals, 
+        speed,
+        ballSize,
+        ballType, 
+        boost, 
+        0
+      );
+      setGameConfig(config);
+      socket.emit('create_room', config);
     }
   }
 
@@ -134,7 +160,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
 
   return (
     <div 
-      className="flex w-[600px] h-[450px] bg-gray-800 rounded justify-center items-center relative"
+      className="flex flex-col w-[700px] h-[450px] bg-gray-800 rounded-xl justify-center items-center relative"
     >
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">
@@ -161,25 +187,25 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
               <FaArrowLeft size={24} color='white'/>
             </button>
             {showSettings && (
-              <div className="flex flex-col">
+              <div className="flex flex-col items-center justify-center">
                 <label 
-                  className="bg-gray-500 w-96 text-lg font-sans rounded mb-4"
+                  className="bg-gray-500 font-sans text-center text-lg font-bold text-slate-300 rounded mb-4"
                   title="Choose the number of goals (max 20)"
                 >
                   Number of goals: 
                   <input 
-                    className='bg-slate-700 w-36 h-6 ml-7 rounded text-center text-white' 
+                    className='bg-slate-700 rounded text-center text-white w-36 ml-7 h-6 m-2' 
                     type="number" min="1" max="20" 
                     value={numGoals} onChange={e => setNumGoals(parseInt(e.target.value))}
                   />
                 </label>
                 <label 
-                  className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                  className="bg-gray-500 text-lg font-sans font-bold text-slate-300 rounded mb-4" 
                   title="Choose the speed of the ball (slow, normal, fast)"
                 >
                   Ball speed: 
                   <select 
-                    className="ml-20 rounded text-center w-36 bg-slate-700 text-white" 
+                    className="ml-20 w-36 rounded h-6 text-center bg-slate-700 text-white m-2" 
                     value={ballSpeed} 
                     onChange={e => setBallSpeed(e.target.value)}
                   >
@@ -189,27 +215,27 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
                   </select>
                 </label>
                 <label 
-                  className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                  className="bg-gray-500 text-lg font-sans font-bold text-slate-300 rounded mb-4" 
                   title="Choose the speed of the ball (slow, normal, fast)"
                 >
                   Ball Size: 
                   <select 
-                    className="ml-20 rounded text-center w-36 bg-slate-700 text-white" 
+                    className="ml-20 w-36 rounded text-center h-6 m-2 bg-slate-700 text-white hover:bg-gray-900" 
                     value={ballSize} 
                     onChange={e => setBallSize(e.target.value)}
                   >
-                    <option value="smal">Smal</option>
+                    <option value="smal">Small</option>
                     <option value="medium">Medium</option>
                     <option value="big">Big</option>
                   </select>
                 </label>
                 <label 
-                  className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                  className="bg-gray-500 text-lg font-sans font-bold text-slate-300 rounded mb-4" 
                   title="Choose the speed of the ball (slow, normal, fast)"
                 >
                   Ball Type: 
                   <select 
-                    className="ml-20 rounded text-center w-36 bg-slate-700 text-white" 
+                    className="ml-20 mr-2 rounded text-center w-36 h-6 m-2 bg-slate-700 text-white" 
                     value={ballType} 
                     onChange={e => setBallType(e.target.value)}
                   >
@@ -218,24 +244,24 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
                   </select>
                 </label>
                 <label 
-                  className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                  className="bg-gray-500 text-lg font-sans font-bold text-slate-300 rounded mb-4" 
                   title="Activate the boost (whenever the ball collides with a racket the speed increases)"
                 >
                   Activate boost: 
                   <input 
-                    className="bg-slate-700 ml-24 rounded size-5" 
+                    className="bg-slate-700 ml-24 m-2 size-5 rounded accent-slate-700" 
                     type="checkbox" checked={boost} 
                     onChange={e => setBoost(e.target.checked)} 
                   />
                 </label>
                 {playAgainstComputer && (
                   <label 
-                    className="bg-gray-500 text-lg font-sans rounded mb-4" 
+                    className="bg-gray-500 text-lg font-sans font-bold text-slate-300 rounded mb-4" 
                     title="Choose the difficulty (Easy, Medium, Hard)"
                   >
                     Difficulty: 
                     <select  
-                      className="ml-20 rounded text-center w-36 bg-slate-700 text-white" 
+                      className="ml-20 mr-2 rounded text-center bg-slate-700 text-white" 
                       value={difficulty} 
                       onChange={e => setDifficulty(e.target.value)}
                     >
@@ -248,13 +274,13 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
               </div>
               )}
             <button
-              className="bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
               onClick={handleCreateGame}
             >
               Create Game
             </button>
             <button
-              className="bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
               onClick={handleChallengePlayer}
             >
               Challenge a Player
@@ -264,25 +290,25 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
         ) : (
           <>
             <button
-              className=" bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
               onClick={handleCreateNewGameClick}
             >
               Create a new Game
             </button>
             <button
-              className=" bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
               onClick={handleJoinGameClick}
             >
               Join a Game
             </button>
             <button
-              className=" bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
               onClick={handlePlayAgainstComputerClick}
             >
               Play against Computer
             </button>
             <button
-              className=" bg-gray-600 hover:bg-gray-900 text-white font-bold p-4 px-4 rounded mb-4"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
               onClick={handlePlay1vs1Click}
             >
               Play 1vs1 on same device

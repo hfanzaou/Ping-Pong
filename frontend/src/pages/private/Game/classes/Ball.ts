@@ -1,6 +1,6 @@
 import p5Types from "p5";
 import { goalScored } from "../components/gameLogic";
-import { BALL_DIAMETER, WIDTH } from "./constants";
+import { BALL_DIAMETER, WIDTH, HEIGHT } from "./constants";
 
 export class Ball {
     x: number;
@@ -8,16 +8,19 @@ export class Ball {
     xdir: number;
     ydir: number;
     speed: number;
-    radius = BALL_DIAMETER;
+    radius : number;
+    type: string;
     yoff: number;
     vel: p5Types.Vector;
     
-    constructor(x: number, y: number, xdir: number, ydir: number, speed: number, p5: p5Types) {
-        this.x = x;
-        this.y = y;
-        this.xdir = xdir;
-        this.ydir = ydir;
+    constructor(p5:p5Types, speed: number, size: number, type: string) {
+        this.x = WIDTH/2;
+        this.y = HEIGHT/2;
+        this.xdir = 1;
+        this.ydir = 0;
         this.speed = speed;
+        this.radius = size;
+        this.type = type;
         this.vel = p5.createVector(this.xdir, this.ydir);
         this.yoff = p5.random(1000);
     }
@@ -28,7 +31,15 @@ export class Ball {
         this.vel.x = (this.xdir * this.speed);
         this.vel.y = (this.ydir * this.speed);
     }
-    
+    reset(p5: p5Types) {
+      this.x = WIDTH/2;
+      this.y = HEIGHT/2;
+      this.xdir = this.xdir * -1;
+      this.ydir = p5.random(-1, 1);
+      this.vel.x = this.xdir * this.speed;
+      this.vel.y = this.ydir * this.speed;
+    }
+
     inDangerZone() {
         return (this.x < 200 || this.x > WIDTH - 200);
     }
