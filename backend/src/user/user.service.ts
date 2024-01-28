@@ -565,12 +565,12 @@ export class UserService {
                 where: {
                     userId: id,
                 },orderBy: {createAt: 'desc'},
-                select: {senderId: true, type: true}
+                select: {senderId: true, type: true, groupname: true}
             })
             const notification = await Promise.all(notif.map(async (obj) => {
                 const username = await this.getUsername(obj.senderId);
                 const avatar = await this.getUserAvatar(obj.senderId);
-                return {username, avatar, type: obj.type}
+                return {username, avatar, type: obj.type, groupname: obj.groupname}
             }))
             return (notification);
         } catch(error) {
