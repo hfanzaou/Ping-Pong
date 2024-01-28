@@ -6,7 +6,7 @@ import FriendInterface from './FriendsInterface';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
-import { StateComponent } from '../../Home/Users/Users';
+import { StateComponent } from '../../../Home/Users/Users';
 
 import testdata from './FriendsList.json';
 

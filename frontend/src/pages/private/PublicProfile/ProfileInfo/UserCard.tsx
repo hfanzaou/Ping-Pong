@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Avatar, Text, Group, Menu, rem } from '@mantine/core';
 import axios from 'axios';
 // import sectionimage from '../../../../4304494.jpg'
-import FriendshipButton from '../../Home/Users/FriendshipButton';
+import FriendshipButton from '../../../../componenet/FriendshipButton';
 import { IconMessages, IconTrash, IconUserCircle } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 // import { Cookies } from 'react-cookie';

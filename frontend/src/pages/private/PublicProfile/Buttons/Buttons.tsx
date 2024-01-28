@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Card } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import FriendshipButton from "../../Home/Users/FriendshipButton";
-import SerndMessage from "../../Home/Users/SendMessage";
+import FriendshipButton from "../../../../componenet/FriendshipButton";
+import SerndMessage from "../../../../componenet/SendMessage";
 import { Socket } from "socket.io-client";
 
 

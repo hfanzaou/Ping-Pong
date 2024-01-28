@@ -38,17 +38,8 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest })
         catch {
             return ;
         }
-        // await fetch("http://localhost:3001/onlineoffline", {
-        //     method: "POST",
-        //     headers: {
-        //         "content-type": "application/json"
-        //     },
-        //     body: JSON.stringify({
-        //         socket: socket.id,
-        //         username: 
-        //     })
-        // });
     }
+
     useEffect(() => {
         const   socket = io("http://localhost:3001", {
             withCredentials: true

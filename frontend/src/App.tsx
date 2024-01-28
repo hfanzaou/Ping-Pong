@@ -15,7 +15,7 @@ import Setting from './pages/private/Settings/Settings'
 import ScrollUp from './componenet/ScrollUp';
 import Home from './pages/private/Home/Home'
 import Profile from './pages/private/Profile/Profile'
-import Leaderbord from './pages/private/Dashbord/Leaderbord'
+import Leaderbord from './pages/private/LeaderBoard/Leaderbord'
 import Game from './pages/private/Game/Game'
 import ChatApp from './pages/private/Chat/ChatApp'
 import PublicProfile from './pages/private/PublicProfile/PublicProfile'

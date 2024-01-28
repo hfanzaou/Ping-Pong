@@ -3,13 +3,10 @@ import { Card, Group, HoverCard, Image, Text } from "@mantine/core";
 import OneAchievementInterface from "./OneAchievementInterface";
 import firstGameImage from "./assite/firstGame.png"
 import firstFriendImage from "./assite/firstFriend.png"
-
 import lead1Image from "./assite/lead1.png"
 import lead2Image from "./assite/lead2.png"
 import lead3Image from "./assite/lead3.png"
 
-// import firstGameImage from "./4640282_award_first_medal_place_premium_icon.png"
-// import images from "./AllAchievement.json"
 
 function AchievementCards({type, image, title, name}: OneAchievementInterface) {
 
@@ -26,41 +23,34 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
         image = lead3Image;
     }
 
-    // const source = images.find((item) => item.id === image);
-    // console.log("Type: ", type);
     return (
-    <div className='w-[100px] '>
+        <div className='w-[100px] '>
             <Group justify="center">
-    <HoverCard width={200} openDelay={500}>
-    <HoverCard.Target>
-    <Card shadow="sm" radius="md" withBorder>
-    <Card.Section>
-    {type ?
-                <Image
-                    src={image}
-                    // height={200}
-                    alt={title}
-                    /> :
-                <Image className="blur-sm"
-                src={image}
-                    // height={200}
-                    alt="Norway"
-                    />
-                }
-            </Card.Section>
-            {/* <Text size="xs" ta='center'>
-            {name}
-            </Text> */}
-        </Card>
-    </HoverCard.Target>
-    <HoverCard.Dropdown>
-    <Text size="lg" ta='center'>
-            {title}
-            </Text>
-            </HoverCard.Dropdown>
-            </HoverCard>
+                <HoverCard width={200} openDelay={500}>
+                    <HoverCard.Target>
+                        <Card shadow="sm" radius="md" withBorder>
+                            <Card.Section>
+                                {type ?
+                                <Image
+                                    src={image}
+                                    // height={200}
+                                    alt={title}
+                                    /> :
+                                <Image className="blur-sm"
+                                src={image}
+                                    // height={200}
+                                    alt="Norway"
+                                    />
+                                }
+                            </Card.Section>
+                        </Card>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                        <Text size="lg" ta='center'>{title}</Text>
+                    </HoverCard.Dropdown>
+                </HoverCard>
             </Group>
-            </div>
+        </div>
     );
 }
 
