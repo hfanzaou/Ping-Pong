@@ -399,7 +399,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			setError("");
 	}
 	async function clickSave() {
-		if (settingsName.length || settingsOld || settingsPassword) {
+		if (settingsName.length || settingsOld.length || settingsPassword.length) {
 			const	res = await fetch("http://localhost:3001/groupsChage", {
 				method: "POST",
 				headers: {
@@ -426,7 +426,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				setError(Data);
 		}
 		else
-			setError("wrongUser");
+			setError("changeSomething");
 	}
 	function changeSettingsPassword(event: React.ChangeEvent<HTMLInputElement>) {
 		setSettingsPassword(event.target.value);
@@ -467,42 +467,40 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				>
 					{
 						settings &&
-							<div className={`font-extrabold absolute top-5 right-1/4
-								left-1/4 flex justify-around`}
+							<div
+								className={
+									`font-extrabold absolute top-2 flex
+										bg-discord1 rounded-r-full`
+								}
 							>
-								<button
-									className={`flex justify-center items-center group
-										w-[42px] h-[50px]
-										${
-											!invite ?
-											"hover:text-green-500" :
-											"hover:text-red-500"
-										}`
-									}
-									onClick={clickInvite}
-								>
-									{ 
-										!invite ?
-											<IconUserPlus
-												className="block group-hover:hidden"
-											/> :
-											<IconX/>
-									}
-									{
-										!invite &&
-										<h1 className="hidden group-hover:block">
-											invite
-										</h1>
-									}
-								</button>
 								{
-									role == "owner" &&
+									!ownersettings &&
 										<button
-											className={`flex justify-center
-												items-center group w-[62px] h-[50px]
+											className={
+												`flex justify-center items-center
+												${
+													!invite ?
+													"hover:text-green-500 h-10 p-5" :
+													"hover:text-red-500"
+												}`
+											}
+											onClick={clickInvite}
+										>
+											{ 
+												!invite ?
+													<IconUserPlus /> :
+													<IconX />
+											}
+										</button>
+								}
+								{
+									role == "owner" && !invite &&
+										<button
+											className={
+												`flex justify-center items-center
 												${
 													!ownersettings ?
-													"hover:text-green-500" :
+													"hover:text-green-500 p-5 h-10" :
 													"hover:text-red-500"
 												}`
 											}
@@ -510,23 +508,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 										>
 											{
 												!ownersettings ?
-													<IconSettings
-														className={
-															!invite ?
-															"block group-hover:hidden" :
-															""
-														}
-													/> :
+													<IconSettings /> :
 													<IconX />
-											}
-											{
-												!invite && !ownersettings &&
-													<div
-														className="hidden
-															group-hover:block"
-													>
-														<h1>owner</h1><h1>settings</h1>
-													</div>
 											}
 										</button>
 								}
@@ -537,8 +520,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												type="text"
 												className={
 													`bg-discord1 border-none
-														outline-none w-96 h-10 p-5
-														text-white mr-0
+														outline-none w-32 h-10 p-5
+														text-white mr-0 ml-0
 														rounded-l-full z-10
 														${
 															error.length == 0 ?
@@ -560,7 +543,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												className="bg-discord1 w-10 h-10
 													flex justify-center items-center
 													rounded-r-full
-													hover:bg-discord3"
+													hover:text-green-500"
 												onClick={submitInvite}
 											>
 												<IconUserPlus />
@@ -572,15 +555,24 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 										<div
 											className="font-extralight bg-discord3
 												flex flex-col justify-center
-												items-center p-5 rounded-md"
+												items-center rounded-md p-5"
 										>
+											{
+												error == "changeSomething" &&
+												<h1
+													className="text-red-500
+														font-extrabold"
+												>
+													nothing is changed
+												</h1>
+											}
 											{
 												error == "wrongUser" &&
 													<h1
 														className="text-red-500
 															font-extrabold"
 													>
-														user already exists
+														group already exists
 													</h1>
 											}
 											<input
