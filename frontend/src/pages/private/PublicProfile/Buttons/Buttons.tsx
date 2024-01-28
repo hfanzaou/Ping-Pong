@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import axios from "axios";
 import { Button, Card } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,8 +29,8 @@ function Buttons({profile, friendShip, handleRequest, socket}: {profile: any, fr
         <Card className='flex items-center justify-center'  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
                 <div className='flex flex-col space-y-3'>
                     <FriendshipButton name={profile?.usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
-                    <Button color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
-                    <Button color='gray' radius='xl' onClick={handleSendMessage}>Send message</Button>
+                    <Button size="xs" color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
+                    <Button size="xs" color='gray' radius='xl' onClick={handleSendMessage}>Send message</Button>
                     <SerndMessage name={receverName} opened={opened} close={close} socket={socket} />
                 </div>
         </Card>
