@@ -28,7 +28,7 @@ services:
     networks:
       - mynet
     volumes:
-      - ~/sg /mnt/c/Users/PC/transcendence/data/:/var/lib/postgresql/data/
+      - ~/sgoinfre/data/sql/:/var/lib/postgresql/data/
 networks:
   mynet:  
 
