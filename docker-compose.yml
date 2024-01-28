@@ -14,7 +14,7 @@ services:
       - dev-db
     restart: always
     volumes: 
-    - /mnt/c/Users/PC/transcendence/uploads/:/usr/src/app/backend/uploads/
+    - ~/sgoinfre/data/uploads/:/usr/src/app/backend/uploads/
     networks:
       - mynet
 
@@ -28,7 +28,7 @@ services:
     networks:
       - mynet
     volumes:
-      -  /mnt/c/Users/PC/transcendence/data/:/var/lib/postgresql/data/
+      - ~/sgoinfre/data/sql/:/var/lib/postgresql/data/
 networks:
   mynet:  
 
