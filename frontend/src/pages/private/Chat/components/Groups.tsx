@@ -71,6 +71,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 				});
 				const	Data = await res.json();
 				setList(Data);
+				history("/Chat");
 			}
 			fetchData();
 		}
@@ -396,7 +397,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		setSettings(false);
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
-		history("/Chat");
+		// history("/Chat");
 	}
 	async function update() {
 		const res0 = await fetch("http://localhost:3001/chatUser", {
