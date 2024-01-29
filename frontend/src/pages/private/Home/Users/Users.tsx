@@ -77,8 +77,6 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
     const getUsers = async () => {
         await axios.get("user/list")
         .then((res) => {
-            // setUsersList(testdata);
-            // setSearchList(testdata);
             setUsersList(res.data);
             setSearchList(res.data);
             console.log("Users list00000-->: ", res.data);
@@ -92,9 +90,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
 
     useEffect(() => {
         socket?.on("getnotification", () => {
-            // setNotification(true);
             getUsers();
-            // console.log("get notification");
             return () => {
                 socket.off("getnotification");
             }
@@ -190,9 +186,10 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                             </Text>
                         </div>
                     </Group>
-                    <div className=''>
+                    <Group>
+                        <Button color='green' size='xs' radius='xl'>play game</Button>
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
-                    </div>
+                    </Group>
                 </div>
             </Table.Td>
         </Table.Tr>

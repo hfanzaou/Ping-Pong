@@ -102,6 +102,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.wss.to(oppSocket.id).emit('startGame');
       }
       else {
+        this.wss.to(client.id).emit('CannotStartGame');
         this.logger.log('Opp socket Not found');
       }
     }

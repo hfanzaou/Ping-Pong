@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BlockedUsersInterface from "./BlockedFriendInterface";
-import testdata from './BlockedFriendsList.json'
-import { Group, Menu, Table, Avatar, Text, rem } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
+import { Group, Table, Avatar, Text, Button } from "@mantine/core";
 
 function BlockedUsers() {
     const [blockedUsersList, setBlockedUsersList] = useState<BlockedUsersInterface[]>([]);
@@ -13,7 +11,6 @@ function BlockedUsers() {
         .then((res) => {
          setBlockedUsersList(res.data);
         }).catch(err => {
-        //   setBlockedUsersList(testdata);
             console.error("Error in fetching blocked friend list: ", err);
         })
     };
@@ -23,13 +20,11 @@ function BlockedUsers() {
     }, []);
 
     const handleInBlockUsers = async (name: string) => {
-        console.log("blocked friend name: ", name);
         await axios.post("user/inblock", {name: name})
         .then((res) => {
             if (res.status === 201) {
                 getBlockedUsers();
             }
-            // res.status === 201 && window.location.reload();
         })
         .catch((err) => {
             console.error("error when send post request to In block friend: ", err);
@@ -39,31 +34,19 @@ function BlockedUsers() {
     const blockedUsers = blockedUsersList.map((item) => (
         <Table.Tr key={item.name}>
             <Table.Td>
-                <Group gap="sm">
-                    <Menu
-                        transitionProps={{ transition: 'pop' }}
-                        withArrow
-                        position="bottom-end"
-                        withinPortal
-                    >
-                    <Menu.Target>
-                        <Avatar size={40} src={item.avatar} radius={40} />
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                    <Menu.Item
-                      leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                      color="red"
-                    >
-                        <button onClick={() => handleInBlockUsers(item.name)}>
-                          InBlock friend
-                        </button>
-                    </Menu.Item>
-                    </Menu.Dropdown>
-                    </Menu>
-                    <Text fz="sm" fw={500}>
-                        {item.name}
-                    </Text>
-                </Group>
+                <div className="flex justify-between items-center space-x-[90px]">
+                    <Group gap="sm">
+                        <div className="flex flex-col items-center">
+                        <div dir="rtl" className="relative">
+                            <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white"> 
+                                <Avatar size={40} src={item.avatar} radius={40} />
+                            </button>
+                        </div>
+                            <Text fz="md" fw={800} c='red'>{item.name}</Text>
+                        </div>
+                    </Group>
+                    <Button color="gray" size="xs" radius='xl' onClick={() => handleInBlockUsers(item.name)}>Inblock</Button>
+                </div>
             </Table.Td>
         </Table.Tr>
     ));

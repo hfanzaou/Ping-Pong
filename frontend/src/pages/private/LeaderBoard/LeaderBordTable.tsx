@@ -3,7 +3,7 @@ import { Group, ScrollArea, Table, Avatar, Text} from "@mantine/core";
 import leaderboardInterface from "./Leaderboard";
 
 function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
-    
+
     const rows = data.map((item, index) => (
         index > 2 &&
         <Table.Tr key={item.name}>
@@ -17,22 +17,22 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
                 </Group>
             </Table.Td>
             <Table.Td>
-                <Text fz="sm">{item.level}</Text>
-                <Text fz="xs" c="dimmed">Level</Text>
-            </Table.Td>
-            {/* <Table.Td>
                 <Text fz="sm">{item.win}</Text>
                 <Text fz="xs" c="dimmed">Wins</Text>
             </Table.Td>
             <Table.Td>
                 <Text fz="sm">{item.loss}</Text>
                 <Text fz="xs" c="dimmed">Lost</Text>
-            </Table.Td> */}
+            </Table.Td>
+            <Table.Td>
+                <Text fz="sm">{item.level}</Text>
+                <Text fz="xs" c="dimmed">Level</Text>
+            </Table.Td>
         </Table.Tr>
     ));
 
     return (
-        <Table verticalSpacing="md" highlightOnHover withRowBorders={false} horizontalSpacing='xl' className='h-full w-full'>
+        <Table  withRowBorders={false} className='h-full w-full'>
             <ScrollArea h={425}>
                 <Table.Tbody>{rows}</Table.Tbody>
             </ScrollArea>

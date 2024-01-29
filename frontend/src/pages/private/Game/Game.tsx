@@ -46,9 +46,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     avatar: "" 
   });
   const [side, setSide] = useState<boolean>(true);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameEnded, setGameEnded] = useState(false);
-  const [gameOverMess, setGameOverMess] = useState("");
+  const [gameStart, setGameStart] = useState(false);
   
   const startGame = () => {
     console.log('startGame!');
@@ -56,34 +54,16 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     console.log(opp);
     console.log(config);
     console.log(side);
-    setGameStarted(true);
+    setGameStart(true);
     if (config.mode == 3) {
       console.log('Here');
       setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
     }
   };
 
-  const endGame = (gameOverMes: string) => {
-    console.log('endGame!');
-    setGameEnded(true);
-    setGameOverMess(gameOverMes);
-    // setGameStarted(false);
-    // setOpp({username: "--", level: "----", avatar: ""});
-    // setSide(true);
-  };
-
-  const MainMenuClick = () => {
-    setGameEnded(false);
-    setGameStarted(false);
-    setOpp({username: "--", level: "----", avatar: ""});
-    setSide(true);
-    socket.emit('state');
-  };
-
   const fetchUserName = async () => {
     const res = await axios.get('user/name')
     .then((res) => {
-      //console.log(res.data);
       socket.emit('userName', res.data.name);
     });
   };
@@ -92,7 +72,6 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     try {
       const res = await axios.get('user/game', {params: {opp: id}})
       .then((res) => {
-        // console.log(res.data);
         setOpp({ username: res.data.username, level: res.data.level, avatar: res.data.avatar });
       });
     } catch (err) {
@@ -137,8 +116,6 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     const oppParam = params.get('opp');
 
     if (userParam && oppParam) {
-      // setUser({ ...user, username: userParam });
-      // setOpp({ ...opp, username: oppParam })  ;
       if (userParam == user.username) {
         socket.emit('createGame', { user1: userParam, user2: oppParam, config: config });
       }
@@ -155,12 +132,12 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         false, 
         1
       ));
-      setGameStarted(true);
+      setGameStart(true);
     });
 
     socket.on('CannotStartGame', () => {
       console.log('Cannot start game!');
-      setGameStarted(false);
+      setGameStart(false);
     });
   }, [user]);
 
@@ -176,8 +153,8 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         id="sketchHolder"
         className="rounded-xl shadow-2xl"
         >
-        {( gameStarted ? (
-          <GameComponent socket={socket} avatar={avatar} config={config} user={user} endGame={endGame} />
+        {( gameStart ? (
+          <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} />
         ) : (
           <GameSettings socket={socket} setGameConfig={setGameConfig} startGame={startGame} />
         )
