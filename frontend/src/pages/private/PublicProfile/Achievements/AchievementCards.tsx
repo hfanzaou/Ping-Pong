@@ -23,41 +23,34 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
         image = lead3Image;
     }
 
-
-    console.log("Type: ", type);
     return (
-    <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
+       <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
             <Group justify="center">
-    <HoverCard width={200} openDelay={500}>
-    <HoverCard.Target>
-    <Card shadow="sm" padding="mg" radius="md" withBorder>
-    <Card.Section>
-    {type ?
-                <Image
-                    src={image}
-                    height={300}
-                    alt="Norway"
-                    /> :
-                <Image className="blur-sm"
-                src={image}
-                    height={300}
-                    alt="Norway"
-                    />
-                }
-            </Card.Section>
-            {/* <Text size="xs" ta='center'>
-            {name}
-            </Text> */}
-        </Card>
-    </HoverCard.Target>
-    <HoverCard.Dropdown>
-    <Text size="lg" ta='center'>
-            {title}
-            </Text>
-            </HoverCard.Dropdown>
-            </HoverCard>
+                <HoverCard width={200} openDelay={500}>
+                    <HoverCard.Target>
+                        <Card shadow="sm" padding="mg" radius="md" withBorder>
+                            <Card.Section>
+                                {type ?
+                                    <Image
+                                        src={image}
+                                        height={300}
+                                        alt="Norway"
+                                    /> :
+                                    <Image className="blur-sm"
+                                    src={image}
+                                        height={300}
+                                        alt="Norway"
+                                    />
+                                }
+                            </Card.Section>
+                        </Card>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                        <Text size="lg" ta='center'>{title}</Text>
+                    </HoverCard.Dropdown>
+                </HoverCard>
             </Group>
-            </div>
+        </div>
     );
 }
 
