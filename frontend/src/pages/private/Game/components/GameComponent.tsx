@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import p5 from "p5";
 import { Socket } from 'socket.io-client';
 import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forge } from "./gameLogic";
@@ -6,6 +6,7 @@ import { WIDTH, HEIGHT, RACKET_HEIGHT, RACKET_WIDTH, INITIAL_SPEED, BALL_DIAMETE
 import { handleGameStates, play } from './gameStates';
 import { gameConfig } from '../classes/gameConfig';
 import { userData } from '../Game';
+import GameOver from './GameOver';
 
 
 
@@ -14,21 +15,23 @@ interface Props {
   avatar: string;
   config: gameConfig;
   user: userData;
-  endGame: (gameOverMess: string) => void;
+  setGameStart: (v: boolean) => void;
 }
 
 export let canvas: p5.Renderer;
 
-const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame}) => {
+const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameStart}) => {
   const sketchRef = useRef<HTMLDivElement | null>(null);
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
   useEffect(() => {
+
     console.log(config);
     if (sketchRef.current === null) return;
     new p5(p => {
       p.setup = async () => {
         canvas = p.createCanvas(WIDTH, HEIGHT);
-        eventListeners(p, socket, config);
+        eventListeners(p, socket, config, setGameOver);
         if (config.mode == 3 || config.mode == 2) {
           initGame(p, socket, config, user);
         }
@@ -41,7 +44,9 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
       p.draw = () => {
         p.background('rgb(31, 41, 55)');
         p.fill('white');
-        handleGameStates(p, config, socket, endGame);
+      
+        if (!play)
+          handleGameStates(p, config, socket);
         
         if (play) {
           socket.emit('state', "Ingame");
@@ -73,7 +78,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
           
           if (forge.forgeIsFormed()) {
             if (config.mode == 2 || config.mode == 3) {
-              gameLoop(p, socket, config);
+              gameLoop(p, socket, config, setGameOver);
             }
             ball.show(p);
           } else {
@@ -101,9 +106,17 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, endGame})
       }
       };
     }, sketchRef.current);
+
   }, []);
 
-  return <div ref={sketchRef} />;
+//  useEffect(() => {
+  //  
+  //}, [gameOver]);
+
+  return (
+    gameOver ? <GameOver score={player1.score} user={user.username} setGameOver={setGameOver} setGameStart={setGameStart} /> 
+      : <div ref={sketchRef} />
+  );
 };
 
 export default GameComponent;
