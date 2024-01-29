@@ -12,14 +12,14 @@ interface Props {
 const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest }) => {
     async function callBack(socket: Socket) {
         try {
-            const res0 = await fetch("http://localhost:3001/user/name", {
+            const res0 = await fetch("user/name", {
                 credentials: "include"
             });
             const Data0 = await res0.json();
             if (Data0.name)
             {
                 try {
-                    await fetch("http://localhost:3001/onlineoffline", {
+                    await fetch("onlineoffline", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest })
     }
 
     useEffect(() => {
-        const   socket = io("http://localhost:3001", {
+        const   socket = io(window.location.host, {
             withCredentials: true
         });
         socket.on("connect", async () => {

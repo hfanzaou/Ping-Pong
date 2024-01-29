@@ -11,12 +11,12 @@ import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
-    //  ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'frontend'),
-    // }),
+     ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend'),
+    }),
             ConfigModule.forRoot({
               isGlobal: true,
-              //ignoreEnvFile: true,
+              ignoreEnvFile: true,
             }),
             AuthModule,
             PrismaModule,

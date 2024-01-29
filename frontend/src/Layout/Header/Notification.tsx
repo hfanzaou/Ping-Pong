@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Drawer, Group, ScrollArea, Text } from "@mantine/core";
-import NotificationInterface from "./NotificationInterface";
+import NotificationInterface from "./notification/NotificationInterface";
 import axios from "axios";
 import { useDisclosure } from "@mantine/hooks";
 import { Socket } from "socket.io-client";
@@ -60,7 +60,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 {item.type === "groupInvite" &&
                 <div>
                     <Text c={'blue'} > Invite you to a group</Text>
-                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`http://localhost:3000/Chat?name=${item.groupname}`}>accept</Link></Button>
+                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`/Chat?name=${item.groupname}`}>accept</Link></Button>
                 </div>}
                 {(item.type !== "friend request" && item.type !== "groupInvite" && item.type !== "accept friend" && item.type !== 'chat' && item.type !== 'groupChat') &&
                     <Text c='white'>{item.type}</Text>

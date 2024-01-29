@@ -119,7 +119,7 @@ export default ChangeAvatar
 //     console.log("formData: ", formData.get('image'));
 
 //     try {
-//       const response = await axios.post('http://localhost:3001/settings/avatar', formData.get('image'), {
+//       const response = await axios.post('settings/avatar', formData.get('image'), {
 //         headers: {
 //           'Content-Type': 'multipart/form-data',
 //         },

@@ -6,7 +6,7 @@ function Login() {
 
     const handleClick = async () => {
         // Just redirect to backend /auth
-        window.location.href = `${import.meta.env.VITE_API_BASE_URL}login`;
+        window.location.href = `login`;
     };
 
     return (

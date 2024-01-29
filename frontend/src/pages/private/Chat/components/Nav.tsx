@@ -14,7 +14,7 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 	async function clickPrivate()
 	{
 		setOption("Private");
-		const res0 = await fetch("http://localhost:3001/chatUser", {
+		const res0 = await fetch("chatUser", {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 	async function clickRooms()
 	{
 		setOption("Rooms");
-		const res0 = await fetch("http://localhost:3001/chatUser", {
+		const res0 = await fetch("chatUser", {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'

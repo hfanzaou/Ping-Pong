@@ -27,7 +27,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 
 	useEffect(() => {
 		async function fetchData() {
-			const	res = await fetch("http://localhost:3001/chatAvatarPrivate", {
+			const	res = await fetch("chatAvatarPrivate", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await fetch("http://localhost:3001/chathistoryPrivate", {
+				const res = await fetch("chathistoryPrivate", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -77,7 +77,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		if (trigger) {
 			async function fetchData() {
 				if (data.talkingTo) {
-					await fetch("http://localhost:3001/chatUsers", {
+					await fetch("chatUsers", {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						trigger: !prev.trigger
 					}))
 				}
-				const res0 = await fetch("http://localhost:3001/chatUser", {
+				const res0 = await fetch("chatUser", {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json'
@@ -182,7 +182,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 									rounded-md m-2 p-3"
 							>
 								<a
-									href={`http://localhost:3000/UserProfile?name=${x.sender}`}
+									href={`UserProfile?name=${x.sender}`}
 								>
 									{
 										avatar.avatar ?

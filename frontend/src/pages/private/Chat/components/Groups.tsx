@@ -60,7 +60,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	useEffect(() => {
 		if (privateJoin.length) {
 			async function fetchData() {
-				const	res = await fetch("http://localhost:3001/privateJoin", {
+				const	res = await fetch("privateJoin", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -129,7 +129,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	useEffect(() => {
 		if (createTrigger) {
 			async function fetchData() {
-				const	res = await fetch("http://localhost:3001/createGroup", {
+				const	res = await fetch("createGroup", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -175,7 +175,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
-			const	res = await fetch("http://localhost:3001/searchList", {
+			const	res = await fetch("searchList", {
 				method: "GET",
 				headers: {
 					"content-type": "application/json"
@@ -200,7 +200,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		}));
 	}, [data.send]);
 	async function callBackNewGroup() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
+		const res0 = await fetch("chatUser", {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'
@@ -334,7 +334,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		}
 	}
 	async function checkGroup(name: string) {
-		const	res = await fetch("http://localhost:3001/checkGroup", {
+		const	res = await fetch("checkGroup", {
 				method: "POST",
 				headers: {
 					"content-type": "application/json"
@@ -372,7 +372,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		}
 	}
 	async function leaveJoin() {
-		const	res = await fetch("http://localhost:3001/leaveJoin", {
+		const	res = await fetch("leaveJoin", {
 			method: "POST",
 			headers: {
 				"content-type": "application/json"
@@ -400,7 +400,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 		// history("/Chat");
 	}
 	async function update() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
+		const res0 = await fetch("chatUser", {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'
