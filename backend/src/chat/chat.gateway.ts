@@ -81,6 +81,7 @@ OnGatewayDisconnect {
 		const room = await this.chatService.getRoomDirect(data);
 		if (room)
 			client.join(room);
+		this.chatService.updateReadPrivate(data);
 	}
 	@SubscribeMessage("newChatRoom")
 	async handelNewChatRoom(client: Socket, data: NEWCHAT) {
