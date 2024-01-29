@@ -3,35 +3,35 @@
         "id": 1,
         "name": "firstMatch",
         "type": false,
-        "image": "./firstGame.png",
+        "image": "",
         "title": "Play First Match"
     },
     {
         "id": 2,
         "name": "firstFriend",
         "type": false,
-        "image": "./firstFriend.png",
+        "image": "",
         "title": "Add First Friend"
     },
     {
         "id": 3,
         "name": "lead1",
         "type": false,
-        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "image": "",
         "title": "Lead 1"
     },
     {
         "id": 4,
         "name": "lead2",
         "type": false,
-        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "image": "",
         "title": "Lead 2"
     },
     {
         "id": 5,
         "name": "lead3",
         "type": false,
-        "image": "./4640282_award_first_medal_place_premium_icon.png",
+        "image": "",
         "title": "Lead 3"
     }
 ]

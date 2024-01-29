@@ -1,20 +1,16 @@
-import { Switch, TextInput, Image, Button, Modal } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { TextInput, Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-// import QuerCode from '../../../avatarImage/avatar-2.png';
 
 function EnableTowFactor() {
-  const [towFactor, setTowFactor] = useState<boolean>();
-//   const [change, setChange] = useState<boolean>(false);
-  const [invalidCode, setInvalidCode] = useState<boolean>(false);
-  const [qrImage, setQrImage] = useState();
-  const [code, setCode] = useState<string>();
-  const [disabled, setDisabled] = useState<boolean>(true);
+    const [towFactor, setTowFactor] = useState<boolean>();
+    const [invalidCode, setInvalidCode] = useState<boolean>(false);
+    const [qrImage, setQrImage] = useState();
+    const [code, setCode] = useState<string>();
+    const [disabled, setDisabled] = useState<boolean>(true);
 
-  const [opened, { open, close }] = useDisclosure(false);
-
+    const [opened, { open, close }] = useDisclosure(false);
 
     const getFactorState = async () => {
         await axios.get("user/2fa")
@@ -44,7 +40,7 @@ function EnableTowFactor() {
             })
         }
     };
-    
+
     const handleSaveCode = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.value);
         setInvalidCode(false);
@@ -71,12 +67,10 @@ function EnableTowFactor() {
         })
     };
 
-
     const handleDisableSendCode = async () => {
         await axios.post("2fa/turnoff", {AuthCode: code})
         .then((res) => {
             if (res.status == 201) {
-                // setChange(false);
                 getFactorState();
                 setDisabled(true);
                 close();
@@ -92,7 +86,6 @@ function EnableTowFactor() {
     const handleCancel = () => {
         setInvalidCode(false);
         setDisabled(true);
-        // setChange(false);
         close();
     };
 
