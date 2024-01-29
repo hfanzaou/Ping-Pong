@@ -19,10 +19,10 @@ export let player1: Player,
   forge: LightningForge;
 
 
-export function  gameLoop(p5: p5Types, socket: Socket, config: gameConfig)
+export function  gameLoop(p5: p5Types, socket: Socket, config: gameConfig, setGameOver: (v: boolean) => void)
 {
   if (!goalScored) {
-    updateBallPos(p5, socket, config);
+    updateBallPos(p5, socket, config, setGameOver);
     updatePosition();
   }
 }
@@ -31,7 +31,7 @@ export function  updatePosition() {
   ball.updatePosition();
 }
 
-export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig)
+export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig, setGameOver: (v: boolean) => void)
 {
   if (update) return;
   let nextY = ball.y + (ball.ydir * ball.speed);
@@ -55,21 +55,21 @@ export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig)
   }
   else if (ball.x > WIDTH) {
     player1.score += 1;
-    ft_goalScored(p5, socket, config);
+    ft_goalScored(p5, socket, config, setGameOver);
   }
   else if (ball.x < (BALL_DIAMETER >> 1)) {
     player2.score += 1;
-    ft_goalScored(p5, socket, config);
+    ft_goalScored(p5, socket, config, setGameOver);
   }
 }
 
-function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig) {
+function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig, setGameOver: (v: boolean) => void) {
   var xSpot = ball.x - BALL_DIAMETER/2 < 0 ? 0 : WIDTH;
   shootSparks(xSpot, ball.y, -ball.xdir, p5);
   if (player1.score == config.maxScore || player2.score == config.maxScore) {
     //goalScored = true;
     socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-    gameOver(p5, player1, player2, socket);
+    gameOver(p5, socket, setGameOver);
   }
   else {
     // socket.emit('goalScored', { player1Score: player1.score, player2Score: player2.score });
@@ -149,6 +149,14 @@ export function  _mouseDragged(p5: p5Types, socket: Socket)
 }
 
 export function initGame(p5: p5Types, socket: Socket, config: gameConfig, user: any) {
+  p5.removeElements();
+  /*player1.score = 0;
+  player2.score = 0;
+  disconnectMessage = null;
+  gameOverMessage = null;
+  winnerMessage = null;
+  playAgain = false;*/
+
   player1 = new Player(
     user, 
     10,
@@ -187,7 +195,7 @@ export function computerPlayer(difficulty: number) {
   }
 }
 
-export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig) {
+export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig, setGameOver: (v: boolean) => void) {
   socket.on('gameStart', () => {
     p5.removeElements();
     p5.loop();
@@ -204,15 +212,13 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig) 
   });
   
   socket.on('gameOver', () => {
-    // socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
-    gameOver(p5, player1, player2, socket);
-    socket.emit('state');
+    //socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
+    gameOver(p5, socket, setGameOver);
   });
 
   socket.on('opponentDisconnected', () => {
     p5.removeElements();
     opponentDisconnect();
-    socket.emit('state');
   });
 
   socket.on('updateRacket', (pos) => {
