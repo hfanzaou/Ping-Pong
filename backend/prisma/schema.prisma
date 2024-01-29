@@ -67,8 +67,8 @@ model MESSAGE {
 
   sender        String
   message       String
-  // avatar        String?
   chathistoryid Int
+  readers       String[]
   chathistory   CHATHISTORY @relation(fields: [chathistoryid], references: [id])
 }
 

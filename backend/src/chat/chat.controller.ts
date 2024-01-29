@@ -116,4 +116,8 @@ export class ChatController {
 	async handleChatAvatarRoom(@Body() data: { name: string }) {
 		return await this.chatService.chatAvatarRoom(data);
 	}
+	@Post("numberOfMessages")
+	async handleNumberOfMessages(@Body() data: { userName: string, sender: string }) {
+		return await this.chatService.numberOfMessages(data.userName, data.sender);
+	}
 }
