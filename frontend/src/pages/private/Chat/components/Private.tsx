@@ -181,8 +181,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		setBlockTrigger(true);
 	}
 	function mute() {}
-	// function clickTest() {
-	// }
+	function clickTest() {
+		List && console.log(List[0].unRead)
+	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -244,19 +245,29 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															}`
 														}
 													></div>
-													<div
-														className={
-															`absolute -bottom-2
-															right-1 rounded-full
-															z-10 border-4 bg-red-500 text-xs px-1 ${
-																x.login != data.talkingTo ?
-																	`border-discord3
-																	group-hover:border-discord4` :
-																	`border-discord5 shadow-black
-																	shadow-lg`
-															}`
-														}
-													>+99</div>
+													{
+														x.unRead != 0 &&
+														<div
+															className={
+																`absolute -bottom-2
+																right-1 rounded-full
+																z-10 border-4 bg-red-500 text-xs px-1 ${
+																	x.login != data.talkingTo ?
+																		`border-discord3
+																		group-hover:border-discord4` :
+																		`border-discord5 shadow-black
+																		shadow-lg`
+																}`
+															}
+														>
+															{
+																x.unRead &&
+																	(
+																		x.unRead < 100 ? x.unRead : "+99"
+																	)
+															}
+														</div>
+													}
 												</div> :
 												<div className="relative">
 													<IconUser
@@ -287,19 +298,29 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															}`
 														}
 													></div>
-													<div
-														className={
-															`absolute -bottom-2
-															right-1 rounded-full
-															z-10 border-4 bg-red-500 text-xs px-1 ${
-																x.login != data.talkingTo ?
-																	`border-discord3
-																	group-hover:border-discord4` :
-																	`border-discord5 shadow-black
-																	shadow-lg`
-															}`
-														}
-													>99</div>
+													{
+														x.unRead != 0 &&
+														<div
+															className={
+																`absolute -bottom-2
+																right-1 rounded-full
+																z-10 border-4 bg-red-500 text-xs px-1 ${
+																	x.login != data.talkingTo ?
+																		`border-discord3
+																		group-hover:border-discord4` :
+																		`border-discord5 shadow-black
+																		shadow-lg`
+																}`
+															}
+														>
+															{
+																x.unRead &&
+																	(
+																		x.unRead < 100 ? x.unRead : "+99"
+																	)
+															}
+														</div>
+													}
 												</div>
 										}
 										{size && x.login}
