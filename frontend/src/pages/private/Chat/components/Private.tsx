@@ -2,6 +2,7 @@ import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
 import {
+	IconCircleFilled,
 	IconDotsVertical,
 	IconTrash,
 	IconUser,
@@ -180,6 +181,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		setBlockTrigger(true);
 	}
 	function mute() {}
+	// function clickTest() {
+	// }
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -231,15 +234,29 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 																	group-hover:border-discord4 ${
 																		x.state == "Online" ?
 																			"bg-green-500" :
-																			"bg-red-500"
+																			"bg-gray-500"
 																	}` :
 																	`border-discord5 ${
-																		x.state == "Online" &&
-																			"bg-green-300"
+																		x.state == "Online" ?
+																			"bg-green-300" :
+																			"bg-gray-300"
 																	}`
 															}`
 														}
 													></div>
+													<div
+														className={
+															`absolute -bottom-2
+															right-1 rounded-full
+															z-10 border-4 bg-red-500 text-xs px-1 ${
+																x.login != data.talkingTo ?
+																	`border-discord3
+																	group-hover:border-discord4` :
+																	`border-discord5 shadow-black
+																	shadow-lg`
+															}`
+														}
+													>+99</div>
 												</div> :
 												<div className="relative">
 													<IconUser
@@ -270,6 +287,19 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															}`
 														}
 													></div>
+													<div
+														className={
+															`absolute -bottom-2
+															right-1 rounded-full
+															z-10 border-4 bg-red-500 text-xs px-1 ${
+																x.login != data.talkingTo ?
+																	`border-discord3
+																	group-hover:border-discord4` :
+																	`border-discord5 shadow-black
+																	shadow-lg`
+															}`
+														}
+													>99</div>
 												</div>
 										}
 										{size && x.login}
@@ -281,12 +311,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									>
 										<IconDotsVertical/ >
 									</button>
-									{/* {
-										x.read &&
-											<div className="absolute -top-2 -right-2">
-												<IconCircleFilled className="w-5"/>
-											</div>
-									} */}
 								</li>
 							);
 						}

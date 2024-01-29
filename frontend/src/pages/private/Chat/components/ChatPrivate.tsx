@@ -14,7 +14,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		id: number,
 		message: string,
 		sender: string
-		// avatar: string
 	}>>([]);
 	const	dataRef = useRef(data);
 	dataRef.current = data;
@@ -103,7 +102,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 					});
 					const Data: USERDATA = await res0.json();
 					Data.chatUsers.sort((x, y) => {
-						// console.log("here");
 						if (x.time && y.time) {
 							const	timeX = new Date(x.time);
 							const	timeY = new Date(y.time);
@@ -122,18 +120,13 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		id: number,
 		message: string,
 		sender: string
-		// avatar: string,
 	})
 	{
 		setData(x => ({
 			...x,
 			send: !x.send
 		}))
-		// if (!dataRef.current.userData?.chatUsers.
-		// 	find(x => x.login == dataRef.current.talkingTo)) {
-			setTrigger(true);
-
-		// }
+		setTrigger(true);
 		setConversation(prev => [m, ...prev]);
 	}
 	useEffect(() => {

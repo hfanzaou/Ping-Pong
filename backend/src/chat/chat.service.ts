@@ -43,7 +43,11 @@ export class ChatService {
 							login: x.username,
 							avatar: await this.user.getUserAvatar(x.id),
 							time: chatHistorie.updateAt,
-							state: x.state
+							state: x.state,
+							unRead: await this.numberOfMessages(
+								x.username,
+								user.username
+							)
 						};
 				})),
 				friends: await Promise.all(user.friends.filter(x =>
@@ -843,5 +847,19 @@ export class ChatService {
 			});
 		}
 		return null;
+	}
+	async numberOfMessages(userName: string, sender: string) {
+		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+			where: {
+				OR: [
+					{ name: `&${userName}${sender}` },
+					{ name: `&${sender}${userName}`}
+				]
+			},
+			include: { messages: true }
+		});
+		const	unReadMessages = chatHistorie.messages.filter(x => x.readers.find(y => y == userName) == undefined);
+		console.log(unReadMessages);
+		return 0;
 	}
 }
