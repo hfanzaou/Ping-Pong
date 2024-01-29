@@ -8,35 +8,36 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
         index > 2 &&
         <Table.Tr key={item.name}>
             <Table.Td>
-                <Group gap="sm">
+                <Group gap="sm" className="mr-8">
                     <Avatar size={40} src={item.avatar} radius={40} />
                     <div>
-                        <Text fz="sm" fw={500}>{item.name}</Text>
+                        <Text fz="md" fw={800} c='indigo'>{item.name}</Text>
+                        {/* <Text fz="sm" fw={500}>{item.name}</Text> */}
                         <Text c="dimmed" fz="xs">#{index + 1}</Text>
                     </div>
                 </Group>
             </Table.Td>
-            <Table.Td>
+            {/* <Table.Td>
                 <Text fz="sm">{item.win}</Text>
                 <Text fz="xs" c="dimmed">Wins</Text>
             </Table.Td>
             <Table.Td>
                 <Text fz="sm">{item.loss}</Text>
                 <Text fz="xs" c="dimmed">Lost</Text>
-            </Table.Td>
+            </Table.Td> */}
             <Table.Td>
-                <Text fz="sm">{item.level}</Text>
-                <Text fz="xs" c="dimmed">Level</Text>
+                <Text fz="md" fw={500} c="dimmed">Level</Text>
+                <Text fz="sm" c='blue'>{item.level}</Text>
             </Table.Td>
         </Table.Tr>
     ));
 
     return (
-        <Table  withRowBorders={false} className='h-full w-full'>
-            <ScrollArea h={425}>
+        <ScrollArea h={425}>
+            <Table  withRowBorders={false} className='h-full w-full'>
                 <Table.Tbody>{rows}</Table.Tbody>
-            </ScrollArea>
-        </Table>
+            </Table>
+        </ScrollArea>
     );
 }
 
