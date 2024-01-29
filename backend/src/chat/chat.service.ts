@@ -858,8 +858,31 @@ export class ChatService {
 			},
 			include: { messages: true }
 		});
-		const	unReadMessages = chatHistorie.messages.filter(x => x.readers.find(y => y == userName) == undefined);
-		console.log(unReadMessages);
-		return 0;
+		const	unReadMessages = chatHistorie.messages.filter(x => {
+			return x.readers.find(y => y == sender) == undefined;
+		});
+		return unReadMessages.length;
+	}
+	async updateReadPrivate(data: NEWCHAT) {
+		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+			where: {
+				OR: [
+					{ name: `&${data.recver}${data.sender}` },
+					{ name: `&${data.sender}${data.recver}`}
+				]
+			}
+		});
+		const	unReadMessages = (await this.prisma.mESSAGE.findMany({
+			where: {chathistoryid: chatHistorie.id}
+		})).filter(x => {
+			return x.readers.find(y => y == data.sender) == undefined;
+		});
+		for (const message of unReadMessages) {
+			const	updatedReaders = [...message.readers, data.sender];
+			await this.prisma.mESSAGE.update({
+				where: {id: message.id},
+				data: {readers: updatedReaders}
+			});
+		}
 	}
 }
