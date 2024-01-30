@@ -113,7 +113,7 @@ function EnableTowFactor() {
                         <img alt="qr code" className="h-40 w-40 mx-auto" src={qrImage}/>
                         <TextInput
                             onChange={handleSaveCode}
-                            label="scane Quire Code and set code here"
+                            label="scan the QR code above and set the authentification code"
                             error={invalidCode ? "try again with a valid code" : false}
                         />
                         <div className='mt-5'>

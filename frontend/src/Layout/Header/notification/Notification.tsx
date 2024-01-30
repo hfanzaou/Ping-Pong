@@ -23,12 +23,14 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
 
     useEffect(() => {
         socket?.on("getnotification", (data) => {
-            setNotification(true);
-            getNotificationTable();
-            console.log("get notification ::: this type :: ", data);
-            if (data.type) {
-                // setType(data.type);
+            // setNotification(true);
+            // console.log("getnotification", data);
+            if (data.type === 'remove request') { {/* need notification type to set notification false */}
+                setNotification(false);
+            } else {
+                setNotification(true);
             }
+            getNotificationTable();
             return () => {
                 socket.off("getnotification");
             }
@@ -63,8 +65,8 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 </div>}
                 {item.type === 'game'&& 
                 <div>
-                <Text c={'white'}>sent you a game invite</Text>
-                {/* <Button radius='xl' size="xs" color="green" onClick={() => handleRequest(item.username)}>Accept</Button> */}
+                    <Text c={'white'}>sent you a game invite</Text>
+                    {/* <Button radius='xl' size="xs" color="green" onClick={() => handleRequest(item.username)}>Accept</Button> */}
                 </div>}
             </div>
         </div>
