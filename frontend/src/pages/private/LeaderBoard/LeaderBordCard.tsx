@@ -9,7 +9,7 @@ function LeaderbordCard({data, rank}: {data: leaderboardInterface, rank: number}
     const image = rank === 1 ? image1 : rank === 2 ? image2 : image3;
 
     return (
-        <Card  radius="md" bg={'gray'}>
+        <Card  radius="md" bg='dark'>
           <Card.Section mb={2}>
           <div className="relative">
               <img className='absolute bottom-0 right-0  max-h-8 min-w-8' src={image} alt="rank-image" />
@@ -20,7 +20,7 @@ function LeaderbordCard({data, rank}: {data: leaderboardInterface, rank: number}
               />
               </div>
           </Card.Section>
-          <Text ta="center" fz="lg" fw={500} mt="md">
+          <Text ta="center" fz="md" fw={800} c='indigo' mt="md">
               {data?.name}
           </Text>
           <Text ta='center' variant="default" mt="md" c='white'>
