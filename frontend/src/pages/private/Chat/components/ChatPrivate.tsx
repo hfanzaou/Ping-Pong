@@ -127,7 +127,10 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 			send: !x.send
 		}))
 		setTrigger(true);
+<<<<<<< HEAD
 		setConversation(prev => [m, ...prev]);
+=======
+>>>>>>> master
 	}
 	useEffect(() => {
 		data.socket?.on("clientPrivate", callBack);
