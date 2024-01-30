@@ -213,7 +213,8 @@ export class ChatService {
 					connect: {
 						id: chatHistorie.id
 					}
-				}
+				},
+				readers: [data.sender]
 			}
 		});
 		await this.prisma.cHATHISTORY.update({
@@ -284,7 +285,7 @@ export class ChatService {
 						sender: x.sender
 						// avatar: x.avatar
 					}
-				})].reverse();
+				})].sort((a, b) => a.id - b.id).reverse();
 				return chatHistory;
 			}
 			else
