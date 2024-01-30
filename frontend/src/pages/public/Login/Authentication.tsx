@@ -1,48 +1,29 @@
 import React from 'react';
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
+import { TextInput, PasswordInput, Text, Paper, Group, PaperProps, Button, Divider, Anchor, Stack, SimpleGrid,} from '@mantine/core';
+import axios from 'axios';
 import Login from './Login';
 import image from "./home.jpg"
-import {
-  TextInput,
-  PasswordInput,
-  Text,
-  Paper,
-  Group,
-  PaperProps,
-  Button,
-  Divider,
-  Checkbox,
-  Anchor,
-  Stack,
-  SimpleGrid,
-} from '@mantine/core';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-// import { GoogleButton } from './GoogleButton';
-// import { TwitterButton } from './TwitterButton';
 
 function Authentication(props: PaperProps) {
     const [incorect, setIncorect] = React.useState(false);
-  const [type, toggle] = useToggle(['login', 'register']);
+    const [type, toggle] = useToggle(['login', 'register']);
 
-  const form = useForm({
-    initialValues: {
-      email: '',
-      name: '',
-      password: '',
-      terms: true,
-    },
+    const form = useForm({
+        initialValues: {
+        email: '',
+        name: '',
+        password: '',
+        terms: true,
+        },
+        validate: {
+            email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
+            password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+        },
+    });
 
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-    },
-  });
-
-  const handelSubmit = async () => {
-        console.log("handelSubmit");
-        console.log("form.values: ", form.values);
+    const handelSubmit = async () => {
         type === 'login' ? await axios.post('login/pass', {
         email: form.values.email,
         password: form.values.password,

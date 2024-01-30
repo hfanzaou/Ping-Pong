@@ -28,15 +28,15 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                 <Table >
                     {value === 'Requests' ?
                         <Table.Tbody>
-                            <FriendRequest/>
+                            <FriendRequest socket={socket}/>
                         </Table.Tbody> :
                     (value === 'Friends' ?
                         (<Table.Tbody>
                             <Friends socket={socket} setUrlName={setUrlName}/>
                         </Table.Tbody>) :
-                            <Table.Tbody>
-                                <BlockedUsers />
-                            </Table.Tbody>
+                        <Table.Tbody>
+                            <BlockedUsers/>
+                        </Table.Tbody>
                     )}
                 </Table>
             </ScrollArea>

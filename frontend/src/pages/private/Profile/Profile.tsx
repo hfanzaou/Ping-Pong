@@ -1,10 +1,10 @@
 import React from 'react'
+import { Socket } from 'socket.io-client'
 import { Card, SimpleGrid } from '@mantine/core'
 import UserCard  from './ProfileInfo/UserCard'
 import UsersRelation from './UsersRelation/UsersRelation'
 import MatchHistory from './MatchHistory/MatchHistory'
 import Achievements from './Achievements/Achievement'
-import { Socket } from 'socket.io-client'
 
 export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Function, avatar: string}) {
     return (
@@ -39,20 +39,3 @@ function Profile({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Func
 }
 
 export default Profile
-
-
-
-    // //  h-[515px]
-    // <div className='m-2 w-[300px] p-2 rounded-lg bg-gray-800'>
-    // <Card w={300} style={{backgroundColor: 'transparent'}}    radius="md">
-    //   {/* <Card.Section
-    //     h={60}
-    //     >
-    //     </Card.Section> */}
-    //   <Avatar
-    //     src={avatar}
-    //     size={200}
-    //     radius={200}
-    //     mx="auto"
-    //     // mt={-30}
-    //     />

@@ -125,9 +125,10 @@ const handleRequest = async (name: string) => {
                 if (res.status === 200) {
                 setHasToken(true);
                 setIsLoading(false);
-                }
+                }  
             } catch {
                 setIsLoading(false);
+                setHasToken(false);
                 console.log("error in fetching /verify");
             }
         }
@@ -136,7 +137,7 @@ const handleRequest = async (name: string) => {
             try {
                 const res = await axios.get('verifyTfa');
                 if (res.status === 200) {
-                setHas2fa(res.data);
+                    setHas2fa(res.data);
                 }
             } catch {
             console.log("error in fetching /verify");
@@ -202,11 +203,11 @@ const handleRequest = async (name: string) => {
     return (
         <MantineProvider>
             <Router>
-             <Header socket={socket} setSocket={setSocket} avatar={avatar} handleRequest={handleRequest}/>
+            <Header socket={socket} setSocket={setSocket} avatar={avatar} handleRequest={handleRequest}/>
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>
-                    <Route path='/' element={ socket && <Home socket={socket}  setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+                    <Route path='/' element={socket && <Home socket={socket}  setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
                     <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
                     <Route path='/Profile' element={socket && <Profile socket={socket} setUrlName={setUrlName} avatar={avatar}/>}/>
                     <Route path='/Game' element={socket && <Game socket={socket} avatar={avatar}/>}/>
@@ -218,42 +219,7 @@ const handleRequest = async (name: string) => {
                 </Routes>
             </Router>
         </MantineProvider>
-    );
-    
+    );    
 }
 
 export default App
-
-
-
-
-
-// return (
-//   <MantineProvider>
-//     <Router>
-//       <Routes>
-//           <Route path='/*' element={hasToken ? <NotFound />  : <Login/>}/>
-//         <Route path='/' element={!hasToken ? <Login/> : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
-//         <Route path='/Leaderbord' element={hasToken ? <Leaderbord avatar={avatar}/>  : <Login/>}/>
-//         <Route path='/Profile' element={hasToken ? <Profile avatar={avatar} setUserName={setUserName} />  : <Login/>}/>
-//         <Route path='/Game' element={hasToken ? <Game avatar={avatar} />  : <Login/>}/>
-//         <Route path='/Chat' element={hasToken ? <ChatApp avatar={avatar} />  : <Login/>}/>
-//         <Route path='/Setting' element={hasToken ? <EditeProfile setAvatar={setAvatar} avatar={avatar} />  : <Login/>}/>
-//         <Route path={'/'+window.location.pathname.split("/")[1]+'/public/profile'} element={hasToken ? <UserProfile  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} /> : <Login/>} />
-//         <Route path='/Login' element={<Login/>}/>
-//         <Route path='/auth' element={has2fa && !hasToken ? <Auth /> :  <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
-//       </Routes>
-//     </Router>
-//     </MantineProvider>
-// );
-
-
-
-
-
-
-
-
-
-
-// {/* <Footer/> */}
