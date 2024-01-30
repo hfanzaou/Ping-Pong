@@ -47,7 +47,6 @@ export class AuthController {
 			path:'/',
 			httpOnly: true,
 		});
-		//res.redirect('http://localhost:3000');
 		res.send({"twofa": false});
 	}
 	/////to verify user token////
@@ -116,7 +115,7 @@ export class AuthController {
 	}
 
 	@Get('logout')
-	@UseGuards(JwtGuard)
+	@UseGuards(JwtTwoFaGuard)
 	async logout(@Req() req, @Res() res)
 	{
 		await res.clearCookie('jwt');

@@ -14,7 +14,7 @@ services:
       - dev-db
     restart: always
     volumes: 
-    - ./data/uploads/:/usr/src/app/backend/uploads/
+    - /nfs/homes/hfanzaou/data/app:/usr/src/app/backend/uploads/
     networks:
       - mynet
 
@@ -28,7 +28,10 @@ services:
     networks:
       - mynet
     volumes:
-      - ./data/sql/:/var/lib/postgresql/data/
+      - db:/var/lib/postgresql/data/
+
 networks:
   mynet:  
 
+volumes:
+  db:

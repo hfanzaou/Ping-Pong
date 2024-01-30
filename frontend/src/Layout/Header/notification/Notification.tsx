@@ -59,7 +59,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 {item.type === "groupInvite" &&
                 <div>
                     <Text c={'blue'} > Invite you to a group</Text>
-                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`http://localhost:3000/Chat?name=${item.groupname}`}>check it out</Link></Button>
+                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`/Chat?name=${item.groupname}`}>check it out</Link></Button>
                 </div>}
                 {item.type === 'game'&& 
                 <div>
