@@ -37,13 +37,9 @@ function BlockedUsers() {
                 <div className="flex justify-between items-center space-x-[90px]">
                     <Group gap="sm">
                         <div className="flex flex-col items-center">
-                        <div dir="rtl" className="relative">
-                            <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white"> 
-                                <Avatar size={40} src={item.avatar} radius={40} />
-                            </button>
+                            <Avatar size={40} src={item.avatar} radius={40} />
                         </div>
-                            <Text fz="md" fw={800} c='red'>{item.name}</Text>
-                        </div>
+                        <Text fz="md" fw={800} c='red'>{item.name}</Text>
                     </Group>
                     <Button color="gray" size="xs" radius='xl' onClick={() => handleInBlockUsers(item.name)}>Inblock</Button>
                 </div>

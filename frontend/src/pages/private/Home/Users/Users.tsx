@@ -138,7 +138,6 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         }
     };
 
-
     const search = searchList.map((item) => (
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
@@ -206,8 +205,8 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                 radius="md"
                 type='search' placeholder='search user' onChange={handleChange} value={searchInput}
             />
-            <ScrollArea h={373}>
-                <Table verticalSpacing="md" highlightOnHover={false} stickyHeader={false} className='h-full w-full'>
+            <ScrollArea h='373'>
+                <Table verticalSpacing="md" highlightOnHover={false} stickyHeader={false} bg='dark' className='rounded-xl p-1'>
                     <Table.Tbody>
                         {search}
                     </Table.Tbody>

@@ -37,12 +37,6 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
             <Table  withRowBorders={false} className='h-full w-full'>
                 <Table.Tbody>
                     {rows}
-                    {rows}
-                    {rows}
-                    {rows}
-                    {rows}
-                    {rows}
-
                 </Table.Tbody>
             </Table>
         </ScrollArea>
