@@ -14,7 +14,7 @@ services:
       - dev-db
     restart: always
     volumes: 
-    - ~/sgoinfre/data/uploads/:/usr/src/app/backend/uploads/
+    - ./data/uploads/:/usr/src/app/backend/uploads/
     networks:
       - mynet
 
@@ -28,7 +28,7 @@ services:
     networks:
       - mynet
     volumes:
-      - ~/sgoinfre/data/sql/:/var/lib/postgresql/data/
+      - ./data/sql/:/var/lib/postgresql/data/
 networks:
   mynet:  
 
