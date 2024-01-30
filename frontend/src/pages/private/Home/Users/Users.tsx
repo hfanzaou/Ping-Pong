@@ -45,14 +45,14 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
             {/* online */}
             {state === "Online" &&
                 <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
-                    <path fill="blue" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                    <path fill='lime' d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
                 </svg>
             }
 
             {/* ongame */}
             {state === "Ongame" &&
                 <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 512 512">
-                    <path fill="#6ECBFA" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                    <path fill="blue" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
                 </svg>
             }
         </div>
