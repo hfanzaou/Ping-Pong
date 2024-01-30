@@ -2,7 +2,6 @@ import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
 import {
-	IconCircleFilled,
 	IconDotsVertical,
 	IconTrash,
 	IconUser,
