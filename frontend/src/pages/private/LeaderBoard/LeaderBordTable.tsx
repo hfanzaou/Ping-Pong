@@ -12,7 +12,6 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
                     <Avatar size={40} src={item.avatar} radius={40} />
                     <div>
                         <Text fz="md" fw={800} c='indigo'>{item.name}</Text>
-                        {/* <Text fz="sm" fw={500}>{item.name}</Text> */}
                         <Text c="dimmed" fz="xs">#{index + 1}</Text>
                     </div>
                 </Group>
@@ -33,9 +32,18 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
     ));
 
     return (
+        // 425 is the height of the table
         <ScrollArea h={425}>
             <Table  withRowBorders={false} className='h-full w-full'>
-                <Table.Tbody>{rows}</Table.Tbody>
+                <Table.Tbody>
+                    {rows}
+                    {rows}
+                    {rows}
+                    {rows}
+                    {rows}
+                    {rows}
+
+                </Table.Tbody>
             </Table>
         </ScrollArea>
     );
