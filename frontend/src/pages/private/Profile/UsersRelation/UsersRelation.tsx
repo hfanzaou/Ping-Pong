@@ -21,8 +21,8 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                     {label: 'Requests', value: "Requests"},
                 ]}
             />
-            <ScrollArea h={350} type='never'>
-                <Table >
+            <ScrollArea h='250' type='never'>
+                <Table>
                     <Table.Tbody>
                         {value === 'Requests' ?
                             <FriendRequest socket={socket} setUrlName={setUrlName}/> :
