@@ -1,11 +1,10 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
-import { Avatar, Badge, Table, Group, Text, TextInput, ScrollArea, Button, HoverCard, Menu, rem } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import { Avatar, Table, Group, Text, TextInput, ScrollArea, Button, Menu, rem } from '@mantine/core';
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
-import testdata from './test.json'
-import { IconMessages, IconTent, IconTrash, IconUserCircle } from '@tabler/icons-react';
+import { IconMessages, IconTrash, IconUserCircle } from '@tabler/icons-react';
 import FriendshipButton from '../../../../componenet/FriendshipButton';
-import { Link, unstable_HistoryRouter, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { useDisclosure } from '@mantine/hooks';
 import SerndMessage from '../../../../componenet/SendMessage';
@@ -35,40 +34,32 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
     }, [setState, userName, socket]);
 
     return (
-    <div className="absolute h-14 w-14 top-1 start-1">
+        <div className="absolute h-14 w-14 top-1 start-1">
+            {/* offline */}
+            {state === "Offline" &&
+                <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
+                    <path fill="#888281" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                </svg>
+            }
 
-        {/* offline */}
-        {state === "Offline" &&
-            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
-                <path fill="#888281" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
-            </svg>
-        }
+            {/* online */}
+            {state === "Online" &&
+                <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
+                    <path fill="blue" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                </svg>
+            }
 
-        {/* online */}
-        {state === "Online" &&
-            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512">
-                <path fill="#0de34d" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
-            </svg>
-        }
-
-        {/* ongame */}
-        {state === "Ongame" &&
-            <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 512 512">
-                <path fill="#74C0FC" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
-            </svg>
-        }
-
+            {/* ongame */}
+            {state === "Ongame" &&
+                <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 512 512">
+                    <path fill="#6ECBFA" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                </svg>
+            }
         </div>
     );
 }
 
-// export function FriendshipButton({socket, name, friendship}: {socket: Socket, name: string, friendship: string}) {
-
-// }
-
 function Users({socket, setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest}: {socket: Socket, setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any}) {
-//   const [userList, setUsersList] = useState<UsersInterface[]>([]);
-//   const [searchList, setSearchList] = useState<UsersInterface[]>([]);
 
     const [searchInput, setSearchInput] = useState("");
     const [opened, { open, close }] = useDisclosure(false);
@@ -138,7 +129,6 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         }
     };
 
-
     const search = searchList.map((item) => (
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
@@ -200,14 +190,14 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
     ));
 
     return (
-        <div className='flex flex-col space-y-4'>
+        <div className='flex flex-col space-y-2 m-5'>
             <TextInput className='ml-auto'
                 variant="filled"
                 radius="md"
                 type='search' placeholder='search user' onChange={handleChange} value={searchInput}
             />
-            <ScrollArea h={373}>
-                <Table verticalSpacing="md" highlightOnHover={false} stickyHeader={false} className='h-full w-full'>
+            <ScrollArea className='h-[60vh]'>
+                <Table verticalSpacing="md" highlightOnHover={false} stickyHeader={false} className='rounded-xl'>
                     <Table.Tbody>
                         {search}
                     </Table.Tbody>

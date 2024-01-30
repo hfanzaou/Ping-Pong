@@ -32,6 +32,7 @@ export function ProfileSections({socket, setUrlName, avatar}: {socket: Socket, s
 
 function Profile({socket, setUrlName, avatar}: {socket: Socket, setUrlName: Function, avatar: string}) {
     return (
+        // <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5 xl:h-[75vh]'>
         <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
             <ProfileSections socket={socket} setUrlName={setUrlName} avatar={avatar}/>
         </div>

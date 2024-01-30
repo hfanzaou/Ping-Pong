@@ -47,10 +47,6 @@ const handleRequest = async (name: string) => {
 
     const user = userList.find(user => user.name === name);
     const friendship = user ? user.friendship : null;
-    console.log("friendship from handle Request: ", friendship);
-    //
-
-    // console.log("friendship from userlist: ", userList.find(user => user.name === window.location.pathname.split("/")[1])?.friendship);
 
     if (friendship === 'add friend') {
         const updatedUserList = userList.map(user => 

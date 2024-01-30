@@ -33,16 +33,10 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
 
     return (
         // 425 is the height of the table
-        <ScrollArea h={425}>
-            <Table  withRowBorders={false} className='h-full w-full'>
+        <ScrollArea h='70vh'>
+            <Table withRowBorders={false} >
                 <Table.Tbody>
                     {rows}
-                    {rows}
-                    {rows}
-                    {rows}
-                    {rows}
-                    {rows}
-
                 </Table.Tbody>
             </Table>
         </ScrollArea>
