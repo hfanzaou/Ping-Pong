@@ -136,6 +136,24 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			recver: tmp
 		}
 		data.socket?.emit("newChatPrivate", newChat);
+		setData(prev => {
+			if (prev.userData)
+				return {
+					...prev,
+					userData: {
+						...prev.userData,
+						chatUsers: [...prev.userData.chatUsers].map(x => {
+							if (x.login == tmp)
+								return {
+									...x,
+									unRead: 0
+								}
+							return x;
+						})
+					}
+				}
+			return prev;
+		})
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);

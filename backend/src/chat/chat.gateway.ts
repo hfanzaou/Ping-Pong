@@ -95,10 +95,12 @@ OnGatewayDisconnect {
 	@SubscribeMessage("newUser")
 	async handelUser(client: Socket, data: string) {
 		const recver = await this.chatService.newMessage(data);
+		const sender = await this.chatService.newMessageSocket(client.id);
 		if (recver) {
 			this.server
 				.to(recver)
 				.emit("newuser");
+			this.chatService.updateReadPrivate({sender: sender, recver: data});
 		}
 	}
 	@SubscribeMessage("newGroup")
