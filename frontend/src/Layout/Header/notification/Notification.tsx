@@ -59,11 +59,13 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 {item.type === "groupInvite" &&
                 <div>
                     <Text c={'blue'} > Invite you to a group</Text>
-                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`/Chat?name=${item.groupname}`}>accept</Link></Button>
+                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`http://localhost:3000/Chat?name=${item.groupname}`}>check it out</Link></Button>
                 </div>}
-                {(item.type !== "friend request" && item.type !== "groupInvite" && item.type !== "accept friend" && item.type !== 'chat' && item.type !== 'groupChat') &&
-                    <Text c='white'>{item.type}</Text>
-                } {/* Just to work on working notification whene all notification be good remove it    !!!!!!!!!!!!! */}
+                {item.type === 'game'&& 
+                <div>
+                <Text c={'white'}>sent you a game invite</Text>
+                {/* <Button radius='xl' size="xs" color="green" onClick={() => handleRequest(item.username)}>Accept</Button> */}
+                </div>}
             </div>
         </div>
     ));
