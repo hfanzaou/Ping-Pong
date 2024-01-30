@@ -542,7 +542,7 @@ export class UserService {
             // console.log(payload);
             if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat")
             {
-                console.log(payload);
+                // console.log(payload);
                 await this.prismaservice.notifications.create({
                     data: {
                         user: {connect: {username: payload.reciever}},
