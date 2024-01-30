@@ -7,6 +7,7 @@ interface PlayerCardProps {
     name: string | undefined;
     avatar: string | undefined;
     level: string | undefined;
+    setUrlName: string;
 }
 
 const stats = [
@@ -15,7 +16,7 @@ const stats = [
   {value: '3', label: 'losses'},
 ];
 
-function PlayerCard({name, avatar, level} : PlayerCardProps) {
+function PlayerCard({name, avatar, level, setUrlName} : PlayerCardProps) {
     const [userName, setUserName] = useState<string| undefined>();
     const [userLevel, setLevel] = useState<string>();
 
