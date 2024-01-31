@@ -51,12 +51,12 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
     }
 
   return (
-        <Card p={2} style={{backgroundColor: 'rgb(31 41 55)'}}    radius="lg">
+        <Card p={0} className='h-full w-full' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
             <div dir="rtl" className="relative">
                 <Avatar
                     src={avatar}
-                    size={250}
-                    radius={250}
+                    size='35vh'
+                    radius={230}
                     m="auto"
                     mt={12}
                 />
