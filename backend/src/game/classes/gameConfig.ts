@@ -1,4 +1,6 @@
 export class gameConfig {
+    canvasWidth: number;
+    canvasHeight: number;
     mode: number;
     maxScore: number;
     ballSpeed: number;
@@ -28,5 +30,7 @@ export class gameConfig {
         this.ballType = ballType;
         this.boost = boost;
         this.difficulty = difficulty;
+        this.canvasWidth = 700;
+        this.canvasHeight = 450;
     }
 }

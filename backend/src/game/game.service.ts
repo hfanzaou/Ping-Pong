@@ -5,7 +5,7 @@ import { User, Player } from "./classes/Player";
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from "src/prisma/prisma.service";
 import { JwtTwoFaStrategy } from "src/strategy";
-import { RACKET_HEIGHT, RACKET_WIDTH, BALL_DIAMETER, BALL_DIAMETER_SQUARED, HEIGHT, WIDTH, MAX_SPEED, INC_SPEED } from "./classes/constants";
+import { RACKET_HEIGHT, RACKET_WIDTH, MAX_SPEED, INC_SPEED, HEIGHT, WIDTH } from "./classes/constants";
 import { gameConfig } from "./classes/gameConfig";
 
 let goalScored: boolean = false;
@@ -203,18 +203,19 @@ export class GameService {
 
     // If the distance is less than the ball's radius, a collision occurred
     let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
-    return distanceSquared < BALL_DIAMETER_SQUARED;
+    return distanceSquared < (ball.radius * ball.radius);
   }
 
   clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
   }
 
-  updateRacketPos(client: Socket, racketY: number) {
+  updateRacketPos(client: Socket, racketY: number, deviceHeight: number) {
     let player = this.players.get(client.id);
     if (player) {
-      client.broadcast.to(player.roomName).emit('updateRacket', racketY);
-      player.racket.y = racketY;
+      let normalizedRacketY = racketY * (HEIGHT / deviceHeight);
+      client.broadcast.to(player.roomName).emit('updateRacket', normalizedRacketY);
+      player.racket.y = normalizedRacketY;
     }
   }
 

@@ -5,7 +5,7 @@ type GameOverProps = {
     score: number;
     user: string;
     setGameOver: (value: boolean) => void;
-    setGameStart: (value: boolean) => void;
+    setGameStart: (v: boolean) => void;
 };
 
 const GameOver: React.FC<GameOverProps> = ({
@@ -18,7 +18,7 @@ const GameOver: React.FC<GameOverProps> = ({
 
     const handleRestart = () => {
         setGameOver(false);
-        // setGameStart(true);
+        setGameStart(true);
     };
 
     const handleMainMenu = () => {

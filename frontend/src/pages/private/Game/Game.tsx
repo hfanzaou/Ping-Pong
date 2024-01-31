@@ -5,6 +5,7 @@ import axios from 'axios';
 import GameComponent from './components/GameComponent';
 import GameSettings from './components/GameSettings';
 import { gameConfig } from './classes/gameConfig';
+import "./Game.css";
 // import { Text } from '@mantine/core';
 
 interface Props {
@@ -143,11 +144,14 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
 
   return (
     <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
-      <div className="mr-10">
+      <div className="mr-10 player-card">
         <PlayerCard 
           name={side ? user.username : opp?.username} 
           avatar={side ? user.avatar : opp?.avatar} 
           level={side ? user.level : opp?.level?.toString()} />
+      </div>
+      <div className="player-avatar">
+        <img src={side ? user.avatar : opp?.avatar} alt="Player avatar" />
       </div>
       <div
         id="sketchHolder"
@@ -160,11 +164,14 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         )
         )}
       </div>
-      <div className="ml-10">
+      <div className="ml-10 player-card">
         <PlayerCard 
           name={(side || config.mode == 3) ? opp.username : user.username} 
           avatar={(side || config.mode == 3) ? opp?.avatar : user.avatar} 
           level={(side || config.mode == 3) ? opp.level.toString() : user.level} />
+      </div>
+      <div className="player-avatar rounded-xl">
+        <img src={(side || config.mode == 3) ? opp?.avatar : user.avatar} alt="Player avatar" />
       </div>
     </div>
   );

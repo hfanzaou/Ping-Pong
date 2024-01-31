@@ -72,27 +72,6 @@ export function handleGameStates(p5: p5Types, config: gameConfig, socket: Socket
       p5.text(winnerMessage, WIDTH / 2, HEIGHT / 2);
       //endGame(winnerMessage);
     }
-
-    if (playAgain) {
-        let playAgainButt = p5.createButton('Play Again?');
-        positionButton(playAgainButt, 40, -60);
-        ft_style(playAgainButt);
-        playAgainButt.parent('sketchHolder');
-        playAgainButt.mousePressed(() => {
-          p5.removeElements();
-          player1.score = 0;
-          player2.score = 0;
-          disconnectMessage = null;
-          gameOverMessage = null;
-          winnerMessage = null;
-          playAgain = false;
-          playAgainButt.remove();
-          if (config.mode == 2 || config.mode == 3) {
-            initGame(p5, socket, config, player1.user);
-            startCountdown(p5);
-          }
-        });
-    }
 }
 
 export function startCountdown(p5: p5Types) {
