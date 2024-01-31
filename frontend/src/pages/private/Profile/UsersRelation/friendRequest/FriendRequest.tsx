@@ -27,6 +27,7 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
         await axios.post("user/accept/friend", {name: name})
         .then((res) => {
             if (res.status === 201) {
+                socket?.emit("addnotification", {reciever: name, type: "accept friend"})
                 getRequests();
             }
         })

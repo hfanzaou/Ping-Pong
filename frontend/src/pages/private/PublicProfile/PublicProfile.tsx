@@ -23,9 +23,9 @@ function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersL
     const friendShip: any = usersList.find(user => user.name == profileName)?.friendship;
 
     return (
-        <div>
+        // <div>
             <Profile profileName={profileName} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/>
-        </div>
+        // </div>
     );
 }
 

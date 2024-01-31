@@ -51,7 +51,7 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
     }
 
   return (
-        <Card p={0} className='h-full w-full' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+        <Card p={0} className='h-full w-full space-y-5' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
             <div dir="rtl" className="relative">
                 <Avatar
                     src={avatar}
@@ -80,12 +80,14 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
                     </Menu.Dropdown>
                 </Menu>
             </div>
-            <Text ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
-                {data?.name}
-            </Text>
-            <Text ta="center" c="indigo" fz="sm">
-                {"level "  + data?.level}
-            </Text>
+            <div>
+                <Text ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
+                    {data?.name}
+                </Text>
+                <Text ta="center" c="indigo" fz="sm">
+                    {"level "  + data?.level}
+                </Text>
+            </div>
             <Group mt="md" justify="center" gap={30}>
                 {items}
             </Group>

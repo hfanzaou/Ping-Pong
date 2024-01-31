@@ -163,7 +163,7 @@ OnGatewayDisconnect {
 				});
 				// console.log(payload);
 				await this.user.addNotification(id, payload);
-				client.to(reciever.socket).emit('getnotification', 'hello');
+                client.to(reciever.socket).emit('getnotification', payload.type);
 			}
 		} catch(error)
 		{

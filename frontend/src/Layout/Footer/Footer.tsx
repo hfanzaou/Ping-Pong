@@ -6,7 +6,7 @@ function Footer() {
         <div className="flex justify-center items-center space-x-10 mt-5">
             <div className="flex flex-col items-center justify-center py-4 text-gray-400 ">
                 <p className="text-sm">ft_trancendence</p>
-                <p className="text-sm">made by ♡ with</p>
+                <p className="text-sm">made with ♡ by</p>
             </div>
             <div className="flex items-center space-x-5">
                 <Avatar size='8vh' radius='md' src='https://cdn.intra.42.fr/users/a20a415122c250b00685308ae3909e21/hfanzaou.jpg'/>

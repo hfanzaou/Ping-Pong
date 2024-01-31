@@ -46,8 +46,9 @@ function ChangeName() {
         setUniqueNmae(e.target.value);
         setInvalidName(false);
         e.target.value.length > 4 ? setDisabled(false) : setDisabled(true);
+        e.target.value.length < 15 && e.target.value.length > 4 ? setDisabled(false) : setDisabled(true); 
     };
-    
+
     const handleOpenChangeName = () => {
         setDisabled(true);
         setInvalidName(false);
