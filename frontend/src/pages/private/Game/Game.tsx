@@ -5,6 +5,7 @@ import axios from 'axios';
 import GameComponent from './components/GameComponent';
 import GameSettings from './components/GameSettings';
 import { gameConfig } from './classes/gameConfig';
+import "./Game.css";
 // import { Text } from '@mantine/core';
 
 interface Props {
@@ -151,6 +152,9 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
           avatar={side ? user.avatar : opp?.avatar} 
           level={side ? user.level : opp?.level?.toString()} />
       </div>
+      <div className="player-avatar">
+        <img src={side ? user.avatar : opp?.avatar} alt="Player avatar" />
+      </div>
       <div
         id="sketchHolder"
         className="rounded-xl shadow-2xl"
@@ -168,6 +172,9 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
           name={(side || config.mode == 3) ? opp.username : user.username} 
           avatar={(side || config.mode == 3) ? opp?.avatar : user.avatar} 
           level={(side || config.mode == 3) ? opp.level.toString() : user.level} />
+      </div>
+      <div className="player-avatar rounded-xl">
+        <img src={(side || config.mode == 3) ? opp?.avatar : user.avatar} alt="Player avatar" />
       </div>
     </div>
   );

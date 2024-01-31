@@ -7,15 +7,15 @@ export class LightningForge {
     lifespan: number;
     history: {x: number, y: number}[];
    
-    constructor() {
-      this.x = WIDTH/2;
-      this.y = HEIGHT/2;
+    constructor(canvasWidth: number, canvasHeight: number) {
+      this.x = canvasWidth/2;
+      this.y = canvasHeight/2;
       this.lifespan = 355;
       this.history = [];
     }
-    resetLightningForge () {
-      this.x = WIDTH/2;
-      this.y = HEIGHT/2;
+    resetLightningForge (canvasWidth: number, canvasHeight: number) {
+      this.x = canvasWidth/2;
+      this.y = canvasHeight/2;
       this.lifespan = 355;
       this.history = [];
     }

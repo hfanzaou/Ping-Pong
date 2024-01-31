@@ -39,7 +39,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));
@@ -82,7 +83,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		// console.log(Data);

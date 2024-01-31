@@ -1,0 +1,21 @@
+.player-card {
+    display: block;
+  }
+  
+  .player-avatar {
+    display: none;
+    width: 50px; /* Adjust as needed */
+    height: 50px; /* Adjust as needed */
+    border-radius: 50%; /* Makes the avatar circular */
+  }
+  
+  @media screen and (max-width: 1000px) {
+    .player-card {
+      display: none;
+    }
+  
+    .player-avatar {
+      display: block;
+      border-radius: 50%;
+    }
+  }

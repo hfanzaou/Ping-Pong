@@ -21,7 +21,8 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 			},
 			body: JSON.stringify({
 				userName: data.userData?.userName
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => {
@@ -42,7 +43,8 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 			},
 			body: JSON.stringify({
 				userName: data.userData?.userName
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => {

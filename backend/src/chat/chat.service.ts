@@ -554,7 +554,7 @@ export class ChatService {
 		}
 		return null;
 	}
-	async chatAvatarRoom(data: { name: string }) {
+	async chatAvatarRoom(data: { name: string, userName: string }) {
 		const	group = await this.prisma.gROUP.findFirst({
 			where: { name: data.name },
 			include: { members: { include: { user: true}}}
@@ -759,7 +759,7 @@ export class ChatService {
 			return true;
 		return false;
 	}
-	async privateJoin(data: { name: string }) {
+	async privateJoin(data: { name: string, userName: string }) {
 		const	group = await this.prisma.gROUP.findFirst({
 			where: { name: data.name }
 		})
@@ -778,7 +778,8 @@ export class ChatService {
 		name: string,
 		old: string,
 		password: string,
-		oldName: string
+		oldName: string,
+		userName: string
 	}) {
 		const	oldGroup = await this.prisma.gROUP.findFirst({
 			where: { name: data.oldName }
@@ -821,7 +822,7 @@ export class ChatService {
 			return "DONE";
 		}
 	}
-	async checkGroup(data: { name: string }) {
+	async checkGroup(data: { name: string, userName: string }) {
 		const	group = await this.prisma.gROUP.findFirst({
 			where: { name: data.name }
 		});

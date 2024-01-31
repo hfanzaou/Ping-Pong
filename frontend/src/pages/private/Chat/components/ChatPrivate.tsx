@@ -34,13 +34,15 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				body: JSON.stringify({
 					userName1: data.userData?.userName,
 					userName2: data.talkingTo
-				})
+				}),
+				credentials: "include"
 			});
 			const	Data = await res.json();
 			if (Data)
 				setAvatars(Data);
 		}
-		fetchData();
+		if (data.userData?.userName && data.talkingTo)
+			fetchData();
 	}, [data.talkingTo]);
 	useEffect(() => {
 		if (Reference.current)
@@ -57,7 +59,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 					body: JSON.stringify({
 						sender: data.userData?.userName,
 						recver: data.talkingTo
-					})
+					}),
+					credentials: "include"
 				});
 				const Data = await res.json()
 				if (Data)
@@ -84,7 +87,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						body: JSON.stringify({
 							sender: data.userData?.userName,
 							recver: data.talkingTo,
-						})
+						}),
+						credentials: "include"
 					});
 					setData(prev => ({
 						...prev,
@@ -98,7 +102,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						},
 						body: JSON.stringify({
 							userName: data.userData?.userName
-						})
+						}),
+						credentials: "include"
 					});
 					const Data: USERDATA = await res0.json();
 					Data.chatUsers.sort((x, y) => {

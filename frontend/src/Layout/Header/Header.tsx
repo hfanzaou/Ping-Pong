@@ -27,7 +27,8 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest })
                         body: JSON.stringify({
                             socket: socket.id,
                             username: Data0.name
-                        })
+                        }),
+                        credentials: "include"
                     });
                 }
                 catch {

@@ -66,8 +66,10 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 						"content-type": "application/json"
 					},
 					body: JSON.stringify({
-						name: privateJoin
-					})
+						name: privateJoin,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
 				});
 				const	Data = await res.json();
 				setList(Data);
@@ -136,7 +138,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 					},
 					body: JSON.stringify({
 						data: createData
-					})
+					}),
+					credentials: "include"
 				})
 				const	Data = await res.json();
 				if (Data) {
@@ -179,7 +182,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				method: "GET",
 				headers: {
 					"content-type": "application/json"
-				}
+				},
+				credentials: "include"
 			});
 			const	Data = await res.json();
 			setPublicList(Data);
@@ -207,7 +211,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		// console.log("Data");
@@ -340,8 +345,10 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 					"content-type": "application/json"
 				},
 				body: JSON.stringify({
-					name: name
-				})
+					name: name,
+					userName: userNameRef.current
+				}),
+				credentials: "include"
 			});
 		const	Data = await res.json();
 		return Data;
@@ -380,7 +387,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 			body: JSON.stringify({
 				userName: data.userData?.userName,
 				name: settingsXy.login
-			})
+			}),
+			credentials: "include"
 		});
 		const	Data = await res.json();
 		setData(x => {
@@ -406,7 +414,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 			},
 			body: JSON.stringify({
 				userName: data.userData?.userName
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));

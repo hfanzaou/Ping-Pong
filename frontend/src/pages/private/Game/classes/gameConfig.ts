@@ -1,4 +1,8 @@
+import { WIDTH, HEIGHT } from "./constants";
+
 export class gameConfig {
+    canvasWidth: number = WIDTH;
+    canvasHeight: number = HEIGHT;
     mode: number;
     maxScore: number;
     ballSpeed: number;
