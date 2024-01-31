@@ -866,19 +866,6 @@ export class ChatService {
 				]
 			}
 		});
-<<<<<<< HEAD
-		const	unReadMessages = (await this.prisma.mESSAGE.findMany({
-			where: {chathistoryid: chatHistorie.id}
-		})).filter(x => {
-			return x.readers.find(y => y == data.sender) == undefined;
-		});
-		for (const message of unReadMessages) {
-			const	updatedReaders = [...message.readers, data.sender];
-			await this.prisma.mESSAGE.update({
-				where: {id: message.id},
-				data: {readers: updatedReaders}
-			});
-=======
 		if (chatHistorie) {
 			const	unReadMessages = (await this.prisma.mESSAGE.findMany({
 				where: {chathistoryid: chatHistorie.id}
@@ -892,7 +879,6 @@ export class ChatService {
 					data: {readers: updatedReaders}
 				});
 			}
->>>>>>> master
 		}
 	}
 }

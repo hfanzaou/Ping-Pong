@@ -10,7 +10,7 @@ import { gameConfig } from './classes/gameConfig';
 interface Props {
   socket: Socket;
   avatar: string;
-  setUrlName: string;
+  setUrlName: Function;
 }
 
 export interface userData {

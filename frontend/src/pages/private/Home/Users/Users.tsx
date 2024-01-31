@@ -177,15 +177,11 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                         </div>
                     </Group>
                     <Group>
-<<<<<<< HEAD
-                        <Button color='green' size='xs' radius='xl'>play game</Button>
-=======
                         <Button color='green' size='xs' radius='xl'>
                             <Link to={`/Game?opp=${item.name}`}>
                                 play game
                             </Link>
                         </Button>
->>>>>>> master
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
                     </Group>
                 </div>
