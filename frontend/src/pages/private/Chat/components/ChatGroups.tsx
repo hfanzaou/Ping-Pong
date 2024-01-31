@@ -73,8 +73,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						name: data.groupTo
-					})
+						name: data.groupTo,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
 				});
 				// console.log(res);
 				const	Data = await res.json();
@@ -105,7 +107,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					body: JSON.stringify({
 						sender: data.userData?.userName,
 						recver: data.groupTo
-					})
+					}),
+					credentials: "include"
 				});
 				const Data = await res.json()
 				if (Data)
@@ -128,8 +131,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					"content-type": "application/json"
 				},
 				body: JSON.stringify({
-					name: data.groupTo
-				})
+					name: data.groupTo,
+					userName: userNameRef.current
+				}),
+				credentials: "include"
 			});
 			const	Data = await res.json();
 			if (Data.length)
@@ -155,7 +160,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				body: JSON.stringify({
 					userName: data.userData?.userName,
 					name: data.groupTo
-				})
+				}),
+				credentials: "include"
 			});
 			const	Data: Group[] = await res.json();
 			setData(x => {
@@ -201,7 +207,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					body: JSON.stringify({
 						name: data.groupTo,
 						password: passwordText
-					})
+					}),
+					credentials: "include"
 				});
 				const	Data = await res.json();
 				if (Data) {
@@ -240,7 +247,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						},
 						body: JSON.stringify({
 							userName: data.userData?.userName
-						})
+						}),
+						credentials: "include"
 					});
 					const Data: USERDATA = await res0.json();
 					Data.groups.sort((x, y) => {
@@ -319,7 +327,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));
@@ -334,7 +343,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				},
 				body: JSON.stringify({
 					name: data.groupTo,
-					userName: event.currentTarget.name
+					userName: event.currentTarget.name,
+					sender: userNameRef.current
 				}),
 				credentials: "include"
 			})
@@ -357,8 +367,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					},
 					body: JSON.stringify({
 						userName: userInvite,
-						name: data.groupTo
+						name: data.groupTo,
+						sender: userNameRef.current
 					}),
+					credentials: "include"
 				});
 				const	Data = await res.json();
 			if (Data) {
@@ -407,8 +419,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					name: settingsName,
 					old: settingsOld,
 					password: settingsPassword,
-					oldName: data.groupTo
-				})
+					oldName: data.groupTo,
+					userName: userNameRef.current
+				}),
+				credentials: "include"
 			});
 			const	Data = await res.text();
 			if (Data == "DONE") {
