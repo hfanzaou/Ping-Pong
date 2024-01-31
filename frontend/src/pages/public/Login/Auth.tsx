@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, TextInput, Text } from "@mantine/core";
+import { Button, Card, TextInput, Text, Title } from "@mantine/core";
 import axios from "axios";
 
 function Auth() {
@@ -43,9 +43,9 @@ function Auth() {
                         className="flex flex-col items-center space-y-5 rounded-xl"
                         style={{backgroundColor: 'rgb(31 41 55)'}}
                     >
-                        <Text size="lg" ta="center" c='lime'>
+                        <Title size='md' ta='center' c='blue'>
                             Set the authentification code
-                        </Text>
+                        </Title>
                         <TextInput
                             onChange={handleSaveCode}
                             placeholder="entre your 2fa code"

@@ -3,8 +3,8 @@ import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { TextInput, PasswordInput, Text, Paper, Group, PaperProps, Button, Divider, Anchor, Stack, SimpleGrid,} from '@mantine/core';
 import axios from 'axios';
-import Login from './Login';
-import image from "./home.jpg"
+import LoginWithIntra from './LoginWithIntra';
+import image from "./assite/home.jpg"
 
 function Authentication(props: PaperProps) {
     const [incorect, setIncorect] = React.useState(false);
@@ -74,7 +74,7 @@ function Authentication(props: PaperProps) {
                     Welcome to game
                 </Text>
                 <Group grow mb="md" mt="md">
-                    <Login/>
+                    <LoginWithIntra/>
                 </Group>
                 <Divider label="Or continue with email" labelPosition="center" my="lg" />
                         {incorect && <Text c={'red'}>Incorrect, try agin</Text>}
@@ -141,7 +141,7 @@ function Authentication(props: PaperProps) {
                 <img className='rounded-lg' src={image} alt="ping pong image" />
             </SimpleGrid>
         </div>
-                            </div>
+    </div>
     );
 }
 

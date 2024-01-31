@@ -9,7 +9,7 @@ import axios from 'axios'
 import { Socket } from 'socket.io-client';
 
 import Login from './pages/public/Login/Authentication';
-import Auth from './pages/public/Auth'
+import Auth from './pages/public/Login/Auth'
 import Header from './Layout/Header/Header';
 import Setting from './pages/private/Settings/Settings'
 import ScrollUp from './componenet/ScrollUp';
@@ -22,6 +22,7 @@ import PublicProfile from './pages/private/PublicProfile/PublicProfile'
 import UsersInterface from './pages/private/Home/Users/UsersInterface'
 import NotFound from './pages/public/NotFound/NotFound'
 import GoToLogin from './pages/public/GoToLogin/GoToLogin'
+import Footer from './Layout/Footer/Footer'
 
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
@@ -209,6 +210,7 @@ function App()  {
                     {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
                     {/* <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
                 </Routes>
+            <Footer/>
             </Router>
         </MantineProvider>
     );    
