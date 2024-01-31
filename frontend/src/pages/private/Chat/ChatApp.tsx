@@ -38,7 +38,6 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	useEffect(() => {
 		const	tmp = query.get("name")
 		if (tmp) {
-			// console.log(tmp);
 			setName(tmp);
 			async function fetchData() {
 				const res = await fetch("http://localhost:3001/checkUserGroup", {
@@ -49,7 +48,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 					body: JSON.stringify({
 						userName: data.userData?.userName,
 						name: tmp
-					})
+					}),
+					credentials: "include"
 				});
 				const Data = await res.json()
 				if (!Data) {
@@ -88,7 +88,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 							},
 							body: JSON.stringify({
 								userName: Data0.name
-							})
+							}),
+							credentials: "include"
 						});
 						const Data = await res.json();
 						setData(prev => setUserData(prev, Data));
