@@ -38,6 +38,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	useEffect(() => {
 		const	tmp = query.get("name")
 		if (tmp) {
+			// console.log(tmp);
 			setName(tmp);
 			async function fetchData() {
 				const res = await fetch("checkUserGroup", {
@@ -66,7 +67,9 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			}
 			fetchData();
 		}
-	}, [data.userData?.userName])
+		else if (notFound)
+			window.location.reload();
+	}, [query])
 	useEffect(() => {
 		async function fetchData() {
 			setData(prev => setSocket(prev, socket));
@@ -139,7 +142,11 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			{
 				option == "Private" ?
 					<Private data={data} setData={setData} /> :
-					<Groups data={data} setData={setData} privateJoin={name} />
+					<Groups
+						data={data}
+						setData={setData}
+						privateJoin={name}
+						setPrivateJoin={setName} />
 				}
 			{
 				option == "Private" ?

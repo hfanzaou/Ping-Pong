@@ -161,6 +161,7 @@ OnGatewayDisconnect {
 					where: {username: payload.reciever},
 					select: {id: true, socket: true}
 				});
+				// console.log(payload);
 				await this.user.addNotification(id, payload);
 				client.to(reciever.socket).emit('getnotification', 'hello');
 			}

@@ -15,9 +15,10 @@ interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
 	privateJoin: string
+	setPrivateJoin: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
+const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin }) => {
 	const	[createXy, setCreateXy] = useState({
 		x: 0,
 		y: 0,
@@ -70,6 +71,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 				});
 				const	Data = await res.json();
 				setList(Data);
+				setPrivateJoin("");
 			}
 			fetchData();
 		}
