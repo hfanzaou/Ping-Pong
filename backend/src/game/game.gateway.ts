@@ -129,8 +129,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('updateRacket')
-  updateRacket(client: Socket, racketY: number) {
-    this.gameService.updateRacketPos(client, racketY);
+  updateRacket(client: Socket, payload: any) {
+    this.gameService.updateRacketPos(client, payload.racketY, payload.canvasHeight);
   }
 
   @SubscribeMessage('ready')
@@ -150,5 +150,21 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       }
       this.logger.log(`Client ${client.id} is ready`);
     }
+  }
+
+  @SubscribeMessage('acceptInvite')
+  acceptInvite(client: Socket, payload: any) {
+    this.logger.log(`Client ${client.id} accepted invite`);
+  }
+
+  @SubscribeMessage('windowResized')
+  windowResize(client: Socket, payload: any) {
+    this.logger.log(`Client ${client.id} resized window`);
+    /*let game = this.gameService.games.get(payload.roomName);
+    if (game) {
+      game.config.canvasWidth = payload.canvasWidth;
+      game.config.canvasHeight = payload.canvasHeight;
+      game.player2.racket.x = payload.canvasWidth - 30;
+    }*/
   }
 }

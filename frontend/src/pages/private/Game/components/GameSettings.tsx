@@ -50,7 +50,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
         speed = 15;
         break;
       default:
-        speed = 7;
+        speed = 9;
     }
     if (playAgainstComputer) {
       let diff: number;
@@ -160,10 +160,10 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
 
   return (
     <div 
-      className="grid grid-cols-2 grid-row-4 gap-4 w-[700px] h-[450px] bg-gray-800 rounded-xl justify-center items-center relative"
+    className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 sm:p-2 md:p-4 lg:p-8 xl:p-16 bg-gray-800 rounded-xl justify-center items-center relative"
     >
       {isLoading ? (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center space-y-4">
         <div className="loader"></div>
           <Text ta='center' mt='xl' c='white' fz='xl' fw={800} >
            {loadingMessage}
@@ -185,7 +185,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
             >
               <FaArrowLeft size={24} color='white'/>
             </button>
-              <div className="col-span-2 row-span-3 flex flex-col items-center justify-center font-mono font-bold">
+            <div className="col-span-2 row-span-3 flex flex-col items-center justify-center space-y-4 font-mono font-bold">
                 <label 
                   className="flex-1 bg-gray-500 font-mono font-bold text-center text-lg text-slate-300 rounded mb-4"
                   title="Choose the number of goals (max 20)"
