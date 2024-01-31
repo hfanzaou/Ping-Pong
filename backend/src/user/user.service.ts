@@ -636,8 +636,8 @@ export class UserService {
             })
             if (winner.level == 0)
                 this.updateAch(winner.id, "firstMatch");
-            this.addLeaderAch(winner.id, winner.username);
             this.updatelevel(winId,  (winner.level + 0.25 / (winner.level + 1)), ++winner.win, winner.loss);
+            this.addLeaderAch(winner.id, winner.username);
             const loser =  await this.prismaservice.user.findUnique({
                 where: {username: lossName},
                 select: {
@@ -650,8 +650,8 @@ export class UserService {
             });
             if (loser.level == 0)
                 this.updateAch(loser.id, "firstMatch");
-            this.addLeaderAch(loser.id, loser.username);
             this.updatelevel(loser.id,  (loser.level + 0.10 / (loser.level + 1)), loser.win, ++loser.loss);
+            this.addLeaderAch(loser.id, loser.username);
         } catch(error) {
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
