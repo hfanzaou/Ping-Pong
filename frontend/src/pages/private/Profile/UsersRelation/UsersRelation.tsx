@@ -11,6 +11,7 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     return (
         <div className='flex flex-col items-center space-y-2'>
             <SegmentedControl
+                mt={4}
                 size='md'
                 radius='lg'
                 value={value}
@@ -21,7 +22,7 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                     {label: 'Requests', value: "Requests"},
                 ]}
             />
-            <ScrollArea h='250' type='never'>
+            <ScrollArea h='60vh' type='never'>
                 <Table>
                     <Table.Tbody>
                         {value === 'Requests' ?
