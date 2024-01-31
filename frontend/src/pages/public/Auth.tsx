@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, SimpleGrid, TextInput } from "@mantine/core";
+import { Button, Card, TextInput, Text } from "@mantine/core";
 import axios from "axios";
 
 function Auth() {
@@ -36,28 +36,32 @@ function Auth() {
 
     return (
         <>
-        <div className="h-10"></div>
-        <div className='flex justify-center mx-[50px] h-[497px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
-            <SimpleGrid className='w-1/2 grid place-items-center'>       
-                <Card
-                    style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg"
+            <div className="h-[2vh]"></div>
+            <div className='flex justify-center m-[50px] p-5 rounded-xl bg-slate-900 shadow-5 h-[80vh]'>
+                <div className='grid place-items-center'>
+                    <Card 
+                        className="flex flex-col items-center space-y-5 rounded-xl"
+                        style={{backgroundColor: 'rgb(31 41 55)'}}
                     >
-                <SimpleGrid 
-                    spacing='lg'
-                    className='grid place-items-center'
-                    >
-                    <TextInput
-                        c='blue'
-                        onChange={handleSaveCode}
-                        description="Entre Code of Verification"
-                        placeholder="entre your 2fa code"
-                        error={invalidCode ? "set a valid code" : false}
-                        />
-                    <Button c={'blur'} color="blue" radius='xl' size="xs" onClick={handleDisableSendCode} disabled={send}>Send</Button>
-                </SimpleGrid>
-                </Card>
-            </SimpleGrid>
-        </div>
+                        <Text size="lg" ta="center" c='lime'>
+                            Set the authentification code
+                        </Text>
+                        <TextInput
+                            onChange={handleSaveCode}
+                            placeholder="entre your 2fa code"
+                            error={invalidCode ? "set a valid code" : false}
+                            />
+                        <Button size="xs" radius='xl' mt={5} color="blue" variant="outline"
+                            onClick={handleDisableSendCode}
+                            disabled={send}
+                        >
+                            <Text size="md" ta="center">
+                                send
+                            </Text>
+                        </Button>
+                    </Card>
+                </div>
+            </div>
         </>
     );
 }

@@ -26,8 +26,8 @@ import GoToLogin from './pages/public/GoToLogin/GoToLogin'
 function App()  {
     const [avatar, setAvatar] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
-    const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for Frontend test
-    const [has2fa, setHas2fa] = useState<boolean>(false); // true JUst for frontend test
+    const [hasToken, setHasToken] = useState<Boolean>(false); // true Just for opening Frontend
+    const [has2fa, setHas2fa] = useState<boolean>(false);
     const [urlName, setUrlName] = useState<string | undefined>();
 
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
@@ -36,83 +36,79 @@ function App()  {
     // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    // console.log("base url: ", apiUrl);
 
     axios.defaults.withCredentials = true;
     axios.defaults.baseURL = apiUrl;
 
-const handleRequest = async (name: string) => {
+    const handleRequest = async (name: string) => {
+        const user = userList.find(user => user.name === name);
+        const friendship = user ? user.friendship : null;
 
-    console.log("Name from handle Request: ", name);
-
-    const user = userList.find(user => user.name === name);
-    const friendship = user ? user.friendship : null;
-
-    if (friendship === 'add friend') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'remove request'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-      await axios.post("user/add/friend", {name: name})
-      .then((res) => {
-        socket?.emit("addnotification", {reciever: name, type: "friend request"})
-        console.log(res.data);
-     })
-     .catch((err) => {
-        console.log("Error in send post request to add friend ",err);
-     })
-    }else if (friendship === 'remove request') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'add friend'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-        await axios.post("user/remove/request", {name: name})
-        .then((res) => {
-            socket?.emit("addnotification", {reciever: name, type: "remove request"})
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in send post request to remove request",err);
-        })
-    } else if (friendship === 'remove friend') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'add friend'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-        await axios.post("user/remove/friend", {name: name})
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in send post request to remove friend ",err);
-        })
-    }else if (friendship === 'accept friend') {
-        const updatedUserList = userList.map(user => 
-            user.name === name 
-            ? {...user, friendship: 'remove friend'}
-            : user
-        );
-        setUsersList(updatedUserList);
-        setSearchList(updatedUserList);
-        await axios.post("user/accept/friend", {name: name})
-        .then((res) => {
-            socket?.emit("addnotification", {reciever: name, type: "accept friend"})
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in send post request to accept friend ",err);
-        })
-    }
-};
+        if (friendship === 'add friend') {
+            const updatedUserList = userList.map(user => 
+                user.name === name 
+                ? {...user, friendship: 'remove request'}
+                : user
+            );
+            setUsersList(updatedUserList);
+            setSearchList(updatedUserList);
+          await axios.post("user/add/friend", {name: name})
+          .then((res) => {
+            socket?.emit("addnotification", {reciever: name, type: "friend request"})
+            console.log(res.data);
+         })
+         .catch((err) => {
+            console.log("Error in send post request to add friend ",err);
+         })
+        }else if (friendship === 'remove request') {
+            const updatedUserList = userList.map(user => 
+                user.name === name 
+                ? {...user, friendship: 'add friend'}
+                : user
+            );
+            setUsersList(updatedUserList);
+            setSearchList(updatedUserList);
+            await axios.post("user/remove/request", {name: name})
+            .then((res) => {
+                socket?.emit("addnotification", {reciever: name, type: "remove request"})
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.log("Error in send post request to remove request",err);
+            })
+        } else if (friendship === 'remove friend') {
+            const updatedUserList = userList.map(user => 
+                user.name === name 
+                ? {...user, friendship: 'add friend'}
+                : user
+            );
+            setUsersList(updatedUserList);
+            setSearchList(updatedUserList);
+            await axios.post("user/remove/friend", {name: name})
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.log("Error in send post request to remove friend ",err);
+            })
+        }else if (friendship === 'accept friend') {
+            const updatedUserList = userList.map(user => 
+                user.name === name 
+                ? {...user, friendship: 'remove friend'}
+                : user
+            );
+            setUsersList(updatedUserList);
+            setSearchList(updatedUserList);
+            await axios.post("user/accept/friend", {name: name})
+            .then((res) => {
+                socket?.emit("addnotification", {reciever: name, type: "accept friend"})
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.log("Error in send post request to accept friend ",err);
+            })
+        }
+    };
 
     useEffect(() => {
         const getVerify = async () => {
