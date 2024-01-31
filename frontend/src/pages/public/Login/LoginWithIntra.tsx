@@ -4,7 +4,7 @@ import { Button } from '@mantine/core';
 function LoginWithIntra() {
 
     const handleClick = async () => {
-        window.location.href = `${import.meta.env.VITE_API_BASE_URL}login`;
+        window.location.href = '/login';
     };
 
     return (

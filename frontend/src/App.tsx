@@ -36,10 +36,10 @@ function App()  {
     const [socket, setSocket] = useState<Socket | null>(null);
     // comonentDidMount
 
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    // const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
     axios.defaults.withCredentials = true;
-    axios.defaults.baseURL = apiUrl;
+    // axios.defaults.baseURL = apiUrl;
 
     const handleRequest = async (name: string) => {
         const user = userList.find(user => user.name === name);

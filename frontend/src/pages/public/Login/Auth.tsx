@@ -13,7 +13,7 @@ function Auth() {
         .then((res) => {
             if(res.status == 201)
             {
-                window.location.href = `${import.meta.env.VITE_APP_URL}`;
+                window.location.href = ``;
             } else {
                 setInvalidCode(true);
             }
