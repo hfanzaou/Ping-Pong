@@ -39,7 +39,16 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	const	[validateText, setValidateText] = useState("");
 	const	[accessibility, setAccessibility] = useState(true);
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
-	const	[list, setList] = useState(data.userData?.groups);
+	const	[list, setList] = useState(data.userData?.groups.filter(x => {
+		return x.banded?.find(y => y == data.userData?.userName) == undefined;
+	}).sort((x, y) => {
+		if (x.time && y.time) {
+			const	timeX = new Date(x.time);
+			const	timeY = new Date(y.time);
+			return timeY.getTime() - timeX.getTime();
+		}
+		return 0;
+	}));
 	const	[publicList, setPublicList] = useState<Group[]>([]);
 	const	[searchText, setSearchText] = useState("");
 	const	[settings, setSettings] = useState(false);
@@ -166,7 +175,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		if (searchText == "")
 			setList(data.userData?.groups.filter(x => {
-				return x.banded?.find(x => x == data.userData?.userName) == undefined;
+				return x.banded?.find(y => y == data.userData?.userName) == undefined;
 			}).sort((x, y) => {
 				if (x.time && y.time) {
 					const	timeX = new Date(x.time);
@@ -194,12 +203,12 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		setSearchText("");
 		setList(data.userData?.groups.filter(x => {
-			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			return x.banded?.find(y => y == data.userData?.userName) == undefined;
 		}).sort((x, y) => {
 			if (x.time && y.time) {
 				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
+				const	timeY = new Date(y.time);
+				return timeY.getTime() - timeX.getTime();
 			}
 			return 0;
 		}));
@@ -220,14 +229,16 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
-		setList(data.userData?.groups.sort((x, y) => {
+		setList(data.userData?.groups.filter(x => {
+			return x.banded?.find(y => y == data.userData?.userName) == undefined;
+		}).sort((x, y) => {
 			if (x.time && y.time) {
 				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
+				const	timeY = new Date(y.time);
+				return timeY.getTime() - timeX.getTime();
 			}
 			return 0;
-		}))
+		}));
 		data.socket?.on("newgroup", callBackNewGroup);
 		return () => {
 			data.socket?.off("newuser", callBackNewGroup);
@@ -308,12 +319,12 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				}).filter(x => x.name.includes(event.target.value));
 		}
 		setList(List?.filter(x => {
-			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			return x.banded?.find(y => y == data.userData?.userName) == undefined;
 		}).sort((x, y) => {
 			if (x.time && y.time) {
 				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
+				const	timeY = new Date(y.time);
+				return timeY.getTime() - timeX.getTime();
 			}
 			return 0;
 		}));

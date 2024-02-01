@@ -286,23 +286,29 @@ export class ChatService {
 	}
 	async getUserHistoryRoom(data: NEWCHAT) {
 		if (data.sender && data.recver) {
-			const history = await this.prisma.cHATHISTORY.findFirst({
-				where: { name: data.recver },
-				include: { messages: true }
+			const	group = await this.prisma.gROUP.findFirst({
+				where: {
+					name: data.recver,
+				},
 			});
-			if (history) {
-				const chatHistory = [...history.messages.map(x => {
-					return {
-						id: x.id,
-						message: x.message,
-						sender: x.sender,
-						// avatar: x.avatar
-					}
-				})].reverse();
-				return chatHistory;
+			if (group && group.banded.find(x => x == data.sender) == undefined) {
+				const	history = await this.prisma.cHATHISTORY.findFirst({
+					where: { name: data.recver },
+					include: { messages: true }
+				});
+				if (history) {
+					const chatHistory = [...history.messages.map(x => {
+						return {
+							id: x.id,
+							message: x.message,
+							sender: x.sender,
+						}
+					})].reverse();
+					return chatHistory;
+				}
+				else
+					return null;
 			}
-			else
-				return null;
 		}
 		return null;
 	}
@@ -680,10 +686,23 @@ export class ChatService {
 		const	updatedBaned = [ ...group.banded, data.userName ];
 		if (group) {
 			await this.prisma.gROUP.update({
-				where: { id: group.id },
-				data: { banded: updatedBaned}
-			})
+				where: {
+					id: group.id
+				},
+				data: {
+					banded: updatedBaned,
+				}
+			});
 		};
+	}
+
+	async banedSocket(userName: string) {
+		const	{socket} = await this.prisma.user.findFirst({
+			where: {
+				username: userName
+			}
+		});
+		return (socket);
 	}
 	async removeGroupBan(data: { name: string, userName: string }) {
 		const	group = await this.prisma.gROUP.findFirst({
