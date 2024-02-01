@@ -13,11 +13,12 @@ import { Ball } from "./classes/Ball";
 import { Player } from "./classes/Player";
 import { GAME_INTERVAL, GAME_START_DELAY, HEIGHT, WIDTH } from './classes/constants';
 import { gameConfig } from './classes/gameConfig';
+import { JwtTwoFaStrategy } from 'src/strategy';
 
 
 @WebSocketGateway({cors: true})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService, private strategy: JwtTwoFaStrategy) {}
 
   private logger: Logger = new Logger('GameGateway');
 
@@ -36,6 +37,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
   
   async handleConnection(@ConnectedSocket() client: Socket) {
+    await this.verifyClient(client);
     this.logger.log(`Client ${client.id} connected`);
   }
 
@@ -151,6 +153,19 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.logger.log(`Client ${client.id} is ready`);
     }
   }
+  async verifyClient(client: Socket) {
+		try {
+			const token = client.handshake.headers.cookie.split('jwt=')[1];
+			const payload = await this.strategy.verifyToken(token);
+            const user = await this.strategy.validate(payload)
+            if (!user)
+                throw new Error('invalid token');
+			return (user);
+		}
+		catch (error) {
+			client.disconnect();
+		}
+	}
 
   @SubscribeMessage('acceptInvite')
   acceptInvite(client: Socket, payload: any) {

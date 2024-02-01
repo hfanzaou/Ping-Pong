@@ -186,7 +186,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				credentials: "include"
 			});
 			const	Data = await res.json();
-			setPublicList(Data);
+			if (Data)
+				setPublicList(Data);
 		}
 		fetchData();
 	}, [settingsXy])
