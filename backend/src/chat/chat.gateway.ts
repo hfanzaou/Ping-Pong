@@ -23,7 +23,8 @@ import { UserService } from "src/user/user.service";
     credentials: true
 } })
 export class ChatGateway implements
-OnGatewayDisconnect {
+OnGatewayDisconnect,
+OnGatewayConnection {
 	constructor(private chatService: ChatService, 
 				private prisma: PrismaService, 
 				private strategy: JwtTwoFaStrategy,
@@ -118,7 +119,9 @@ OnGatewayDisconnect {
 			})
 		}
 	}
+	
 	async handleDisconnect(client: Socket) {
+		console.log(`Client ${client.id} disconnected`);
 		Array
 			.from(client.rooms)
 			.slice(1)
@@ -130,6 +133,11 @@ OnGatewayDisconnect {
 				username: user.username,
 				state: "Offline",
 			});		
+	}
+
+	async handleConnection(client: Socket) {
+		await this.verifyClient(client);
+		console.log(`Client ${client.id} connected`);
 	}
 
 
@@ -193,7 +201,7 @@ OnGatewayDisconnect {
 			return (user);
 		}
 		catch (error) {
-			client.emit('error', 'invalid token');
+			client.disconnect()
 		}
 	}
 }

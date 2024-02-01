@@ -50,8 +50,8 @@ export class ChatController {
 	}
 	@Get("searchList")
 	async handlegetSearchList() {
-		const	groups = await this.chatService.getSearchList();
-		return groups;
+			const	groups = await this.chatService.getSearchList();
+			return groups;
 	}
 	@Post("leaveJoin")
 	async handleLeaveJoin(@Body() data: { userName: string, name: string}, @Req() req) {

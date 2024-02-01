@@ -431,11 +431,13 @@ export class ChatService {
 		const	groups = await this.prisma.gROUP.findMany({
 			where: { state: "Public" }
 		})
-		return groups.map(x => ({
-			id: x.id,
-			name: x.name,
-			password: x.hash ? true : false 
-		}));
+		if (groups)
+			return groups.map(x => ({
+				id: x.id,
+				name: x.name,
+				password: x.hash ? true : false 
+			}));
+		return null;
 	}
 	async getLeaveJoin(data: { userName: string, name: string}) {
 		const	user = await this.prisma.user.findFirst({
@@ -725,11 +727,21 @@ export class ChatService {
 			}
 		}
 	}
-	async inviteGroup(data: { userName: string, name: string }) {
+	async inviteGroup(data: { userName: string, name: string, sender: string }) {
 		const	user = await this.prisma.user.findFirst({
 			where: {
 				username: data.userName,
-				groups: { none: { group: { name: data.name }}}
+				groups: { none: { group: { name: data.name }}},
+				blocked: {
+					none: {
+						username: data.sender
+					}
+				},
+				blockedFrom: {
+					none: {
+						username: data.sender
+					}
+				}
 			}
 		});
 		if (user)
