@@ -10,7 +10,6 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
     const [notificationList, setNotificationList] = useState<NotificationInterface[]>([]);
     const [notification, setNotification] = useState<boolean>(false);
     const [opened, { open, close }] = useDisclosure(false);
-    // const [type, setType] = useState<string>();
 
     const getNotificationTable = async () => {
         await axios.get("user/notification")
@@ -45,8 +44,8 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
     };
 
     const requestRows = notificationList.map((item, index) => (
-                (item.type === "friend request" || item.type === "accept friend" || item.type === "groupInvite" || item.type === 'game') &&
-        <div key={`${item.username}`+index} className="bg-gray-400 m-1 p-2 rounded-md">
+        (item.type === "friend request" || item.type === "accept friend" || item.type === "groupInvite" || item.type === 'game') &&
+        <div key={`${item.username}`+index} className="bg-gray-800 m-1 p-2 rounded-md">
             <div className="flex items-center justify-evenly m-1">
                 <Group gap="sm">
                     <Avatar size={40} src={item.avatar} radius={40}/>
@@ -73,15 +72,14 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
 
     return (
         <>
-            <Drawer 
-                // offset={20}
+            <Drawer
                 onClick={() => setNotification(false)}
                 position="right"
                 opened={opened}
                 onClose={close}
-                // title="Notification"
+                title="Notification"
+                c={'rgb(203 213 225)'}
                 scrollAreaComponent={ScrollArea.Autosize}
-                // c={'red'}
             >
                 {requestRows}
             </Drawer>

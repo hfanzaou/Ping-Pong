@@ -26,16 +26,16 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                 ]}
             />
             <ScrollArea h='55vh' type='never'>
-                <Table>
-                    <Table.Tbody>
+                {/* <Table>
+                    <Table.Tbody> */}
                         {value === 'Requests' ?
                             <FriendRequest socket={socket} setUrlName={setUrlName}/> :
                         (value === 'Friends' ?
                             <Friends socket={socket} setUrlName={setUrlName}/> :
                             <BlockedUsers/>
                         )}
-                    </Table.Tbody>
-                </Table>
+                    {/* </Table.Tbody>
+                </Table> */}
             </ScrollArea>
         </div>
     );

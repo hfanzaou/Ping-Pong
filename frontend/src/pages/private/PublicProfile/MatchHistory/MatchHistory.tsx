@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container, SimpleGrid } from '@mantine/core';
+import { Avatar, Table, Group, Text, Menu, rem, Image, Card, Container, SimpleGrid, Blockquote } from '@mantine/core';
 import { IconMessages, IconTrash} from '@tabler/icons-react';
 import {MdChevronLeft, MdChevronRight} from 'react-icons/md';
 import {MdChildFriendly} from 'react-icons/md';
@@ -29,13 +29,18 @@ function  MatchHistory({matchhistory}: {matchhistory: MatchHistoryInterface[]}) 
    return (
         <div className='mx-2 flex flex-col mt-2'>
             <h2 className="mb-5 text-3xl font-medium leading-tight  text-slate-100">Match History</h2>
-            <div className='mt-5 relative h-full flex items-center'>
-                {matches?.length ? <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100 color-blue' onClick={sliderLeft} size={40}/>: null}
-                <div id='match-history-slider' className='relative flex items-center w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>
-                    {matches}
-                </div>
-                {matches?.length ?<MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={40}/> : null}
-            </div>
+            {matches?.length ? 
+                <div className='mt-5 relative h-full flex items-center'>
+                    <MdChevronLeft className='opacity-50 cursor-pointer hover-opacity-100 color-blue' onClick={sliderLeft} size={50} color='white'/>
+                        <div id='match-history-slider' className='relative flex items-center w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide'>
+                            {matches}
+                        </div>
+                    <MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={50} color='white'/>
+                </div> :
+                <Blockquote  ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                   No match history
+                </Blockquote>
+            }
         </div>
     );
 }

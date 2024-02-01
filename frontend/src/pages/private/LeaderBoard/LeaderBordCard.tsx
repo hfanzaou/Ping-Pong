@@ -12,7 +12,7 @@ function LeaderbordCard({data, rank}: {data: leaderboardInterface, rank: number}
         <Card p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
           <Card.Section className='h-[35vh]'>
             <img
-                className="object-cover w-full h-full"
+                className="object-fill w-full h-full"
                 src={data?.avatar}
                 height={100}
                 alt={data?.name}
