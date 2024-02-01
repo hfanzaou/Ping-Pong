@@ -72,14 +72,12 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
 
     return (
         <>
-            <Drawer 
-                // offset={20}
+            <Drawer
                 onClick={() => setNotification(false)}
                 position="right"
                 opened={opened}
                 onClose={close}
                 title="Notification"
-                // c={'blue'}
                 c={'rgb(203 213 225)'}
                 scrollAreaComponent={ScrollArea.Autosize}
             >

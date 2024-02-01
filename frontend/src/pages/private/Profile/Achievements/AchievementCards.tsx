@@ -26,7 +26,7 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
     return (
         <div className='w-[100px] '>
             <Group justify="center">
-                <HoverCard width={200} openDelay={500}>
+                <HoverCard radius='md' width={100} openDelay={300} closeDelay={200} offset={-5}>
                     <HoverCard.Target>
                         <Card shadow="sm" radius="md" withBorder>
                             <Card.Section>
