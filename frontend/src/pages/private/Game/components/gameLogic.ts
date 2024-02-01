@@ -64,7 +64,7 @@ export function  updateBallPos(p5: p5Types, socket: Socket, config: gameConfig, 
 }
 
 function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig, setGameOver: (v: boolean) => void) {
-  var xSpot = ball.x - BALL_DIAMETER/2 < 0 ? 0 :config.canvasWidth;
+  var xSpot = ball.x - ball.radius < 0 ? 0 : config.canvasWidth;
   shootSparks(xSpot, ball.y, -ball.xdir, p5);
   if (player1.score == config.maxScore || player2.score == config.maxScore) {
     ball.reset(p5, config);
@@ -231,8 +231,7 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig, 
   });
 
   socket.on('opponentDisconnected', () => {
-    p5.removeElements();
-    opponentDisconnect();
+    opponentDisconnect(socket, p5);
   });
 
   socket.on('updateRacket', (pos) => {

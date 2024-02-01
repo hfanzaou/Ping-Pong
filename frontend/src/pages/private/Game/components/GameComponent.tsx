@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import p5 from "p5";
 import { Socket } from 'socket.io-client';
-import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forge } from "./gameLogic";
+import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forge, removeEventListeners } from "./gameLogic";
 import { handleGameStates, play } from './gameStates';
 import { gameConfig } from '../classes/gameConfig';
 import { userData } from '../Game';
 import GameOver from './GameOver';
+import { WIDTH, HEIGHT } from '../classes/constants';
 
 
 
@@ -22,16 +23,17 @@ export let canvas: p5.Renderer;
 
 const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameStart}) => {
   const sketchRef = useRef<HTMLDivElement | null>(null);
+  const p5Ref = useRef<p5 | null>(null);
   const [gameOver, setGameOver] = useState<boolean>(false);
 
   useEffect(() => {
 
     console.log(config);
     if (sketchRef.current === null) return;
-    new p5(p => {
+    p5Ref.current = new p5(p => {
       p.setup = async () => {
-        config.canvasWidth = p.windowWidth > 800 ? (p.windowWidth * 0.51) : (p.windowWidth * 0.8);
-        config.canvasHeight = p.windowHeight > 600 ? (p.windowHeight * 0.7) : (p.windowHeight * 0.9);
+        config.canvasWidth = p.windowWidth >= 800 ? WIDTH : (p.windowWidth * 0.7);
+        config.canvasHeight = p.windowHeight >= 600 ? HEIGHT : (p.windowHeight * 0.7);
         canvas = p.createCanvas(config.canvasWidth, config.canvasHeight);
         eventListeners(p, socket, config, setGameOver);
         if (config.mode == 3 || config.mode == 2) {
@@ -109,8 +111,8 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
       };
       
       p.windowResized = () => {
-        config.canvasWidth = p.windowWidth > 800 ? (p.windowWidth * 0.51) : (p.windowWidth * 0.8);
-        config.canvasHeight = p.windowHeight > 600 ? (p.windowHeight * 0.7) : (p.windowHeight * 0.9);
+        config.canvasWidth = p.windowWidth >= 800 ? WIDTH : (p.windowWidth * 0.7);
+        config.canvasHeight = p.windowHeight >= 600 ? HEIGHT : (p.windowHeight * 0.7);
         player1.racket.resize(config.canvasWidth, config.canvasHeight, 1);
         player2.racket.resize(config.canvasWidth, config.canvasHeight, 2);
         socket.emit('windowResized');
@@ -119,10 +121,20 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
 
   }, sketchRef.current);
 
-  }, [gameOver]);
+  return () => {
+    if (p5Ref.current) {
+      p5Ref.current.noLoop(); // Add this line
+    }
+
+    removeEventListeners(socket);
+    socket.emit('leaveGame');
+    setGameOver(true);
+  };
+
+  }, []);
 
   return (
-    gameOver ? <GameOver score={player1.score} user={user.username} setGameOver={setGameOver} setGameStart={setGameStart} /> 
+    gameOver ? <GameOver score={player1.score} user={user.username} mode={config.mode} setGameOver={setGameOver} setGameStart={setGameStart} /> 
       : <div ref={sketchRef} />
   );
 };

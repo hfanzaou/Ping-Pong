@@ -4,6 +4,7 @@ import { Text } from '@mantine/core';
 type GameOverProps = {
     score: number;
     user: string;
+    mode: number;
     setGameOver: (value: boolean) => void;
     setGameStart: (v: boolean) => void;
 };
@@ -11,6 +12,7 @@ type GameOverProps = {
 const GameOver: React.FC<GameOverProps> = ({
     score,
     user,
+    mode,
     setGameOver,
     setGameStart,
 }) => {
@@ -36,11 +38,16 @@ const GameOver: React.FC<GameOverProps> = ({
             <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
                 {isWin ? 'You Win :)' : 'You Lost :('}
             </Text>
-            <button
-                className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
-                onClick={handleRestart}>
-                    Play Again
-            </button>
+            <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
+                Score: {score}
+            </Text>
+            {(mode !== 1) && (
+                <button
+                    className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
+                    onClick={handleRestart}>
+                        Play Again
+                </button>
+            )}
             <button
                 className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
                 onClick={handleMainMenu}>
