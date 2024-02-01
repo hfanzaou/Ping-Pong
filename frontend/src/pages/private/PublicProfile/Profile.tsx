@@ -65,11 +65,11 @@ export function ProfileSections({profileName, handleRequest, friendShip, socket}
         
     return (
         <SimpleGrid
-              cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+              cols={{ base: 1, xs: 1, md: 2, lg: 2, xl: 2}}
               spacing={'md'}
         >
             <SimpleGrid
-                cols={{ base: 1, xs: 1, md: 2, lg: 2 }}
+                cols={{ base: 1, xs: 1, md: 2, lg: 2, xl: 2}}
                 spacing={'md'}
             >
                 <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip}/>
@@ -88,7 +88,7 @@ export function ProfileSections({profileName, handleRequest, friendShip, socket}
 
 function Profile({profileName, handleRequest, friendShip, socket}: {profileName: string | undefined, handleRequest: any, friendShip: string, socket: Socket}) {
     return (
-        <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5'>
+        <div className='mx-[50px] mt-[20px] p-8 rounded-xl bg-slate-900 shadow-5 xl:h-[75vh]'>
             <ProfileSections profileName={profileName} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/>
         </div>
     );

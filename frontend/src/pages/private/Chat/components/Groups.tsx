@@ -15,9 +15,10 @@ interface Props {
 	data: DATA,
 	setData: React.Dispatch<React.SetStateAction<DATA>>
 	privateJoin: string
+	setPrivateJoin: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
+const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin }) => {
 	const	[createXy, setCreateXy] = useState({
 		x: 0,
 		y: 0,
@@ -65,11 +66,14 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 						"content-type": "application/json"
 					},
 					body: JSON.stringify({
-						name: privateJoin
-					})
+						name: privateJoin,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
 				});
 				const	Data = await res.json();
 				setList(Data);
+				setPrivateJoin("");
 			}
 			fetchData();
 		}
@@ -134,7 +138,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 					},
 					body: JSON.stringify({
 						data: createData
-					})
+					}),
+					credentials: "include"
 				})
 				const	Data = await res.json();
 				if (Data) {
@@ -177,10 +182,12 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 				method: "GET",
 				headers: {
 					"content-type": "application/json"
-				}
+				},
+				credentials: "include"
 			});
 			const	Data = await res.json();
-			setPublicList(Data);
+			if (Data)
+				setPublicList(Data);
 		}
 		fetchData();
 	}, [settingsXy])
@@ -205,7 +212,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		// console.log("Data");
@@ -338,8 +346,10 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 					"content-type": "application/json"
 				},
 				body: JSON.stringify({
-					name: name
-				})
+					name: name,
+					userName: userNameRef.current
+				}),
+				credentials: "include"
 			});
 		const	Data = await res.json();
 		return Data;
@@ -378,7 +388,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 			body: JSON.stringify({
 				userName: data.userData?.userName,
 				name: settingsXy.login
-			})
+			}),
+			credentials: "include"
 		});
 		const	Data = await res.json();
 		setData(x => {
@@ -404,7 +415,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin }) => {
 			},
 			body: JSON.stringify({
 				userName: data.userData?.userName
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));

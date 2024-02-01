@@ -23,22 +23,22 @@ function Leaderbord({avatar} : {avatar: string}) {
     }, []);
 
     return (
-        <div className="mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5">
-            <SimpleGrid cols={{ base: 1, sm: 1, lg: 2 }}>
-                <Card  className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg" >
-                    <SimpleGrid cols={3}>
+        <div className="mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5 xl:h-[75vh]">
+            <SimpleGrid m={0} p={0} cols={{ base: 1, sm: 1, lg: 2 }}>
+                <Card p={2} className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg" >
+                    <SimpleGrid m={15} cols={3}>
                         <div className="mt-8">
-                            <LeaderBordCard data={data[1]} rank={2}/>
+                            {data[1] && <LeaderBordCard data={data[1]} rank={2}/>}
                         </div>
                         <div className="mb-8">
-                            <LeaderBordCard data={data[0]} rank={1}/>
+                            {data[0] && <LeaderBordCard data={data[0]} rank={1}/>}
                         </div>
                         <div className="mt-8">
-                            <LeaderBordCard data={data[2]} rank={3}/>
+                            {data[2] && <LeaderBordCard data={data[2]} rank={3}/>}
                         </div>
                     </SimpleGrid>
                 </Card>
-                <Card className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+                <Card p={2} className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
                     <LeaderbordTable data={data}/>
                 </Card>
             </SimpleGrid>

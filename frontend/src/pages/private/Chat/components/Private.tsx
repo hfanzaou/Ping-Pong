@@ -38,7 +38,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		setData(prev => setUserData(prev, Data));
@@ -81,7 +82,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			},
 			body: JSON.stringify({
 				userName: userNameRef.current
-			})
+			}),
+			credentials: "include"
 		});
 		const Data = await res0.json();
 		// console.log(Data);
@@ -136,6 +138,24 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			recver: tmp
 		}
 		data.socket?.emit("newChatPrivate", newChat);
+		setData(prev => {
+			if (prev.userData)
+				return {
+					...prev,
+					userData: {
+						...prev.userData,
+						chatUsers: [...prev.userData.chatUsers].map(x => {
+							if (x.login == tmp)
+								return {
+									...x,
+									unRead: 0
+								}
+							return x;
+						})
+					}
+				}
+			return prev;
+		})
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
@@ -180,6 +200,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		setBlockTrigger(true);
 	}
 	function mute() {}
+	function clickTest() {
+		List && console.log(List[0].unRead)
+	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -231,15 +254,39 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 																	group-hover:border-discord4 ${
 																		x.state == "Online" ?
 																			"bg-green-500" :
-																			"bg-red-500"
+																			"bg-gray-500"
 																	}` :
 																	`border-discord5 ${
-																		x.state == "Online" &&
-																			"bg-green-300"
+																		x.state == "Online" ?
+																			"bg-green-300" :
+																			"bg-gray-300"
 																	}`
 															}`
 														}
 													></div>
+													{
+														x.unRead != 0 &&
+														<div
+															className={
+																`absolute -bottom-2
+																right-1 rounded-full
+																z-10 border-4 bg-red-500 text-xs px-1 ${
+																	x.login != data.talkingTo ?
+																		`border-discord3
+																		group-hover:border-discord4` :
+																		`border-discord5 shadow-black
+																		shadow-lg`
+																}`
+															}
+														>
+															{
+																x.unRead &&
+																	(
+																		x.unRead < 100 ? x.unRead : "+99"
+																	)
+															}
+														</div>
+													}
 												</div> :
 												<div className="relative">
 													<IconUser
@@ -270,6 +317,29 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															}`
 														}
 													></div>
+													{
+														x.unRead != 0 &&
+														<div
+															className={
+																`absolute -bottom-2
+																right-1 rounded-full
+																z-10 border-4 bg-red-500 text-xs px-1 ${
+																	x.login != data.talkingTo ?
+																		`border-discord3
+																		group-hover:border-discord4` :
+																		`border-discord5 shadow-black
+																		shadow-lg`
+																}`
+															}
+														>
+															{
+																x.unRead &&
+																	(
+																		x.unRead < 100 ? x.unRead : "+99"
+																	)
+															}
+														</div>
+													}
 												</div>
 										}
 										{size && x.login}
@@ -281,12 +351,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 									>
 										<IconDotsVertical/ >
 									</button>
-									{/* {
-										x.read &&
-											<div className="absolute -top-2 -right-2">
-												<IconCircleFilled className="w-5"/>
-											</div>
-									} */}
 								</li>
 							);
 						}

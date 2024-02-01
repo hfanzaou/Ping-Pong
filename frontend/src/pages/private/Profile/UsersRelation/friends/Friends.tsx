@@ -39,7 +39,7 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
         })
     };
 
-    const search = friendList.map((item) => (
+    const friends = friendList.map((item) => (
         <Table.Tr key={item.name} m={6}>
             <Table.Td>
                 <div className='flex justify-between'>
@@ -80,8 +80,8 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
 
     return (
         <div>
-            {Object.keys(search).length ?
-                search :
+            {Object.keys(friends).length ?
+                friends :
                 <Table.Tr>
                     <Table.Td>
                         <Blockquote color="gray" radius="xl" iconSize={33} mt="xl">

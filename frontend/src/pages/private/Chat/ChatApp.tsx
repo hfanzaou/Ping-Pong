@@ -20,7 +20,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		trigger: true,
 		send: true
 	});
-	const	[option, setOption] = useState("Rooms");
+	const	[option, setOption] = useState("Private");
 	const	[error, setError] = useState(false);
 	const	errorRef = useRef(error);
 	const	[notFound, setNotFound] = useState(false);
@@ -48,7 +48,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 					body: JSON.stringify({
 						userName: data.userData?.userName,
 						name: tmp
-					})
+					}),
+					credentials: "include"
 				});
 				const Data = await res.json()
 				if (!Data) {
@@ -66,7 +67,9 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			}
 			fetchData();
 		}
-	}, [data.userData?.userName])
+		else if (notFound)
+			window.location.reload();
+	}, [query])
 	useEffect(() => {
 		async function fetchData() {
 			setData(prev => setSocket(prev, socket));
@@ -85,7 +88,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 							},
 							body: JSON.stringify({
 								userName: Data0.name
-							})
+							}),
+							credentials: "include"
 						});
 						const Data = await res.json();
 						setData(prev => setUserData(prev, Data));
@@ -139,7 +143,11 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 			{
 				option == "Private" ?
 					<Private data={data} setData={setData} /> :
-					<Groups data={data} setData={setData} privateJoin={name} />
+					<Groups
+						data={data}
+						setData={setData}
+						privateJoin={name}
+						setPrivateJoin={setName} />
 				}
 			{
 				option == "Private" ?

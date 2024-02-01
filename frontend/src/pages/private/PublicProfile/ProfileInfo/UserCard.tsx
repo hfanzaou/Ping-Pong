@@ -29,20 +29,23 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     ));
 
     return (
-        <Card p={2} style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
+        <Card p={0} className='h-full w-full space-y-5' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
             <Avatar
                 src={usercard?.avatar}
-                size={250}
+                size='35vh'
+
                 radius={250}
                 m="auto"
                 mt={12}
             />
-            <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
-                {usercard?.username}
-            </Text>
-            <Text ta="center" c="indigo" fz="sm">
-                {"level "  + usercard?.level}
-            </Text>
+            <div>
+                <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
+                    {usercard?.username}
+                </Text>
+                <Text ta="center" c="indigo" fz="sm">
+                    {"level "  + usercard?.level}
+                </Text>
+            </div>
             <Group mt="md" justify="center" gap={30}>
                 {items}
             </Group>

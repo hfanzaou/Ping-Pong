@@ -14,7 +14,6 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		id: number,
 		message: string,
 		sender: string
-		// avatar: string
 	}>>([]);
 	const	dataRef = useRef(data);
 	dataRef.current = data;
@@ -35,13 +34,15 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				body: JSON.stringify({
 					userName1: data.userData?.userName,
 					userName2: data.talkingTo
-				})
+				}),
+				credentials: "include"
 			});
 			const	Data = await res.json();
 			if (Data)
 				setAvatars(Data);
 		}
-		fetchData();
+		if (data.userData?.userName && data.talkingTo)
+			fetchData();
 	}, [data.talkingTo]);
 	useEffect(() => {
 		if (Reference.current)
@@ -58,7 +59,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 					body: JSON.stringify({
 						sender: data.userData?.userName,
 						recver: data.talkingTo
-					})
+					}),
+					credentials: "include"
 				});
 				const Data = await res.json()
 				if (Data)
@@ -85,7 +87,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						body: JSON.stringify({
 							sender: data.userData?.userName,
 							recver: data.talkingTo,
-						})
+						}),
+						credentials: "include"
 					});
 					setData(prev => ({
 						...prev,
@@ -99,11 +102,11 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						},
 						body: JSON.stringify({
 							userName: data.userData?.userName
-						})
+						}),
+						credentials: "include"
 					});
 					const Data: USERDATA = await res0.json();
 					Data.chatUsers.sort((x, y) => {
-						// console.log("here");
 						if (x.time && y.time) {
 							const	timeX = new Date(x.time);
 							const	timeY = new Date(y.time);
@@ -122,19 +125,13 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 		id: number,
 		message: string,
 		sender: string
-		// avatar: string,
 	})
 	{
 		setData(x => ({
 			...x,
 			send: !x.send
 		}))
-		// if (!dataRef.current.userData?.chatUsers.
-		// 	find(x => x.login == dataRef.current.talkingTo)) {
-			setTrigger(true);
-
-		// }
-		setConversation(prev => [m, ...prev]);
+		setTrigger(true);
 	}
 	useEffect(() => {
 		data.socket?.on("clientPrivate", callBack);

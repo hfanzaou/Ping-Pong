@@ -23,7 +23,8 @@ import { UserService } from "src/user/user.service";
     credentials: true
 } })
 export class ChatGateway implements
-OnGatewayDisconnect {
+OnGatewayDisconnect,
+OnGatewayConnection {
 	constructor(private chatService: ChatService, 
 				private prisma: PrismaService, 
 				private strategy: JwtTwoFaStrategy,
@@ -81,6 +82,7 @@ OnGatewayDisconnect {
 		const room = await this.chatService.getRoomDirect(data);
 		if (room)
 			client.join(room);
+		this.chatService.updateReadPrivate(data);
 	}
 	@SubscribeMessage("newChatRoom")
 	async handelNewChatRoom(client: Socket, data: NEWCHAT) {
@@ -94,10 +96,12 @@ OnGatewayDisconnect {
 	@SubscribeMessage("newUser")
 	async handelUser(client: Socket, data: string) {
 		const recver = await this.chatService.newMessage(data);
+		const sender = await this.chatService.newMessageSocket(client.id);
 		if (recver) {
 			this.server
 				.to(recver)
 				.emit("newuser");
+			this.chatService.updateReadPrivate({sender: sender, recver: data});
 		}
 	}
 	@SubscribeMessage("newGroup")
@@ -115,7 +119,9 @@ OnGatewayDisconnect {
 			})
 		}
 	}
+	
 	async handleDisconnect(client: Socket) {
+		console.log(`Client ${client.id} disconnected`);
 		Array
 			.from(client.rooms)
 			.slice(1)
@@ -127,6 +133,11 @@ OnGatewayDisconnect {
 				username: user.username,
 				state: "Offline",
 			});		
+	}
+
+	async handleConnection(client: Socket) {
+		await this.verifyClient(client);
+		console.log(`Client ${client.id} connected`);
 	}
 
 
@@ -159,8 +170,9 @@ OnGatewayDisconnect {
 					where: {username: payload.reciever},
 					select: {id: true, socket: true}
 				});
+				// console.log(payload);
 				await this.user.addNotification(id, payload);
-				client.to(reciever.socket).emit('getnotification', 'hello');
+                client.to(reciever.socket).emit('getnotification', payload.type);
 			}
 		} catch(error)
 		{
@@ -189,7 +201,7 @@ OnGatewayDisconnect {
 			return (user);
 		}
 		catch (error) {
-			client.emit('error', 'invalid token');
+			client.disconnect()
 		}
 	}
 }

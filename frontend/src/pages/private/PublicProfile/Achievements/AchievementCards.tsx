@@ -34,19 +34,19 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
                                     <Image
                                         src={image}
                                         height={300}
-                                        alt="Norway"
+                                        alt={title}
                                     /> :
                                     <Image className="blur-sm"
                                     src={image}
                                         height={300}
-                                        alt="Norway"
+                                        alt={title}
                                     />
                                 }
                             </Card.Section>
                         </Card>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                        <Text size="lg" ta='center'>{title}</Text>
+                    <HoverCard.Dropdown bg='dark'>
+                        <Text c='cyan' size="lg" ta='center'>{title}</Text>
                     </HoverCard.Dropdown>
                 </HoverCard>
             </Group>
