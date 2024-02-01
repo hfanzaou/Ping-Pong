@@ -1,8 +1,13 @@
 import p5Types from 'p5';
 
 export class Spark {
-    x: number; y: number; xVel: number;
-    pos; vel; lifespan; p5: p5Types;
+    x: number; 
+    y: number; 
+    xVel: number;
+    pos; 
+    vel; 
+    lifespan; 
+    p5: p5Types;
     constructor(x: number, y: number, xVel: number, p5: p5Types) {
       this.x = x;
       this.y = y;

@@ -44,6 +44,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.disconnectPlayer(this.wss, client);
   }
 
+  @SubscribeMessage('leaveGame')
+  leaveGame(client: Socket) {
+    this.gameService.disconnectPlayer(this.wss, client);
+  }
+
   @SubscribeMessage('create_room')
   createRoom(client: Socket, config: gameConfig)
   {

@@ -28,12 +28,16 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   const [difficulty, setDifficulty] = useState('Easy');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [helpDisplay, setHelpDisplay] = useState<boolean>(false);
 
   function handleCreateNewGameClick() {
     setCreatingGame(true);
     setShowSettings(true);
   }
 
+  function handleHelpClick() {
+    setHelpDisplay(!helpDisplay);
+  }
   function handleCreateGame() {
     setIsLoading(true);
     setLoadingMessage('Waiting for a second player ...');
@@ -155,15 +159,21 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
       setTimeout(() => {
         setLoadingMessage('No Games Found :(');
       }, 2000);
-    })
+    });
+
+    return () => {
+      socket.off('startGame');
+      socket.off('NoGames');
+    }
+
   }, []);
 
   return (
     <div 
-    className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 sm:p-2 md:p-4 lg:p-8 xl:p-16 bg-gray-800 rounded-xl justify-center items-center relative"
+    className="w-full h-full grid grid-cols-2 grid-rows-4 gap-4 bg-gray-800 rounded-xl justify-center items-center relative"
     >
       {isLoading ? (
-        <div className="flex flex-col justify-center items-center space-y-4">
+        <div className="row-span-4 col-span-2 flex flex-col justify-center items-center">
         <div className="loader"></div>
           <Text ta='center' mt='xl' c='white' fz='xl' fw={800} >
            {loadingMessage}
@@ -183,11 +193,11 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
               className="row-span-1 absolute top-0 left-0 m-4 color-white hover:bg-gray-900 p-4 px-4 rounded"
               onClick={handleBackClick}
             >
-              <FaArrowLeft size={24} color='white'/>
+              <FaArrowLeft size={24} color='white' />
             </button>
             <div className="col-span-2 row-span-3 flex flex-col items-center justify-center space-y-4 font-mono font-bold">
                 <label 
-                  className="flex-1 bg-gray-500 font-mono font-bold text-center text-lg text-slate-300 rounded mb-4"
+                  className="bg-gray-500 font-mono font-bold text-center text-lg text-slate-300 rounded mb-4"
                   title="Choose the number of goals (max 20)"
                 >
                   Number of goals: 
@@ -277,46 +287,52 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
             >
               Create Game
             </button>
-            <button
-              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white mr-20"
-              onClick={handleChallengePlayer}
-            >
-              Challenge a Player
-            </button>
-            {challengePlayer && <p>Invite a player...</p>}
+            { (!playAgainstComputer && !play1vs1Click) && (
+              <button
+                className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white mr-20"
+                onClick={handleChallengePlayer}
+              >
+                Challenge a Player
+              </button>
+            )}
           </>
         ) : (
           <>
             <button
-              className="transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white ml-20 p-5"
+              className="row-span-1 transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white p-1 sm:p-5 ml-20"
               onClick={handleCreateNewGameClick}
             >
-              Create a new Game
+              Create a Game
             </button>
             <button
-              className=" transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white mr-20 p-5"
+              className="row-span-1 transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white p-1 sm:p-5 mr-20"
               onClick={handleJoinGameClick}
             >
               Join a Game
             </button>
             <button
-              className="transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white ml-20 p-5"
+              className="transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white p-1 sm:p-5 ml-20"
               onClick={handlePlayAgainstComputerClick}
             >
               Against Computer
             </button>
             <button
-              className="transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white mr-20 p-5"
+              className="transition ease-in-out delay-150 bg-slate-600 hover:-translate-y-1 hover:scale-110 hover:bg-slate-700 duration-300 rounded font-mono text-white p-1 sm:p-5 mr-20"
               onClick={handlePlay1vs1Click}
             >
-              1Vs1 on same device
+              On same device
             </button>
-            <div className="col-span-2 bg-slate-700 rounded-lg m-5">
-              <div className="row-span-1 text-center mb-4">
-                <span className="text-white font-mono bg-neutral-500 rounded p-2" title="How to play?">
+              <div className="col-span-2 row-span-2 text-center flex flex-col justify-center items-center m-4">
+                <button 
+                  className="text-white font-mono bg-neutral-500 rounded p-0 sm:p-2 hover:bg-neutral-700 transition ease-in-out delay-150 hover:-translate-y-2" 
+                  title="How to play?"
+                  onClick={handleHelpClick}
+                >
                   How to Play?
-                </span><br/>
-              </div>
+                </button><br/>
+  
+              {helpDisplay && (
+            <div className="bg-neutral-700 rounded-lg m-5 transition-opacity duration-500 ease-in-out">
               <div className="text-center">
                 <span className="text-white font-mono">
                   → Create a game with custom settings, or join a pending game.<br/>
@@ -324,6 +340,8 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
                   → Move your paddle up and down with the UP ↑ and DOWN ↓, or the W and S keys.<br/>
                 </span>
               </div>
+            </div>
+            )}
             </div>
           </>
         )}
