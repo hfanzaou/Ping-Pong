@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TextInput, Button, Modal } from '@mantine/core';
 import axios from 'axios';
-import { IconEdit } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 
 function ChangeName() {
@@ -9,6 +8,7 @@ function ChangeName() {
     const [uniqueName, setUniqueNmae] = useState<string>('');
     const [invalidName, setInvalidName] = useState<boolean>(false);
     const [disabled, setDisabled] = useState<boolean>(true);
+    const [error, setError] = useState<string>('Invalid Name');
 
     const [opened, { open, close }] = useDisclosure(false);
 
@@ -37,16 +37,33 @@ function ChangeName() {
         })
         .catch(err => {
             setInvalidName(true);
+            setError("alredy used");
             setDisabled(true);
             console.error("Error in send profile info: ", err);
         })
     };
 
     const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const englishLetterRegex = /^[A-Za-z ]*$/;
+
+        if (!englishLetterRegex.test(value)) {
+            setInvalidName(true);
+            setError("only english letters please");
+            setDisabled(true);
+            return;
+        }
+        if (e.target.value.length > 15) {
+            setInvalidName(true);
+            setError("no more then 15 charachter");
+            setDisabled(true);
+            return
+        }
+
         setUniqueNmae(e.target.value);
         setInvalidName(false);
+        
         e.target.value.length > 4 ? setDisabled(false) : setDisabled(true);
-        e.target.value.length < 15 && e.target.value.length > 4 ? setDisabled(false) : setDisabled(true); 
     };
 
     const handleOpenChangeName = () => {
@@ -94,7 +111,7 @@ function ChangeName() {
                         placeholder="Unique Name"
                         description="change your name by set a uniuqe name hase more then 4 charachter"
                         onChange={handleChangeName}
-                        error={invalidName ? "alredy used": false}
+                        error={invalidName ? error : false}
                     />
                     <div className='mt-5'>
                         <Button
