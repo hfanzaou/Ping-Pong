@@ -9,12 +9,15 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     const [value, setValue] = useState<string>('Friends');
 
     return (
-        <div className='flex flex-col items-center space-y-2'>
+        <div className='flex flex-col items-center space-y-2 h-full w-full'>
             <SegmentedControl
-                mt={4}
+                m='md'
                 size='md'
+                w='90%'
                 radius='lg'
                 value={value}
+                color='blue'
+                bg={'rgb(39 39 42)'}
                 onChange={setValue}
                 data={[
                     {label: 'Friends', value: 'Friends'},
@@ -22,7 +25,7 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                     {label: 'Requests', value: "Requests"},
                 ]}
             />
-            <ScrollArea h='60vh' type='never'>
+            <ScrollArea h='55vh' type='never'>
                 <Table>
                     <Table.Tbody>
                         {value === 'Requests' ?
