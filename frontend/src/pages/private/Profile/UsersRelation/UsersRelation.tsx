@@ -12,12 +12,12 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
         <div className='flex flex-col items-center space-y-2 h-full w-full'>
             <SegmentedControl
                 m='md'
-                size='md'
+                size='lg'
                 w='90%'
                 radius='lg'
-                value={value}
-                color='blue'
+                color='cyan'
                 bg={'rgb(39 39 42)'}
+                value={value}
                 onChange={setValue}
                 data={[
                     {label: 'Friends', value: 'Friends'},

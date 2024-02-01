@@ -22,10 +22,13 @@ function LeaderbordCard({data, rank}: {data: leaderboardInterface, rank: number}
             {/* </div> */}
           </Card.Section>
           <div className='flex flex-col items-center space-y-2 m-2'>
-            <Text ta="center" fz="md" fw={800} c='indigo' mt="md">
+            <Text ta="center" fz="md" fw={800} c='blue' mt="md">
                 {data?.name}
             </Text>
-            <Text ta='center' variant="default" mt="md" c='white'>
+            <Text ta="center" fz="md" fw={800} c='cyan' mt="md">
+                #{rank}
+            </Text>
+            <Text c='indigo' ta='center' variant="default" mt="md">
                 Level {data?.level}
             </Text>
           </div>
