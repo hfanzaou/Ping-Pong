@@ -1,6 +1,7 @@
 import p5Types from "p5";
 import { goalScored } from "../components/gameLogic";
 import { BALL_DIAMETER, WIDTH, HEIGHT } from "./constants";
+import { gameConfig } from "./gameConfig";
 
 export class Ball {
     x: number;
@@ -13,42 +14,44 @@ export class Ball {
     yoff: number;
     vel: p5Types.Vector;
     
-    constructor(p5:p5Types, speed: number, size: number, type: string) {
-        this.x = WIDTH/2;
-        this.y = HEIGHT/2;
-        this.xdir = 1;
-        this.ydir = 0;
-        this.speed = speed;
-        this.radius = size;
-        this.type = type;
-        this.vel = p5.createVector(this.xdir, this.ydir);
-        this.yoff = p5.random(1000);
+    constructor(p5:p5Types, config: gameConfig) {
+      this.x = (WIDTH/2) * (config.canvasWidth / WIDTH);
+      this.y = (HEIGHT/2) * (config.canvasHeight / HEIGHT);
+      this.xdir = 1;
+      this.ydir = 0;
+      this.speed = config.ballSpeed * (config.canvasWidth / WIDTH); // Adjust speed based on resolution
+      this.radius = config.ballSize * (config.canvasWidth / WIDTH); // Adjust size based on resolution
+      this.type = config.ballType;
+      this.vel = p5.createVector(this.xdir, this.ydir);
+      this.yoff = p5.random(1000);
     }
-    
-    updatePosition() {
-        this.x += (this.xdir * this.speed);
-        this.y += (this.ydir * this.speed);
-        this.vel.x = (this.xdir * this.speed);
-        this.vel.y = (this.ydir * this.speed);
-    }
-    reset(p5: p5Types) {
-      this.x = WIDTH/2;
-      this.y = HEIGHT/2;
-      this.xdir = this.xdir * -1;
-      this.ydir = p5.random(-1, 1);
-      this.vel.x = this.xdir * this.speed;
-      this.vel.y = this.ydir * this.speed;
+  
+    updatePosition(canvasWidth: number, canvasHeight: number) {
+      this.x += (this.xdir * this.speed) * (canvasWidth / WIDTH);
+      this.y += (this.ydir * this.speed) * (canvasHeight / HEIGHT);
+      this.vel.x = (this.xdir * this.speed) * (canvasWidth / WIDTH);
+      this.vel.y = (this.ydir * this.speed) * (canvasHeight / HEIGHT);
     }
 
-    inDangerZone() {
-        return (this.x < 200 || this.x > WIDTH - 200);
+    reset(p5: p5Types, config: gameConfig) {
+      this.x = (WIDTH/2) * (config.canvasWidth / WIDTH);
+      this.y = (HEIGHT/2) * (config.canvasHeight / HEIGHT);
+      this.xdir = this.xdir * -1;
+      this.ydir = 0;
+      this.speed = config.ballSpeed * (config.canvasWidth / WIDTH); // Adjust speed based on resolution
+      this.vel.x = this.xdir * this.speed * (config.canvasWidth / WIDTH);
+      this.vel.y = this.ydir * this.speed * (config.canvasHeight / HEIGHT);
+    }
+
+    inDangerZone(canvasWidth: number) {
+        return (this.x < 200 * (canvasWidth / WIDTH) || this.x > canvasWidth - 200 * (canvasWidth / WIDTH));
     }
     
-    show (p: p5Types) {
+    show (p: p5Types, canvasWidth: number) {
         if (!goalScored) {
             p.noStroke();
             p.fill(255);
-            var danger = this.inDangerZone();
+            var danger = this.inDangerZone(canvasWidth);
             p.push();
             p.translate(this.x, this.y);
             p.rotate(this.vel.heading() - 80);

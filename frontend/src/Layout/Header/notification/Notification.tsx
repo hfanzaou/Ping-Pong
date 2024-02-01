@@ -54,8 +54,8 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                         {item.username}
                     </Text>
                 </Group>
-                {item.type === "friend request" && <Text c={'blue'}> sent you a friend request </Text>}
-                {item.type === "accept friend" && <Text c={'green'}>accept friend request</Text>}
+                {item.type === "friend request" && <Text c={'white'}>sent you a friend request </Text>}
+                {item.type === "accept friend" && <Text c={'green'}>accepted your friend request</Text>}
                 {item.type === "chat" && <Text c={'white'}>sent you a message</Text>}
                 {item.type === "groupChat" && <Text c={'white'}>sent a message in {item.groupname} Group</Text>}
                 {item.type === "groupInvite" &&
