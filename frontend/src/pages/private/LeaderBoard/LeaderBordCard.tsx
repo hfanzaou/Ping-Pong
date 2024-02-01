@@ -11,15 +11,12 @@ function LeaderbordCard({data, rank}: {data: leaderboardInterface, rank: number}
     return (
         <Card p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
           <Card.Section className='h-[35vh]'>
-            {/* <div className="relative"> */}
-                {/* <img className='absolute bottom-0 right-0  max-h-8 min-w-8' src={image} alt="rank-image" /> */}
-                <img
-                    className="object-cover w-full h-full"
-                    src={data?.avatar}
-                    height={100}
-                    alt={data?.name}
-                />
-            {/* </div> */}
+            <img
+                className="object-cover w-full h-full"
+                src={data?.avatar}
+                height={100}
+                alt={data?.name}
+            />
           </Card.Section>
           <div className='flex flex-col items-center space-y-2 m-2'>
             <Text ta="center" fz="md" fw={800} c='blue' mt="md">
