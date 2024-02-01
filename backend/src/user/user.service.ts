@@ -154,6 +154,7 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
+            
            // console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
@@ -284,13 +285,13 @@ export class UserService {
                 this.updateAch(user.id, "firstFriend");
             if (auser.friends.length == 1)
                 this.updateAch(auser.id, "firstFriend");
-            // await this.prismaservice.notifications.deleteMany({
-            //     where: {
-            //         userId: id,
-            //         senderId: user.id,
-            //         type: "friend request"
-            //     }
-            // })
+            await this.prismaservice.notifications.deleteMany({
+                where: {
+                    userId: id,
+                    senderId: user.id,
+                    type: "friend request"
+                }
+            })
         } catch(error) {
 				throw new NotFoundException('NO REQUEST');
         }
@@ -540,7 +541,7 @@ export class UserService {
             })
             // console.log(already)
             // console.log(payload);
-            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat")
+            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat" || payload.type == "accept friend")
             {
                 if (payload.type == "groupInvite") {
                     await this.prismaservice.notifications.create({
