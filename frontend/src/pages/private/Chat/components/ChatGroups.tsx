@@ -37,7 +37,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		id: number,
 		message: string,
 		sender: string
-		// avatar: string
 	}>>([]);
 	const	[settings, setSettings] = useState(false);
 	const	[users, setUsers] = useState<Array<{
@@ -335,6 +334,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
 		const	tmp = event.currentTarget.value;
+		const	tmp1 = event.currentTarget.name;
+
 		if (tmp) {
 			await fetch(`http://localhost:3001/${tmp}`, {
 				method: "POST",
@@ -343,14 +344,36 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				},
 				body: JSON.stringify({
 					name: data.groupTo,
-					userName: event.currentTarget.name,
+					userName: tmp1,
 					sender: userNameRef.current
 				}),
 				credentials: "include"
 			})
 			await callBackBlock();
+			if (
+				tmp == "addGroupBan" &&
+				tmp1 &&
+				data.groupTo
+			) {
+				console.log(tmp, data.groupTo);
+				data.socket?.emit(
+					"ban",
+					{userName: tmp1, name: data.groupTo}
+				);
+			}
 		}
 	}
+
+	function callBackYouAreBanded(name: string) {
+		data.socket?.emit("leaveRoom", name);
+	}
+
+	useEffect(() => {
+		data.socket?.on("youAreBanded", callBackYouAreBanded);
+		return () => {
+			data.socket?.off("youAreBanded", callBackYouAreBanded);
+		}
+	}, [data.socket])
 	function clickInvite() {
 		if (!invite) {
 			setOwnersettings(false);

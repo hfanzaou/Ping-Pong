@@ -140,6 +140,18 @@ OnGatewayConnection {
 		console.log(`Client ${client.id} connected`);
 	}
 
+	@SubscribeMessage("leaveRoom")
+	async handelLeaveRoom(client: Socket, name: string) {
+		client.leave(name);
+	}
+
+	@SubscribeMessage("ban")
+	async handelBan(client: Socket, data: {userName: string, name: string}) {
+		const	socket = await this.chatService.banedSocket(data.userName);
+		if (socket)
+			this.server.to(socket).emit("youAreBanded", data.name);
+	}
+
 
 
 	////////
