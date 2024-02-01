@@ -13,7 +13,7 @@ function Auth() {
         .then((res) => {
             if(res.status == 201)
             {
-                window.location.href = ``;
+                window.location.replace('/');
             } else {
                 setInvalidCode(true);
             }
