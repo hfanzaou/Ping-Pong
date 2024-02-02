@@ -14,6 +14,7 @@ export class ChatController {
 			const	user = await this.chatService.getUserData(data.userName);
 			return user;
 		}
+		return null
 	}
 	@Post("chathistoryPrivate")
 	async handleHistoryPrivate(@Body() data: NEWCHAT, @Req() req) {

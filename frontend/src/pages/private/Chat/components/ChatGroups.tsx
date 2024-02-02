@@ -6,6 +6,7 @@ import {
 	IconDoorExit,
 	IconEye,
 	IconEyeOff,
+	IconFaceIdError,
 	IconLockOpen,
 	IconSend2,
 	IconSettings,
@@ -13,6 +14,7 @@ import {
 	IconTrash,
 	IconTrashOff,
 	IconUser,
+	IconUserOff,
 	IconUserPlus,
 	IconVolume,
 	IconVolume3,
@@ -77,7 +79,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					}),
 					credentials: "include"
 				});
-				// console.log(res);
 				const	Data = await res.json();
 				if (Data)
 					setAvatars(Data);
@@ -250,16 +251,18 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						credentials: "include"
 					});
 					const Data: USERDATA = await res0.json();
-					Data.groups.sort((x, y) => {
-						if (x.time && y.time) {
-							const	timeX = new Date(x.time);
-							const	timeY = new Date(y.time);
-							return timeY.getTime() - timeX.getTime();
-						}
-						return 0;
-					})
-					setData(prev => setUserData(prev, Data));
-					data.socket?.emit("newGroup", data.groupTo)
+					if (Data) {
+						Data.groups.sort((x, y) => {
+							if (x.time && y.time) {
+								const	timeX = new Date(x.time);
+								const	timeY = new Date(y.time);
+								return timeY.getTime() - timeX.getTime();
+							}
+							return 0;
+						})
+						setData(prev => setUserData(prev, Data));
+						data.socket?.emit("newGroup", data.groupTo)
+					}
 			}
 			fetchData()
 			setTrigger(false);
@@ -330,7 +333,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
 		const	tmp = event.currentTarget.value;
@@ -350,17 +354,21 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				credentials: "include"
 			})
 			await callBackBlock();
-			if (
-				tmp == "addGroupBan" &&
-				tmp1 &&
-				data.groupTo
-			) {
-				console.log(tmp, data.groupTo);
-				data.socket?.emit(
-					"ban",
-					{userName: tmp1, name: data.groupTo}
-				);
-			}
+			if (tmp == "groupKick" || tmp == "addGroupBan")
+				data.socket?.emit("kick", {
+					userName: tmp1,
+					name: data.groupTo
+				});
+			// if (
+			// 	tmp == "addGroupBan" &&
+			// 	tmp1 &&
+			// 	data.groupTo
+			// ) {
+			// 	data.socket?.emit(
+			// 		"ban",
+			// 		{userName: tmp1, name: data.groupTo}
+			// 	);
+			// }
 		}
 	}
 
@@ -982,7 +990,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						}) :
 						conversation.map(x => {
 							const	avatar = avatars.find(y => y.userName == x.sender);
-							if (avatar)
+							// if (avatar)
 								return (
 									<li
 										key={x.id}
@@ -993,15 +1001,21 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 											href={`http://localhost:3000/UserProfile?name=${x.sender}`}
 										>
 											{
-												avatar.avatar ?
+												(avatar && avatar.avatar) ?
 													<img
 														src={avatar.avatar}
 														className="h-12 w-12 rounded-full mr-3"
-													/> :
-													<IconUser
-														className="h-12 w-12 rounded-full mr-3
-															bg-discord1"
-													/>
+													/> : (
+														avatar ?
+														<IconUser
+															className="h-12 w-12 rounded-full mr-3
+																bg-discord1"
+														/> :
+														<IconFaceIdError
+															className="h-12 w-12 rounded-full mr-3
+																bg-discord1"
+														/>
+													)
 											}
 										</a>
 										<div className="w-[80%]">

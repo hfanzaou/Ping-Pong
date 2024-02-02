@@ -225,8 +225,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		// console.log("Data");
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		setList(data.userData?.groups.filter(x => {
@@ -418,20 +418,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
 	}
-	async function update() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
-	}
+	
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto

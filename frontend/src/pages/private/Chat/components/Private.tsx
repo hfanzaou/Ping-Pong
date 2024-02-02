@@ -42,7 +42,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		data.socket?.on("online", onlineCallback);
@@ -86,8 +87,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		// console.log(Data);
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
