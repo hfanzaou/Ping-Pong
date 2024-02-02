@@ -14,7 +14,9 @@ function Home({socket, setUrlName, userList, setUsersList, searchList, setSearch
                     cols={{ base: 1, sm: 1, lg: 2, xl: 2 }}
                 >
                     <Users socket={socket} setUrlName={setUrlName} userList={userList} searchList={searchList} setUsersList={setUsersList} setSearchList={setSearchList} handleRequest={handleRequest}/>
-                    <img className='rounded-md w-full h-full' src={image} />
+                    {/* <img className='rounded-md w-full h-full' src={image} /> */}
+                    <img className='object-fill rounded-md w-full h-full' src={image} />
+
                 </SimpleGrid>
             </Card>
         </div>

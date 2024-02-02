@@ -14,6 +14,9 @@ function Leaderbord({avatar} : {avatar: string}) {
             setData(res.data);
             // console.log("res.data: ", res.data);
         }).catch((err) => {
+            if (err.response.status === 401) {
+                window.location.replace('/login');
+            }
             console.log("error in fetching leadrbord data: ", err);
         })
     };
