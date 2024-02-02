@@ -289,8 +289,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	function callBack(m: {
 		id: number,
 		message: string,
-		sender: string,
-		// avatar: string,
+		sender: string
 	})
 	{
 		setData(x => ({
@@ -565,7 +564,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													`bg-discord1 border-none
 														outline-none w-32 h-10 p-5
 														text-white mr-0 ml-0
-														rounded-l-full z-10
+														 z-10
 														${
 															error.length == 0 ?
 															"" :
