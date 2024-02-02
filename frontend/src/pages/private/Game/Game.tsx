@@ -11,6 +11,7 @@ import "./Game.css";
 interface Props {
   socket: Socket;
   avatar: string;
+  setUrlName: Function;
 }
 
 export interface userData {
@@ -26,7 +27,7 @@ interface OppData {
   avatar: string;
 }
 
-const Game: React.FC<Props> = ( {socket, avatar}) => {
+const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
   const [config, setGameConfig] = useState<gameConfig>( new gameConfig( 
     1, 
     10, 
@@ -146,7 +147,8 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
   return (
     <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
       <div className="mr-10 player-card">
-        <PlayerCard 
+        <PlayerCard
+          setUrlName={setUrlName}
           name={side ? user.username : opp?.username} 
           avatar={side ? user.avatar : opp?.avatar} 
           level={side ? user.level : opp?.level?.toString()} />
@@ -166,7 +168,8 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         )}
       </div>
       <div className="ml-10 player-card">
-        <PlayerCard 
+        <PlayerCard
+          setUrlName={setUrlName}
           name={(side || config.mode == 3) ? opp.username : user.username} 
           avatar={(side || config.mode == 3) ? opp?.avatar : user.avatar} 
           level={(side || config.mode == 3) ? opp.level.toString() : user.level} />
