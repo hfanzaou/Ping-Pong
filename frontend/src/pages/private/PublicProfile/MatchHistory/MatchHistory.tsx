@@ -37,7 +37,7 @@ function  MatchHistory({matchhistory}: {matchhistory: MatchHistoryInterface[]}) 
                         </div>
                     <MdChevronRight className='opacity-50 cursor-pointer hover-opacity-100' onClick={sliderRight} size={50} color='white'/>
                 </div> :
-                <Blockquote  ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                <Blockquote className='text-xl'  ta='center' color="white" c='cyan' radius="lg" mt="xl">
                    No match history
                 </Blockquote>
             }

@@ -77,7 +77,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                             close();
                         }}>
                             <div className='text-lg'>
-                                Accept
+                                check it out
                             </div>
                         </Button>
                     </Link>
