@@ -53,6 +53,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
   const [side, setSide] = useState<boolean>(true);
   const [gameStart, setGameStart] = useState(false);
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [oppParam, setOppParam] = useState<string | null>(null);
 
   const fetchUserName = async () => {
     const res = await axios.get('user/name')
@@ -101,13 +102,11 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
   
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const userParam = params.get('user');
     const oppParam = params.get('opp');
 
-    if (userParam && oppParam) {
-      if (userParam == user.username) {
-        socket.emit('createGame', { user1: userParam, user2: oppParam, config: config });
-      }
+    if (oppParam) {
+      setOppParam(oppParam);
+      //socket.emit('createGame', { user1: user, user2: oppParam, config: config });
     }
 
     socket.on('startGame', (config) => {
@@ -127,7 +126,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
       setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: '' });
     }
   }, [config]);
-  
+
   useEffect(() => {
     if (!gameStart) {
       setSide(true);
@@ -156,7 +155,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
         ) : ( gameStart ? (
           <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} setGameOver={setGameOver} />
         ) : (
-          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} />
+          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} opp={oppParam} />
         )
         )}
       </div>
