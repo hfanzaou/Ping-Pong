@@ -43,7 +43,11 @@ function BlockedUsers() {
                                 </div>
                                 <Text fz="md" fw={800} c='red'>{item.name}</Text>
                             </Group>
-                            <Button color="gray" size="xs" radius='xl' onClick={() => handleInBlockUsers(item.name)}>Inblock</Button>
+                            <Button color='indigo' size="xs" radius='xl' onClick={() => handleInBlockUsers(item.name)}>
+                                <div className='text-lg'>
+                                    Unblock
+                                </div>
+                            </Button>
                         </div>
                     </Table.Td>
                 </Table.Tr>
