@@ -2,17 +2,19 @@ import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { NEWCHAT, NEWGROUP } from "./myTypes";
 import JwtTwoFaGuard from "src/auth/guard/twoFaAuth.guard";
+import { ChatGateway } from "./chat.gateway";
 
 @UseGuards(JwtTwoFaGuard)
 @Controller()
 export class ChatController {
-	constructor(private chatService: ChatService) {}
+	constructor(private chatService: ChatService, private chatGateway: ChatGateway) {}
 	@Post("chatUser")
 	async handleUser(@Body() data: { userName: string }, @Req() req) {
 		if (req.user.username == data.userName) {
 			const	user = await this.chatService.getUserData(data.userName);
 			return user;
 		}
+		return null
 	}
 	@Post("chathistoryPrivate")
 	async handleHistoryPrivate(@Body() data: NEWCHAT, @Req() req) {
@@ -146,6 +148,7 @@ export class ChatController {
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.checkUserGroup(data);
+		return false;
 	}
 	@Post("privateJoin")
 	async handlePrivateJoin(

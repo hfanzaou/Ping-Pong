@@ -44,5 +44,6 @@ export interface Group {
 	password:	boolean,
 	banded:		string[],
 	muted:		string[],
-	time:		Date
+	time:		Date,
+	unRead:		number
 }

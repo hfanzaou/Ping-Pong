@@ -39,7 +39,16 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	const	[validateText, setValidateText] = useState("");
 	const	[accessibility, setAccessibility] = useState(true);
 	const	[size, setSize] = useState(window.innerWidth < 600 ? false : true);
-	const	[list, setList] = useState(data.userData?.groups);
+	const	[list, setList] = useState(data.userData?.groups.filter(x => {
+		return x.banded?.find(y => y == data.userData?.userName) == undefined;
+	}).sort((x, y) => {
+		if (x.time && y.time) {
+			const	timeX = new Date(x.time);
+			const	timeY = new Date(y.time);
+			return timeY.getTime() - timeX.getTime();
+		}
+		return 0;
+	}));
 	const	[publicList, setPublicList] = useState<Group[]>([]);
 	const	[searchText, setSearchText] = useState("");
 	const	[settings, setSettings] = useState(false);
@@ -166,7 +175,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		if (searchText == "")
 			setList(data.userData?.groups.filter(x => {
-				return x.banded?.find(x => x == data.userData?.userName) == undefined;
+				return x.banded?.find(y => y == data.userData?.userName) == undefined;
 			}).sort((x, y) => {
 				if (x.time && y.time) {
 					const	timeX = new Date(x.time);
@@ -194,12 +203,12 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		setSearchText("");
 		setList(data.userData?.groups.filter(x => {
-			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			return x.banded?.find(y => y == data.userData?.userName) == undefined;
 		}).sort((x, y) => {
 			if (x.time && y.time) {
 				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
+				const	timeY = new Date(y.time);
+				return timeY.getTime() - timeX.getTime();
 			}
 			return 0;
 		}));
@@ -216,18 +225,20 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		// console.log("Data");
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
-		setList(data.userData?.groups.sort((x, y) => {
+		setList(data.userData?.groups.filter(x => {
+			return x.banded?.find(y => y == data.userData?.userName) == undefined;
+		}).sort((x, y) => {
 			if (x.time && y.time) {
 				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
+				const	timeY = new Date(y.time);
+				return timeY.getTime() - timeX.getTime();
 			}
 			return 0;
-		}))
+		}));
 		data.socket?.on("newgroup", callBackNewGroup);
 		return () => {
 			data.socket?.off("newuser", callBackNewGroup);
@@ -308,12 +319,12 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				}).filter(x => x.name.includes(event.target.value));
 		}
 		setList(List?.filter(x => {
-			return x.banded?.find(x => x == data.userData?.userName) == undefined;
+			return x.banded?.find(y => y == data.userData?.userName) == undefined;
 		}).sort((x, y) => {
 			if (x.time && y.time) {
 				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
+				const	timeY = new Date(y.time);
+				return timeY.getTime() - timeX.getTime();
 			}
 			return 0;
 		}));
@@ -407,20 +418,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
 	}
-	async function update() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
-	}
+
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -537,7 +535,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				{
 					list?.map(x => {
 						return (
-							<li key={x.id} className="flex relative">
+							<li key={x.id} className="flex relative group">
 								<button
 									onClick={clickGroup}
 									name={x.name}
@@ -547,27 +545,43 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 										: "hover:bg-discord4"}
 										flex justify-center items-center`}
 								>
-									{/* <img
-										src={x.avatar}
-										className={`w-10 h-10 mr-3
-											rounded-full
-											${
-												data.talkingTo == x.login &&
-													"shadow-black shadow-lg"
-											}`}
-									/> */}
-									<IconUsersGroup
-										className={`w-10 h-10 mr-3
-											rounded-full bg-discord1
-											${
-												data.groupTo == x.name &&
-													"shadow-black shadow-lg"
-											}`}
-											/>
+									<div className="relative">
+										<IconUsersGroup
+											className={`w-10 h-10 mr-3
+												rounded-full bg-discord1
+												${
+													data.groupTo == x.name &&
+														"shadow-black shadow-lg"
+												}`}
+										/>
+										{
+											x.unRead != 0 &&
+											<div
+												className={
+													`absolute rounded-full z-10 border-4
+													bg-red-500 text-xs px-1 right-1 -bottom-2 ${
+														x.name != data.groupTo ?
+															`border-discord3
+															group-hover:border-discord4` :
+															`border-discord5
+															shadow-black shadow-lg`
+													}`
+												}
+											>
+												{
+													x.unRead &&
+														(
+															x.unRead < 100 ? x.unRead : "+99"
+														)
+												}
+											</div>
+										}
+									</div>
 									{size && x.name}
 								</button>
 								<button
-									className="absolute top-5 right-0 w-10 flex justify-center"
+									className="absolute top-5 right-0 w-10 flex
+										justify-center"
 									onClick={clickSettings}
 									name={x.name}
 								>

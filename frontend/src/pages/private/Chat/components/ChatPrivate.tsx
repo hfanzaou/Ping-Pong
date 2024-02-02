@@ -106,16 +106,18 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						credentials: "include"
 					});
 					const Data: USERDATA = await res0.json();
-					Data.chatUsers.sort((x, y) => {
-						if (x.time && y.time) {
-							const	timeX = new Date(x.time);
-							const	timeY = new Date(y.time);
-							return timeY.getTime() - timeX.getTime();
-						}
-						return 0;
-					})
-					setData(prev => setUserData(prev, Data));
-					data.socket?.emit("newUser", data.talkingTo)
+					if (Data) {
+						Data.chatUsers.sort((x, y) => {
+							if (x.time && y.time) {
+								const	timeX = new Date(x.time);
+								const	timeY = new Date(y.time);
+								return timeY.getTime() - timeX.getTime();
+							}
+							return 0;
+						})
+						setData(prev => setUserData(prev, Data));
+						data.socket?.emit("newUser", data.talkingTo)
+					}
 			}
 			fetchData()
 			setTrigger(false);

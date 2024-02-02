@@ -27,6 +27,9 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
             setData(res.data);
         })
         .catch((err) => {
+            if (err.response.status === 401) {
+                window.location.replace('/login');
+            }
             console.log("Error in geting data in edit profile :", err);
         })
     };
@@ -68,13 +71,16 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
                             </svg>
                         </button>
                     </Menu.Target>
-                    <Menu.Dropdown bg='gray' mt={25}>
+                    <Menu.Dropdown bg='dark' mt={25}>
                         <Menu.Item
+                            c='blue'
                             onClick={() => handelShowProfile()}
-                            leftSection={<IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                         >
                             <Link to={`/UserProfile?name=${data?.name}`}>
-                                Show public Profile
+                                <div className='flex items-center space-x-2'>
+                                    <IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                                    <div>Show public Profile</div>
+                                </div>
                             </Link>
                         </Menu.Item>
                     </Menu.Dropdown>

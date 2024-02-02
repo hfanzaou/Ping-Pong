@@ -14,6 +14,9 @@ function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersL
                     setUsersList(res.data);
                 }               
             }).catch(err => {
+                if (err.response.status === 401) {
+                    window.location.replace('/login');
+                }
                 console.error("Error in fetching Users list: ", err);
             })
         };
@@ -23,9 +26,7 @@ function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersL
     const friendShip: any = usersList.find(user => user.name == profileName)?.friendship;
 
     return (
-        // <div>
             <Profile profileName={profileName} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/>
-        // </div>
     );
 }
 

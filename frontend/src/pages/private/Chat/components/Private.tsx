@@ -42,7 +42,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		data.socket?.on("online", onlineCallback);
@@ -86,8 +87,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		// console.log(Data);
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
@@ -270,7 +271,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															className={
 																`absolute -bottom-2
 																right-1 rounded-full
-																z-10 border-4 bg-red-500 text-xs px-1 ${
+																z-10 border-4
+																bg-red-500 text-xs
+																px-1 ${
 																	x.login != data.talkingTo ?
 																		`border-discord3
 																		group-hover:border-discord4` :
