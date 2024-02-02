@@ -529,19 +529,19 @@ export class UserService {
     async addNotification(id: number, payload: notifDto)
     {
         try {
-            if (payload.type === "remove request")
-                return ;
-            const already = await this.prismaservice.notifications.findMany({
-                where: {
-                    user: {username: payload.reciever},
-                    senderId: id,
-                    type: payload.type,
-                }
-            })
+            // if (payload.type === "remove request")
+            //     return ;
+            // const already = await this.prismaservice.notifications.findMany({
+            //     where: {
+            //         user: {username: payload.reciever},
+            //         senderId: id,
+            //         type: payload.type,
+            //     }
+            // })
             // console.log(already)
             // console.log(payload);
-            if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat" || payload.type == "accept friend")
-            {
+            // if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat" || payload.type == "accept friend")
+            // {
                 if (payload.type == "groupInvite") {
                     await this.prismaservice.notifications.create({
                         data: {
@@ -562,7 +562,7 @@ export class UserService {
                         //groupname: payload.groupname
                     }
                 })
-            }
+            // }
         } catch(error) {
             // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
