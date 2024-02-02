@@ -8,13 +8,13 @@ import {
 	IconEyeOff,
 	IconFaceIdError,
 	IconLockOpen,
+	IconPingPong,
 	IconSend2,
 	IconSettings,
 	IconSettings2,
 	IconTrash,
 	IconTrashOff,
 	IconUser,
-	IconUserOff,
 	IconUserPlus,
 	IconVolume,
 	IconVolume3,
@@ -23,7 +23,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, MESSAGE, NEWCHAT, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -358,16 +357,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					userName: tmp1,
 					name: data.groupTo
 				});
-			// if (
-			// 	tmp == "addGroupBan" &&
-			// 	tmp1 &&
-			// 	data.groupTo
-			// ) {
-			// 	data.socket?.emit(
-			// 		"ban",
-			// 		{userName: tmp1, name: data.groupTo}
-			// 	);
-			// }
 		}
 	}
 
@@ -563,8 +552,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												className={
 													`bg-discord1 border-none
 														outline-none w-32 h-10 p-5
-														text-white mr-0 ml-0
-														 z-10
+														text-white mr-0 ml-0 z-10
 														${
 															error.length == 0 ?
 															"" :
@@ -788,13 +776,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 														value="groupKick"
 													>
 														<IconDoorExit />
-														<h1
+														{/* <h1
 															className="mt-2 mr-5
 																hidden
 																group-hover:block"
 														>
 															kick
-														</h1>
+														</h1> */}
 													</button>
 													{
 														data.
@@ -818,14 +806,14 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="addGroupBan"
 															>
 																<IconBan />
-																<h1
+																{/* <h1
 																	className="mt-2
 																		mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	ban
-																</h1>
+																</h1> */}
 															</button> :
 															<button
 																className="flex
@@ -839,14 +827,14 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="removeGroupBan"
 															>
 																<IconLockOpen />
-																<h1
+																{/* <h1
 																	className="mt-2
 																		mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	unban
-																</h1>
+																</h1> */}
 															</button>
 													}
 													{
@@ -871,13 +859,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="addGroupMute"
 															>
 																<IconVolume3 />
-																<h1
+																{/* <h1
 																	className="mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	mute
-																</h1>
+																</h1> */}
 															</button> :
 															<button
 																className="flex
@@ -891,13 +879,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="removeGroupMute"
 															>
 																<IconVolume />
-																<h1
+																{/* <h1
 																	className="mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	unmute
-																</h1>
+																</h1> */}
 															</button>
 													}
 													{
@@ -914,12 +902,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															value="addGroupAdmin"
 														>
 															<IconChessBishopFilled />
-															<h1
+															{/* <h1
 																className="mr-5 hidden
 																	group-hover:block"
 															>
 																admin
-															</h1>
+															</h1> */}
 														</button> :
 														<button
 															className="flex
@@ -933,12 +921,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															value="removeGroupAdmin"
 														>
 															<IconChessFilled />
-															<h1
+															{/* <h1
 																className="mr-5 hidden
 																	group-hover:block"
 															>
 																member
-															</h1>
+															</h1> */}
 														</button>
 													}
 												</div>
@@ -957,12 +945,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													value="block"
 												>
 													<IconTrash />
-													<h1
+													{/* <h1
 														className="mt-2 hidden
 															group-hover:block"
 													>
 														block
-													</h1>
+													</h1> */}
 												</button> :
 												<button
 													className="flex justify-center
@@ -974,14 +962,33 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													value="inblock"
 												>
 													<IconTrashOff/>
-													<h1
+													{/* <h1
 														className="mt-2 mr-5 hidden
 															group-hover:block"
 													>
 														unblock
-													</h1>
-												</button>	
+													</h1> */}
+												</button>
 											}
+											<button
+												className="flex justify-center
+													items-center
+													font-extrabold
+													hover:text-green-500
+													group mx-2"
+												// onClick={clickAdmin}
+												// name={x.userName}
+												// value="groupKick"
+											>
+												<IconPingPong />
+												{/* <h1
+													className="mt-2 mr-5
+														hidden
+														group-hover:block"
+												>
+													kick
+												</h1> */}
+											</button>
 										</div>
 									</div>
 								</li>

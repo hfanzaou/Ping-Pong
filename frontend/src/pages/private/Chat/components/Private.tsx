@@ -156,7 +156,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}
 				}
 			return prev;
-		})
+		});
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
@@ -199,10 +199,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	function block() {
 		setBlockTrigger(true);
-	}
-	function mute() {}
-	function clickTest() {
-		List && console.log(List[0].unRead)
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
@@ -377,16 +373,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 						>
 							<IconTrash />
 							<h2 className="mt-1">Block</h2>
-						</button>
-					</li>
-					<li>
-						<button
-							className="flex justify-center items-center w-[100px]
-								h-[50px] hover:bg-discord3"
-							onClick={mute}
-						>
-							<IconVolume3 />
-							<h2 className="">Mute</h2>
 						</button>
 					</li>
 					<li>

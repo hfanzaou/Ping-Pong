@@ -20,6 +20,15 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     };
 
     useEffect(() => {
+        socket?.on("getnotification", () => {
+            getRequests();
+            return () => {
+                socket.off("getnotification");
+            }
+        });
+    }, [socket]);
+
+    useEffect(() => {
         getRequests();
     }, []);
 
@@ -74,7 +83,7 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                     </Menu>
                     <Text fz="md" fw={800} c='indigo'>{item.name}</Text>
                 </Group>
-                <Button size='xs' radius='xl' color='green' onClick={() => handleAccepteFriend(item.name)}>
+                <Button size='xs' radius='xl' color='#2BDD66' onClick={() => handleAccepteFriend(item.name)}>
                     <div className='text-lg'>
                         Accept
                     </div>
@@ -90,7 +99,7 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
         <div >
             {Object.keys(requestRows).length ?
                 requestRows :
-                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                <Blockquote className='text-xl' ta='center' color="white" c='cyan' radius="lg" mt="xl">
                     No Friend Requests
                 </Blockquote>
             }

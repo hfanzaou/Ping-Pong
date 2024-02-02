@@ -135,7 +135,9 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
   }, [gameStart, gameOver]);
 
   return (
-    <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
+      <div className='mx-[50px] mt-[20px] p-5 rounded-xl bg-slate-900 shadow-5 xl:h-[75vh]'>
+          <div className="flex justify-center items-center">
+
       <div className="mr-10 player-card">
         <PlayerCard
           setUrlName={setUrlName}
@@ -155,7 +157,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
         ) : ( gameStart ? (
           <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} setGameOver={setGameOver} />
         ) : (
-          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} opp={oppParam} />
+          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} user={user} opp={oppParam} />
         )
         )}
       </div>
@@ -169,6 +171,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
       <div className="player-avatar rounded-xl">
         <img src={(side || config.mode == 3) ? opp?.avatar : user.avatar} alt="Player avatar" />
       </div>
+    </div>
     </div>
   );
 }

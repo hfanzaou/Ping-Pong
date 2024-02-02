@@ -38,7 +38,7 @@ export class GameService {
         user = new User(userData.id, userName, client.id);
         this.users.set(client.id, user);
       }
-      this.logger.log(`Client ${client.id} set username to ${userName}`);
+      this.logger.log(`Client ${userData.socket} found ${userName}`);
       return user;
     }
     return null;

@@ -244,6 +244,7 @@ export class ChatService {
 						id: chatHistorie.id
 					}
 				},
+				readers: [data.sender]
 			}
 		});
 		return {
@@ -659,25 +660,27 @@ export class ChatService {
 		return [];
 	}
 	async usersToUpdate(data: string, socket: string) {
-		const	group = await this.prisma.gROUP.findFirst({
-			where: { name: data },
-			include: { members: { include: { user: true}}}
-		});
-		if (group) {
-			const	user = await this.prisma.user.findFirst({
-				where: { socket: socket }
+		if (data && socket) {
+			const	group = await this.prisma.gROUP.findFirst({
+				where: { name: data },
+				include: { members: { include: { user: true}}}
 			});
-			if (user) {
-				const users = group.members.filter(
-					x => x.user.username != user.username
-				).filter(x => {
-						return group.banded.find(y => x.user.username == y) ==
-							undefined;
-					}).filter(x => {
-							return group.muted.find(y => x.user.username == y) ==
+			if (group) {
+				const	user = await this.prisma.user.findFirst({
+					where: { socket: socket }
+				});
+				if (user) {
+					const users = group.members.filter(
+						x => x.user.username != user.username
+					).filter(x => {
+							return group.banded.find(y => x.user.username == y) ==
 								undefined;
-						}).map(x => x.user.username);
-				return users;
+						}).filter(x => {
+								return group.muted.find(y => x.user.username == y) ==
+									undefined;
+							}).map(x => x.user.username);
+					return users;
+				}
 			}
 		}
 		return null;
@@ -952,6 +955,7 @@ export class ChatService {
 		});
 		return unReadMessages.length;
 	}
+
 	async updateReadPrivate(data: NEWCHAT) {
 		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 			where: {
@@ -959,6 +963,28 @@ export class ChatService {
 					{ name: `&${data.recver}${data.sender}` },
 					{ name: `&${data.sender}${data.recver}`}
 				]
+			}
+		});
+		if (chatHistorie) {
+			const	unReadMessages = (await this.prisma.mESSAGE.findMany({
+				where: {chathistoryid: chatHistorie.id}
+			})).filter(x => {
+				return x.readers.find(y => y == data.sender) == undefined;
+			});
+			for (const message of unReadMessages) {
+				const	updatedReaders = [...message.readers, data.sender];
+				await this.prisma.mESSAGE.update({
+					where: {id: message.id},
+					data: {readers: updatedReaders}
+				});
+			}
+		}
+	}
+
+	async updateReadRoom(data: NEWCHAT) {
+		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+			where: {
+				name: data.recver
 			}
 		});
 		if (chatHistorie) {
