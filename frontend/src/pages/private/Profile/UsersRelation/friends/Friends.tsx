@@ -23,6 +23,15 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
         })
     };
 
+    // useEffect(() => {
+    //     socket?.on("getnotification", () => {
+    //         getFriends();
+    //         return () => {
+    //             socket.off("getnotification");
+    //         }
+    //     });
+    // }, [socket]);
+
     useEffect(() => {
         getFriends();
     }, []);

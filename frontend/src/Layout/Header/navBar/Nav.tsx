@@ -30,42 +30,52 @@ function NavigationItem({socket}:{socket: Socket}) {
                 <Menu shadow="md" position="bottom-start" trigger="hover" openDelay={100} closeDelay={400} offset={12}>
                     <Menu.Target>
                         <button type="button" className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white" aria-controls="mobile-menu" aria-expanded="false">
-                            <svg className="block h-6 w-6" color={notification ? "red" : 'cyan'} fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+                            <svg className="h-6 w-6" color={notification ? "red" : 'cyan'} fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                             </svg>
                         </button>
                     </Menu.Target>
                     <Menu.Dropdown bg='gray'>
-                        <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-                            <Link className="flex items-center space-x-1" to={"/"}>
-                                <IconHome style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
-                                <div>Home</div>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-                            <Link className="flex items-center space-x-1" to={"/Leaderbord"} >
-                                <IconDashboard style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
-                                <div>Leaderboard</div>
-                            </Link>
-                        </Menu.Item >
-                        <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-                            <Link className="flex items-center space-x-1" to={"/Profile"} >
-                                <IconUserCircle style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
-                                <div>Profile</div>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-                            <Link className="flex items-center space-x-1" to={"/Game"} >
-                                <IconDeviceGamepad2 style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
-                                <div>Game</div>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item onClick={() => setNotification(false)} className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
-                            <Link className="flex items-center space-x-1" to={"/Chat"} >
-                                <IconMessages style={{ width: rem(20), height: rem(20), color: notification ? 'red' : 'cyan' }} />
-                                <div>Chat</div>
-                            </Link>
-                        </Menu.Item>
+                        <Link to={"/"}>
+                            <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                                <div  className="flex items-center space-x-1">
+                                    <IconHome style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
+                                    <div>Home</div>
+                                </div>
+                            </Menu.Item>
+                        </Link>
+                        <Link to={"/Leaderbord"} >
+                            <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                                <div className="flex items-center space-x-1">
+                                    <IconDashboard style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
+                                    <div>Leaderboard</div>
+                                </div>
+                            </Menu.Item>
+                        </Link>
+                        <Link to={"/Profile"} >
+                            <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                                <div className="flex items-center space-x-1">
+                                    <IconUserCircle style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
+                                    <div>Profile</div>
+                                </div>
+                            </Menu.Item>
+                        </Link>
+                        <Link to={"/Game"} >
+                            <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                                <div className="flex items-center space-x-1">
+                                    <IconDeviceGamepad2 style={{ width: rem(20), height: rem(20), color: 'cyan' }} />
+                                    <div>Game</div>
+                                </div>
+                            </Menu.Item>
+                        </Link>
+                        <Link to={"/Chat"} >
+                            <Menu.Item onClick={() => setNotification(false)} className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">
+                                <div className="flex items-center space-x-1">
+                                    <IconMessages style={{ width: rem(20), height: rem(20), color: notification ? 'red' : 'cyan' }} />
+                                    <div>Chat</div>
+                                </div>
+                            </Menu.Item>
+                        </Link>
                     </Menu.Dropdown>
                 </Menu>
             </div>
