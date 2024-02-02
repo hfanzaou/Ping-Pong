@@ -1,22 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text } from '@mantine/core';
+import { disconnect } from './gameStates';
 
 type GameOverProps = {
-    score: number;
-    user: string;
+    player1Score: number;
+    player2Score: number;
+    side: boolean;
     mode: number;
+    disconnect: boolean;
     setGameOver: (value: boolean) => void;
     setGameStart: (v: boolean) => void;
 };
 
 const GameOver: React.FC<GameOverProps> = ({
-    score,
-    user,
+    player1Score,
+    player2Score,
+    side,
     mode,
     setGameOver,
     setGameStart,
 }) => {
-    const isWin = score > 0;
+    const [isWin, setIsWin] = useState(false);
+
+
+    useEffect(() => {
+        if (side  && player1Score > player2Score) {
+            setIsWin(true);
+        }
+        else if (!side && player2Score > player1Score) {
+            setIsWin(true);
+        }
+        else if (disconnect) {
+            setIsWin(true);
+        }
+    }, []);
 
     const handleRestart = () => {
         setGameOver(false);
@@ -30,16 +47,21 @@ const GameOver: React.FC<GameOverProps> = ({
 
     return (
         <div 
-            className="flex flex-col w-[700px] h-[450px] bg-gray-800 rounded-xl justify-center items-center relative"
+            className="flex flex-col w-[90%] md:w-[700px] h-[450px] bg-gray-800 rounded-xl justify-center items-center relative"
         >
-        <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
+            { disconnect && (
+                <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
+                    Opponent Disconnected
+                </Text>
+            )}
+            <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
                 Game Over!
             </Text>
             <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
-                {isWin ? 'You Win :)' : 'You Lost :('}
+                {isWin ? 'You Won :)' : 'You Lost :('}
             </Text>
             <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
-                Score: {score}
+                Score: {player1Score} - {player2Score}
             </Text>
             {(mode !== 1) && (
                 <button
