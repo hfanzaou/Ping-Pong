@@ -418,7 +418,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
 	}
-	
+
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -535,7 +535,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				{
 					list?.map(x => {
 						return (
-							<li key={x.id} className="flex relative">
+							<li key={x.id} className="flex relative group">
 								<button
 									onClick={clickGroup}
 									name={x.name}
@@ -545,27 +545,43 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 										: "hover:bg-discord4"}
 										flex justify-center items-center`}
 								>
-									{/* <img
-										src={x.avatar}
-										className={`w-10 h-10 mr-3
-											rounded-full
-											${
-												data.talkingTo == x.login &&
-													"shadow-black shadow-lg"
-											}`}
-									/> */}
-									<IconUsersGroup
-										className={`w-10 h-10 mr-3
-											rounded-full bg-discord1
-											${
-												data.groupTo == x.name &&
-													"shadow-black shadow-lg"
-											}`}
-											/>
+									<div className="relative">
+										<IconUsersGroup
+											className={`w-10 h-10 mr-3
+												rounded-full bg-discord1
+												${
+													data.groupTo == x.name &&
+														"shadow-black shadow-lg"
+												}`}
+										/>
+										{
+											x.unRead != 0 &&
+											<div
+												className={
+													`absolute rounded-full z-10 border-4
+													bg-red-500 text-xs px-1 right-1 -bottom-2 ${
+														x.name != data.groupTo ?
+															`border-discord3
+															group-hover:border-discord4` :
+															`border-discord5
+															shadow-black shadow-lg`
+													}`
+												}
+											>
+												{
+													x.unRead &&
+														(
+															x.unRead < 100 ? x.unRead : "+99"
+														)
+												}
+											</div>
+										}
+									</div>
 									{size && x.name}
 								</button>
 								<button
-									className="absolute top-5 right-0 w-10 flex justify-center"
+									className="absolute top-5 right-0 w-10 flex
+										justify-center"
 									onClick={clickSettings}
 									name={x.name}
 								>

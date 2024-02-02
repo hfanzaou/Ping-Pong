@@ -271,7 +271,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															className={
 																`absolute -bottom-2
 																right-1 rounded-full
-																z-10 border-4 bg-red-500 text-xs px-1 ${
+																z-10 border-4
+																bg-red-500 text-xs
+																px-1 ${
 																	x.login != data.talkingTo ?
 																		`border-discord3
 																		group-hover:border-discord4` :
