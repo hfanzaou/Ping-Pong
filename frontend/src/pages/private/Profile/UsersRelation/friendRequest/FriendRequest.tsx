@@ -75,7 +75,9 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                     <Text fz="md" fw={800} c='indigo'>{item.name}</Text>
                 </Group>
                 <Button size='xs' radius='xl' color='green' onClick={() => handleAccepteFriend(item.name)}>
-                    Accept
+                    <div className='text-lg'>
+                        Accept
+                    </div>
                 </Button>
                 </div>
             </Table.Td>

@@ -186,7 +186,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                         </div>
                     </Group>
                     <Group >
-                        <Button w={200} color='green' size='xs' radius='xl'>
+                        <Button w={200} color='teal' size='xs' radius='xl'>
                             <Link to={`/Game?opp=${item.name}`}>
                                 <div className='text-lg'>
                                     play game

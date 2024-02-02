@@ -16,14 +16,6 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
                     </div>
                 </Group>
             </Table.Td>
-            {/* <Table.Td>
-                <Text fz="sm">{item.win}</Text>
-                <Text fz="xs" c="dimmed">Wins</Text>
-            </Table.Td>
-            <Table.Td>
-                <Text fz="sm">{item.loss}</Text>
-                <Text fz="xs" c="dimmed">Lost</Text>
-            </Table.Td> */}
             <Table.Td>
                 <Text fz="md" fw={500} c="dimmed">Level</Text>
                 <Text fz="sm" c='blue'>{item.level}</Text>
@@ -31,21 +23,23 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
         </Table.Tr>
     ));
 
-    return (
-        <ScrollArea h='70vh'>
-            <Table withRowBorders={false} >
-                <Table.Tbody>
-            {rows ?
-                    rows :
-                    <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
-                            Lead 2
-                    </Blockquote>
-        
-                    }
-                </Table.Tbody>
-            </Table>
 
-        </ScrollArea>
+
+    return (
+        <div className="flex items-center justify-center">
+        {rows.length > 3 ?
+            <ScrollArea h='70vh'>
+                <Table withRowBorders={false} >
+                    <Table.Tbody>
+                        {rows}
+                    </Table.Tbody>
+                </Table>
+            </ScrollArea> :
+            <Blockquote className='' ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                Other Players List
+            </Blockquote>
+        }
+        </div>
     );
 }
 

@@ -27,25 +27,38 @@ function Leaderbord({avatar} : {avatar: string}) {
             <SimpleGrid m={0} p={0} cols={{ base: 1, sm: 1, lg: 2 }}>
                 <Card p={2} className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg" >
                     <SimpleGrid m={15} cols={3}>
+
                         <div className="mt-8">
-                            {data[1] ? <LeaderBordCard data={data[1]} rank={2}/> : 
-                                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
-                                    Lead 2
-                                </Blockquote>
+                            {data[1] ? <LeaderBordCard data={data[1]} rank={2}/> :
+                                <Card  p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
+                                <div className="flex items-center justify-center">
+                                    <Blockquote className="self-center" ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                        Lead 2
+                                    </Blockquote>
+                                </div>
+                                </Card>
                             }
                         </div>
                         <div className="mb-8">
-                            {data[0] ? <LeaderBordCard data={data[0]} rank={1}/> : 
-                                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
-                                    Lead 1
-                                </Blockquote>
+                            {data[0] ? <LeaderBordCard data={data[0]} rank={1}/> :
+                                <Card  p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
+                                <div className="flex items-center justify-center">
+                                    <Blockquote className="self-center" ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                        Lead 1
+                                    </Blockquote>
+                                </div>
+                                </Card>
                             }
                         </div>
                         <div className="mt-8">
                             {data[2] ? <LeaderBordCard data={data[2]} rank={3}/> : 
-                                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
-                                    Lead 3
-                                </Blockquote>
+                                <Card  p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
+                                <div className="flex items-center justify-center">
+                                    <Blockquote className="self-center" ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                        Lead 3
+                                    </Blockquote>
+                                </div>
+                                </Card>
                             }
                         </div>
                     </SimpleGrid>
