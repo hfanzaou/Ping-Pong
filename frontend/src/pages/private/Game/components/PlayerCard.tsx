@@ -29,7 +29,9 @@ function PlayerCard({name, avatar, level, setUrlName} : PlayerCardProps) {
             setUserName("----");
         }
     }, [name, level]);
-
+    const handleShowProfile = (name: string) => {
+      setUrlName(name);
+    }
   return (
      <Card p={10} h={250} w={170} style={{backgroundColor: 'rgb(31 41 55)', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'}} radius={10}>
       <Avatar
