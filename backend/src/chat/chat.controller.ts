@@ -76,6 +76,7 @@ export class ChatController {
 			const	users = await this.chatService.getGroupUsers(data.name);
 			return users;
 		}
+		return [];
 	}
 	@Post("addGroupAdmin")
 	async handleAddGroupAdmin(

@@ -563,8 +563,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												className={
 													`bg-discord1 border-none
 														outline-none w-32 h-10 p-5
-														text-white mr-0 ml-0
-														 z-10
+														text-white mr-0 ml-0 z-10
 														${
 															error.length == 0 ?
 															"" :
