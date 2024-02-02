@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Text, rem } from "@mantine/core";
+import { Menu, rem } from "@mantine/core";
 import { IconDeviceGamepad2, IconLogout, IconMessages, IconPresentationAnalytics, IconSettings, IconUserCircle } from "@tabler/icons-react";
 import { IconHome } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
@@ -9,7 +9,7 @@ import { Socket } from "socket.io-client";
 
 // const pages = ['Home', 'Leaderbord', 'Chat', 'Game', 'Profile'];  // to make it in map
 
-function NavigationItem({socket}:{socket: Socket}) {
+function NavigationItem({socket}: {socket: Socket}) {
     const [notification, setNotification] = useState<boolean>(false);
 
     useEffect(() => {
@@ -114,10 +114,6 @@ function NavigationItem({socket}:{socket: Socket}) {
     );
 }
 
-{/* <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
-    <Avatar size={50} src={item.avatar} radius={50} />
-</button> */}
-
 
 const LeftSide = ({socket, avatar, handleRequest} : {socket: Socket, avatar: string, handleRequest: Function}) => {
     const [disabled, setDisabled] =  useState<boolean>(false);
@@ -166,4 +162,3 @@ function Nav({socket, avatar, handleRequest} : {socket: Socket, avatar: string, 
 }
 
 export default Nav
-
