@@ -4,14 +4,16 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { gameConfig } from '../classes/gameConfig';
 import { Text } from '@mantine/core';
 import './loader.css';
+import { userData } from '../Game';
 
 interface Props {
   socket: Socket;
   setGameStart: (v: boolean) => void;
   setGameConfig: (config: gameConfig) => void;
+  opp: string | null;
 }
 
-const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart}) => {
+const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, opp}) => {
   const [showSettings, setShowSettings] = useState(false);
   const [numGoals, setNumGoals] = useState(10);
   const [ballSpeed, setBallSpeed] = useState('normal');
@@ -148,6 +150,12 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart}) =
   }
 
   useEffect(() => {
+    console.log(opp);
+    if (opp) {
+      setIsLoading(true);
+      setLoadingMessage('Waiting for opponent to accept the challenge ...');
+    }
+
     socket.on('startGame', () => {
       setIsLoading(false);
       setWaitingForPlayer(false);
@@ -165,7 +173,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart}) =
       socket.off('NoGames');
     }
 
-  }, []);
+  }, [opp]);
 
   return (
     <div 
