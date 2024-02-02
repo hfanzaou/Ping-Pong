@@ -162,8 +162,7 @@ export class ChatService {
 			}
 		});
 		if ( group &&
-			group.banded.find(x => x == data.sender) == undefined &&
-			group.muted.find(x => x == data.sender) == undefined ) {
+			group.banded.find(x => x == data.sender) == undefined) {
 				let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 				where: { name: data.recver }
 			});
@@ -290,8 +289,19 @@ export class ChatService {
 				where: {
 					name: data.recver,
 				},
+				include: {
+					members: {
+						include: {
+							user: true
+						}
+					}
+				}
 			});
-			if (group && group.banded.find(x => x == data.sender) == undefined) {
+			if (
+				group &&
+				group.banded.find(x => x == data.sender) == undefined &&
+				group.members.find(x => x.user.username == data.sender) != undefined
+			) {
 				const	history = await this.prisma.cHATHISTORY.findFirst({
 					where: { name: data.recver },
 					include: { messages: true }
@@ -303,7 +313,7 @@ export class ChatService {
 							message: x.message,
 							sender: x.sender,
 						}
-					})].reverse();
+					})].sort((a, b) => a.id - b.id).reverse();
 					return chatHistory;
 				}
 				else
@@ -445,6 +455,21 @@ export class ChatService {
 			}));
 		return null;
 	}
+
+	async socketTokick(userName: string) {
+		if (userName) {
+			const	user = await this.prisma.user.findFirst({
+				where: {
+					username: userName
+				}
+			});
+			if (user) {
+				return user.socket;
+			}
+		}
+		return null;
+	}
+
 	async getLeaveJoin(data: { userName: string, name: string}) {
 		const	user = await this.prisma.user.findFirst({
 			where: { username: data.userName },
@@ -568,10 +593,14 @@ export class ChatService {
 			include: { members: { include: { user: true}}}
 		});
 		if (group) {
-			const	users = await Promise.all(group.members.map(async x => ({
-				userName: x.user.username,
-				avatar: await this.user.getUserAvatar(x.user.id)
-			})));
+			const	users = await Promise.all(
+				group.members.filter(x => {
+					return group.banded.find(y => y == x.user.username) == undefined
+				}).map(async x => ({
+					userName: x.user.username,
+					avatar: await this.user.getUserAvatar(x.user.id)
+				}))
+			);
 			return users;
 		}
 		return null;

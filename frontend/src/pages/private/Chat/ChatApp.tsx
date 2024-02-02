@@ -92,7 +92,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 							credentials: "include"
 						});
 						const Data = await res.json();
-						setData(prev => setUserData(prev, Data));
+						if (Data)
+							setData(prev => setUserData(prev, Data));
 					}
 					catch {
 						throw new Error("error");

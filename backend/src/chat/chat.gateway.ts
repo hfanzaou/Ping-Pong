@@ -140,16 +140,15 @@ OnGatewayConnection {
 		console.log(`Client ${client.id} connected`);
 	}
 
-	@SubscribeMessage("leaveRoom")
-	async handelLeaveRoom(client: Socket, name: string) {
-		client.leave(name);
-	}
-
-	@SubscribeMessage("ban")
-	async handelBan(client: Socket, data: {userName: string, name: string}) {
-		const	socket = await this.chatService.banedSocket(data.userName);
-		if (socket)
-			this.server.to(socket).emit("youAreBanded", data.name);
+	@SubscribeMessage("kick")
+	async handelLeaveRoom(client: Socket, data: {userName: string, name: string}) {
+		const	socketTokick = await this.chatService.socketTokick(data.userName);
+		if (socketTokick) {
+			const	clientToKick = this.server.sockets.sockets.get(socketTokick);
+			if (clientToKick) {
+				clientToKick.leave(data.name);
+			}
+		}
 	}
 
 
