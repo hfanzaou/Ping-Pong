@@ -20,6 +20,15 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     };
 
     useEffect(() => {
+        socket?.on("getnotification", () => {
+            getRequests();
+            return () => {
+                socket.off("getnotification");
+            }
+        });
+    }, [socket]);
+
+    useEffect(() => {
         getRequests();
     }, []);
 
