@@ -72,10 +72,9 @@ function App()  {
             await axios.post("user/remove/request", {name: name})
             .then((res) => {
                 socket?.emit("addnotification", {reciever: name, type: "remove request"})
-              console.log(res.data);
             })
             .catch((err) => {
-              console.log("Error in send post request to remove request",err);
+                console.log("Error in send post request to remove request",err);
             })
         } else if (friendship === 'remove friend') {
             const updatedUserList = userList.map(user => 
@@ -87,10 +86,10 @@ function App()  {
             setSearchList(updatedUserList);
             await axios.post("user/remove/friend", {name: name})
             .then((res) => {
-              console.log(res.data);
+                socket?.emit("addnotification", {reciever: name, type: "remove friend"})
             })
             .catch((err) => {
-              console.log("Error in send post request to remove friend ",err);
+                console.log("Error in send post request to remove friend ",err);
             })
         }else if (friendship === 'accept friend') {
             const updatedUserList = userList.map(user => 
