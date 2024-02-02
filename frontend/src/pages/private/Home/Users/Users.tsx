@@ -187,15 +187,15 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                     </div>
                     <SimpleGrid>
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
-                        <Button w={200} color='teal' size='xs' radius='xl' onClick={() => {
-                            socket?.emit("addnotification", {reciever: item.name, type: "game"})
-                        }}>
-                            <Link to={`/Game?opp=${item.name}`}>
+                        <Link to={`/Game?opp=${item.name}`}>
+                            <Button w={200} color='teal' size='xs' radius='xl' onClick={() => {
+                                socket?.emit("addnotification", {reciever: item.name, type: "game"})
+                            }}>
                                 <div className='text-lg'>
                                     play game
                                 </div>
-                            </Link>
-                        </Button>
+                            </Button>
+                        </Link>
                     </SimpleGrid>
                 </div>
             </Table.Td>
