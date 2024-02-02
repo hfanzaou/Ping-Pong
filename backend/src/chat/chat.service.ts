@@ -402,10 +402,10 @@ export class ChatService {
 		return ;
 	}
 	async addGroup(data: NEWGROUP) {
-		const	user = await this.prisma.user.findFirst({
-			where: { username: data.owner }
-		})
 		try {
+			const	user = await this.prisma.user.findFirst({
+				where: { username: data.owner }
+			})
 			await this.prisma.cHATHISTORY.create({
 				data: {
 					users: { create: [{ user: { connect: { id: user.id }}}]},
@@ -477,7 +477,14 @@ export class ChatService {
 			where: { username: data.userName },
 		});
 		const	group = await this.prisma.gROUP.findFirst({
-			where: { name: data.name }
+			where: { name: data.name },
+			include: {
+				members: {
+					include: {
+						user: true
+					}
+				}
+			}
 		});
 		const	chatHistory = await this.prisma.cHATHISTORY.findFirst({
 			where: { name: data.name }
@@ -498,6 +505,40 @@ export class ChatService {
 						}
 					}
 				});
+				if (user.username == group.owner) {
+					let	newOwner = "";
+					if (group.members.length > 1) {
+						for (let i = 0; i < group.members.length; i++) {
+							if (group.members[i].user.username != group.owner) {
+								newOwner = group.members[i].user.username;
+								break ;
+							}
+						}
+					}
+					if (group.admins.length > 1)
+						for (let i = 0; i < group.admins.length; i++)
+							if (group.admins[i] != group.owner) {
+								newOwner = group.admins[i];
+								break ;
+							}
+					await this.removeGroupAdmin({
+						name: group.name,
+						userName: user.username
+					});
+					if (newOwner.length)
+						await this.addGroupAdmin({
+							name: group.name,
+							userName: newOwner
+						});
+					await this.prisma.gROUP.update({
+						where: {
+							name: group.name
+						},
+						data: {
+							owner: newOwner
+						}
+					});
+				}
 				if (chatHistory) {
 					const	userchatHistory = await this.
 						prisma.userCHATHISTORY.findFirst({
