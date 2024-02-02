@@ -128,6 +128,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         }
     };
 
+
     const search = searchList.map((item) => (
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
@@ -186,7 +187,9 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                     </div>
                     <SimpleGrid>
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
-                        <Button w={200} color='teal' size='xs' radius='xl'>
+                        <Button w={200} color='teal' size='xs' radius='xl' onClick={() => {
+                            socket?.emit("addnotification", {reciever: item.name, type: "game"})
+                        }}>
                             <Link to={`/Game?opp=${item.name}`}>
                                 <div className='text-lg'>
                                     play game

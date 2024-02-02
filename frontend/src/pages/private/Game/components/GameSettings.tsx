@@ -10,10 +10,11 @@ interface Props {
   socket: Socket;
   setGameStart: (v: boolean) => void;
   setGameConfig: (config: gameConfig) => void;
+  user: userData;
   opp: string | null;
 }
 
-const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, opp}) => {
+const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, user, opp}) => {
   const [showSettings, setShowSettings] = useState(false);
   const [numGoals, setNumGoals] = useState(10);
   const [ballSpeed, setBallSpeed] = useState('normal');
@@ -152,8 +153,18 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, op
   useEffect(() => {
     console.log(opp);
     if (opp) {
-      setIsLoading(true);
-      setLoadingMessage('Waiting for opponent to accept the challenge ...');
+        let config =  new gameConfig (
+            2,
+            numGoals,
+            10,
+            ballSize,
+            ballType,
+            boost,
+            0
+        );
+        setIsLoading(true);
+        setLoadingMessage('Waiting for ' + opp + ' to accept the challenge ...');
+        socket.emit('createGame', {userName: user.username, oppName: opp, config: config});
     }
 
     socket.on('startGame', () => {

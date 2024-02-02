@@ -91,8 +91,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('createGame')
   async createGame(client: Socket, payload: any) {
-    const user1 = await this.gameService.setUser(client, payload.user1);
-    const user2 = await this.gameService.setUser(client, payload.user2);
+    const user1 = await this.gameService.setUser(client, payload.userName);
+    const user2 = await this.gameService.setUser(client, payload.oppName);
     if (user1 && user2) {
       this.logger.log(`${user1.username} (${user1.socket}) Challenges ${user2.username} (${user2.socket})`);
       this.logger.log(user2.socket);
@@ -106,13 +106,17 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       }
       if (oppSocket) {
         await this.gameService.initGame(this.wss, client, oppSocket, payload.config);
-        this.wss.to(client.id).emit('startGame', payload.config);
-        this.wss.to(oppSocket.id).emit('startGame', payload.config);
+        // this.wss.to(client.id).emit('startGame', payload.config);
+        // this.wss.to(oppSocket.id).emit('startGame', payload.config);
       }
       else {
         this.wss.to(client.id).emit('CannotStartGame');
         this.logger.log('Opp socket Not found');
       }
+    }
+    else {
+      this.wss.to(client.id).emit('CannotStartGame');
+      this.logger.log('User Not found');
     }
   }
 
@@ -174,9 +178,40 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
   @SubscribeMessage('acceptInvite')
-  acceptInvite(client: Socket, payload: any) {
+  async acceptInvite(client: Socket) {
     this.logger.log(`Client ${client.id} accepted invite`);
-  }
+    let player = this.gameService.players.get(client.id);
+    if (player) {
+        let game = this.gameService.games.get(player.roomName);
+        if (game) {
+            const sockets = await this.wss.in(game.player1.user.socket).fetchSockets();
+            let oppSocket: any;
+            for (const socket of sockets) {
+              if (socket.id === game.player1.user.socket) {
+                oppSocket = socket;
+                this.logger.log('socket Found');
+              }
+            }
+            if (oppSocket) {
+            //   await this.gameService.initGame(this.wss, client, oppSocket, game.config);
+              this.wss.to(client.id).emit('startGame', game.config);
+              this.wss.to(oppSocket.id).emit('startGame', game.config);
+            }
+            else {
+              this.wss.to(client.id).emit('CannotStartGame');
+              this.logger.log('Opp socket Not found');
+            }
+        }
+        else {
+          this.wss.to(client.id).emit('CannotStartGame');
+          this.logger.log('Game Not found');
+        }
+    }
+    else {
+        this.wss.to(client.id).emit('CannotStartGame');
+        this.logger.log('Player Not found');
+    }
+}
 
   @SubscribeMessage('windowResized')
   windowResize(client: Socket, payload: any) {
