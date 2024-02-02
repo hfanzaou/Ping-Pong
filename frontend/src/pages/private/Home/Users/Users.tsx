@@ -132,7 +132,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
     const search = searchList.map((item) => (
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
-                <div className='flex justify-between'>
+                <div className='flex justify-between space-x-lg'>
                     <Group gap="md">
                         <Menu position='right-start' trigger="hover" openDelay={200} closeDelay={100} offset={2}>
                             <Menu.Target>
@@ -185,10 +185,12 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                             </Text>
                         </div>
                     </Group>
-                    <Group>
-                        <Button color='green' size='xs' radius='xl'>
+                    <Group >
+                        <Button w={200} color='green' size='xs' radius='xl'>
                             <Link to={`/Game?opp=${item.name}`}>
-                                play game
+                                <div className='text-lg'>
+                                    play game
+                                </div>
                             </Link>
                         </Button>
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>

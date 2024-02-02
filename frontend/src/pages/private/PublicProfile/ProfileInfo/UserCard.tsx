@@ -33,7 +33,6 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
             <Avatar
                 src={usercard?.avatar}
                 size='35vh'
-
                 radius={250}
                 m="auto"
                 mt={12}
