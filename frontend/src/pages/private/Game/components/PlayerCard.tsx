@@ -48,7 +48,7 @@ function PlayerCard({name, avatar, level, setUrlName} : PlayerCardProps) {
       {"level "  + userLevel}
       </Text>
       <div className='flex justify-center items-centerw-12'>
-            { userName && <Button radius="md" size="md" color='gray' onClick={()=> handleShowProfile(userName)}>
+          { userName && <Button radius="md" size="md" color='gray' onClick={()=> handleShowProfile(userName)}>
               <Link to={`/UserProfile?name=${userName}`}>
                 show profile
               </Link>

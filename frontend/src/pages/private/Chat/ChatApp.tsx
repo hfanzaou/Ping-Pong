@@ -20,7 +20,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		trigger: true,
 		send: true
 	});
-	const	[option, setOption] = useState("Private");
+	const	[option, setOption] = useState("Rooms");
 	const	[error, setError] = useState(false);
 	const	errorRef = useRef(error);
 	const	[notFound, setNotFound] = useState(false);
@@ -92,7 +92,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 							credentials: "include"
 						});
 						const Data = await res.json();
-						setData(prev => setUserData(prev, Data));
+						if (Data)
+							setData(prev => setUserData(prev, Data));
 					}
 					catch {
 						throw new Error("error");

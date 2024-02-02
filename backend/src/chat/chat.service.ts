@@ -45,7 +45,7 @@ export class ChatService {
 								avatar: await this.user.getUserAvatar(x.id),
 								time: chatHistorie.updateAt,
 								state: x.state,
-								unRead: await this.numberOfMessages(
+								unRead: await this.numberOfMessagesPrivate(
 									x.username,
 									user.username
 								)
@@ -71,7 +71,11 @@ export class ChatService {
 								password: x.group.hash ? true : false,
 								banded: x.group.banded,
 								muted: x.group.muted,
-								time: chatHistorie.updateAt
+								time: chatHistorie.updateAt,
+								unRead: await this.numberOfMessagesRooms(
+									x.group.name,
+									user.username
+								)
 							};
 						}
 					})),
@@ -162,8 +166,7 @@ export class ChatService {
 			}
 		});
 		if ( group &&
-			group.banded.find(x => x == data.sender) == undefined &&
-			group.muted.find(x => x == data.sender) == undefined ) {
+			group.banded.find(x => x == data.sender) == undefined) {
 				let	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 				where: { name: data.recver }
 			});
@@ -246,9 +249,7 @@ export class ChatService {
 		return {
 			id: message.id,
 			message: message.message,
-			sender: message.sender,
-			// avatar: message.avatar,
-			// recver: data.recver
+			sender: message.sender
 		}
 	}
 	async getUserHistoryPrivate(data: NEWCHAT) {
@@ -274,7 +275,6 @@ export class ChatService {
 						id: x.id,
 						message: x.message,
 						sender: x.sender
-						// avatar: x.avatar
 					}
 				})].sort((a, b) => a.id - b.id).reverse();
 				return chatHistory;
@@ -290,8 +290,19 @@ export class ChatService {
 				where: {
 					name: data.recver,
 				},
+				include: {
+					members: {
+						include: {
+							user: true
+						}
+					}
+				}
 			});
-			if (group && group.banded.find(x => x == data.sender) == undefined) {
+			if (
+				group &&
+				group.banded.find(x => x == data.sender) == undefined &&
+				group.members.find(x => x.user.username == data.sender) != undefined
+			) {
 				const	history = await this.prisma.cHATHISTORY.findFirst({
 					where: { name: data.recver },
 					include: { messages: true }
@@ -303,7 +314,7 @@ export class ChatService {
 							message: x.message,
 							sender: x.sender,
 						}
-					})].reverse();
+					})].sort((a, b) => a.id - b.id).reverse();
 					return chatHistory;
 				}
 				else
@@ -445,6 +456,21 @@ export class ChatService {
 			}));
 		return null;
 	}
+
+	async socketTokick(userName: string) {
+		if (userName) {
+			const	user = await this.prisma.user.findFirst({
+				where: {
+					username: userName
+				}
+			});
+			if (user) {
+				return user.socket;
+			}
+		}
+		return null;
+	}
+
 	async getLeaveJoin(data: { userName: string, name: string}) {
 		const	user = await this.prisma.user.findFirst({
 			where: { username: data.userName },
@@ -564,14 +590,39 @@ export class ChatService {
 	}
 	async chatAvatarRoom(data: { name: string, userName: string }) {
 		const	group = await this.prisma.gROUP.findFirst({
-			where: { name: data.name },
-			include: { members: { include: { user: true}}}
+			where: {
+				name: data.name
+			},
+			include: {
+				members: {
+					include: {
+						user: {
+							include: {
+								blocked: true,
+								blockedFrom: true
+							}
+						}
+					}
+				}
+			}
 		});
 		if (group) {
-			const	users = await Promise.all(group.members.map(async x => ({
-				userName: x.user.username,
-				avatar: await this.user.getUserAvatar(x.user.id)
-			})));
+			const	users = await Promise.all(
+				group.members.filter(x => {
+					if (x.user.blocked.find(y => {
+						console.log(y.username, data.userName);
+						return y.username == data.userName;
+					}) == undefined && x.user.blockedFrom.find(y => {
+						console.log(y.username, data.userName);
+						return y.username == data.userName;
+					}) == undefined)
+						return group.banded.find(y => y == x.user.username) == undefined;
+					return false;
+				}).map(async x => ({
+					userName: x.user.username,
+					avatar: await this.user.getUserAvatar(x.user.id)
+				}))
+			);
 			return users;
 		}
 		return null;
@@ -874,13 +925,25 @@ export class ChatService {
 		}
 		return null;
 	}
-	async numberOfMessages(userName: string, sender: string) {
+	async numberOfMessagesPrivate(userName: string, sender: string) {
 		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
 			where: {
 				OR: [
 					{ name: `&${userName}${sender}` },
 					{ name: `&${sender}${userName}`}
 				]
+			},
+			include: { messages: true }
+		});
+		const	unReadMessages = chatHistorie.messages.filter(x => {
+			return x.readers.find(y => y == sender) == undefined;
+		});
+		return unReadMessages.length;
+	}
+	async numberOfMessagesRooms(name: string, sender: string) {
+		const	chatHistorie = await this.prisma.cHATHISTORY.findFirst({
+			where: {
+				name: name
 			},
 			include: { messages: true }
 		});

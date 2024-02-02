@@ -81,7 +81,6 @@ export class UserService {
                 throw new NotFoundException('USER NOT FOUND');
             const avatar = await this.getUserAvatar(user.id);
             const matchhistory = await this.getMatchHistory(user.id);
-            //console.log(matchhistory);
             const retuser = {
                 usercard: {
                     username: user.username, 
@@ -97,7 +96,6 @@ export class UserService {
             return retuser;
         } catch(error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
-				//if (error.code === 'P2015')
 					throw new NotFoundException('USER NOT FOUND');
             }
             throw error;
@@ -137,7 +135,6 @@ export class UserService {
     }
     ///friends, request and block lists///////
     async getUsersList(id: number) {
-       // console.log(id);
         try {
             const users = await this.prismaservice.user.findMany({
                 where: {
@@ -154,11 +151,8 @@ export class UserService {
                     friendOf: {where: {id: id}, select: {id: true}}
                 } 
             });
-            
-           // console.log(users);
             return await this.extarctuserinfo(users, id);
         } catch(error) {
-            // console.log(error);
             throw HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
@@ -247,7 +241,6 @@ export class UserService {
             });
             if (!user)
                 throw new NotFoundException('USER NOT FOUND');
-           // console.log(user);
             await this.prismaservice.user.update({
                 where: {id: id},
                 data: {friends: {
@@ -485,9 +478,7 @@ export class UserService {
             })
             if (!matchhistory)
                 return [];
-            //console.log(matchhistory);
             const to_send = await Promise.all(matchhistory.map(async (obj) => {
-               // console.log(obj.players[0].id);
                 const avatar = await this.getUserAvatar(obj.players[0].id);
                 return { 
                     playerScore: obj.playerScore, 
@@ -505,7 +496,6 @@ export class UserService {
     
     async addMatchHistory(id: number, result: {name: string, playerScore: number, player2Score: number}) {
         try {
-           // console.log(result);
             const loserid = await this.prismaservice.user.findUnique({
                 where: {username: result.name},
                 select: {id: true},
@@ -522,7 +512,6 @@ export class UserService {
             })
             this.toUpdatelevel(id, result.name);
         } catch(error) {
-            // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }
@@ -530,42 +519,26 @@ export class UserService {
     async addNotification(id: number, payload: notifDto)
     {
         try {
-            // if (payload.type === "remove request")
-            //     return ;
-            // const already = await this.prismaservice.notifications.findMany({
-            //     where: {
-            //         user: {username: payload.reciever},
-            //         senderId: id,
-            //         type: payload.type,
-            //     }
-            // })
-            // console.log(already)
-            // console.log(payload);
-            // if (!already[0] || payload.type == "groupInvite" || payload.type == "chat" || payload.type == "groupChat" || payload.type == "accept friend")
-            // {
-                if (payload.type == "groupInvite") {
-                    await this.prismaservice.notifications.create({
-                        data: {
-                            user: {connect: {username: payload.reciever}},
-                            senderId: id,
-                            type: payload.type,
-                            groupname: payload.groupname
-                        }
-                    })
-                    return ;
-                }
-                // console.log(payload);
+            if (payload.type == "groupInvite") {
                 await this.prismaservice.notifications.create({
                     data: {
                         user: {connect: {username: payload.reciever}},
                         senderId: id,
                         type: payload.type,
-                        //groupname: payload.groupname
+                        groupname: payload.groupname
                     }
                 })
-            // }
+                return ;
+            }
+            await this.prismaservice.notifications.create({
+                data: {
+                    user: {connect: {username: payload.reciever}},
+                    senderId: id,
+                    type: payload.type,
+                }
+            })
+
         } catch(error) {
-            // console.log(error);
             throw new BadGatewayException('ERROR UPDATING DATA');
         }
     }

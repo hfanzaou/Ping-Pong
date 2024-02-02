@@ -24,7 +24,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
         socket?.on("getnotification", (type) => {
             if (type === 'friend request' || type === 'accept friend' || type === 'groupInvite' || type === 'game') {
                 setNotification(true);
-            } else if (type === 'remove request') {
+            } else if (type === 'remove request' && notificationList[0].type === 'remove request') {
                 setNotification(false);
             }
             getNotificationTable();

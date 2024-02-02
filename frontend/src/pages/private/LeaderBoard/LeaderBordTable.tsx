@@ -1,5 +1,5 @@
 import React from "react";
-import { Group, ScrollArea, Table, Avatar, Text} from "@mantine/core";
+import { Group, ScrollArea, Table, Avatar, Text, Blockquote} from "@mantine/core";
 import leaderboardInterface from "./Leaderboard";
 
 function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
@@ -32,13 +32,19 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
     ));
 
     return (
-        // 425 is the height of the table
         <ScrollArea h='70vh'>
             <Table withRowBorders={false} >
                 <Table.Tbody>
-                    {rows}
+            {rows ?
+                    rows :
+                    <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                            Lead 2
+                    </Blockquote>
+        
+                    }
                 </Table.Tbody>
             </Table>
+
         </ScrollArea>
     );
 }

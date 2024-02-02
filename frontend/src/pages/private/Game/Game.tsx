@@ -146,7 +146,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
 
   return (
     <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
-      <div className="mr-10">
+      <div className="mr-10 player-card">
         <PlayerCard
           setUrlName={setUrlName}
           name={side ? user.username : opp?.username} 
@@ -167,7 +167,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
         )
         )}
       </div>
-      <div className="ml-10">
+      <div className="ml-10 player-card">
         <PlayerCard
           setUrlName={setUrlName}
           name={(side || config.mode == 3) ? opp.username : user.username} 

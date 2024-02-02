@@ -120,13 +120,11 @@ OnGatewayConnection {
 	}
 	
 	async handleDisconnect(client: Socket) {
-		console.log(`Client ${client.id} disconnected`);
 		Array
 			.from(client.rooms)
 			.slice(1)
 			.forEach(room => client.leave(room));
         const	user = await this.chatService.dropUser(client);
-		// const {username, state} = await this.verifyClient(client);
 		if (user)
 			client.broadcast.emit("online", {
 				username: user.username,
@@ -136,19 +134,17 @@ OnGatewayConnection {
 
 	async handleConnection(client: Socket) {
 		await this.verifyClient(client);
-		console.log(`Client ${client.id} connected`);
 	}
 
-	@SubscribeMessage("leaveRoom")
-	async handelLeaveRoom(client: Socket, name: string) {
-		client.leave(name);
-	}
-
-	@SubscribeMessage("ban")
-	async handelBan(client: Socket, data: {userName: string, name: string}) {
-		const	socket = await this.chatService.banedSocket(data.userName);
-		if (socket)
-			this.server.to(socket).emit("youAreBanded", data.name);
+	@SubscribeMessage("kick")
+	async handelLeaveRoom(client: Socket, data: {userName: string, name: string}) {
+		const	socketTokick = await this.chatService.socketTokick(data.userName);
+		if (socketTokick) {
+			const	clientToKick = this.server.sockets.sockets.get(socketTokick);
+			if (clientToKick) {
+				clientToKick.leave(data.name);
+			}
+		}
 	}
 
 
@@ -181,7 +177,6 @@ OnGatewayConnection {
 					where: {username: payload.reciever},
 					select: {id: true, socket: true}
 				});
-				// console.log(payload);
 				await this.user.addNotification(id, payload);
                 client.to(reciever.socket).emit('getnotification', payload.type);
 			}
