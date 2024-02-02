@@ -3,7 +3,7 @@ import LeaderBordCard from "./LeaderBordCard";
 import LeaderbordTable from "./LeaderBordTable";
 import axios from "axios";
 import leaderboardInterface from "./Leaderboard";
-import { Card, SimpleGrid } from "@mantine/core";
+import { Blockquote, Card, SimpleGrid } from "@mantine/core";
 
 function Leaderbord({avatar} : {avatar: string}) {
     const [data, setData] = useState<leaderboardInterface[]>([]);
@@ -28,13 +28,25 @@ function Leaderbord({avatar} : {avatar: string}) {
                 <Card p={2} className='flex items-center justify-center' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg" >
                     <SimpleGrid m={15} cols={3}>
                         <div className="mt-8">
-                            {data[1] && <LeaderBordCard data={data[1]} rank={2}/>}
+                            {data[1] ? <LeaderBordCard data={data[1]} rank={2}/> : 
+                                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                    Lead 2
+                                </Blockquote>
+                            }
                         </div>
                         <div className="mb-8">
-                            {data[0] && <LeaderBordCard data={data[0]} rank={1}/>}
+                            {data[0] ? <LeaderBordCard data={data[0]} rank={1}/> : 
+                                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                    Lead 1
+                                </Blockquote>
+                            }
                         </div>
                         <div className="mt-8">
-                            {data[2] && <LeaderBordCard data={data[2]} rank={3}/>}
+                            {data[2] ? <LeaderBordCard data={data[2]} rank={3}/> : 
+                                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                    Lead 3
+                                </Blockquote>
+                            }
                         </div>
                     </SimpleGrid>
                 </Card>
