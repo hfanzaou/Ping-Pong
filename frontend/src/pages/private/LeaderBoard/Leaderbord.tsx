@@ -35,7 +35,7 @@ function Leaderbord({avatar} : {avatar: string}) {
                             {data[1] ? <LeaderBordCard data={data[1]} rank={2}/> :
                                 <Card  p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
                                 <div className="flex items-center justify-center">
-                                    <Blockquote className="self-center" ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                    <Blockquote className="self-center text-xl" ta='center' color="white" c='cyan' radius="lg" mt="xl">
                                         Lead 2
                                     </Blockquote>
                                 </div>
@@ -46,7 +46,7 @@ function Leaderbord({avatar} : {avatar: string}) {
                             {data[0] ? <LeaderBordCard data={data[0]} rank={1}/> :
                                 <Card  p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
                                 <div className="flex items-center justify-center">
-                                    <Blockquote className="self-center" ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                    <Blockquote className="self-center text-xl" ta='center' color="white" c='cyan' radius="lg" mt="xl">
                                         Lead 1
                                     </Blockquote>
                                 </div>
@@ -57,7 +57,7 @@ function Leaderbord({avatar} : {avatar: string}) {
                             {data[2] ? <LeaderBordCard data={data[2]} rank={3}/> : 
                                 <Card  p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
                                 <div className="flex items-center justify-center">
-                                    <Blockquote className="self-center" ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                                    <Blockquote className="self-center text-xl" ta='center' color="white" c='cyan' radius="lg" mt="xl">
                                         Lead 3
                                     </Blockquote>
                                 </div>

@@ -35,7 +35,7 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
                     </Table.Tbody>
                 </Table>
             </ScrollArea> :
-            <Blockquote className='' ta='center' color="white" c='cyan' radius="lg" mt="xl">
+            <Blockquote className='text-xl' ta='center' color="white" c='cyan' radius="lg" mt="xl">
                 Other Players List
             </Blockquote>
         }

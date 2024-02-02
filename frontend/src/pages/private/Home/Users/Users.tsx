@@ -128,7 +128,6 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         }
     };
 
-
     const search = searchList.map((item) => (
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
@@ -189,10 +188,8 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                         className='flex items-center jystify-end'
                         cols={{ base: 1, sm: 2, md: 2, lg: 2, xl: 2 }}
                     >
-                        <div>
-
                         <Link to={`/Game?opp=${item.name}`}>
-                            <Button w={160} color='teal' size='xs' radius='xl' onClick={() => {
+                            <Button w={160} color='#656A7E' size='xs' radius='xl' onClick={() => {
                                 socket?.emit("addnotification", {reciever: item.name, type: "game"})
                             }}>
                                 <div className='text-lg'>
@@ -200,11 +197,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                 </div>
                             </Button>
                         </Link>
-                        </div>
-                            <div>
-
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
-                            </div>
                     </SimpleGrid>
                 </div>
             </Table.Td>
@@ -216,7 +209,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
             <TextInput
                 className='ml-auto px-2 rounded-xl'
                 ml='auto'
-                bg='#5474B4'
+                bg='#4F23C0'
                 w={300}
                 size='lg'
                 variant="unstyled"

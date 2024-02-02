@@ -5,11 +5,13 @@ function FriendshipButton({name, friendship, handleRequest}: {name: string, frie
     let color: string = 'gray';
     
     if (friendship === 'add friend') {
-        color = 'blue';
-    } else if (friendship === 'remove request' || friendship === 'remove friend') {
-        color = 'red';
+        color = '#2D4B81';
+    } else if (friendship === 'remove request') {
+        color = '#C91A52';
+    }else if (friendship === 'remove friend') {
+        color = '#C91A25';
     } else if (friendship === 'accept friend') {
-        color = 'green';
+        color = '#2BDD66';
     }
 
     return (
