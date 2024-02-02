@@ -58,7 +58,8 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
   const fetchUserName = async () => {
     const res = await axios.get('user/name')
     .then((res) => {
-      socket.emit('userName', res.data.name);
+      if (res.data.name && res.data.name !== "")
+        socket.emit('userName', {username: res.data.name});
     });
   };
 
@@ -104,11 +105,11 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
     const params = new URLSearchParams(window.location.search);
     const oppParam = params.get('opp');
 
-    if (oppParam) {
+    if (oppParam && user.username !== "" && !gameStart) {
+      socket.emit('createGame', {userName: user.username, oppName: oppParam, config: config});
       setOppParam(oppParam);
-      //socket.emit('createGame', { user1: user, user2: oppParam, config: config });
     }
-
+  
     socket.on('startGame', (config) => {
       console.log('Game started!');
       setGameConfig(config);
@@ -119,6 +120,13 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
       console.log('Cannot start game!');
       setGameStart(false);
     });
+
+
+    return () => {
+      socket.off('startGame');
+      socket.off('CannotStartGame');
+    };
+
   }, [user]);
 
   useEffect(() => {

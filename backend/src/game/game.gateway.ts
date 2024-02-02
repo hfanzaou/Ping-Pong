@@ -83,31 +83,32 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('userName')
-  async setUser(client: Socket, userName: string) {
-    const user = await this.gameService.setUser(client, userName);
+  async _setUser(client: Socket, payload: any) {
+    this.logger.log(`Client ${client.id} wants to set username to ${payload.username}`);
+    const user = await this.gameService.setUser(client, payload.username);
     if (user)
       this.wss.to(client.id).emit('userId', user.id);
+    else
+      this.logger.log(`User ${payload.userName} not found`);
   }
 
   @SubscribeMessage('createGame')
   async createGame(client: Socket, payload: any) {
+    this.logger.log(payload);
     const user1 = await this.gameService.setUser(client, payload.userName);
     const user2 = await this.gameService.setUser(client, payload.oppName);
     if (user1 && user2) {
       this.logger.log(`${user1.username} (${user1.socket}) Challenges ${user2.username} (${user2.socket})`);
-      this.logger.log(user2.socket);
       const sockets = await this.wss.in(user2.socket).fetchSockets();
-      let oppSocket: any;
+      let oppSocket: any = null;
       for (const socket of sockets) {
         if (socket.id === user2.socket) {
           oppSocket = socket;
-          this.logger.log('socket Found');
+          this.logger.log('socket Found' + oppSocket.id);
         }
       }
       if (oppSocket) {
-        await this.gameService.initGame(this.wss, client, oppSocket, payload.config);
-        // this.wss.to(client.id).emit('startGame', payload.config);
-        // this.wss.to(oppSocket.id).emit('startGame', payload.config);
+        await this.gameService.initGame(this.wss, oppSocket, client, payload.config);
       }
       else {
         this.wss.to(client.id).emit('CannotStartGame');
