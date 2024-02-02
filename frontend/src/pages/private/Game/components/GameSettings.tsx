@@ -151,21 +151,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
   }
 
   useEffect(() => {
-    console.log(opp);
-    if (opp) {
-        let config =  new gameConfig (
-            2,
-            numGoals,
-            10,
-            ballSize,
-            ballType,
-            boost,
-            0
-        );
-        setIsLoading(true);
-        setLoadingMessage('Waiting for ' + opp + ' to accept the challenge ...');
-        socket.emit('createGame', {userName: user.username, oppName: opp, config: config});
-    }
 
     socket.on('startGame', () => {
       setIsLoading(false);
@@ -184,6 +169,24 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
       socket.off('NoGames');
     }
 
+  }, []);
+
+  useEffect(() => {
+    console.log(opp);
+    if (opp) {
+        let config =  new gameConfig (
+            1,
+            numGoals,
+            10,
+            ballSize,
+            ballType,
+            boost,
+            0
+        );
+        setIsLoading(true);
+        setLoadingMessage('Waiting for ' + opp + ' to accept the challenge ...');
+        // socket.emit('createGame', {userName: user.username, oppName: opp, config: config});
+    }
   }, [opp]);
 
   return (
