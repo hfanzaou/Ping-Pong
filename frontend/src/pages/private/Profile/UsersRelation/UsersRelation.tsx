@@ -9,11 +9,14 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     const [value, setValue] = useState<string>('Friends');
 
     return (
-        <div className='flex flex-col items-center space-y-2'>
+        <div className='flex flex-col items-center space-y-2 h-full w-full'>
             <SegmentedControl
-                mt={4}
-                size='md'
+                m='md'
+                size='lg'
+                w='90%'
                 radius='lg'
+                color='cyan'
+                bg={'rgb(39 39 42)'}
                 value={value}
                 onChange={setValue}
                 data={[
@@ -22,17 +25,17 @@ function  UsersRelation({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                     {label: 'Requests', value: "Requests"},
                 ]}
             />
-            <ScrollArea h='60vh' type='never'>
-                <Table>
-                    <Table.Tbody>
+            <ScrollArea h='55vh' type='never'>
+                {/* <Table>
+                    <Table.Tbody> */}
                         {value === 'Requests' ?
                             <FriendRequest socket={socket} setUrlName={setUrlName}/> :
                         (value === 'Friends' ?
                             <Friends socket={socket} setUrlName={setUrlName}/> :
                             <BlockedUsers/>
                         )}
-                    </Table.Tbody>
-                </Table>
+                    {/* </Table.Tbody>
+                </Table> */}
             </ScrollArea>
         </div>
     );

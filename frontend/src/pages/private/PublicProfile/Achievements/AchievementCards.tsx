@@ -26,7 +26,7 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
     return (
        <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
             <Group justify="center">
-                <HoverCard width={200} openDelay={500}>
+                <HoverCard radius='md' width={100} openDelay={300} closeDelay={200} offset={-5}>
                     <HoverCard.Target>
                         <Card shadow="sm" padding="mg" radius="md" withBorder>
                             <Card.Section>
@@ -34,19 +34,19 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
                                     <Image
                                         src={image}
                                         height={300}
-                                        alt="Norway"
+                                        alt={title}
                                     /> :
                                     <Image className="blur-sm"
                                     src={image}
                                         height={300}
-                                        alt="Norway"
+                                        alt={title}
                                     />
                                 }
                             </Card.Section>
                         </Card>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                        <Text size="lg" ta='center'>{title}</Text>
+                    <HoverCard.Dropdown bg='dark'>
+                        <Text c='cyan' size="lg" ta='center'>{title}</Text>
                     </HoverCard.Dropdown>
                 </HoverCard>
             </Group>

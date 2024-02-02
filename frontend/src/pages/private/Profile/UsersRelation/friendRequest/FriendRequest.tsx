@@ -41,6 +41,8 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     };
 
     const requestRows = requestFriendList.map((item) => (
+        <Table>
+        <Table.Tbody>
         <Table.Tr key={item.name}>
             <Table.Td>
             <div className='flex justify-between items-center space-x-[90px]'>
@@ -56,12 +58,17 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                                 </div>
                             </div>
                         </Menu.Target>
-                        <Menu.Dropdown bg='gray' mt={25}>
+                        <Menu.Dropdown bg='dark' mt={25}>
                             <Menu.Item
+                                c='blue'
                                 onClick={() => handelShowProfile(item.name)}
-                                leftSection={<IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                             >
-                                <Link to={`/UserProfile?name=${item.name}`}>Show Profile</Link>
+                                <Link to={`/UserProfile?name=${item.name}`}>
+                                    <div className='flex items-center space-x-2'>
+                                        <IconUserCircle style={{ width: rem(20), height: rem(20), color: 'cyan' }} stroke={1.5}/>
+                                        <div>Show Profile</div>
+                                    </div>
+                                </Link>
                             </Menu.Item>
                         </Menu.Dropdown>
                     </Menu>
@@ -73,19 +80,17 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
                 </div>
             </Table.Td>
         </Table.Tr>
+        </Table.Tbody>
+        </Table>
     ));
 
     return (
-        <div>
+        <div >
             {Object.keys(requestRows).length ?
                 requestRows :
-                <Table.Tr>
-                    <Table.Td>
-                        <Blockquote color="gray" radius="xl" iconSize={33} mt="xl">
-                            No Friend Requests
-                        </Blockquote>
-                    </Table.Td>
-                </Table.Tr>
+                <Blockquote ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                    No Friend Requests
+                </Blockquote>
             }
         </div>
   );

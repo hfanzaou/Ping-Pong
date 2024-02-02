@@ -46,23 +46,17 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest })
             withCredentials: true
         });
         socket.on("connect", async () => {
-            // console.log(socket.id)
             setSocket(socket);
             await callBack(socket);
             socket.emit("state");
-            // console.log("connected");
         })
-        socket.on("error", () => {
-            console.log("error in socket");
-        });
         setSocket(socket);
         return () => {
             socket.disconnect();
             socket.off("connect", async () => {
                 setSocket(socket);
-            await    callBack(socket);
-            socket.emit("state");
-
+                await callBack(socket);
+                socket.emit("state");
             })
         }
     }, [])

@@ -98,6 +98,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
       setSide(side);
       fetchOppData(id);
     });
+    
     return () => {
       socket.off('startGame');
       socket.off('CannotStartGame');
@@ -157,7 +158,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
       </div>
       <div
         id="sketchHolder"
-        className="rounded-xl shadow-2xl"
+        className="rounded-xl shadow-2xl w-[90%] md:w-[700px] h-[450px]"
         >
         {( gameStart ? (
           <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} />

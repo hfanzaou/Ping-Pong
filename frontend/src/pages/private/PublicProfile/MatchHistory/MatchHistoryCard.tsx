@@ -5,13 +5,13 @@ import MatchHistoryInterface from "./MatchHistoryInterface";
 
 function MatchHistoryCard({avatar, username, playerScore, player2Score, win}: MatchHistoryInterface) {
     return (
-        <div className='inline-block w-[130px] h-full p-2  hover:scale-100 ease-in-out duration-300'>
+        <div className='inline-block w-[130px] h-full p-2'>
             <Card shadow="sm" padding="mg" radius="md" style={{backgroundColor: 'rgb(31 41 55)'}}>
-                <Card.Section mb={2}>
-                    <Image
+                <Card.Section mb={2} className="h-[15vh]">
+                    <img
+                        className="object-cover w-full h-full"
                         src={avatar}
-                        height={100}
-                        alt="Norway"
+                        alt={username}
                     />
                 </Card.Section>
                 <Text m={2} size="md" fw={500} ta='center' c={'blue'}>

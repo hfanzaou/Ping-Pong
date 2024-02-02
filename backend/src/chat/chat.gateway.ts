@@ -22,7 +22,8 @@ import { UserService } from "src/user/user.service";
     credentials: true
 } })
 export class ChatGateway implements
-OnGatewayDisconnect {
+OnGatewayDisconnect,
+OnGatewayConnection {
 	constructor(private chatService: ChatService, 
 				private prisma: PrismaService, 
 				private strategy: JwtTwoFaStrategy,
@@ -117,7 +118,9 @@ OnGatewayDisconnect {
 			})
 		}
 	}
+	
 	async handleDisconnect(client: Socket) {
+		console.log(`Client ${client.id} disconnected`);
 		Array
 			.from(client.rooms)
 			.slice(1)
@@ -129,6 +132,23 @@ OnGatewayDisconnect {
 				username: user.username,
 				state: "Offline",
 			});		
+	}
+
+	async handleConnection(client: Socket) {
+		await this.verifyClient(client);
+		console.log(`Client ${client.id} connected`);
+	}
+
+	@SubscribeMessage("leaveRoom")
+	async handelLeaveRoom(client: Socket, name: string) {
+		client.leave(name);
+	}
+
+	@SubscribeMessage("ban")
+	async handelBan(client: Socket, data: {userName: string, name: string}) {
+		const	socket = await this.chatService.banedSocket(data.userName);
+		if (socket)
+			this.server.to(socket).emit("youAreBanded", data.name);
 	}
 
 
@@ -151,7 +171,7 @@ OnGatewayDisconnect {
 								id,
 								{ reciever: x.userName, type: payload.type, groupname: payload.reciever }
 							);
-							this.server.to(x.socket).emit("getnotification", "hello");
+							this.server.to(x.socket).emit("getnotification", payload.type);
 						}
 					});
 				}
@@ -192,7 +212,7 @@ OnGatewayDisconnect {
 			return (user);
 		}
 		catch (error) {
-			client.emit('error', 'invalid token');
+			client.disconnect()
 		}
 	}
 }

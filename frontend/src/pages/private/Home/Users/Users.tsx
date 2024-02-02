@@ -134,7 +134,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
             <Table.Td>
                 <div className='flex justify-between'>
                     <Group gap="md">
-                        <Menu position='right-start' offset={2}>
+                        <Menu position='right-start' trigger="hover" openDelay={200} closeDelay={100} offset={2}>
                             <Menu.Target>
                                 <div dir="rtl" className="relative" >
                                     <button type="button" className="relative inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-700 hover:text-white">
@@ -143,26 +143,35 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                     </button>
                                 </div>
                             </Menu.Target>
-                            <Menu.Dropdown bg='gray' mt={25}>
+                            <Menu.Dropdown bg='dark' mt={35}>
                                 <Menu.Item
+                                    c='blue'                              
                                     onClick={() => handelShowProfile(item.name)}
-                                    leftSection={<IconUserCircle style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                                 >
                                     <Link to={`/UserProfile?name=${item.name}`}>
-                                        Show Profile
+                                        <div className='flex items-center space-x-2'>
+                                            <IconUserCircle style={{ width: rem(20), height: rem(20), color: 'cyan' }} stroke={1.5} />
+                                            <div>Show Profile</div>
+                                        </div>
                                     </Link>
                                 </Menu.Item>
                                 <Menu.Item
+                                    c='blue'
                                     onClick={() => handleSendMessage(item.name)}
-                                    leftSection={<IconMessages style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                                 >
-                                    Send message
+                                    <div className='flex items-center space-x-2'>
+                                        <IconMessages style={{ width: rem(20), height: rem(20), color: 'cyan' }} stroke={1.5} />
+                                        <div>Send message</div>
+                                    </div>
                                 </Menu.Item>
                                 <Menu.Item
+                                    c='blue'
                                     onClick={() => handleBlockUser(item.name)}
-                                    leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                                >
-                                    Block user
+                                    >
+                                    <div className='flex items-center space-x-2'>
+                                        <IconTrash style={{ width: rem(20), height: rem(20), color: 'cyan' }} stroke={1.5} />
+                                        <div>Block user</div>
+                                    </div>
                                 </Menu.Item>
                             </Menu.Dropdown>
                             <SerndMessage name={receverName} opened={opened} close={close} socket={socket}/>
