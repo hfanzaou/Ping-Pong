@@ -13,7 +13,7 @@ function FriendshipButton({name, friendship, handleRequest}: {name: string, frie
     }
 
     return (
-            <Button w={200} color={color} size='xs' radius='xl' onClick={() => handleRequest(name)}>
+            <Button w={160} color={color} size='xs' radius='xl' onClick={() => handleRequest(name)}>
                 <div className='text-lg'>
                     {friendship}
                 </div>

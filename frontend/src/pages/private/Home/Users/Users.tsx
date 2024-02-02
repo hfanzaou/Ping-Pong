@@ -133,7 +133,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
                 <div className='flex justify-between'>
-                    <div className='flex items-center'>
+                    <div className='flex items-center xs:w-[40px] mr-3'>
                         <Menu position='right-start' trigger="hover" openDelay={200} closeDelay={100} offset={2}>
                             <Menu.Target>
                                 <div dir="rtl" className="relative" >
@@ -185,17 +185,26 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                             </Text>
                         </div>
                     </div>
-                    <SimpleGrid>
-                        <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
+                    <SimpleGrid
+                        className='flex items-center jystify-end'
+                        cols={{ base: 1, sm: 2, md: 2, lg: 2, xl: 2 }}
+                    >
+                        <div>
+
                         <Link to={`/Game?opp=${item.name}`}>
-                            <Button w={200} color='teal' size='xs' radius='xl' onClick={() => {
+                            <Button w={160} color='teal' size='xs' radius='xl' onClick={() => {
                                 socket?.emit("addnotification", {reciever: item.name, type: "game"})
                             }}>
                                 <div className='text-lg'>
-                                    play game
+                                    play Game
                                 </div>
                             </Button>
                         </Link>
+                        </div>
+                            <div>
+
+                        <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
+                            </div>
                     </SimpleGrid>
                 </div>
             </Table.Td>
