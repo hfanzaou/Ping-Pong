@@ -348,6 +348,24 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				recver: tmp
 			}
 			data.socket?.emit("newChatRoom", newChat);
+			setData(prev => {
+				if (prev.userData)
+					return {
+						...prev,
+						userData: {
+							...prev.userData,
+							groups: [...prev.userData.groups].map(x => {
+								if (x.name == tmp)
+									return {
+										...x,
+										unRead: 0
+									}
+								return x;
+							})
+						}
+					}
+				return prev;
+			});
 		}
 	}
 	async function checkGroup(name: string) {
@@ -555,24 +573,21 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 												}`}
 										/>
 										{
+											x.name != data.groupTo &&
 											x.unRead != 0 &&
 											<div
-												className={
-													`absolute rounded-full z-10 border-4
-													bg-red-500 text-xs px-1 right-1 -bottom-2 ${
-														x.name != data.groupTo ?
-															`border-discord3
-															group-hover:border-discord4` :
-															`border-discord5
-															shadow-black shadow-lg`
-													}`
-												}
+												className="absolute rounded-full
+													z-10 border-4 bg-red-500
+													text-xs px-1 right-1 -bottom-2
+													border-discord3
+													group-hover:border-discord4"
 											>
 												{
-													x.unRead &&
-														(
-															x.unRead < 100 ? x.unRead : "+99"
-														)
+													x.unRead && (
+														x.unRead < 100 ?
+															x.unRead :
+															"+99"
+													)
 												}
 											</div>
 										}
