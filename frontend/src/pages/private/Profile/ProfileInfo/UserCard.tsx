@@ -27,6 +27,9 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
             setData(res.data);
         })
         .catch((err) => {
+            if (err.response.status === 401) {
+                window.location.replace('/login');
+            }
             console.log("Error in geting data in edit profile :", err);
         })
     };

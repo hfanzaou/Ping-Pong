@@ -34,7 +34,6 @@ function App()  {
     const [userList, setUsersList] = useState<UsersInterface[]>([]);
     const [searchList, setSearchList] = useState<UsersInterface[]>([]);
     const [socket, setSocket] = useState<Socket | null>(null);
-    // comonentDidMount
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -132,7 +131,7 @@ function App()  {
                     setHas2fa(res.data);
                 }
             } catch {
-            console.log("error in fetching /verify");
+                console.log("error in fetching /verify");
             }
         }
 
@@ -185,7 +184,6 @@ function App()  {
                         <Route path='/' element={<Login/>}/>
                         <Route path='/Login' element={<Login/>}/>
                         <Route path='/*' element={<GoToLogin />} />
-                        {/* {has2fa && <Route path='/auth' element={<Auth/>}/> } */}
                     </Routes>
                 </Router>
             </MantineProvider>
@@ -199,15 +197,13 @@ function App()  {
             <ScrollUp/>
                 <Routes>
                     <Route path='*' element={<NotFound />}/>
-                    <Route path='/' element={socket && <Home socket={socket}  setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
+                    <Route path='/' element={socket && <Home socket={socket} setUrlName={setUrlName} userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/>
                     <Route path='/Leaderbord' element={<Leaderbord avatar={avatar}/>}/>
                     <Route path='/Profile' element={socket && <Profile socket={socket} setUrlName={setUrlName} avatar={avatar}/>}/>
                     <Route path='/Game' element={socket && <Game socket={socket} avatar={avatar} setUrlName={setUrlName}/>}/>
                     <Route path='/Chat' element={socket && <ChatApp socket={socket}/>}/>
                     <Route path='/Setting' element={<Setting setAvatar={setAvatar} avatar={avatar}/>}/>
                     <Route path={'/UserProfile'} element={socket && <PublicProfile profileName={urlName}  avatar={avatar} handleRequest={handleRequest} usersList={userList} setUsersList={setUsersList} socket={socket}/>} />
-                    {/* <Route path='/Login' element={!hasToken ? <Login/> : <Home  userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/> }/> */}
-                    {/* <Route path='/auth' element={has2fa ? <Auth/>  : <Home userList={userList} setUsersList={setUsersList} searchList={searchList} setSearchList={setSearchList} handleRequest={handleRequest} avatar={avatar}/>}/> */}
                 </Routes>
             <Footer/>
             </Router>
