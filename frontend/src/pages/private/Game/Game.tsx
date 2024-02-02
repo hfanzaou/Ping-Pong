@@ -157,7 +157,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
         ) : ( gameStart ? (
           <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} setGameOver={setGameOver} />
         ) : (
-          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} opp={oppParam} />
+          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} user={user} opp={oppParam} />
         )
         )}
       </div>

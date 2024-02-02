@@ -65,7 +65,11 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 {item.type === 'game'&& 
                 <div>
                     <Text c={'white'}>sent you a game invite</Text>
-                    {/* <Button radius='xl' size="xs" color="green" onClick={() => handleRequest(item.username)}>Accept</Button> */}
+                    <Button radius='xl' size="xs" color="green" onClick={() => {socket?.emit("acceptInvite")}}>
+                        <Link to={`/Game`}>
+                            Accept
+                        </Link>
+                    </Button>
                 </div>}
             </div>
         </div>
