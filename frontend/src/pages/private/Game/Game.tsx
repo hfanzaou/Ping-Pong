@@ -6,6 +6,9 @@ import GameComponent from './components/GameComponent';
 import GameSettings from './components/GameSettings';
 import { gameConfig } from './classes/gameConfig';
 import "./Game.css";
+import GameOver from './components/GameOver';
+import { player1, player2 } from './components/gameLogic';
+import { disconnect } from './components/gameStates';
 // import { Text } from '@mantine/core';
 
 interface Props {
@@ -33,7 +36,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     8, 
     'medium',
     'ghost',
-    false, 
+    true, 
     1
   ));
   const [user, setUser] = useState<userData>({
@@ -48,19 +51,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
   });
   const [side, setSide] = useState<boolean>(true);
   const [gameStart, setGameStart] = useState(false);
-  
-  const startGame = () => {
-    console.log('startGame!');
-    console.log(user);
-    console.log(opp);
-    console.log(config);
-    console.log(side);
-    setGameStart(true);
-    if (config.mode == 3) {
-      console.log('Here');
-      setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
-    }
-  };
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
   const fetchUserName = async () => {
     const res = await axios.get('user/name')
@@ -106,12 +97,7 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (config.mode == 3) {
-      setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: 'https://i.imgur.com/1zXQq3j.png' });
-    }
-  }, [config]);
-
+  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const userParam = params.get('user');
@@ -123,17 +109,9 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
       }
     }
 
-    socket.on('startGame', () => {
+    socket.on('startGame', (config) => {
       console.log('Game started!');
-      setGameConfig(new gameConfig(
-        1, 
-        10, 
-        8, 
-        'medium',
-        'ghost',
-        false, 
-        1
-      ));
+      setGameConfig(config);
       setGameStart(true);
     });
 
@@ -142,6 +120,19 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
       setGameStart(false);
     });
   }, [user]);
+
+  useEffect(() => {
+    if (config.mode == 3) {
+      setOpp({ username: 'Computer', level: config.difficulty.toString(), avatar: '' });
+    }
+  }, [config]);
+  
+  useEffect(() => {
+    if (!gameStart) {
+      setSide(true);
+      setOpp({ username: "--", level: "----", avatar: "" });
+    }
+  }, [gameStart, gameOver]);
 
   return (
     <div className="flex justify-center items-center mx-4 p-5 rounded-lg bg-slate-900">
@@ -158,10 +149,12 @@ const Game: React.FC<Props> = ( {socket, avatar}) => {
         id="sketchHolder"
         className="rounded-xl shadow-2xl w-[90%] md:w-[700px] h-[450px]"
         >
-        {( gameStart ? (
-          <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} />
+        {gameOver ? (
+          <GameOver player1Score={player1.score} player2Score={player2.score} side={side} mode={config.mode} disconnect={disconnect} setGameOver={setGameOver} setGameStart={setGameStart} />
+        ) : ( gameStart ? (
+          <GameComponent socket={socket} avatar={avatar} config={config} user={user} setGameStart={setGameStart} setGameOver={setGameOver} />
         ) : (
-          <GameSettings socket={socket} setGameConfig={setGameConfig} startGame={startGame} />
+          <GameSettings socket={socket} setGameConfig={setGameConfig} setGameStart={setGameStart} />
         )
         )}
       </div>

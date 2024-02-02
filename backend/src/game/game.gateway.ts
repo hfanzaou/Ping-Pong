@@ -71,9 +71,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (this.gameService.waitingPlayers.length > 0) {
       const opponent = this.gameService.waitingPlayers.shift();
       if (opponent && opponent.id !== client.id) {
-        await this.gameService.initGame(this.wss, client, opponent, this.configs.get(opponent.id));
-        this.wss.to(client.id).emit('startGame');
-        this.wss.to(opponent.id).emit('startGame');
+        const config = this.configs.get(opponent.id);
+        await this.gameService.initGame(this.wss, client, opponent, config);
+        this.wss.to(client.id).emit('startGame', config);
+        this.wss.to(opponent.id).emit('startGame', config);
       }
     } else {
       this.logger.log(`No games found for ${client.id}`);
@@ -105,8 +106,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       }
       if (oppSocket) {
         await this.gameService.initGame(this.wss, client, oppSocket, payload.config);
-        this.wss.to(client.id).emit('startGame');
-        this.wss.to(oppSocket.id).emit('startGame');
+        this.wss.to(client.id).emit('startGame', payload.config);
+        this.wss.to(oppSocket.id).emit('startGame', payload.config);
       }
       else {
         this.wss.to(client.id).emit('CannotStartGame');
@@ -144,6 +145,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   ready(client: Socket) {
     let player = this.gameService.players.get(client.id);
     if (player) {
+      this.logger.log(`Player ${player.user.username} is ready`);
       player.ready = true;
       let game = this.gameService.games.get(player.roomName);
       if (game && game.player1.ready && game.player2.ready) {
@@ -155,7 +157,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
           this.logger.log(`Game ${game.player1.user.username} Vs ${game.player2.user.username} started`);
         }, GAME_START_DELAY);
       }
-      this.logger.log(`Client ${client.id} is ready`);
     }
   }
   async verifyClient(client: Socket) {

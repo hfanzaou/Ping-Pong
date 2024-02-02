@@ -1,6 +1,8 @@
+import { WIDTH, HEIGHT } from "./constants";
+
 export class gameConfig {
-    canvasWidth: number;
-    canvasHeight: number;
+    canvasWidth: number = WIDTH;
+    canvasHeight: number = HEIGHT;
     mode: number;
     maxScore: number;
     ballSpeed: number;
@@ -30,7 +32,5 @@ export class gameConfig {
         this.ballType = ballType;
         this.boost = boost;
         this.difficulty = difficulty;
-        this.canvasWidth = 700;
-        this.canvasHeight = 450;
     }
 }
