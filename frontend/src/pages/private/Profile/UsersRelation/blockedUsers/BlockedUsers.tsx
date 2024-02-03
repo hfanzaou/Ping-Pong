@@ -32,9 +32,9 @@ function BlockedUsers() {
     };
 
     const blockedUsers = blockedUsersList.map((item) => (
-        <Table>
+        <Table key={item.name}>
             <Table.Tbody>
-                <Table.Tr key={item.name}>
+                <Table.Tr >
                     <Table.Td>
                         <div className="flex justify-between items-center space-x-[90px]">
                             <Group gap="sm">
