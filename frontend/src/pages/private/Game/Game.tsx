@@ -92,10 +92,10 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
     });
     
     return () => {
-      socket.off('startGame');
-      socket.off('CannotStartGame');
-      socket.off('userId');
-      socket.off('getData');
+      socket.removeAllListeners('startGame');
+      socket.removeAllListeners('CannotStartGame');
+      socket.removeAllListeners('userId');
+      socket.removeAllListeners('getData');
     };
   }, []);
 
@@ -116,16 +116,8 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
       setGameStart(true);
     });
 
-    // socket.on('CannotStartGame', () => {
-    //   console.log('Cannot start game!');
-    //   setOppParam(null);
-    //   setGameStart(false);
-    // });
-
-
     return () => {
-      socket.off('startGame');
-      // socket.off('CannotStartGame');
+      socket.removeAllListeners('startGame');
     };
 
   }, [user]);

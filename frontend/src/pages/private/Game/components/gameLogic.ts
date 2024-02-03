@@ -76,7 +76,6 @@ function ft_goalScored(p5: p5Types, socket: Socket, config: gameConfig, setGameO
     socket.emit('gameOver', { player1Score: player1.score, player2Score: player2.score });
   }
   else {
-    // socket.emit('goalScored', { player1Score: player1.score, player2Score: player2.score });
     goalScored = true;
     setTimeout(() => {
       forge.resetLightningForge(config.canvasWidth, config.canvasHeight);
@@ -269,16 +268,23 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig, 
       }, 1000);
     p5.redraw();
   });
+
+  socket.on('resizeRacket',(payload) => {
+    let adjustedPos1 = payload.racket1Y * (config.canvasHeight / HEIGHT);
+    let adjustedPos = payload.racket2Y * (config.canvasHeight / HEIGHT);
+    player1.racket.y = adjustedPos1;
+    player2.racket.y = adjustedPos;
+  });
 }
 
 export function removeEventListeners(socket: Socket) {
-  socket.off('gameStart');
-  socket.off('initGame');
-  socket.off('gameOver');
-  socket.off('opponentDisconnected');
-  socket.off('updateRacket');
-  socket.off('updateBall');
-  socket.off('updateScore');
+  socket.removeAllListeners('gameStart');
+  socket.removeAllListeners('initGame');
+  socket.removeAllListeners('gameOver');
+  socket.removeAllListeners('opponentDisconnected');
+  socket.removeAllListeners('updateRacket');
+  socket.removeAllListeners('updateBall');
+  socket.removeAllListeners('updateScore');
 }
 
 

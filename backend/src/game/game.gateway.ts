@@ -88,10 +88,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       const opponent = this.gameService.waitingPlayers.shift();
       if (opponent && opponent.id !== client.id) {
         const config = this.configs.get(opponent.id);
-        await this.gameService.initGame(this.wss, client, opponent, config);
-        this.configs.delete(opponent.id);
-        this.wss.to(client.id).emit('startGame', config);
-        this.wss.to(opponent.id).emit('startGame', config);
+        if (await this.gameService.initGame(this.wss, client, opponent, config)) {
+          this.configs.delete(opponent.id);
+          this.wss.to(client.id).emit('startGame', config);
+          this.wss.to(opponent.id).emit('startGame', config);
+        }
       }
     } else {
       this.logger.log(`No games found for ${client.id}`);
@@ -125,7 +126,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
       }
       if (oppSocket) {
-        await this.gameService.initGame(this.wss, oppSocket, client, payload.config);
+        if (await this.gameService.initGame(this.wss, oppSocket, client, payload.config) === 0) {
+          this.wss.to(client.id).emit('CannotStartGame');
+        }
       }
       else {
         this.wss.to(client.id).emit('CannotStartGame', 'Opp socket Not found');
@@ -219,11 +222,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('windowResized')
   windowResize(client: Socket, payload: any) {
     this.logger.log(`Client ${client.id} resized window`);
-    /*let game = this.gameService.games.get(payload.roomName);
-    if (game) {
-      game.config.canvasWidth = payload.canvasWidth;
-      game.config.canvasHeight = payload.canvasHeight;
-      game.player2.racket.x = payload.canvasWidth - 30;
-    }*/
+    let player = this.gameService.players.get(client.id);
+    if (player) {
+      let game = this.gameService.games.get(player.roomName);
+      if (game) {
+        this.wss.to(player.roomName).emit('resizeRackets', {racket1Y: game.player1.racket.y, racket2Y: game.player2.racket.y});
+      }
+    }
   }
 }

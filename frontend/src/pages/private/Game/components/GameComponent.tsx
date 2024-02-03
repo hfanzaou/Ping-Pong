@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import p5 from "p5";
-import p5Types from "p5";
 import { Socket } from 'socket.io-client';
 import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, player1, player2, ball, sparks, goalScored, forge, side } from "./gameLogic";
 import { handleGameStates, play, gameOver, disconnect } from './gameStates';
 import { gameConfig } from '../classes/gameConfig';
 import { userData } from '../Game';
-import GameOver from './GameOver';
 import { WIDTH, HEIGHT } from '../classes/constants';
 
 
@@ -18,7 +16,6 @@ interface Props {
   user: userData;
   setGameStart: (v: boolean) => void;
   setGameOver: (v: boolean) => void;
-  //GameStart: boolean;
 }
 
 export let canvas: p5.Renderer;
@@ -33,12 +30,13 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
     if (sketchRef.current === null) return;
     p5Ref.current = new p5(p => {
       p.setup = async () => {
-        /*if (p.windowWidth > 800)
-        {
+        if (p.windowWidth > 800 && p.windowHeight > 600) {
           config.canvasWidth = WIDTH;
-        }*/
-        config.canvasWidth = p.windowWidth > 800 ? WIDTH : (p.windowWidth * 0.8);
-        config.canvasHeight = p.windowHeight > 600 ? HEIGHT : (p.windowHeight * 0.7);
+          config.canvasHeight = HEIGHT;
+        } else if (p.windowWidth < 800) {
+          config.canvasWidth = p.windowWidth * 0.8;
+          config.canvasHeight = p.windowHeight * 0.6;
+        }
         canvas = p.createCanvas(config.canvasWidth, config.canvasHeight);
         eventListeners(p, socket, config, setGameOver);
         if (config.mode == 3 || config.mode == 2) {
@@ -118,12 +116,17 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
       };
       
       p.windowResized = () => {
-        config.canvasWidth = p.windowWidth > 800 ? WIDTH : (p.windowWidth * 0.7);
-        config.canvasHeight = p.windowHeight > 600 ? HEIGHT : (p.windowHeight * 0.7);
+        if (p.windowWidth > 800 && p.windowHeight > 600) {
+          config.canvasWidth = WIDTH;
+          config.canvasHeight = HEIGHT;
+        } if (p.windowWidth < 800) {
+          config.canvasWidth = p.windowWidth * 0.71;
+          config.canvasHeight = config.canvasWidth * 0.65;
+        }
         player1.racket.resize(config.canvasWidth, config.canvasHeight, 1);
         player2.racket.resize(config.canvasWidth, config.canvasHeight, 2);
-        ball.resize(config);
-        // socket.emit('windowResized');
+        ball.radius = config.ballSize * config.canvasWidth/WIDTH;
+        ball.speed = config.ballSpeed * config.canvasWidth/WIDTH;
         p.resizeCanvas(config.canvasWidth, config.canvasHeight);
       };
 

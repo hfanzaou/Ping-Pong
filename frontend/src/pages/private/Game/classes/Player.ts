@@ -25,6 +25,7 @@ class Racket {
   height: number;
   forcePushTime: number;
   forcePush: boolean;
+  yRatio: number;
 
   constructor(x: number, y: number, width: number, height: number, canvasWidth: number, canvasHeight: number) {
     this.x = x * (canvasWidth / WIDTH);
@@ -33,6 +34,7 @@ class Racket {
     this.height = height * (canvasHeight / HEIGHT);
     this.forcePushTime = 0;
     this.forcePush = false;
+    this.yRatio = y / HEIGHT;
   }
 
   show (p5: p5Types) {
@@ -50,6 +52,7 @@ class Racket {
       if (socket) {
         socket.emit("updateRacket", { racketY: this.y, canvasHeight: canvasHeight });
       }
+      this.yRatio = this.y / canvasHeight;
     }
   }
 
@@ -59,6 +62,7 @@ class Racket {
       if (socket) {
         socket.emit("updateRacket", {racketY: this.y, canvasHeight: canvasHeight});
       }
+      this.yRatio = this.y / canvasHeight;
     }
   }
 
@@ -71,9 +75,9 @@ class Racket {
     } else {
       this.x = (WIDTH - RACKET_WIDTH - 10) * (canvasWidth / WIDTH);
     }
-    this.y = this.y * (canvasHeight / HEIGHT);
+    this.y = this.yRatio * canvasHeight; 
   }
-  
+
   forceUpdate() {
     if (this.forcePushTime < 6) {
       this.x -= 1;
