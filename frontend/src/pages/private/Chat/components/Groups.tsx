@@ -3,13 +3,11 @@ import {
 	IconDotsVertical,
 	IconLogin,
 	IconLogout2,
-	IconUsersGroup,
-	IconVolume3
+	IconUsersGroup
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, NEWCHAT } from "../myTypes";
 import { setUserData } from "../utils";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -641,16 +639,6 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 										<h2 className="mt-1">Join</h2>
 									</div>
 							}
-						</button>
-					</li>
-					<li>
-						<button
-							className="flex justify-center items-center w-[100px]
-								h-[50px] rounded-b-md hover:bg-discord3"
-							// onClick={mute}
-						>
-							<IconVolume3 />
-							<h2 className="">Mute</h2>
 						</button>
 					</li>
 				</ul>
