@@ -3,6 +3,7 @@ import { IconPingPong, IconSend2, IconUser } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { DATA, MESSAGE, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
+import { Link } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -171,7 +172,7 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 			"addnotification",
 			{reciever: data.talkingTo, type: "game"}
 		);
-		window.location.href = `http://localhost:3000/Game?opp=${data.talkingTo}`
+		
 	}
 	return data.talkingTo ? (
 		<form
@@ -232,14 +233,15 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						>
 							<IconSend2 />
 						</button> :
-						<a
-							// href={`http://localhost:3000/Game?opp=${data.talkingTo}`}
-							className="bg-discord1 w-10 h-10 rounded-md flex
-								justify-center items-center"
-							onClick={clickGame}
-						>
-							<IconPingPong/>
-						</a>
+						<Link to={`/Game?opp=${data.talkingTo}`}>
+							<button
+								className="bg-discord1 w-10 h-10 rounded-md flex
+									justify-center items-center"
+								onClick={clickGame}
+							>
+								<IconPingPong/>
+							</button>
+						</Link>
 
 				}
 			</div>
