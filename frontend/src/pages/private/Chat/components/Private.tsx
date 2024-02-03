@@ -92,8 +92,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
-			// console.log("here");
-			if (x.time && y.time) {
+			if (x && y && x.time && y.time) {
 				const	timeX = new Date(x.time);
     			const	timeY = new Date(y.time);
     			return timeY.getTime() - timeX.getTime();

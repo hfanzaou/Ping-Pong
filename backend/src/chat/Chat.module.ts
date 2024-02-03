@@ -12,6 +12,7 @@ import { GameModule } from "src/game/game.module";
 @Module({
 	imports: [UserModule, JwtModule.register({})],
 	providers: [ChatService, ChatGateway, UserService, JwtTwoFaStrategy, GameModule],
-	controllers: [ChatController]
+	controllers: [ChatController],
+	exports: [ChatService]
 })
 export class ChatModule {}

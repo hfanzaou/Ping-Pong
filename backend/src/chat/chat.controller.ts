@@ -1,20 +1,19 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
-import { NEWCHAT, NEWGROUP } from "./myTypes";
+import { NEWCHAT, NEWGROUP, name, old, password, sender, socket, userName, userName1 } from "./myTypes";
 import JwtTwoFaGuard from "src/auth/guard/twoFaAuth.guard";
-import { ChatGateway } from "./chat.gateway";
 
 @UseGuards(JwtTwoFaGuard)
 @Controller()
 export class ChatController {
-	constructor(private chatService: ChatService, private chatGateway: ChatGateway) {}
+	constructor(private chatService: ChatService) {}
 	@Post("chatUser")
-	async handleUser(@Body() data: { userName: string }, @Req() req) {
+	async handleUser(@Body() data: userName, @Req() req) {
 		if (req.user.username == data.userName) {
 			const	user = await this.chatService.getUserData(data.userName);
 			return user;
 		}
-		return null
+		return null;
 	}
 	@Post("chathistoryPrivate")
 	async handleHistoryPrivate(@Body() data: NEWCHAT, @Req() req) {
@@ -37,14 +36,14 @@ export class ChatController {
 	}
 	@Post("createGroup")
 	async handleCreateGroup(@Body() data: {data: NEWGROUP}, @Req() req) {
-		if (req.user.username == data.data.owner) {
+		if (data && data.data && req.user.username == data.data.owner) {
 			const condition = await this.chatService.addGroup(data.data);
 			return condition;
 		}
 	}
 	@Post("onlineoffline")
 	async handleOnlineOffline(
-		@Body() data: {socket: string, username: string},
+		@Body() data: socket,
 		@Req() req
 	) {
 		if (req.user.username == data.username)
@@ -56,20 +55,20 @@ export class ChatController {
 			return groups;
 	}
 	@Post("leaveJoin")
-	async handleLeaveJoin(@Body() data: { userName: string, name: string}, @Req() req) {
+	async handleLeaveJoin(@Body() data: name, @Req() req) {
 		if (req.user.username == data.userName) {
 			const	groups = await this.chatService.getLeaveJoin(data);
 			return groups;
 		}
 	}
 	@Post("checkPassword")
-	async handleCheckPassword(@Body() data: { name: string, password: string}) {
+	async handleCheckPassword(@Body() data: password) {
 		const	answer = await this.chatService.getCheckPassword(data);
 		return answer;
 	}
 	@Post("groupUsers")
 	async handleGroupUsers(
-		@Body() data: { name: string, userName: string },
+		@Body() data: name,
 		@Req() req
 	) {
 		if (req.user.username == data.userName) {
@@ -80,7 +79,7 @@ export class ChatController {
 	}
 	@Post("addGroupAdmin")
 	async handleAddGroupAdmin(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -88,7 +87,7 @@ export class ChatController {
 	}
 	@Post("removeGroupAdmin")
 	async handleRemoveGroupAdmin(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -96,7 +95,7 @@ export class ChatController {
 	}
 	@Post("addGroupMute")
 	async handleAddGroupMute(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -104,7 +103,7 @@ export class ChatController {
 	}
 	@Post("removeGroupMute")
 	async handleRemoveGroupMute(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -112,7 +111,7 @@ export class ChatController {
 	}
 	@Post("addGroupBan")
 	async handleAddGroupBan(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -120,7 +119,7 @@ export class ChatController {
 	}
 	@Post("removeGroupBan")
 	async handleRemoveGroupBan(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -128,7 +127,7 @@ export class ChatController {
 	}
 	@Post("groupKick")
 	async handleGroupKick(
-		@Body() data: { name: string, userName: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -136,7 +135,7 @@ export class ChatController {
 	}
 	@Post("inviteGroup")
 	async handleInviteGroup(
-		@Body() data: { userName: string, name: string, sender: string },
+		@Body() data: sender,
 		@Req() req
 	) {
 		if (req.user.username == data.sender)
@@ -144,7 +143,7 @@ export class ChatController {
 	}
 	@Post("checkUserGroup")
 	async handleCheckUserGroup(
-		@Body() data: { userName: string, name: string },
+		@Body() data: name,
 		@Req() req
 	) {
 		if (req.user.username == data.userName)
@@ -153,20 +152,14 @@ export class ChatController {
 	}
 	@Post("privateJoin")
 	async handlePrivateJoin(
-		@Body() data: { name: string, userName: string },
+		@Body() data: name,
 		@Req() req
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.privateJoin(data);
 	}
 	@Post("groupsChage")
-	async handleGroupsChage(@Body() data: {
-			name: string,
-			old: string,
-			password: string,
-			oldName: string,
-			userName: string
-		},
+	async handleGroupsChage(@Body() data: old,
 		@Req() req
 	) {
 		if (req.user.username == data.userName)
@@ -174,7 +167,7 @@ export class ChatController {
 	}
 	@Post("checkGroup")
 	async handleCheckGroup(
-		@Body() data: { name: string, userName: string },
+		@Body() data: name,
 		@Req() req
 	) {
 		if (req.user.username == data.userName)
@@ -182,7 +175,7 @@ export class ChatController {
 	}
 	@Post("chatAvatarPrivate")
 	async handleChatAvatarPrivate(
-		@Body() data: { userName1: string, userName2: string },
+		@Body() data: userName1,
 		@Req() req
 	) {
 		if (req.user.username == data.userName1)
@@ -190,14 +183,10 @@ export class ChatController {
 	}
 	@Post("chatAvatarRoom")
 	async handleChatAvatarRoom(
-		@Body() data: { name: string, userName: string },
+		@Body() data: name,
 		@Req() req
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.chatAvatarRoom(data);
 	}
-	// @Post("numberOfMessages")
-	// async handleNumberOfMessages(@Body() data: { userName: string, sender: string }) {
-	// 	return await this.chatService.numberOfMessages(data.userName, data.sender);
-	// }
 }
