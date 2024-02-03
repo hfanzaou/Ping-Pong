@@ -73,7 +73,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 				return ;
 			}
 		}
-		fetchData();
+		if (data.talkingTo && data.userData?.userName)
+			fetchData();
 	}, [data]);
 	useEffect(() => {
 		if (trigger) {
@@ -119,7 +120,8 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 						data.socket?.emit("newUser", data.talkingTo)
 					}
 			}
-			fetchData()
+			if (data.talkingTo && data.userData?.userName)
+				fetchData()
 			setTrigger(false);
 		}
 	}, [trigger])
