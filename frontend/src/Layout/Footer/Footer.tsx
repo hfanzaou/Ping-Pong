@@ -5,7 +5,7 @@ function Footer() {
     return (
         <div className="flex justify-center items-center space-x-10 mt-5">
             <div className="flex flex-col items-center justify-center py-4 text-gray-400 ">
-                <p className="text-sm">ft_trancendence</p>
+                <p className="text-sm">ft_transcendence</p>
                 <p className="text-sm">made with ♡ by</p>
             </div>
             <div className="flex items-center space-x-5">

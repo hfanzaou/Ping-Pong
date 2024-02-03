@@ -309,13 +309,24 @@ export class ChatService {
 					include: { messages: true }
 				});
 				if (history) {
-					const chatHistory = [...history.messages.map(x => {
+					let chatHistory = [...history.messages.map(x => {
 						return {
 							id: x.id,
 							message: x.message,
 							sender: x.sender,
 						}
 					})].sort((a, b) => a.id - b.id).reverse();
+					const	user = await this.prisma.user.findFirst({
+						where: {
+							username: data.sender
+						},
+						include: {
+							blocked: true,
+							blockedFrom: true
+						}
+					});
+					chatHistory = chatHistory.filter(x => user.blocked.find(y => y.username == x.sender) == undefined);
+					chatHistory = chatHistory.filter(x => user.blockedFrom.find(y => y.username == x.sender) == undefined);
 					return chatHistory;
 				}
 				else
