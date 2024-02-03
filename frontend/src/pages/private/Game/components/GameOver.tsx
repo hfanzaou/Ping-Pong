@@ -50,11 +50,12 @@ const GameOver: React.FC<GameOverProps> = ({
         <div 
             className="flex flex-col w-[90%] md:w-[700px] h-[450px] bg-gray-800 rounded-xl justify-center items-center relative"
         >
-            { disconnect && (
+            { disconnect ? (
                 <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
                     Opponent Disconnected
                 </Text>
-            )}
+            ) : (
+            <>
             <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
                 Game Over!
             </Text>
@@ -64,6 +65,8 @@ const GameOver: React.FC<GameOverProps> = ({
             <Text ta='center' c='white' fz='xl' fw='bold' mb='lg'>
                 Score: {player1Score} - {player2Score}
             </Text>
+            </>
+            )}
             {(mode !== 1) && (
                 <button
                     className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"

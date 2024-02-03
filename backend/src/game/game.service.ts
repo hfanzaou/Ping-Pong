@@ -114,7 +114,7 @@ export class GameService {
       const game = this.games.get(player.roomName);
       if (game) {
         // Notify the other player in the room that their opponent has disconnected
-        wss.to(game.player2.user.socket).emit('opponentDisconnected');
+        wss.to(player.roomName).emit('opponentDisconnected');
         // Remove the clients from the room
         wss.in(player.roomName).socketsLeave(player.roomName);
         // End the game
