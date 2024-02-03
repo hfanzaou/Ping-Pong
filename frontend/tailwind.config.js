@@ -26,11 +26,11 @@ module.exports = {
         fade: "fade 4s forwards"
       },
       colors: {
-        discord1: "#1e2124",
+        discord1: "#1f2937",
         discord2: "#282b30",
         discord3: "#36393e",
         discord4: "#424549",
-        discord5: "#7289da",
+        discord5: "#15aabf",
         discord6: "#f1faee"
       },
       // fontFamily: {
