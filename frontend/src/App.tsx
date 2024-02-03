@@ -7,7 +7,6 @@ import './index.css'
 
 import axios from 'axios'
 import { Socket } from 'socket.io-client';
-
 import Login from './pages/public/Login/Authentication';
 import Auth from './pages/public/Login/Auth'
 import Header from './Layout/Header/Header';

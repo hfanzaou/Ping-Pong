@@ -10,7 +10,7 @@ interface UserCardProps {
 }
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
-    
+
     const stats = [
         {value: usercard?.win, label: 'Wins'},
         {value: (usercard?.win) + (usercard?.loss), label: 'Played game'},
@@ -20,7 +20,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     const items = stats.map((stat) => (
         <div key={stat.label} className={stat.label !== 'Played game' ? "mb-12" : ""}>
             <Text ta="center" fz="lg" fw={500} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
-                {stat.value}
+                {String(stat.value)}
             </Text>
             <Text ta="center" fz="sm" lh={1} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
                 {stat.label}
@@ -31,11 +31,12 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     return (
         <Card p={0} className='h-full w-full space-y-5' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
             <Avatar
-                src={usercard?.avatar}
-                size='35vh'
-                radius={250}
+                className='rounded-full'
+                size='80%'
+                h='80%'
                 m="auto"
                 mt={12}
+                src={usercard?.avatar}
             />
             <div>
                 <Text  ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
