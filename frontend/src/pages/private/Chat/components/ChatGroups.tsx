@@ -437,9 +437,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	async function clickSave() {
 		if (
-			settingsName &&
-			settingsOld &&
-			settingsPassword &&
 			data.groupTo &&
 			userNameRef.current
 		) {

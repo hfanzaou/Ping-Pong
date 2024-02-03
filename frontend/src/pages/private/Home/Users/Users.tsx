@@ -31,7 +31,7 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
             socket?.off('online');
         }
 
-    }, [setState, userName, socket]);
+    }, [setState, socket]);
 
     return (
         <div className="absolute h-14 w-14 top-1 start-1">
