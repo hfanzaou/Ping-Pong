@@ -22,12 +22,13 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
 
     useEffect(() => {
         socket?.on("getnotification", (type) => {
+            getNotificationTable();
             if (type === 'friend request' || type === 'accept friend' || type === 'groupInvite' || type === 'game') {
                 setNotification(true);
-            } else if (type === 'remove request') {
-                setNotification(false);
-            }
-            getNotificationTable();
+            } 
+            // else if (notificationList.length === 0 && type === 'remove request') {
+            //     setNotification(false);
+            // }
 
             return () => {
                 socket.off("getnotification");
@@ -59,12 +60,27 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 {item.type === "groupInvite" &&
                 <div>
                     <Text c={'white'} > Invite you to a group</Text>
-                    <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}><Link to={`http://localhost:3000/Chat?name=${item.groupname}`}>check it out</Link></Button>
+                    <Link to={`http://localhost:3000/Chat?name=${item.groupname}`}>
+                        <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}>
+                            <div className='text-lg'>
+                                check it out
+                            </div>
+                        </Button>
+                    </Link>
                 </div>}
                 {item.type === 'game'&& 
                 <div>
                     <Text c={'white'}>sent you a game invite</Text>
-                    {/* <Button radius='xl' size="xs" color="green" onClick={() => handleRequest(item.username)}>Accept</Button> */}
+                    <Link to={`/Game`}>
+                        <Button radius='xl' size="xs" color="green" onClick={() => {
+                            socket?.emit("acceptInvite")
+                            close();
+                        }}>
+                            <div className='text-lg'>
+                                check it out
+                            </div>
+                        </Button>
+                    </Link>
                 </div>}
             </div>
         </div>

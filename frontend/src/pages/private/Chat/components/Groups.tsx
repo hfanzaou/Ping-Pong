@@ -225,8 +225,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		// console.log("Data");
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		setList(data.userData?.groups.filter(x => {
@@ -348,6 +348,24 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				recver: tmp
 			}
 			data.socket?.emit("newChatRoom", newChat);
+			setData(prev => {
+				if (prev.userData)
+					return {
+						...prev,
+						userData: {
+							...prev.userData,
+							groups: [...prev.userData.groups].map(x => {
+								if (x.name == tmp)
+									return {
+										...x,
+										unRead: 0
+									}
+								return x;
+							})
+						}
+					}
+				return prev;
+			});
 		}
 	}
 	async function checkGroup(name: string) {
@@ -418,20 +436,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		if (data.groupTo == settingsXy.login)
 			setData(x => ({ ...x, groupTo: undefined }));
 	}
-	async function update() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
-	}
+
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto
@@ -548,7 +553,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				{
 					list?.map(x => {
 						return (
-							<li key={x.id} className="flex relative">
+							<li key={x.id} className="flex relative group">
 								<button
 									onClick={clickGroup}
 									name={x.name}
@@ -558,27 +563,40 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 										: "hover:bg-discord4"}
 										flex justify-center items-center`}
 								>
-									{/* <img
-										src={x.avatar}
-										className={`w-10 h-10 mr-3
-											rounded-full
-											${
-												data.talkingTo == x.login &&
-													"shadow-black shadow-lg"
-											}`}
-									/> */}
-									<IconUsersGroup
-										className={`w-10 h-10 mr-3
-											rounded-full bg-discord1
-											${
-												data.groupTo == x.name &&
-													"shadow-black shadow-lg"
-											}`}
-											/>
+									<div className="relative">
+										<IconUsersGroup
+											className={`w-10 h-10 mr-3
+												rounded-full bg-discord1
+												${
+													data.groupTo == x.name &&
+														"shadow-black shadow-lg"
+												}`}
+										/>
+										{
+											x.name != data.groupTo &&
+											x.unRead != 0 &&
+											<div
+												className="absolute rounded-full
+													z-10 border-4 bg-red-500
+													text-xs px-1 right-1 -bottom-2
+													border-discord3
+													group-hover:border-discord4"
+											>
+												{
+													x.unRead && (
+														x.unRead < 100 ?
+															x.unRead :
+															"+99"
+													)
+												}
+											</div>
+										}
+									</div>
 									{size && x.name}
 								</button>
 								<button
-									className="absolute top-5 right-0 w-10 flex justify-center"
+									className="absolute top-5 right-0 w-10 flex
+										justify-center"
 									onClick={clickSettings}
 									name={x.name}
 								>

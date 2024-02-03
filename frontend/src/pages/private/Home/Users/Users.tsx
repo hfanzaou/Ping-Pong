@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Table, Group, Text, TextInput, ScrollArea, Button, Menu, rem } from '@mantine/core';
+import { Avatar, Table, Group, Text, TextInput, ScrollArea, Button, Menu, rem, Textarea, SimpleGrid } from '@mantine/core';
 import UsersInterface from './UsersInterface';
 import axios from 'axios';
 import { IconMessages, IconTrash, IconUserCircle } from '@tabler/icons-react';
@@ -70,7 +70,6 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         .then((res) => {
             setUsersList(res.data);
             setSearchList(res.data);
-            console.log("Users list00000-->: ", res.data);
         }).catch(err => {
             if (err.response.status === 401) {
                 window.location.replace('/login');
@@ -133,7 +132,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
         <Table.Tr key={item.name} m={2}>
             <Table.Td>
                 <div className='flex justify-between'>
-                    <Group gap="md">
+                    <div className='flex items-center xs:w-[40px] mr-3'>
                         <Menu position='right-start' trigger="hover" openDelay={200} closeDelay={100} offset={2}>
                             <Menu.Target>
                                 <div dir="rtl" className="relative" >
@@ -145,7 +144,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                             </Menu.Target>
                             <Menu.Dropdown bg='dark' mt={35}>
                                 <Menu.Item
-                                    c='blue'                              
+                                    c='blue'                            
                                     onClick={() => handelShowProfile(item.name)}
                                 >
                                     <Link to={`/UserProfile?name=${item.name}`}>
@@ -184,15 +183,22 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
                                 level {item.level}
                             </Text>
                         </div>
-                    </Group>
-                    <Group>
-                        <Button color='green' size='xs' radius='xl'>
-                            <Link to={`/Game?opp=${item.name}`}>
-                                play game
-                            </Link>
-                        </Button>
+                    </div>
+                    <SimpleGrid
+                        className='flex items-center jystify-end'
+                        cols={{ base: 1, sm: 2, md: 2, lg: 2, xl: 2 }}
+                    >
+                        <Link to={`/Game?opp=${item.name}`}>
+                            <Button w={160} color='#656A7E' size='xs' radius='xl' onClick={() => {
+                                socket?.emit("addnotification", {reciever: item.name, type: "game"})
+                            }}>
+                                <div className='text-lg'>
+                                    play Game
+                                </div>
+                            </Button>
+                        </Link>
                         <FriendshipButton name={item.name} friendship={item.friendship} handleRequest={handleRequest}/>
-                    </Group>
+                    </SimpleGrid>
                 </div>
             </Table.Td>
         </Table.Tr>
@@ -200,10 +206,16 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
 
     return (
         <div className='flex flex-col space-y-2 m-5'>
-            <TextInput className='ml-auto'
-                variant="filled"
-                radius="md"
-                type='search' placeholder='search user' onChange={handleChange} value={searchInput}
+            <TextInput
+                className='ml-auto px-2 rounded-xl'
+                ml='auto'
+                bg='#4F23C0'
+                w={300}
+                size='lg'
+                variant="unstyled"
+                placeholder='search user' 
+                onChange={(e) => {handleChange(e)}}
+                value={searchInput}
             />
             <ScrollArea className='h-[60vh]'>
                 <Table verticalSpacing="md" highlightOnHover={false} stickyHeader={false} className='rounded-xl'>

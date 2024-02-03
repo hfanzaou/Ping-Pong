@@ -12,7 +12,7 @@
     "prisma:dev:deploy": "prisma migrate deploy",
     "db:dev:rm": "docker-compose rm dev-db",
     "db:dev:up": "docker-compose up -d",
-    "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && timeout \t 1 && npm run prisma:dev:deploy",
+    "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && timeout \t 3 && npm run prisma:dev:deploy",
     "start:all:dev": "npm run db:dev:restart && nest start --watch",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

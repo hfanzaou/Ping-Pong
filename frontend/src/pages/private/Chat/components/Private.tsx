@@ -42,7 +42,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		data.socket?.on("online", onlineCallback);
@@ -86,13 +87,12 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		// console.log(Data);
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
-			// console.log("here");
-			if (x.time && y.time) {
+			if (x && y && x.time && y.time) {
 				const	timeX = new Date(x.time);
     			const	timeY = new Date(y.time);
     			return timeY.getTime() - timeX.getTime();
@@ -155,7 +155,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					}
 				}
 			return prev;
-		})
+		});
 	}
 	function change(event: React.ChangeEvent<HTMLInputElement>) {
 		setText(event.target.value);
@@ -198,10 +198,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}
 	function block() {
 		setBlockTrigger(true);
-	}
-	function mute() {}
-	function clickTest() {
-		List && console.log(List[0].unRead)
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
@@ -270,7 +266,9 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 															className={
 																`absolute -bottom-2
 																right-1 rounded-full
-																z-10 border-4 bg-red-500 text-xs px-1 ${
+																z-10 border-4
+																bg-red-500 text-xs
+																px-1 ${
 																	x.login != data.talkingTo ?
 																		`border-discord3
 																		group-hover:border-discord4` :
@@ -374,16 +372,6 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 						>
 							<IconTrash />
 							<h2 className="mt-1">Block</h2>
-						</button>
-					</li>
-					<li>
-						<button
-							className="flex justify-center items-center w-[100px]
-								h-[50px] hover:bg-discord3"
-							onClick={mute}
-						>
-							<IconVolume3 />
-							<h2 className="">Mute</h2>
 						</button>
 					</li>
 					<li>

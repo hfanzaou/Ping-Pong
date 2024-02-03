@@ -6,7 +6,9 @@ import {
 	IconDoorExit,
 	IconEye,
 	IconEyeOff,
+	IconFaceIdError,
 	IconLockOpen,
+	IconPingPong,
 	IconSend2,
 	IconSettings,
 	IconSettings2,
@@ -21,7 +23,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, MESSAGE, NEWCHAT, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -77,7 +78,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					}),
 					credentials: "include"
 				});
-				// console.log(res);
 				const	Data = await res.json();
 				if (Data)
 					setAvatars(Data);
@@ -250,16 +250,18 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						credentials: "include"
 					});
 					const Data: USERDATA = await res0.json();
-					Data.groups.sort((x, y) => {
-						if (x.time && y.time) {
-							const	timeX = new Date(x.time);
-							const	timeY = new Date(y.time);
-							return timeY.getTime() - timeX.getTime();
-						}
-						return 0;
-					})
-					setData(prev => setUserData(prev, Data));
-					data.socket?.emit("newGroup", data.groupTo)
+					if (Data) {
+						Data.groups.sort((x, y) => {
+							if (x.time && y.time) {
+								const	timeX = new Date(x.time);
+								const	timeY = new Date(y.time);
+								return timeY.getTime() - timeX.getTime();
+							}
+							return 0;
+						})
+						setData(prev => setUserData(prev, Data));
+						data.socket?.emit("newGroup", data.groupTo)
+					}
 			}
 			fetchData()
 			setTrigger(false);
@@ -286,8 +288,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	function callBack(m: {
 		id: number,
 		message: string,
-		sender: string,
-		// avatar: string,
+		sender: string
 	})
 	{
 		setData(x => ({
@@ -330,7 +331,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => setUserData(prev, Data));
+		if (Data)
+			setData(prev => setUserData(prev, Data));
 	}
 	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
 		const	tmp = event.currentTarget.value;
@@ -350,17 +352,11 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				credentials: "include"
 			})
 			await callBackBlock();
-			if (
-				tmp == "addGroupBan" &&
-				tmp1 &&
-				data.groupTo
-			) {
-				console.log(tmp, data.groupTo);
-				data.socket?.emit(
-					"ban",
-					{userName: tmp1, name: data.groupTo}
-				);
-			}
+			if (tmp == "groupKick" || tmp == "addGroupBan")
+				data.socket?.emit("kick", {
+					userName: tmp1,
+					name: data.groupTo
+				});
 		}
 	}
 
@@ -556,8 +552,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												className={
 													`bg-discord1 border-none
 														outline-none w-32 h-10 p-5
-														text-white mr-0 ml-0
-														rounded-l-full z-10
+														text-white mr-0 ml-0 z-10
 														${
 															error.length == 0 ?
 															"" :
@@ -781,13 +776,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 														value="groupKick"
 													>
 														<IconDoorExit />
-														<h1
+														{/* <h1
 															className="mt-2 mr-5
 																hidden
 																group-hover:block"
 														>
 															kick
-														</h1>
+														</h1> */}
 													</button>
 													{
 														data.
@@ -811,14 +806,14 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="addGroupBan"
 															>
 																<IconBan />
-																<h1
+																{/* <h1
 																	className="mt-2
 																		mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	ban
-																</h1>
+																</h1> */}
 															</button> :
 															<button
 																className="flex
@@ -832,14 +827,14 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="removeGroupBan"
 															>
 																<IconLockOpen />
-																<h1
+																{/* <h1
 																	className="mt-2
 																		mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	unban
-																</h1>
+																</h1> */}
 															</button>
 													}
 													{
@@ -864,13 +859,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="addGroupMute"
 															>
 																<IconVolume3 />
-																<h1
+																{/* <h1
 																	className="mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	mute
-																</h1>
+																</h1> */}
 															</button> :
 															<button
 																className="flex
@@ -884,13 +879,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="removeGroupMute"
 															>
 																<IconVolume />
-																<h1
+																{/* <h1
 																	className="mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	unmute
-																</h1>
+																</h1> */}
 															</button>
 													}
 													{
@@ -907,12 +902,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															value="addGroupAdmin"
 														>
 															<IconChessBishopFilled />
-															<h1
+															{/* <h1
 																className="mr-5 hidden
 																	group-hover:block"
 															>
 																admin
-															</h1>
+															</h1> */}
 														</button> :
 														<button
 															className="flex
@@ -926,12 +921,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															value="removeGroupAdmin"
 														>
 															<IconChessFilled />
-															<h1
+															{/* <h1
 																className="mr-5 hidden
 																	group-hover:block"
 															>
 																member
-															</h1>
+															</h1> */}
 														</button>
 													}
 												</div>
@@ -950,12 +945,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													value="block"
 												>
 													<IconTrash />
-													<h1
+													{/* <h1
 														className="mt-2 hidden
 															group-hover:block"
 													>
 														block
-													</h1>
+													</h1> */}
 												</button> :
 												<button
 													className="flex justify-center
@@ -967,14 +962,33 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													value="inblock"
 												>
 													<IconTrashOff/>
-													<h1
+													{/* <h1
 														className="mt-2 mr-5 hidden
 															group-hover:block"
 													>
 														unblock
-													</h1>
-												</button>	
+													</h1> */}
+												</button>
 											}
+											<button
+												className="flex justify-center
+													items-center
+													font-extrabold
+													hover:text-green-500
+													group mx-2"
+												// onClick={clickAdmin}
+												// name={x.userName}
+												// value="groupKick"
+											>
+												<IconPingPong />
+												{/* <h1
+													className="mt-2 mr-5
+														hidden
+														group-hover:block"
+												>
+													kick
+												</h1> */}
+											</button>
 										</div>
 									</div>
 								</li>
@@ -982,7 +996,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						}) :
 						conversation.map(x => {
 							const	avatar = avatars.find(y => y.userName == x.sender);
-							if (avatar)
+							// if (avatar)
 								return (
 									<li
 										key={x.id}
@@ -993,15 +1007,21 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 											href={`http://localhost:3000/UserProfile?name=${x.sender}`}
 										>
 											{
-												avatar.avatar ?
+												(avatar && avatar.avatar) ?
 													<img
 														src={avatar.avatar}
 														className="h-12 w-12 rounded-full mr-3"
-													/> :
-													<IconUser
-														className="h-12 w-12 rounded-full mr-3
-															bg-discord1"
-													/>
+													/> : (
+														avatar ?
+														<IconUser
+															className="h-12 w-12 rounded-full mr-3
+																bg-discord1"
+														/> :
+														<IconFaceIdError
+															className="h-12 w-12 rounded-full mr-3
+																bg-discord1"
+														/>
+													)
 											}
 										</a>
 										<div className="w-[80%]">

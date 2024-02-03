@@ -5,6 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import FriendshipButton from "../../../../componenet/FriendshipButton";
 import SerndMessage from "../../../../componenet/SendMessage";
 import { Socket } from "socket.io-client";
+import { Link } from "react-router-dom";
 
 
 function Buttons({profile, friendShip, handleRequest, socket}: {profile: any, friendShip: string, handleRequest: any, socket: Socket}) {
@@ -29,9 +30,28 @@ function Buttons({profile, friendShip, handleRequest, socket}: {profile: any, fr
         <Card className='flex items-center justify-center'  style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
             <div className='flex flex-col space-y-3'>
                 <FriendshipButton name={profile?.usercard?.username} friendship={friendShip} handleRequest={handleRequest}/>
-                <Button size="xs" color='gray' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>Block user</Button>
-                <Button size="xs" color='gray' radius='xl' onClick={handleSendMessage}>Send message</Button>
+                <Link to={`/Game?opp=${profile?.usercard?.username}`}>
+                    <Button w={160} color='#656A7E' size='xs' radius='xl' onClick={() => {
+                        socket?.emit("addnotification", {reciever: profile?.usercard?.username, type: "game"})
+                    }}>
+                        <div className='text-lg'>
+                            play Game
+                        </div>
+                    </Button>
+                </Link>
+                <Button size="xs" color='cyan' radius='xl' onClick={handleSendMessage}>
+                    <div className='text-lg'>
+                        Send message
+                    </div>
+                </Button>
                 <SerndMessage name={receverName} opened={opened} close={close} socket={socket} />
+                <Link to='/'>
+                    <Button w={160} size="xs" color='#F21616' radius='xl' onClick={() => handleBlockUser(profile?.usercard?.username)}>
+                        <div className='text-lg'>
+                            Block user
+                        </div>
+                    </Button>
+                </Link>
             </div>
         </Card>
     );

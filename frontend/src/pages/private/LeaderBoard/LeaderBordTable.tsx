@@ -1,5 +1,5 @@
 import React from "react";
-import { Group, ScrollArea, Table, Avatar, Text} from "@mantine/core";
+import { Group, ScrollArea, Table, Avatar, Text, Blockquote} from "@mantine/core";
 import leaderboardInterface from "./Leaderboard";
 
 function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
@@ -16,14 +16,6 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
                     </div>
                 </Group>
             </Table.Td>
-            {/* <Table.Td>
-                <Text fz="sm">{item.win}</Text>
-                <Text fz="xs" c="dimmed">Wins</Text>
-            </Table.Td>
-            <Table.Td>
-                <Text fz="sm">{item.loss}</Text>
-                <Text fz="xs" c="dimmed">Lost</Text>
-            </Table.Td> */}
             <Table.Td>
                 <Text fz="md" fw={500} c="dimmed">Level</Text>
                 <Text fz="sm" c='blue'>{item.level}</Text>
@@ -31,15 +23,23 @@ function LeaderbordTable({data}:{data: leaderboardInterface[]}) {
         </Table.Tr>
     ));
 
+
+
     return (
-        // 425 is the height of the table
-        <ScrollArea h='70vh'>
-            <Table withRowBorders={false} >
-                <Table.Tbody>
-                    {rows}
-                </Table.Tbody>
-            </Table>
-        </ScrollArea>
+        <div className="flex items-center justify-center">
+        {rows.length > 3 ?
+            <ScrollArea h='70vh'>
+                <Table withRowBorders={false} >
+                    <Table.Tbody>
+                        {rows}
+                    </Table.Tbody>
+                </Table>
+            </ScrollArea> :
+            <Blockquote className='text-xl' ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                Other Players List
+            </Blockquote>
+        }
+        </div>
     );
 }
 

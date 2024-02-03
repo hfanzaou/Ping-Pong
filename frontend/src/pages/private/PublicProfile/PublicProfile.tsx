@@ -6,26 +6,37 @@ import UsersInterface from './UsersInterface';
 
 function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersList, socket}: {profileName: string | undefined,avatar: string, handleRequest: any, usersList: UsersInterface[], setUsersList: Function, socket: Socket}) {
     
+    const getUsers = async () => {
+        await axios.get("user/list")
+        .then((res) => {
+            if (res.status === 200) {
+                setUsersList(res.data);
+            }               
+        }).catch(err => {
+            if (err.response.status === 401) {
+                window.location.replace('/login');
+            }
+            console.error("Error in fetching Users list: ", err);
+        })
+    };
+
     useEffect(() => {
-        const getUsers = async () => {
-            await axios.get("user/list")
-            .then((res) => {
-                if (res.status === 200) {
-                    setUsersList(res.data);
-                }               
-            }).catch(err => {
-                console.error("Error in fetching Users list: ", err);
-            })
-        };
+        socket?.on("getnotification", () => {
+            getUsers();
+            return () => {
+                socket.off("getnotification");
+            }
+        });
+    }, [socket]);
+
+    useEffect(() => {
          getUsers();
     }, []);
 
     const friendShip: any = usersList.find(user => user.name == profileName)?.friendship;
 
     return (
-        // <div>
             <Profile profileName={profileName} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/>
-        // </div>
     );
 }
 

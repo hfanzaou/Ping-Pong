@@ -1,18 +1,14 @@
 import React from 'react';
 import { Text, Card } from '@mantine/core';
 import leaderboardInterface from './Leaderboard';
-import image1 from "./assite/lead1.png";
-import image2 from "./assite/lead2.png";
-import image3 from "./assite/lead3.png";
 
 function LeaderbordCard({data, rank}: {data: leaderboardInterface, rank: number}) {
-    const image = rank === 1 ? image1 : rank === 2 ? image2 : image3;
 
     return (
         <Card p={0} radius="md" bg='dark' className='flex flex-col space-y-4 h-full w-full'>
           <Card.Section className='h-[35vh]'>
             <img
-                className="object-fill w-full h-full"
+                className="object-cover w-full h-full"
                 src={data?.avatar}
                 height={100}
                 alt={data?.name}

@@ -23,23 +23,25 @@ export class GameService {
   games: Map<string, {config: gameConfig, ball: Ball, player1: Player, player2: Player, gameStart: boolean}> = new Map();
 
   async setUser(client: Socket, userName: string) {
-    const	userData = await this.prismaService.user.findUnique({
-			where: { username: userName }
-    });
-  
-    if (userData) {
-      let user: User;
-      if (userData.socket) {
+
+    if (userName && typeof userName === 'string') {
+      const userData = await this.prismaService.user.findFirst({
+        where: { username: userName }
+      });
+
+      if (userData) {
+        if (this.users.has(userData.socket)) {
+          this.logger.log(`User ${this.users.get(userData.socket).username} already exists!`);
+          return this.users.get(userData.socket);
+        }
+      
+        let user: User;
         user = new User(userData.id, userName, userData.socket);
         this.users.set(userData.socket, user);
+        this.logger.log(`${userData.username} (${userData.socket}) added to users map!`);
+        this.logger.log(user);
+        return user;
       }
-      else {
-        this.logger.log(`${userData.username} socket id Not Found`);
-        user = new User(userData.id, userName, client.id);
-        this.users.set(client.id, user);
-      }
-      this.logger.log(`Client ${client.id} set username to ${userName}`);
-      return user;
     }
     return null;
   }

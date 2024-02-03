@@ -25,13 +25,14 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => {
-			return {
-				...setUserData(prev, Data),
-				groupTo: undefined,
-				talkingTo: undefined
-			}
-		});
+		if (Data)
+			setData(prev => {
+				return {
+					...setUserData(prev, Data),
+					groupTo: undefined,
+					talkingTo: undefined
+				}
+			});
 	}
 	async function clickRooms()
 	{
@@ -47,13 +48,14 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 			credentials: "include"
 		});
 		const Data = await res0.json();
-		setData(prev => {
-			return {
-				...setUserData(prev, Data),
-				groupTo: undefined,
-				talkingTo: undefined
-			}
-		});
+		if (Data)
+			setData(prev => {
+				return {
+					...setUserData(prev, Data),
+					groupTo: undefined,
+					talkingTo: undefined
+				}
+			});
 	}
 	return (
 		<nav className="ml-2 mr-2">
