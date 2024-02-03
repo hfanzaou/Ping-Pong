@@ -3,10 +3,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { createWriteStream, writeFileSync } from 'fs';
 import path from 'path';
 import { InstanceLoader } from '@nestjs/core/injector/instance-loader';
+import { ChatService } from 'src/chat/chat.service';
 
 @Injectable()
 export class UsersettingsService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private chatService: ChatService) {}
 
     async updateUsername(user: any, newName: string) {
         try {
@@ -26,6 +27,7 @@ export class UsersettingsService {
                     username: newName,
                 }
             })
+            await this.chatService.updateUserNameChat(user, newName)
         } catch(error) {
             throw  error instanceof ConflictException ? error : HttpStatus.INTERNAL_SERVER_ERROR;
         }
