@@ -23,6 +23,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, MESSAGE, NEWCHAT, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
+import { Link } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -436,9 +437,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	async function clickSave() {
 		if (
-			settingsName &&
-			settingsOld &&
-			settingsPassword &&
 			data.groupTo &&
 			userNameRef.current
 		) {
@@ -502,6 +500,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setSettingsPassword("");
 		setSettingsVerify("");
 		setError("");
+	}
+	function clickGame(event: React.MouseEvent<HTMLButtonElement>) {
+		data.socket?.emit(
+			"addnotification",
+			{reciever: event.currentTarget.name, type: "game"}
+		);
 	}
 	if (data.groupTo) {
 		if (data.userData?.groups?.find(x => x.name == data.groupTo))
@@ -985,25 +989,27 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													</h1> */}
 												</button>
 											}
-											<button
-												className="flex justify-center
-													items-center
-													font-extrabold
-													hover:text-green-500
-													group mx-2"
-												// onClick={clickAdmin}
-												// name={x.userName}
-												// value="groupKick"
-											>
-												<IconPingPong />
-												{/* <h1
-													className="mt-2 mr-5
-														hidden
-														group-hover:block"
+											<Link to={`/Game?opp=${x.userName}`}>
+												<button
+													className="flex justify-center
+														items-center
+														font-extrabold
+														hover:text-green-500
+														group mx-2"
+													onClick={clickGame}
+													name={x.userName}
+													// value="groupKick"
 												>
-													kick
-												</h1> */}
-											</button>
+													<IconPingPong />
+													{/* <h1
+														className="mt-2 mr-5
+															hidden
+															group-hover:block"
+													>
+														kick
+													</h1> */}
+												</button>
+											</Link>
 										</div>
 									</div>
 								</li>
