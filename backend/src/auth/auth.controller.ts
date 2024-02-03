@@ -124,6 +124,7 @@ export class AuthController {
 	@UseGuards(JwtGuard)
 	async logout(@Req() req, @Res() res)
 	{
+		this.authService.signToken({sub: 0, userID: 0, isTwoFaAuth: false});
 		await res.clearCookie('jwt');
 		res.redirect(this.config.get('HOST'))
 	}

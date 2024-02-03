@@ -112,18 +112,20 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
     socket.on('startGame', (config) => {
       console.log('Game started!');
       setGameConfig(config);
+      setOppParam(null);
       setGameStart(true);
     });
 
-    socket.on('CannotStartGame', () => {
-      console.log('Cannot start game!');
-      setGameStart(false);
-    });
+    // socket.on('CannotStartGame', () => {
+    //   console.log('Cannot start game!');
+    //   setOppParam(null);
+    //   setGameStart(false);
+    // });
 
 
     return () => {
       socket.off('startGame');
-      socket.off('CannotStartGame');
+      // socket.off('CannotStartGame');
     };
 
   }, [user]);
@@ -135,6 +137,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
   }, [config]);
 
   useEffect(() => {
+    setOppParam(null);
     if (!gameStart) {
       setSide(true);
       setOpp({ username: "--", level: "----", avatar: "" });
