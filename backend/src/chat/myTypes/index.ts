@@ -102,7 +102,6 @@ export class sender {
 }
 
 export class old {
-	@IsNotEmpty()
 	@IsString()
 	name: string;
 	@IsString()
@@ -111,7 +110,6 @@ export class old {
 	password: string;
 	@IsString()
 	oldName: string;
-	@IsNotEmpty()
 	@IsString()
 	userName: string;
 }

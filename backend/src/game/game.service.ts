@@ -71,22 +71,22 @@ export class GameService {
   {
     if (!opponent || opponent.id === client.id) return;
 
-    const roomName = `room${client.id}${opponent.id}`;
-    client.join(roomName);
-    opponent.join(roomName);
-
-    this.logger.log(`Clients ${client.id} and ${opponent.id} joined ${roomName}`);
-
+    
+    
     this.waitingPlayers = this.waitingPlayers.filter(player => {
       player.id !== client.id && player.id !== opponent.id;
     });
-  
+    
     const user1 = this.users.get(opponent.id);
     const user2 = this.users.get(client.id);
     if (!user1 || !user2) {
-      this.logger.log('Here');
+      wss.emit('CannotStartGame', 'User not found');
       return ;
     }
+    const roomName = `room${client.id}${opponent.id}`;
+    this.logger.log(`Clients ${client.id} and ${opponent.id} joined ${roomName}`);
+    client.join(roomName);
+    opponent.join(roomName);
     this.logger.log(user1);
     this.logger.log(user2);
     let player1 = new Player(this.users.get(opponent.id), 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, roomName);
@@ -111,15 +111,19 @@ export class GameService {
   disconnectPlayer(wss: Server, client: Socket) {
     const player = this.players.get(client.id);
     if (player) {
-      // Notify the other player in the room that their opponent has disconnected
-      wss.to(player.roomName).emit('opponentDisconnected');
-      // Remove the clients from the room
-      wss.in(player.roomName).socketsLeave(player.roomName);
-      // End the game
-      this.games.delete(player.roomName);
-      this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== client.id);
-      this.players.delete(client.id);
-      this.users.delete(client.id);
+      const game = this.games.get(player.roomName);
+      if (game) {
+        // Notify the other player in the room that their opponent has disconnected
+        wss.to(game.player2.user.socket).emit('opponentDisconnected');
+        // Remove the clients from the room
+        wss.in(player.roomName).socketsLeave(player.roomName);
+        // End the game
+        this.games.delete(player.roomName);
+        this.waitingPlayers = this.waitingPlayers.filter(player => player.id !== client.id);
+        this.players.delete(game.player1.user.socket);   
+        this.players.delete(game.player2.user.socket);
+        this.users.delete(client.id);
+      }
     }
   }
 
