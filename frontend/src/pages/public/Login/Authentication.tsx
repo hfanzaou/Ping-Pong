@@ -1,10 +1,39 @@
 import React from 'react';
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { TextInput, PasswordInput, Text, Paper, Group, PaperProps, Button, Divider, Anchor, Stack, SimpleGrid,} from '@mantine/core';
+import { TextInput, PasswordInput, Text, Paper, Group, PaperProps, Button, Divider, Anchor, Stack, SimpleGrid, Card,} from '@mantine/core';
 import axios from 'axios';
 import LoginWithIntra from './LoginWithIntra';
 import image from "./assite/home.jpg"
+
+
+// function Authentication(props: PaperProps) {
+
+//     return (
+//         <>
+//         <div className="h-[2vh]"></div>
+//         <div className='mx-[50px] mt-5 p-5 rounded-xl bg-slate-900 shadow-5'>
+//             <SimpleGrid
+//                 className='grid place-items-center'
+//                 cols={{base: 1, md:2, lg: 2, xl: 2}}
+//                 spacing='sm'
+//             >
+//                 <Card
+//                     style={{backgroundColor: 'rgb(31 41 55)'}}
+//                 >
+//                     <Text c='white' size="md" fw={500}>
+//                         Welcome to game
+//                     </Text>
+//                     <Group grow mb="md" mt="md">
+//                         <LoginWithIntra/>
+//                     </Group>
+//                 </Card>
+//                 <img className='rounded-lg' src={image} alt="ping pong image" />
+//             </SimpleGrid>
+//         </div>
+//         </>
+//     );
+// }
 
 function Authentication(props: PaperProps) {
     const [incorect, setIncorect] = React.useState(false);
