@@ -64,6 +64,22 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   cancele(client: Socket) {
     this.configs.delete(client.id);
     this.gameService.waitingPlayers = this.gameService.waitingPlayers.filter((player) => player.id !== client.id);
+    const player = this.gameService.players.get(client.id);
+    if (player)
+    {
+      const game = this.gameService.games.get(player.roomName);
+      if (game) {
+        if (game.player1.user.id === player.user.id) {
+          this.gameService.players.delete(game.player1.user.socket);
+        }
+        else {
+          this.gameService.players.delete(game.player2.user.socket);
+        }
+        // this.gameService.players.delete(game.player2.user.socket);
+        this.gameService.games.delete(player.roomName);
+        this.logger.log(`${player.user.username} canceled game with ${game.player2.user.username}`);
+      }
+    }
   }
 
   @SubscribeMessage('join_room')
@@ -73,6 +89,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       if (opponent && opponent.id !== client.id) {
         const config = this.configs.get(opponent.id);
         await this.gameService.initGame(this.wss, client, opponent, config);
+        this.configs.delete(opponent.id);
         this.wss.to(client.id).emit('startGame', config);
         this.wss.to(opponent.id).emit('startGame', config);
       }
@@ -85,7 +102,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('userName')
   async _setUser(client: Socket, payload: any) {
     this.logger.log(`Client ${client.id} wants to set username to ${payload.username}`);
-    const user = await this.gameService.setUser(client, payload.username);
+    const user = await this.gameService.setUser(client, payload.username, false);
     if (user)
       this.wss.to(client.id).emit('userId', user.id);
     else
@@ -95,8 +112,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('createGame')
   async createGame(client: Socket, payload: any) {
     this.logger.log(payload);
-    const user1 = await this.gameService.setUser(client, payload.userName);
-    const user2 = await this.gameService.setUser(client, payload.oppName);
+    const user1 = await this.gameService.setUser(client, payload.userName, false);
+    const user2 = await this.gameService.setUser(client, payload.oppName, true);
     if (user1 && user2) {
       this.logger.log(`${user1.username} (${user1.socket}) Challenges ${user2.username} (${user2.socket})`);
       const sockets = await this.wss.in(user2.socket).fetchSockets();
@@ -154,6 +171,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       player.ready = true;
       let game = this.gameService.games.get(player.roomName);
       if (game && game.player1.ready && game.player2.ready) {
+        this.wss.to(game.player1.user.socket).emit('getData', game.player2.user.id, true);
+        this.wss.to(game.player2.user.socket).emit('getData', game.player1.user.id, false);
         this.wss.to(game.player1.user.socket).emit('initGame', {side: 1, player1: game.player1, player2: game.player2, ball: game.ball});
         this.wss.to(game.player2.user.socket).emit('initGame', {side: 2, player1: game.player1, player2: game.player2, ball: game.ball});
         this.wss.to(player.roomName).emit('gameStart');
@@ -185,23 +204,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (player) {
         let game = this.gameService.games.get(player.roomName);
         if (game) {
-            const sockets = await this.wss.in(game.player1.user.socket).fetchSockets();
-            let oppSocket: any;
-            for (const socket of sockets) {
-              if (socket.id === game.player1.user.socket) {
-                oppSocket = socket;
-                this.logger.log('socket Found');
-              }
-            }
-            if (oppSocket) {
-            //   await this.gameService.initGame(this.wss, client, oppSocket, game.config);
-              this.wss.to(client.id).emit('startGame', game.config);
-              this.wss.to(oppSocket.id).emit('startGame', game.config);
-            }
-            else {
-              this.wss.to(client.id).emit('CannotStartGame');
-              this.logger.log('Opp socket Not found');
-            }
+          this.wss.to(game.player1.user.socket).emit('startGame', game.config);
+          this.wss.to(game.player2.user.socket).emit('startGame', game.config);
         }
         else {
           this.wss.to(client.id).emit('CannotStartGame');
