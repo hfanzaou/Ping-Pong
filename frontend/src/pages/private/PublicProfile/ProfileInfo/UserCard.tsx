@@ -10,7 +10,7 @@ interface UserCardProps {
 }
 
 function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProps, handleRequest: any, friendShip: string}) {
-    
+
     const stats = [
         {value: usercard?.win, label: 'Wins'},
         {value: (usercard?.win) + (usercard?.loss), label: 'Played game'},
@@ -20,7 +20,7 @@ function UserCard({usercard, handleRequest, friendShip}: {usercard: UserCardProp
     const items = stats.map((stat) => (
         <div key={stat.label} className={stat.label !== 'Played game' ? "mb-12" : ""}>
             <Text ta="center" fz="lg" fw={500} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
-                {stat.value}
+                {String(stat.value)}
             </Text>
             <Text ta="center" fz="sm" lh={1} c={(stat.label === 'Played game'? "dimmed" : stat.label === 'Wins' ? 'green': 'red')}>
                 {stat.label}

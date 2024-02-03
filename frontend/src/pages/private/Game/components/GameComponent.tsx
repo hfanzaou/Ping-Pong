@@ -33,6 +33,10 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
     if (sketchRef.current === null) return;
     p5Ref.current = new p5(p => {
       p.setup = async () => {
+        /*if (p.windowWidth > 800)
+        {
+          config.canvasWidth = WIDTH;
+        }*/
         config.canvasWidth = p.windowWidth > 800 ? WIDTH : (p.windowWidth * 0.8);
         config.canvasHeight = p.windowHeight > 600 ? HEIGHT : (p.windowHeight * 0.7);
         canvas = p.createCanvas(config.canvasWidth, config.canvasHeight);
@@ -50,8 +54,10 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
         p.background('rgb(31, 41, 55)');
         p.fill('white');
       
-        if (!play)
+        if (!play) {
+          socket.emit('state');
           handleGameStates(p, config, socket);
+        }
         
         if (play) {
           socket.emit('state', "Ingame");
