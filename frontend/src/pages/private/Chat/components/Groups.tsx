@@ -84,7 +84,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				setList(Data);
 				setPrivateJoin("");
 			}
-			fetchData();
+			if (privateJoin && userNameRef.current)
+				fetchData();
 		}
 	}, [privateJoin])
 	useEffect(() => {
@@ -168,7 +169,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				}
 				setName(Data);
 			}
-			fetchData()
+			if (createData)
+				fetchData();
 			setCreateTrigger(false);
 		}
 	}, [createTrigger])
@@ -214,19 +216,21 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}));
 	}, [data.send]);
 	async function callBackNewGroup() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: userNameRef.current
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => setUserData(prev, Data));
+		if (userNameRef.current) {
+			const res0 = await fetch("http://localhost:3001/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				}),
+				credentials: "include"
+			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => setUserData(prev, Data));
+		}
 	}
 	useEffect(() => {
 		setList(data.userData?.groups.filter(x => {
@@ -369,19 +373,22 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}
 	}
 	async function checkGroup(name: string) {
-		const	res = await fetch("http://localhost:3001/checkGroup", {
-				method: "POST",
-				headers: {
-					"content-type": "application/json"
-				},
-				body: JSON.stringify({
-					name: name,
-					userName: userNameRef.current
-				}),
-				credentials: "include"
-			});
-		const	Data = await res.json();
-		return Data;
+		if (userNameRef.current) {
+			const	res = await fetch("http://localhost:3001/checkGroup", {
+					method: "POST",
+					headers: {
+						"content-type": "application/json"
+					},
+					body: JSON.stringify({
+						name: name,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
+				});
+			const	Data = await res.json();
+			return Data;
+		}
+		return false;
 	}
 	async function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
 		const	x = event.clientX;
@@ -409,32 +416,34 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}
 	}
 	async function leaveJoin() {
-		const	res = await fetch("http://localhost:3001/leaveJoin", {
-			method: "POST",
-			headers: {
-				"content-type": "application/json"
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName,
-				name: settingsXy.login
-			}),
-			credentials: "include"
-		});
-		const	Data = await res.json();
-		setData(x => {
-			if (x.userData)
-				return {
-					...x,
-					userData: {
-						...x.userData,
-						groups: Data
+		if (data.userData?.userName && settingsXy.login) {
+			const	res = await fetch("http://localhost:3001/leaveJoin", {
+				method: "POST",
+				headers: {
+					"content-type": "application/json"
+				},
+				body: JSON.stringify({
+					userName: data.userData?.userName,
+					name: settingsXy.login
+				}),
+				credentials: "include"
+			});
+			const	Data = await res.json();
+			setData(x => {
+				if (x.userData)
+					return {
+						...x,
+						userData: {
+							...x.userData,
+							groups: Data
+						}
 					}
-				}
-			return x;
-		});
-		setSettings(false);
-		if (data.groupTo == settingsXy.login)
-			setData(x => ({ ...x, groupTo: undefined }));
+				return x;
+			});
+			setSettings(false);
+			if (data.groupTo == settingsXy.login)
+				setData(x => ({ ...x, groupTo: undefined }));
+		}
 	}
 
 	return (

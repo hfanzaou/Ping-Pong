@@ -31,19 +31,21 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
 	async function onlineCallback(message: {username: string, state: string}) {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: userNameRef.current
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => setUserData(prev, Data));
+		if (userNameRef.current) {
+			const res0 = await fetch("http://localhost:3001/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				}),
+				credentials: "include"
+			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => setUserData(prev, Data));
+		}
 	}
 	useEffect(() => {
 		data.socket?.on("online", onlineCallback);
@@ -76,19 +78,21 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: userNameRef.current
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => setUserData(prev, Data));
+		if (userNameRef.current) {
+			const res0 = await fetch("http://localhost:3001/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				}),
+				credentials: "include"
+			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => setUserData(prev, Data));
+		}
 	}
 	useEffect(() => {
 		setList(data.userData?.chatUsers.sort((x, y) => {
@@ -120,7 +124,8 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				await callBack();
 				setData(x => ({ ...x, talkingTo: undefined }));
 			}
-			fetchData();
+			if (settingsXy.login)
+				fetchData();
 			setBlockTrigger(false);
 			setSettings(false);
 		}

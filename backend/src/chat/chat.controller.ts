@@ -21,6 +21,7 @@ export class ChatController {
 			const	history = await this.chatService.getUserHistoryPrivate(data);
 			return history;
 		}
+		return null;
 	}
 	@Post("chathistoryRoom")
 	async handleHistoryRoom(@Body() data: NEWCHAT, @Req() req) {
@@ -28,6 +29,7 @@ export class ChatController {
 			const	history = await this.chatService.getUserHistoryRoom(data);
 			return history;
 		}
+		return null;
 	}
 	@Post("chatUsers")
 	async handleUsers(@Body() data: NEWCHAT, @Req() req) {
@@ -40,6 +42,7 @@ export class ChatController {
 			const condition = await this.chatService.addGroup(data.data);
 			return condition;
 		}
+		return false;
 	}
 	@Post("onlineoffline")
 	async handleOnlineOffline(
@@ -140,6 +143,7 @@ export class ChatController {
 	) {
 		if (req.user.username == data.sender)
 			return await this.chatService.inviteGroup(data);
+		return false;
 	}
 	@Post("checkUserGroup")
 	async handleCheckUserGroup(
@@ -157,6 +161,7 @@ export class ChatController {
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.privateJoin(data);
+		return [];
 	}
 	@Post("groupsChage")
 	async handleGroupsChage(@Body() data: old,
@@ -164,6 +169,7 @@ export class ChatController {
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.groupsChage(data);
+		return "";
 	}
 	@Post("checkGroup")
 	async handleCheckGroup(
@@ -172,6 +178,7 @@ export class ChatController {
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.checkGroup(data);
+		return false;
 	}
 	@Post("chatAvatarPrivate")
 	async handleChatAvatarPrivate(
@@ -180,6 +187,7 @@ export class ChatController {
 	) {
 		if (req.user.username == data.userName1)
 			return await this.chatService.chatAvatarPrivate(data);
+		return null;
 	}
 	@Post("chatAvatarRoom")
 	async handleChatAvatarRoom(
@@ -188,5 +196,6 @@ export class ChatController {
 	) {
 		if (req.user.username == data.userName)
 			return await this.chatService.chatAvatarRoom(data);
+		return null;
 	}
 }

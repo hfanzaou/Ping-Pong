@@ -82,7 +82,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				if (Data)
 					setAvatars(Data);
 			}
-			fetchData();
+			if (data.groupTo && userNameRef.current)
+				fetchData();
 		}
 	}, [data.groupTo, data.userData?.groups]);
 	useEffect(() => {
@@ -120,7 +121,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				return ;
 			}
 		}
-		fetchData();
+		if (data.groupTo && data.userData?.userName)
+			fetchData();
 	}, [data]);
 	useEffect(() => {
 		async function fetchData() {
@@ -139,7 +141,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			if (Data.length)
 				setUsers(Data);
 		}
-		fetchData();
+		if (data.groupTo && userNameRef.current)
+			fetchData();
 	}, [data])
 	useEffect(() => {
 		const	tmp = users.find(x => x.userName == data.userData?.userName)
@@ -150,7 +153,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		resrtartSettings();
 	}, [data.groupTo])
 	async function clickJoinCallBack(state: boolean) {
-		if (!state) {
+		if (!state && data.userData?.userName && data.groupTo) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
 				method: "POST",
 				headers: {
@@ -197,7 +200,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		if (data.password) {
 			if (passwordText == "")
 				setPasswordError(true);
-			else {
+			else if (data.groupTo && passwordText) {
 				const	res = await fetch("http://localhost:3001/checkPassword", {
 					method: "POST",
 					headers: {
@@ -263,7 +266,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						data.socket?.emit("newGroup", data.groupTo)
 					}
 			}
-			fetchData()
+			if (data.userData?.userName)
+				fetchData()
 			setTrigger(false);
 		}
 	}, [trigger])
@@ -317,28 +321,31 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			})
 			await callBackBlock();
 		}
-		fetchData();
+		if (event.currentTarget.name)
+			fetchData();
 	}
 	async function callBackBlock() {
-		const res0 = await fetch("http://localhost:3001/chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: userNameRef.current
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => setUserData(prev, Data));
+		if (userNameRef.current) {
+			const res0 = await fetch("http://localhost:3001/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				}),
+				credentials: "include"
+			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => setUserData(prev, Data));
+		}
 	}
 	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
 		const	tmp = event.currentTarget.value;
 		const	tmp1 = event.currentTarget.name;
 
-		if (tmp) {
+		if (tmp && data.groupTo && tmp1 && userNameRef.current) {
 			await fetch(`http://localhost:3001/${tmp}`, {
 				method: "POST",
 				headers: {
@@ -378,7 +385,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setInvite(x => !x);
 	}
 	async function submitInvite() {
-		if (userInvite.length) {
+		if (userInvite.length && userInvite && data.groupTo && userNameRef.current) {
 			const	res = await fetch("http://localhost:3001/inviteGroup", {
 				method: "POST",
 				headers: {
@@ -428,36 +435,44 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			setError("");
 	}
 	async function clickSave() {
-		if (settingsName.length || settingsOld.length || settingsPassword.length) {
-			const	res = await fetch("http://localhost:3001/groupsChage", {
-				method: "POST",
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					name: settingsName,
-					old: settingsOld,
-					password: settingsPassword,
-					oldName: data.groupTo,
-					userName: userNameRef.current
-				}),
-				credentials: "include"
-			});
-			const	Data = await res.text();
-			if (Data == "DONE") {
-				resrtartSettings();
-				await callBackBlock();
-				if (settingsName.length)
-					setData(x => ({
-						...x,
-						groupTo: settingsName
-					}));
+		if (
+			settingsName &&
+			settingsOld &&
+			settingsPassword &&
+			data.groupTo &&
+			userNameRef.current
+		) {
+			if (settingsName.length || settingsOld.length || settingsPassword.length) {
+				const	res = await fetch("http://localhost:3001/groupsChage", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						name: settingsName,
+						old: settingsOld,
+						password: settingsPassword,
+						oldName: data.groupTo,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
+				});
+				const	Data = await res.text();
+				if (Data == "DONE") {
+					resrtartSettings();
+					await callBackBlock();
+					if (settingsName.length)
+						setData(x => ({
+							...x,
+							groupTo: settingsName
+						}));
+				}
+				else
+					setError(Data);
 			}
 			else
-				setError(Data);
+				setError("changeSomething");
 		}
-		else
-			setError("changeSomething");
 	}
 	function changeSettingsPassword(event: React.ChangeEvent<HTMLInputElement>) {
 		setSettingsPassword(event.target.value);

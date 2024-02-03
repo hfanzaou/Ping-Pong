@@ -16,7 +16,7 @@ const   Header: React.FC<Props> = ({ setSocket, socket, avatar, handleRequest })
                 credentials: "include"
             });
             const Data0 = await res0.json();
-            if (Data0.name)
+            if (Data0.name && socket.id)
             {
                 try {
                     await fetch("http://localhost:3001/onlineoffline", {
