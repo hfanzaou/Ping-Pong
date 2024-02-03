@@ -166,6 +166,13 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
+	function clickGame() {
+		data.socket?.emit(
+			"addnotification",
+			{reciever: data.talkingTo, type: "game"}
+		);
+		window.location.href = `http://localhost:3000/Game?opp=${data.talkingTo}`
+	}
 	return data.talkingTo ? (
 		<form
 			onSubmit={submit}
@@ -216,13 +223,25 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 					autoFocus
 					ref={Reference}
 				/>
-				<button
-					className="bg-discord1 w-10 h-10 rounded-md flex
-						justify-center items-center"
-					type="submit"
-				>
-					{ data.message.length ? <IconSend2 /> : <IconPingPong/>}
-				</button>
+				{
+					data.message.length ?
+						<button
+							className="bg-discord1 w-10 h-10 rounded-md flex
+								justify-center items-center"
+							type="submit"
+						>
+							<IconSend2 />
+						</button> :
+						<a
+							// href={`http://localhost:3000/Game?opp=${data.talkingTo}`}
+							className="bg-discord1 w-10 h-10 rounded-md flex
+								justify-center items-center"
+							onClick={clickGame}
+						>
+							<IconPingPong/>
+						</a>
+
+				}
 			</div>
 		</form>
 	) : <div></div>;
