@@ -23,9 +23,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
   const [ballType, setBallType] = useState('ghost');
   const [boost, setBoost] = useState(true);
   const [creatingGame, setCreatingGame] = useState(false);
-  const [waitingForPlayer, setWaitingForPlayer] = useState(false);
-  const [challengePlayer, setChallengePlayer] = useState(false);
-  const [joinGame, setJoinGame] = useState(false);
   const [playAgainstComputer, setPlayAgainstComputer] = useState(false);
   const [play1vs1Click, setPlay1vs1Click] = useState(false);
   const [difficulty, setDifficulty] = useState('Easy');
@@ -45,7 +42,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
   function handleCreateGame() {
     setIsLoading(true);
     setLoadingMessage('Waiting for a second player ...');
-    setWaitingForPlayer(true);
     setLoader(true);
     let speed: number;
     switch (ballSpeed) {
@@ -117,15 +113,10 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     }
   }
 
-  function handleChallengePlayer() {
-    setChallengePlayer(true);
-  }
-
   function handleJoinGameClick() {
     setIsLoading(true);
     setLoader(true);
     setLoadingMessage('Looking for games ...');
-    setJoinGame(true);
     socket.emit('join_room');
   }
 
@@ -146,8 +137,6 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     setCreatingGame(false);
     setShowSettings(false);
     setPlayAgainstComputer(false);
-    setChallengePlayer(false);
-    setWaitingForPlayer(false);
     if (isLoading) {
       setIsLoading(false);
       setLoader(false);
@@ -159,9 +148,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
 
     socket.on('startGame', () => {
       setIsLoading(false);
-      setWaitingForPlayer(false);
       setLoader(false);
-      setJoinGame(false);
       setGameStart(true);
     });
   
@@ -175,16 +162,15 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     socket.on('CannotStartGame', (err: string) => {
       setLoader(false);
       setIsLoading(true);
-      setLoadingMessage('Can not create game! ' + err);
+      setLoadingMessage('Can not create game :(');
     });
 
     return () => {
-      socket.off('startGame');
-      socket.off('NoGames');
-      socket.off('CannotStartGame');
+      socket.removeAllListeners('startGame');
+      socket.removeAllListeners('NoGames');
+      socket.removeAllListeners('CannotStartGame');
       setLoader(false);
       setIsLoading(false);
-      setWaitingForPlayer(false);
     }
 
   }, []);
@@ -289,7 +275,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
                   value={ballSize} 
                   onChange={e => setBallSize(e.target.value)}
                 >
-                  <option value="smal">Small</option>
+                  <option value="small">Small</option>
                   <option value="medium">Medium</option>
                   <option value="big">Big</option>
                 </select>
@@ -326,19 +312,11 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
             </div>
               
             <button
-              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white ml-20"
+              className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white ml-24"
               onClick={handleCreateGame}
             >
               Create Game
             </button>
-            { (!playAgainstComputer && !play1vs1Click) && (
-              <button
-                className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white mr-20"
-                onClick={handleChallengePlayer}
-              >
-                Challenge a Player
-              </button>
-            )}
           </>
         ) : (
           <>

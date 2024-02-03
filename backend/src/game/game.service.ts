@@ -70,8 +70,6 @@ export class GameService {
   async initGame(wss: Server, client: Socket, opponent: Socket, config: gameConfig)
   {
     if (!opponent || opponent.id === client.id) return;
-
-    
     
     this.waitingPlayers = this.waitingPlayers.filter(player => {
       player.id !== client.id && player.id !== opponent.id;
@@ -80,15 +78,18 @@ export class GameService {
     const user1 = this.users.get(opponent.id);
     const user2 = this.users.get(client.id);
     if (!user1 || !user2) {
-      wss.emit('CannotStartGame', 'User not found');
-      return ;
+      // wss.to(opponent.id).emit('CannotStartGame', 'User not found');
+      return 0;
+    }
+    else if (user1.username === user2.username) {
+      // wss.to(opponent.id).emit('CannotStartGame');
+      return 0;
     }
     const roomName = `room${client.id}${opponent.id}`;
     this.logger.log(`Clients ${client.id} and ${opponent.id} joined ${roomName}`);
     client.join(roomName);
     opponent.join(roomName);
-    this.logger.log(user1);
-    this.logger.log(user2);
+
     let player1 = new Player(this.users.get(opponent.id), 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, roomName);
     let player2 = new Player(this.users.get(client.id), WIDTH - 30, HEIGHT/2 - RACKET_HEIGHT/2, 0, roomName);
     let ball = new Ball(config.ballSpeed, config.ballSize, config.ballType);
@@ -104,8 +105,10 @@ export class GameService {
       this.logger.log(`Game ${player1.user.username} Vs ${player2.user.username} Initialized!`);
     }
     else {
-      wss.to(client.id).emit('CannotCreateGame');
+      wss.to(client.id).emit('CannotCreateGame', 'User not found');
+      return 0;
     }
+    return 1;
   }
 
   disconnectPlayer(wss: Server, client: Socket) {
@@ -243,5 +246,4 @@ export class GameService {
     else
       this.logger.log(`Client ${client.id} Vs Computer game ended`);
   }
-  // async inGame()
 }

@@ -32,7 +32,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	settingsXyRef.current = settingsXy;
 	userNameRef.current = data.userData?.userName;
 	async function onlineCallback(message: {username: string, state: string}) {
-		if (userNameRef.current) {
+		if (userNameRef && userNameRef.current) {
 			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
@@ -79,7 +79,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
-		if (userNameRef.current && text.length == 0) {
+		if (userNameRef && userNameRef.current && text.length == 0) {
 			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
@@ -127,8 +127,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 				await callBack();
 				setData(x => ({ ...x, talkingTo: undefined }));
 			}
-			if (settingsXy.login)
-				fetchData();
+			fetchData();
 			setBlockTrigger(false);
 			setSettings(false);
 		}

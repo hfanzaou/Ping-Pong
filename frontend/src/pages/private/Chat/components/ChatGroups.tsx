@@ -83,7 +83,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				if (Data)
 					setAvatars(Data);
 			}
-			if (data.groupTo && userNameRef.current)
+			if (data.groupTo && userNameRef && userNameRef.current)
 				fetchData();
 		}
 	}, [data.groupTo, data.userData?.groups]);
@@ -142,7 +142,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			if (Data.length)
 				setUsers(Data);
 		}
-		if (data.groupTo && userNameRef.current)
+		if (data.groupTo && userNameRef && userNameRef.current)
 			fetchData();
 	}, [data])
 	useEffect(() => {
@@ -201,7 +201,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		if (data.password) {
 			if (passwordText == "")
 				setPasswordError(true);
-			else if (data.groupTo && passwordText) {
+			else if (data.groupTo) {
 				const	res = await fetch("/checkPassword", {
 					method: "POST",
 					headers: {
@@ -322,11 +322,10 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			})
 			await callBackBlock();
 		}
-		if (event.currentTarget.name)
-			fetchData();
+		fetchData();
 	}
 	async function callBackBlock() {
-		if (userNameRef.current) {
+		if (userNameRef && userNameRef.current) {
 			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
@@ -346,7 +345,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		const	tmp = event.currentTarget.value;
 		const	tmp1 = event.currentTarget.name;
 
-		if (tmp && data.groupTo && tmp1 && userNameRef.current) {
+		if (data.groupTo && userNameRef && userNameRef.current) {
 			await fetch(`/${tmp}`, {
 				method: "POST",
 				headers: {
@@ -386,7 +385,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setInvite(x => !x);
 	}
 	async function submitInvite() {
-		if (userInvite.length && userInvite && data.groupTo && userNameRef.current) {
+		if (userInvite.length && data.groupTo && userNameRef && userNameRef.current) {
 			const	res = await fetch("/inviteGroup", {
 				method: "POST",
 				headers: {
@@ -438,6 +437,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	async function clickSave() {
 		if (
 			data.groupTo &&
+			userNameRef &&
 			userNameRef.current
 		) {
 			if (settingsName.length || settingsOld.length || settingsPassword.length) {

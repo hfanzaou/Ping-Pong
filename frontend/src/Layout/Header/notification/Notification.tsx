@@ -25,15 +25,16 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
             getNotificationTable();
             if (type === 'friend request' || type === 'accept friend' || type === 'groupInvite' || type === 'game') {
                 setNotification(true);
-            } 
-            // else if (notificationList.length === 0 && type === 'remove request') {
-            //     setNotification(false);
-            // }
-
-            return () => {
-                socket.off("getnotification");
             }
         });
+            return () => {
+                socket?.off("getnotification", (type) => {
+                    getNotificationTable();
+                    if (type === 'friend request' || type === 'accept friend' || type === 'groupInvite' || type === 'game') {
+                        setNotification(true);
+                    }
+                });
+            }
     }, [socket]);
 
     useEffect(() => {
