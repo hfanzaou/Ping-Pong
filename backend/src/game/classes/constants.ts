@@ -8,5 +8,5 @@ export const    HEIGHT = 450,
                 MAX_SCORE = 10,
                 BALL_DIAMETER = 20,
                 BALL_DIAMETER_SQUARED = BALL_DIAMETER * BALL_DIAMETER,
-                GAME_START_DELAY = 3100,
+                GAME_START_DELAY = 3000,
                 GAME_INTERVAL = 1000/60;

@@ -13,6 +13,8 @@ export class Ball {
     type: string;
     yoff: number;
     vel: p5Types.Vector;
+    xRatio: number;
+    yRatio: number;
     
     constructor(p5:p5Types, config: gameConfig) {
       this.x = (WIDTH/2) * (config.canvasWidth / WIDTH);
@@ -24,6 +26,8 @@ export class Ball {
       this.type = config.ballType;
       this.vel = p5.createVector(this.xdir, this.ydir);
       this.yoff = p5.random(1000);
+      this.xRatio = this.x / WIDTH;
+      this.yRatio = this.y / HEIGHT;
     }
   
     updatePosition(canvasWidth: number, canvasHeight: number) {
@@ -31,6 +35,8 @@ export class Ball {
       this.y += (this.ydir * this.speed) * (canvasHeight / HEIGHT);
       this.vel.x = (this.xdir * this.speed) * (canvasWidth / WIDTH);
       this.vel.y = (this.ydir * this.speed) * (canvasHeight / HEIGHT);
+      this.xRatio = this.x / canvasWidth;
+    this.yRatio = this.y / canvasHeight;
     }
 
     reset(p5: p5Types, config: gameConfig) {
@@ -64,12 +70,14 @@ export class Ball {
     }
 
     resize(config: gameConfig) {
-      this.x = this.x * (config.canvasWidth / WIDTH);
-      this.y = this.y * (config.canvasHeight / HEIGHT);
+      this.x = this.x * config.canvasWidth;
+      this.y = this.y * config.canvasHeight;
       this.speed = this.speed * (config.canvasWidth / WIDTH);
       this.radius = config.ballSize * (config.canvasWidth / WIDTH);
       this.vel.x = this.vel.x * (config.canvasWidth / WIDTH);
       this.vel.y = this.vel.y * (config.canvasHeight / HEIGHT);
+      this.xdir = this.vel.x / Math.abs(this.vel.x);
+      this.ydir = this.vel.y / Math.abs(this.vel.y);
     }
 
     ghostBall(p: p5Types, canvasWidth: number, canvasHeight: number) {
