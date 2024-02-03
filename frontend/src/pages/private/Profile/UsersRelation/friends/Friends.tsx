@@ -103,7 +103,7 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
         <div>
             {Object.keys(friends).length ?
                 friends :
-                <Blockquote className='xl'  ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                <Blockquote className='text-xl'  ta='center' color="white" c='cyan' radius="lg" mt="xl">
                     Add Freinds to shows them here
                 </Blockquote>
             }    
