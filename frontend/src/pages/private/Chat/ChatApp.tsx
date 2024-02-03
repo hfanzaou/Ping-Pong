@@ -29,11 +29,6 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 	const	[loading, setLoading] = useState(false);
 	const	history = useNavigate();
 
-	//
-	useEffect(() => {
-		console.log("CHAT");
-	}, [])
-	//
 	errorRef.current = error;
 	useEffect(() => {
 		const	tmp = query.get("name")
@@ -65,7 +60,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 				}
 				setOption("Rooms");
 			}
-			if (data.userData?.userName && tmp)
+			if (data.userData?.userName)
 				fetchData();
 		}
 		else if (notFound)

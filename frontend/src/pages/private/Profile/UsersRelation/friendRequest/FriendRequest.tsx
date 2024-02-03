@@ -22,10 +22,12 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
     useEffect(() => {
         socket?.on("getnotification", () => {
             getRequests();
-            return () => {
-                socket.off("getnotification");
-            }
         });
+        return () => {
+            socket?.off("getnotification", () => {
+                getRequests();
+            });
+        }
     }, [socket]);
 
     useEffect(() => {
