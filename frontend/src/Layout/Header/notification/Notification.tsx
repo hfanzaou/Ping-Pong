@@ -16,7 +16,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
         .then((res) => {
             setNotificationList(res.data);
         }).catch(err => {
-            console.error("Error in fetching friend requests: ", err);
+            // console.error("Error in fetching friend requests: ", err);
         })
     };
 

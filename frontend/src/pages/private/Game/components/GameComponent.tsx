@@ -26,7 +26,7 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
 
   useEffect(() => {
 
-    console.log(config);
+    // console.log(config);
     if (sketchRef.current === null) return;
     p5Ref.current = new p5(p => {
       p.setup = async () => {

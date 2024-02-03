@@ -47,12 +47,12 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
     const handleSaveAvatar = async () => {
         await axios.post('settings/avatar',  uploaded)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             setSave(true);
             settAvatar(userimage);
         })
         .catch(err => {
-            console.error("Error in send profile info: ", err);
+            // console.error("Error in send profile info: ", err);
         })
     }
 

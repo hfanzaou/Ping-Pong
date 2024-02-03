@@ -54,10 +54,10 @@ function App()  {
           await axios.post("user/add/friend", {name: name})
           .then((res) => {
             socket?.emit("addnotification", {reciever: name, type: "friend request"})
-            console.log(res.data);
+            // console.log(res.data);
          })
          .catch((err) => {
-            console.log("Error in send post request to add friend ",err);
+            // console.log("Error in send post request to add friend ",err);
          })
         }else if (friendship === 'remove request') {
             const updatedUserList = userList.map(user => 
@@ -72,7 +72,7 @@ function App()  {
                 socket?.emit("addnotification", {reciever: name, type: "remove request"})
             })
             .catch((err) => {
-                console.log("Error in send post request to remove request",err);
+                // console.log("Error in send post request to remove request",err);
             })
         } else if (friendship === 'remove friend') {
             const updatedUserList = userList.map(user => 
@@ -87,7 +87,7 @@ function App()  {
                 socket?.emit("addnotification", {reciever: name, type: "remove friend"})
             })
             .catch((err) => {
-                console.log("Error in send post request to remove friend ",err);
+                // console.log("Error in send post request to remove friend ",err);
             })
         }else if (friendship === 'accept friend') {
             const updatedUserList = userList.map(user => 
@@ -100,10 +100,10 @@ function App()  {
             await axios.post("user/accept/friend", {name: name})
             .then((res) => {
                 socket?.emit("addnotification", {reciever: name, type: "accept friend"})
-              console.log(res.data);
+            //   console.log(res.data);
             })
             .catch((err) => {
-              console.log("Error in send post request to accept friend ",err);
+            //   console.log("Error in send post request to accept friend ",err);
             })
         }
     };
@@ -119,7 +119,7 @@ function App()  {
             } catch {
                 setIsLoading(false);
                 setHasToken(false);
-                console.log("error in fetching /verify");
+                // console.log("error in fetching /verify");
             }
         }
 
@@ -130,7 +130,7 @@ function App()  {
                     setHas2fa(res.data);
                 }
             } catch {
-                console.log("error in fetching /verify");
+                // console.log("error in fetching /verify");
             }
         }
 
@@ -139,7 +139,7 @@ function App()  {
             .then((res) => {
                 setAvatar(res.data.avatar);
             }).catch(err => {
-                console.error("Error in fetching avatar: ", err);
+                // console.error("Error in fetching avatar: ", err);
             })
         }
         

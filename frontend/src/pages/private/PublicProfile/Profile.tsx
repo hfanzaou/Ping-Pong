@@ -21,7 +21,7 @@ export function ProfileSections({profileName, handleRequest, friendShip, socket}
                 setUserName(res.data.name);
             })
             .catch((err) => {
-                console.log("Error in geting data in edit profile :", err);
+                // console.log("Error in geting data in edit profile :", err);
             })
         };
         getUserNmae();
@@ -39,7 +39,7 @@ export function ProfileSections({profileName, handleRequest, friendShip, socket}
             .catch((err) => {
                 setNotFound(true);
                 setIsLoading(false);
-                console.error("error when send get request to get user profile: ", err);
+                // console.error("error when send get request to get user profile: ", err);
             })
         };
         getUserProfile();

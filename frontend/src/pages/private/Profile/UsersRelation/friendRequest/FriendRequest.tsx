@@ -15,7 +15,7 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
         .then((res) => {
             setRequestFriendList(res.data);
         }).catch(err => {
-            console.error("Error in fetching friend requests: ", err);
+            // console.error("Error in fetching friend requests: ", err);
         })
     };
 
@@ -43,7 +43,7 @@ function  FrindeRequest({socket, setUrlName}: {socket: Socket, setUrlName: Funct
             }
         })
         .catch((err) => {
-            console.error("error when send post request to accepte friend: ", err);
+            // console.error("error when send post request to accepte friend: ", err);
         })
     }
 

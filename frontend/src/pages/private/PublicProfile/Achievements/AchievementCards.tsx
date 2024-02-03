@@ -24,7 +24,7 @@ function AchievementCards({type, image, title, name}: OneAchievementInterface) {
     }
 
     return (
-       <div onTouchMove={() => console.log("test")} className='inline-block w-[100px] h-full mt-4'>
+       <div className='inline-block w-[100px] h-full mt-4'>
             <Group justify="center">
                 <HoverCard radius='md' width={100} openDelay={300} closeDelay={200} offset={-5}>
                     <HoverCard.Target>

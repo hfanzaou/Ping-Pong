@@ -18,7 +18,7 @@ function EnableTowFactor() {
             setTowFactor(res.data);
         })
         .catch((err) => {
-            console.error("Error in fetching Tow Factor State: ", err);
+            // console.error("Error in fetching Tow Factor State: ", err);
         })
     };
 
@@ -36,13 +36,13 @@ function EnableTowFactor() {
 
             })
             .catch((err) => {
-                console.error(err);
+                // console.error(err);
             })
         }
     };
 
     const handleSaveCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setInvalidCode(false);
         if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
             e.target.value.length === 6 ? (setCode(e.target.value), setDisabled(false)) : setDisabled(true)
@@ -63,7 +63,7 @@ function EnableTowFactor() {
         })
         .catch((err) => {
             setInvalidCode(true);
-            console.error("Error in sending 2f code: ", err);
+            // console.error("Error in sending 2f code: ", err);
         })
     };
 
@@ -79,7 +79,7 @@ function EnableTowFactor() {
         .catch((err) => {
             setInvalidCode(true);
             setDisabled(true);
-            console.error("Error in sending 2f code: ", err);
+            // console.error("Error in sending 2f code: ", err);
         })
     };
 

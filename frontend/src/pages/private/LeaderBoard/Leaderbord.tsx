@@ -17,7 +17,7 @@ function Leaderbord({avatar} : {avatar: string}) {
             if (err.response.status === 401) {
                 window.location.replace('/login');
             }
-            console.log("error in fetching leadrbord data: ", err);
+            // console.log("error in fetching leadrbord data: ", err);
         })
     };
     

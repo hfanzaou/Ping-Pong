@@ -16,11 +16,11 @@ function ChangeName() {
         const getUserInfo = async () => {
             await axios.get("user/name")
             .then((res) => {
-                console.log(res.data.name);
+                // console.log(res.data.name);
                 setUserName(res.data.name);
             })
             .catch((err) => {
-                console.log("Error in geting data in edit profile :", err);
+                // console.log("Error in geting data in edit profile :", err);
             })
         };
         getUserInfo();
@@ -29,7 +29,7 @@ function ChangeName() {
     const handleSaveName = async () => {
         await axios.post('settings/name', {uniqueName: uniqueName})
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             {res.status != 201 ? (setInvalidName(true)) : (setInvalidName(false),
                 //  setOpenChangeName(!openChangeName),
                   setUserName(uniqueName))}
@@ -39,7 +39,7 @@ function ChangeName() {
             setInvalidName(true);
             setError("alredy used");
             setDisabled(true);
-            console.error("Error in send profile info: ", err);
+            // console.error("Error in send profile info: ", err);
         })
     };
 

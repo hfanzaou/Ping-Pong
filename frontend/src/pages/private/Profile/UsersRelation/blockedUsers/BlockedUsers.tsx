@@ -11,7 +11,7 @@ function BlockedUsers() {
         .then((res) => {
          setBlockedUsersList(res.data);
         }).catch(err => {
-            console.error("Error in fetching blocked friend list: ", err);
+            // console.error("Error in fetching blocked friend list: ", err);
         })
     };
 
@@ -27,7 +27,7 @@ function BlockedUsers() {
             }
         })
         .catch((err) => {
-            console.error("error when send post request to In block friend: ", err);
+            // console.error("error when send post request to In block friend: ", err);
         })
     };
 
