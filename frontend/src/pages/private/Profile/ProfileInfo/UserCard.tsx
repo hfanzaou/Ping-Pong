@@ -56,14 +56,6 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
   return (
         <Card p={0} className='h-full w-full space-y-5' style={{backgroundColor: 'rgb(31 41 55)'}} radius="lg">
             <div dir="rtl" className="relative">
-                <Avatar
-                    className='rounded-full'
-                    size='80%'
-                    h='80%'
-                    m="auto"
-                    mt={15}
-                    src={avatar}
-                />
                 <Menu position='left-start' offset={2}>
                     <Menu.Target >
                         <button className="absolute top-1 start-0 m-2">
@@ -87,6 +79,14 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
                     </Menu.Dropdown>
                 </Menu>
             </div>
+                <Avatar
+                    className='rounded-full'
+                    size='80%'
+                    h='80%'
+                    m="auto"
+                    mt={15}
+                    src={avatar}
+                />
             <div>
                 <Text ta="center" fz='xl' fw={800} mt="md" mb='md' c='dimmed'>
                     {data?.name}
