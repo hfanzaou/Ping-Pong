@@ -78,7 +78,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}, [])
 	async function callBack() {
-		if (userNameRef.current) {
+		if (userNameRef.current && text.length == 0) {
 			const res0 = await fetch("http://localhost:3001/chatUser", {
 				method: "POST",
 				headers: {
@@ -95,14 +95,16 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 		}
 	}
 	useEffect(() => {
-		setList(data.userData?.chatUsers.sort((x, y) => {
-			if (x && y && x.time && y.time) {
-				const	timeX = new Date(x.time);
-    			const	timeY = new Date(y.time);
-    			return timeY.getTime() - timeX.getTime();
-			}
-			return 0;
-		}))
+		if (text.length == 0) {
+			setList(data.userData?.chatUsers.sort((x, y) => {
+				if (x && y && x.time && y.time) {
+					const	timeX = new Date(x.time);
+					const	timeY = new Date(y.time);
+					return timeY.getTime() - timeX.getTime();
+				}
+				return 0;
+			}))
+		}
 		data.socket?.on("newuser", callBack);
 		return () => {
 			data.socket?.off("newuser", callBack);
