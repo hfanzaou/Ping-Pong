@@ -75,7 +75,7 @@ export function ProfileSections({profileName, handleRequest, friendShip, socket}
                 <UserCard usercard={profile?.usercard} handleRequest={handleRequest} friendShip={friendShip}/>
                 {profile?.usercard.username !== userName ?
                     <Buttons profile={profile} handleRequest={handleRequest} friendShip={friendShip} socket={socket}/> :
-                    <img  className='h-full rounded-xl' src={image} /> // make this image in the same color as app
+                    <img  className='h-full rounded-xl' src="https://cdn.dribbble.com/users/159078/screenshots/3020263/output_mrqqb3.gif" /> // make this image in the same color as app
                 }
             </SimpleGrid>
             <div>
