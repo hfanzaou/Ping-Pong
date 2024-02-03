@@ -209,7 +209,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
 
   return (
     <div 
-    className="min-w-[] w-full h-full grid grid-cols-2 grid-rows-4 gap-4 bg-gray-800 rounded-xl justify-center items-center relative"
+    className=" w-full h-full grid grid-cols-2 grid-rows-4 gap-4 bg-gray-800 rounded-xl justify-center items-center relative"
     >
       {isLoading ? (
         <div className="row-span-4 col-span-2 flex flex-col justify-center items-center">
