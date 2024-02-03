@@ -36,7 +36,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
     10, 
     8, 
     'medium',
-    'ghost',
+    'circle',
     true, 
     1
   ));
