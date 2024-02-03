@@ -82,7 +82,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				setList(Data);
 				setPrivateJoin("");
 			}
-			if (privateJoin && userNameRef.current)
+			if (userNameRef && userNameRef.current)
 				fetchData();
 		}
 	}, [privateJoin])
@@ -167,8 +167,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				}
 				setName(Data);
 			}
-			if (createData)
-				fetchData();
+			fetchData();
 			setCreateTrigger(false);
 		}
 	}, [createTrigger])
@@ -214,7 +213,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}));
 	}, [data.send]);
 	async function callBackNewGroup() {
-		if (userNameRef.current) {
+		if (userNameRef && userNameRef.current) {
 			const res0 = await fetch("http://localhost:3001/chatUser", {
 				method: "POST",
 				headers: {
@@ -243,7 +242,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}));
 		data.socket?.on("newgroup", callBackNewGroup);
 		return () => {
-			data.socket?.off("newuser", callBackNewGroup);
+			data.socket?.off("newgroup", callBackNewGroup);
 		}
 	}, [data.userData?.groups]);
 	function clickCreate(event: React.MouseEvent<HTMLButtonElement>) {
@@ -371,7 +370,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}
 	}
 	async function checkGroup(name: string) {
-		if (userNameRef.current) {
+		if (userNameRef && userNameRef.current) {
 			const	res = await fetch("http://localhost:3001/checkGroup", {
 					method: "POST",
 					headers: {
@@ -414,7 +413,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}
 	}
 	async function leaveJoin() {
-		if (data.userData?.userName && settingsXy.login) {
+		if (data.userData?.userName) {
 			const	res = await fetch("http://localhost:3001/leaveJoin", {
 				method: "POST",
 				headers: {

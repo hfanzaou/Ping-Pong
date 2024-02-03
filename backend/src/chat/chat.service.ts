@@ -663,10 +663,8 @@ export class ChatService {
 			const	users = await Promise.all(
 				group.members.filter(x => {
 					if (x.user.blocked.find(y => {
-						console.log(y.username, data.userName);
 						return y.username == data.userName;
 					}) == undefined && x.user.blockedFrom.find(y => {
-						console.log(y.username, data.userName);
 						return y.username == data.userName;
 					}) == undefined)
 						return group.banded.find(y => y == x.user.username) == undefined;

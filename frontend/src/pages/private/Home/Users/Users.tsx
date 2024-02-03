@@ -28,7 +28,13 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
 
         // Clean up the effect
         return () => {
-            socket?.off('online');
+            socket?.off('online', ({username, state}: stateprops) => {
+                console.log("user name: ", username);
+                console.log("state: ", state);
+                    if (username === userName) {
+                        setState(state);
+                    }
+            });
         }
 
     }, [setState, socket]);
@@ -81,10 +87,12 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
     useEffect(() => {
         socket?.on("getnotification", () => {
             getUsers();
-            return () => {
-                socket.off("getnotification");
-            }
         });
+        return () => {
+            socket?.off("getnotification", () => {
+                getUsers();
+            });
+        }
     }, [socket]);
 
 

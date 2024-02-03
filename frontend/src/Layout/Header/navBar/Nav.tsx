@@ -17,11 +17,15 @@ function NavigationItem({socket}: {socket: Socket}) {
             if (type === 'chat' || type === 'groupChat') {
                 setNotification(true);
             }
+        });
 
             return () => {
-                socket.off("getnotification");
+                socket?.off("getnotification", (type) => {
+                    if (type === 'chat' || type === 'groupChat') {
+                        setNotification(true);
+                    }
+                });
             }
-        });
     }, [socket]);
 
     return (

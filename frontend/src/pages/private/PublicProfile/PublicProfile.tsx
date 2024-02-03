@@ -23,10 +23,12 @@ function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersL
     useEffect(() => {
         socket?.on("getnotification", () => {
             getUsers();
-            return () => {
-                socket.off("getnotification");
-            }
         });
+        return () => {
+            socket?.off("getnotification", () => {
+                getUsers();
+            });
+        }
     }, [socket]);
 
     useEffect(() => {
