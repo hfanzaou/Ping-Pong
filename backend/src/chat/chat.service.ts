@@ -1043,4 +1043,102 @@ export class ChatService {
 			}
 		}
 	}
+	async updateUserNameChat(user: any, newName: string) {
+		const	chatHistories = await this.prisma.cHATHISTORY.findMany({
+			where: {
+				users: {
+					some: {
+						userid: user.id
+					}
+				}
+			}
+		});
+		for (let chatHistorie of chatHistories) {
+			if (
+				chatHistorie.name.includes(user.username) &&
+				chatHistorie.name.includes("&")
+			) {
+				const   newHistoryName = chatHistorie.name.replace(
+					user.username,
+					newName
+				);
+				await this.prisma.cHATHISTORY.update({
+					where: {
+						id: chatHistorie.id
+					},
+					data: {
+						name: newHistoryName
+					}
+				});
+			}
+			const   messages = await this.prisma.mESSAGE.findMany({
+				where: {
+					chathistoryid: chatHistorie.id,
+					sender: user.username
+				}
+			});
+			if (messages)
+				for (let message of messages) {
+					let	readers = [...message.readers];
+					if (readers.find(x => x == user.username)) {
+						readers = readers.filter(x => x != user.username);
+						readers = [...readers, newName];
+					}
+					await this.prisma.mESSAGE.update({
+						where: {
+							id: message.id
+						},
+						data: {
+							sender: newName,
+							readers: readers
+						}
+					});
+				}
+		}
+		const	groups = await this.prisma.gROUP.findMany({
+			where: {
+				members: {
+					some: {
+						user: {
+							id: user.id
+						}
+					}
+				}
+			}
+		});
+		if (groups)
+			for (let group of groups) {
+				const	tmp = {...group};
+				if (tmp.owner == user.username)
+					tmp.owner = newName
+				if (tmp.admins.find(x => x == user.username)) {
+					tmp.admins = tmp.admins.filter(x => x != user.username);
+					tmp.admins = [...tmp.admins, newName];
+				}
+				if (tmp.banded.find(x => x == user.username)) {
+					tmp.banded = tmp.banded.filter(x => x != user.username);
+					tmp.banded = [...tmp.banded, newName];
+				}
+				if (tmp.muted.find(x => x == user.username)) {
+					tmp.muted = tmp.muted.filter(x => x != user.username);
+					tmp.muted = [...tmp.muted, newName];
+				}
+				if (tmp.invited.find(x => x == user.username)) {
+					tmp.invited = tmp.invited.filter(x => x != user.username);
+					tmp.invited = [...tmp.invited, newName];
+				}
+				await this.prisma.gROUP.update({
+					where: {
+						id: group.id
+					},
+					data: {
+						owner: tmp.owner,
+						admins: tmp.admins,
+						banded: tmp.banded,
+						muted: tmp.muted,
+						invited: tmp.invited
+					}
+				});
+			}
+	}
 }
