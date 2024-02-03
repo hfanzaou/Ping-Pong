@@ -55,12 +55,12 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
         p.fill('white');
       
         if (!play) {
-          socket.emit('state');
+          // socket.emit('state');
           handleGameStates(p, config, socket);
         }
         
         if (play) {
-          socket.emit('state', "Ingame");
+          // socket.emit('state', "Ingame");
           p.textSize(32);
           p.textStyle(p.BOLD);
           p.text(player1.score, 40, 60);

@@ -23,7 +23,7 @@ export class ChatController {
 		}
 		return null;
 	}
-	@Post("m")
+	@Post("chathistoryRoom")
 	async handleHistoryRoom(@Body() data: NEWCHAT, @Req() req) {
 		if (req.user.username == data.sender) {
 			const	history = await this.chatService.getUserHistoryRoom(data);
