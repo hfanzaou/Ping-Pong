@@ -90,31 +90,34 @@ OnGatewayConnection {
 			.slice(1)
 			.forEach(room => client.leave(room));
 		const room = await this.chatService.getRoomRoom(data);
-		client.join(room);
+		if (room)
+			client.join(room);
+		this.chatService.updateReadRoom(data);
 	}
 	@SubscribeMessage("newUser")
 	async handelUser(client: Socket, data: string) {
 		const recver = await this.chatService.newMessage(data);
 		const sender = await this.chatService.newMessageSocket(client.id);
 		if (recver) {
+			this.chatService.updateReadPrivate({sender: sender, recver: data});
 			this.server
 				.to(recver)
 				.emit("newuser");
-			this.chatService.updateReadPrivate({sender: sender, recver: data});
 		}
 	}
 	@SubscribeMessage("newGroup")
 	async handelNewGroup(client: Socket, data: string) {
 		const	users = await this.chatService.usersToUpdate(data, client.id);
+		const	sender = await this.chatService.newMessageSocket(client.id);
 		if (users) {
 			users.forEach(async x => {
+				this.chatService.updateReadRoom({ recver: data, sender: sender});
 				const recver = await this.chatService.newMessage(x);
 				if (recver) {
 					this.server
 						.to(recver)
 						.emit("newgroup");
 				}
-
 			})
 		}
 	}

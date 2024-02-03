@@ -150,7 +150,7 @@ export function  _mouseDragged(p5: p5Types, socket: Socket, config: gameConfig)
 
 export function initGame(p5: p5Types, socket: Socket, config: gameConfig, user: any) {
   p5.removeElements();
-
+  side = 1;
   player1 = new Player(
     user, 
     10,
@@ -231,7 +231,7 @@ export function eventListeners(p5: p5Types, socket: Socket, config: gameConfig, 
   });
 
   socket.on('opponentDisconnected', () => {
-    opponentDisconnect(socket, p5);
+    opponentDisconnect(socket, p5, setGameOver);
   });
 
   socket.on('updateRacket', (pos) => {

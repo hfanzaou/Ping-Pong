@@ -14,48 +14,52 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 	async function clickPrivate()
 	{
 		setOption("Private");
-		const res0 = await fetch("chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => {
-				return {
-					...setUserData(prev, Data),
-					groupTo: undefined,
-					talkingTo: undefined
-				}
+		if (data.userData?.userName) {
+			const res0 = await fetch("/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: data.userData?.userName
+				}),
+				credentials: "include"
 			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => {
+					return {
+						...setUserData(prev, Data),
+						groupTo: undefined,
+						talkingTo: undefined
+					}
+				});
+		}
 	}
 	async function clickRooms()
 	{
 		setOption("Rooms");
-		const res0 = await fetch("chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => {
-				return {
-					...setUserData(prev, Data),
-					groupTo: undefined,
-					talkingTo: undefined
-				}
+		if (data.userData?.userName) {
+			const res0 = await fetch("/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: data.userData?.userName
+				}),
+				credentials: "include"
 			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => {
+					return {
+						...setUserData(prev, Data),
+						groupTo: undefined,
+						talkingTo: undefined
+					}
+				});
+		}
 	}
 	return (
 		<nav className="ml-2 mr-2">

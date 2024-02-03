@@ -69,7 +69,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		if (privateJoin.length) {
 			async function fetchData() {
-				const	res = await fetch("privateJoin", {
+				const	res = await fetch("/privateJoin", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -84,7 +84,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				setList(Data);
 				setPrivateJoin("");
 			}
-			fetchData();
+			if (privateJoin && userNameRef.current)
+				fetchData();
 		}
 	}, [privateJoin])
 	useEffect(() => {
@@ -140,7 +141,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		if (createTrigger) {
 			async function fetchData() {
-				const	res = await fetch("createGroup", {
+				const	res = await fetch("/createGroup", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -168,7 +169,8 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				}
 				setName(Data);
 			}
-			fetchData()
+			if (createData)
+				fetchData();
 			setCreateTrigger(false);
 		}
 	}, [createTrigger])
@@ -187,7 +189,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
-			const	res = await fetch("searchList", {
+			const	res = await fetch("/searchList", {
 				method: "GET",
 				headers: {
 					"content-type": "application/json"
@@ -214,19 +216,21 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}));
 	}, [data.send]);
 	async function callBackNewGroup() {
-		const res0 = await fetch("chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: userNameRef.current
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => setUserData(prev, Data));
+		if (userNameRef.current) {
+			const res0 = await fetch("/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				}),
+				credentials: "include"
+			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => setUserData(prev, Data));
+		}
 	}
 	useEffect(() => {
 		setList(data.userData?.groups.filter(x => {
@@ -348,22 +352,43 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				recver: tmp
 			}
 			data.socket?.emit("newChatRoom", newChat);
+			setData(prev => {
+				if (prev.userData)
+					return {
+						...prev,
+						userData: {
+							...prev.userData,
+							groups: [...prev.userData.groups].map(x => {
+								if (x.name == tmp)
+									return {
+										...x,
+										unRead: 0
+									}
+								return x;
+							})
+						}
+					}
+				return prev;
+			});
 		}
 	}
 	async function checkGroup(name: string) {
-		const	res = await fetch("checkGroup", {
-				method: "POST",
-				headers: {
-					"content-type": "application/json"
-				},
-				body: JSON.stringify({
-					name: name,
-					userName: userNameRef.current
-				}),
-				credentials: "include"
-			});
-		const	Data = await res.json();
-		return Data;
+		if (userNameRef.current) {
+			const	res = await fetch("/checkGroup", {
+					method: "POST",
+					headers: {
+						"content-type": "application/json"
+					},
+					body: JSON.stringify({
+						name: name,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
+				});
+			const	Data = await res.json();
+			return Data;
+		}
+		return false;
 	}
 	async function clickSettings(event: React.MouseEvent<HTMLButtonElement>) {
 		const	x = event.clientX;
@@ -391,32 +416,34 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 		}
 	}
 	async function leaveJoin() {
-		const	res = await fetch("leaveJoin", {
-			method: "POST",
-			headers: {
-				"content-type": "application/json"
-			},
-			body: JSON.stringify({
-				userName: data.userData?.userName,
-				name: settingsXy.login
-			}),
-			credentials: "include"
-		});
-		const	Data = await res.json();
-		setData(x => {
-			if (x.userData)
-				return {
-					...x,
-					userData: {
-						...x.userData,
-						groups: Data
+		if (data.userData?.userName && settingsXy.login) {
+			const	res = await fetch("/leaveJoin", {
+				method: "POST",
+				headers: {
+					"content-type": "application/json"
+				},
+				body: JSON.stringify({
+					userName: data.userData?.userName,
+					name: settingsXy.login
+				}),
+				credentials: "include"
+			});
+			const	Data = await res.json();
+			setData(x => {
+				if (x.userData)
+					return {
+						...x,
+						userData: {
+							...x.userData,
+							groups: Data
+						}
 					}
-				}
-			return x;
-		});
-		setSettings(false);
-		if (data.groupTo == settingsXy.login)
-			setData(x => ({ ...x, groupTo: undefined }));
+				return x;
+			});
+			setSettings(false);
+			if (data.groupTo == settingsXy.login)
+				setData(x => ({ ...x, groupTo: undefined }));
+		}
 	}
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
@@ -554,24 +581,21 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 												}`}
 										/>
 										{
+											x.name != data.groupTo &&
 											x.unRead != 0 &&
 											<div
-												className={
-													`absolute rounded-full z-10 border-4
-													bg-red-500 text-xs px-1 right-1 -bottom-2 ${
-														x.name != data.groupTo ?
-															`border-discord3
-															group-hover:border-discord4` :
-															`border-discord5
-															shadow-black shadow-lg`
-													}`
-												}
+												className="absolute rounded-full
+													z-10 border-4 bg-red-500
+													text-xs px-1 right-1 -bottom-2
+													border-discord3
+													group-hover:border-discord4"
 											>
 												{
-													x.unRead &&
-														(
-															x.unRead < 100 ? x.unRead : "+99"
-														)
+													x.unRead && (
+														x.unRead < 100 ?
+															x.unRead :
+															"+99"
+													)
 												}
 											</div>
 										}

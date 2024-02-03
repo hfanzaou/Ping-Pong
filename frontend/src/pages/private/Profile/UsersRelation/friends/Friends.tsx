@@ -24,6 +24,15 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
     };
 
     useEffect(() => {
+        socket?.on("getnotification", () => {
+            getFriends();
+            return () => {
+                socket.off("getnotification");
+            }
+        });
+    }, [socket]);
+
+    useEffect(() => {
         getFriends();
     }, []);
 
@@ -94,7 +103,7 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
         <div>
             {Object.keys(friends).length ?
                 friends :
-                <Blockquote  ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                <Blockquote className='xl'  ta='center' color="white" c='cyan' radius="lg" mt="xl">
                     Add Freinds to shows them here
                 </Blockquote>
             }    

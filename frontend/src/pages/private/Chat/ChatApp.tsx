@@ -65,7 +65,8 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 				}
 				setOption("Rooms");
 			}
-			fetchData();
+			if (data.userData?.userName && tmp)
+				fetchData();
 		}
 		else if (notFound)
 			window.location.reload();

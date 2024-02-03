@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import p5 from "p5";
+import p5Types from "p5";
 import { Socket } from 'socket.io-client';
-import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, _mouseDragged, player1, player2, ball, sparks, goalScored, forge, removeEventListeners } from "./gameLogic";
-import { handleGameStates, play } from './gameStates';
+import { eventListeners, checkKeys, computerPlayer, initGame, gameLoop, player1, player2, ball, sparks, goalScored, forge, side } from "./gameLogic";
+import { handleGameStates, play, gameOver, disconnect } from './gameStates';
 import { gameConfig } from '../classes/gameConfig';
 import { userData } from '../Game';
 import GameOver from './GameOver';
@@ -16,15 +17,15 @@ interface Props {
   config: gameConfig;
   user: userData;
   setGameStart: (v: boolean) => void;
+  setGameOver: (v: boolean) => void;
   //GameStart: boolean;
 }
 
 export let canvas: p5.Renderer;
 
-const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameStart}) => {
+const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameStart, setGameOver}) => {
   const sketchRef = useRef<HTMLDivElement | null>(null);
   const p5Ref = useRef<p5 | null>(null);
-  const [gameOver, setGameOver] = useState<boolean>(false);
 
   useEffect(() => {
 
@@ -32,8 +33,12 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
     if (sketchRef.current === null) return;
     p5Ref.current = new p5(p => {
       p.setup = async () => {
-        config.canvasWidth = p.windowWidth >= 800 ? WIDTH : (p.windowWidth * 0.7);
-        config.canvasHeight = p.windowHeight >= 600 ? HEIGHT : (p.windowHeight * 0.7);
+        /*if (p.windowWidth > 800)
+        {
+          config.canvasWidth = WIDTH;
+        }*/
+        config.canvasWidth = p.windowWidth > 800 ? WIDTH : (p.windowWidth * 0.8);
+        config.canvasHeight = p.windowHeight > 600 ? HEIGHT : (p.windowHeight * 0.7);
         canvas = p.createCanvas(config.canvasWidth, config.canvasHeight);
         eventListeners(p, socket, config, setGameOver);
         if (config.mode == 3 || config.mode == 2) {
@@ -49,8 +54,10 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
         p.background('rgb(31, 41, 55)');
         p.fill('white');
       
-        if (!play)
+        if (!play) {
+          socket.emit('state');
           handleGameStates(p, config, socket);
+        }
         
         if (play) {
           socket.emit('state', "Ingame");
@@ -111,11 +118,12 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
       };
       
       p.windowResized = () => {
-        config.canvasWidth = p.windowWidth >= 800 ? WIDTH : (p.windowWidth * 0.7);
-        config.canvasHeight = p.windowHeight >= 600 ? HEIGHT : (p.windowHeight * 0.7);
+        config.canvasWidth = p.windowWidth > 800 ? WIDTH : (p.windowWidth * 0.7);
+        config.canvasHeight = p.windowHeight > 600 ? HEIGHT : (p.windowHeight * 0.7);
         player1.racket.resize(config.canvasWidth, config.canvasHeight, 1);
         player2.racket.resize(config.canvasWidth, config.canvasHeight, 2);
-        socket.emit('windowResized');
+        ball.resize(config);
+        // socket.emit('windowResized');
         p.resizeCanvas(config.canvasWidth, config.canvasHeight);
       };
 
@@ -124,18 +132,15 @@ const GameComponent: React.FC<Props> = ({socket, avatar, config, user, setGameSt
   return () => {
     if (p5Ref.current) {
       p5Ref.current.noLoop(); // Add this line
+      gameOver(p5Ref.current, socket, setGameOver);
     }
-
-    removeEventListeners(socket);
+  
     socket.emit('leaveGame');
-    setGameOver(true);
   };
 
   }, []);
 
-  return (
-    gameOver ? <GameOver score={player1.score} user={user.username} mode={config.mode} setGameOver={setGameOver} setGameStart={setGameStart} /> 
-      : <div ref={sketchRef} />
+  return ( <div ref={sketchRef} />
   );
 };
 

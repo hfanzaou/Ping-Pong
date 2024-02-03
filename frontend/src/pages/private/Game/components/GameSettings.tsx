@@ -4,21 +4,23 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { gameConfig } from '../classes/gameConfig';
 import { Text } from '@mantine/core';
 import './loader.css';
+import { userData } from '../Game';
 
 interface Props {
   socket: Socket;
-  startGame: () => void;
+  setGameStart: (v: boolean) => void;
   setGameConfig: (config: gameConfig) => void;
+  user: userData;
+  opp: string | null;
 }
 
-const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
+const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, user, opp}) => {
   const [showSettings, setShowSettings] = useState(false);
-  const [countdown, setCountdown] = useState<number>(0);
   const [numGoals, setNumGoals] = useState(10);
   const [ballSpeed, setBallSpeed] = useState('normal');
   const [ballSize, setBallSize] = useState('medium');
   const [ballType, setBallType] = useState('ghost');
-  const [boost, setBoost] = useState(false);
+  const [boost, setBoost] = useState(true);
   const [creatingGame, setCreatingGame] = useState(false);
   const [waitingForPlayer, setWaitingForPlayer] = useState(false);
   const [challengePlayer, setChallengePlayer] = useState(false);
@@ -82,7 +84,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
         diff
       ));
       socket.emit('VsComputer');
-      startGame();
+      setGameStart(true);
     }
     else if (play1vs1Click) {
       setGameConfig( new gameConfig (
@@ -95,7 +97,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
         0
       ));
       socket.emit('1vs1 on same device');
-      startGame();
+      setGameStart(true);
     }
     else {
       let config = new gameConfig( 
@@ -149,11 +151,12 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
   }
 
   useEffect(() => {
+
     socket.on('startGame', () => {
       setIsLoading(false);
       setWaitingForPlayer(false);
       setJoinGame(false);
-      startGame();
+      setGameStart(true);
     });
     socket.on('NoGames', () => {
       setTimeout(() => {
@@ -167,6 +170,24 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
     }
 
   }, []);
+
+  useEffect(() => {
+    console.log("Opponent: " + opp);
+    if (opp) {
+        let config =  new gameConfig (
+            1,
+            numGoals,
+            10,
+            ballSize,
+            ballType,
+            boost,
+            0
+        );
+        setIsLoading(true);
+        setLoadingMessage('Waiting for ' + opp + ' to accept the challenge ...');
+        // socket.emit('createGame', {userName: user.username, oppName: opp, config: config});
+    }
+  }, [opp]);
 
   return (
     <div 
@@ -223,8 +244,24 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
                   </select>
                 </label>
                 <label 
-                  className="bg-gray-500 text-lg font-mono text-slate-300 rounded mb-4" 
+                  className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
                   title="Choose the speed of the ball (slow, normal, fast)"
+                  >
+                  Ball Type: 
+                  <select 
+                    className="mr-2 rounded text-center w-36 h-6 m-2 bg-slate-700 text-white" 
+                    value={ballType} 
+                    onChange={e => setBallType(e.target.value)}
+                    >
+                    <option value="circle">Circle</option>
+                    <option value="square">Square</option>
+                    <option value="ghost">Ghost</option>
+                  </select>
+                </label>
+                {ballType === 'ghost' && (
+                <label 
+                  className="bg-gray-500 text-lg font-mono text-slate-300 rounded mb-4" 
+                  title="Choose the size of Ghost ball"
                 >
                   Ball Size: 
                   <select 
@@ -237,20 +274,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, startGame}) => {
                     <option value="big">Big</option>
                   </select>
                 </label>
-                <label 
-                  className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
-                  title="Choose the speed of the ball (slow, normal, fast)"
-                >
-                  Ball Type: 
-                  <select 
-                    className="mr-2 rounded text-center w-36 h-6 m-2 bg-slate-700 text-white" 
-                    value={ballType} 
-                    onChange={e => setBallType(e.target.value)}
-                  >
-                    <option value="simple">Simple</option>
-                    <option value="ghost">Ghost</option>
-                  </select>
-                </label>
+                )}
                 <label 
                   className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
                   title="Activate the boost (whenever the ball collides with a racket the speed increases)"

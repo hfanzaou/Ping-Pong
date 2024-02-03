@@ -22,24 +22,32 @@ export class GameService {
   waitingPlayers: Socket[] = [];
   games: Map<string, {config: gameConfig, ball: Ball, player1: Player, player2: Player, gameStart: boolean}> = new Map();
 
-  async setUser(client: Socket, userName: string) {
-    const	userData = await this.prismaService.user.findUnique({
-			where: { username: userName }
-    });
-  
-    if (userData) {
-      let user: User;
-      if (userData.socket) {
-        user = new User(userData.id, userName, userData.socket);
-        this.users.set(userData.socket, user);
+  async setUser(client: Socket, userName: string, invite: boolean) {
+
+    if (userName && typeof userName === 'string') {
+      const userData = await this.prismaService.user.findFirst({
+        where: { username: userName }
+      });
+
+      if (userData) {
+        if (this.users.has(userData.socket)) {
+          this.logger.log(`User ${this.users.get(userData.socket).username} already exists!`);
+          return this.users.get(userData.socket);
+        }
+      
+        let user: User, socket: string;
+        if (invite) {
+          socket = userData.socket;
+        }
+        else {
+           socket = client.id;
+        }
+        user = new User(userData.id, userName, socket);
+        this.users.set(socket, user);
+        this.logger.log(`${userData.username} (${socket}) added to users map!`);
+        this.logger.log(user);
+        return user;
       }
-      else {
-        this.logger.log(`${userData.username} socket id Not Found`);
-        user = new User(userData.id, userName, client.id);
-        this.users.set(client.id, user);
-      }
-      this.logger.log(`Client ${client.id} set username to ${userName}`);
-      return user;
     }
     return null;
   }
@@ -58,29 +66,12 @@ export class GameService {
 			wss.to(client.id).emit('error', 'invalid token');
 		}
 	}
-  async findOpponent(wss: Server, SocketId: string)
-  {
-    try {
-        const user = await this.prismaService.user.findUnique({
-          where: {socket: SocketId}
-        })
-        return user;
-    } catch(error)
-    {
-      wss.to(SocketId).emit('error')
-    }
-  }
+
   async initGame(wss: Server, client: Socket, opponent: Socket, config: gameConfig)
   {
-    // const opponent = this.waitingPlayers.shift();
     if (!opponent || opponent.id === client.id) return;
-    const roomName = `room${client.id}${opponent.id}`;
 
-    const {id: oppid} = await this.findOpponent(wss, opponent.id);
-    const {id: clientid} = await this.verifyClient(wss, client);
-  
-    wss.to(client.id).emit("getData", oppid, false);
-    wss.to(opponent.id).emit("getData", clientid, true);
+    const roomName = `room${client.id}${opponent.id}`;
     client.join(roomName);
     opponent.join(roomName);
 
@@ -90,6 +81,14 @@ export class GameService {
       player.id !== client.id && player.id !== opponent.id;
     });
   
+    const user1 = this.users.get(opponent.id);
+    const user2 = this.users.get(client.id);
+    if (!user1 || !user2) {
+      this.logger.log('Here');
+      return ;
+    }
+    this.logger.log(user1);
+    this.logger.log(user2);
     let player1 = new Player(this.users.get(opponent.id), 10, HEIGHT / 2 - RACKET_HEIGHT/2, 0, roomName);
     let player2 = new Player(this.users.get(client.id), WIDTH - 30, HEIGHT/2 - RACKET_HEIGHT/2, 0, roomName);
     let ball = new Ball(config.ballSpeed, config.ballSize, config.ballType);
@@ -100,8 +99,13 @@ export class GameService {
     player1 = this.players.get(opponent.id);
     player2 = this.players.get(client.id);
     
-    this.games.set(roomName, {config: config, ball: ball, player1: player1, player2: player2, gameStart: false});
-    this.logger.log(`Game ${player1.user.username} Vs ${player2.user.username} Initialized!`)
+    if (player1.user.username && player2.user.username) {
+      this.games.set(roomName, {config: config, ball: ball, player1: player1, player2: player2, gameStart: false});
+      this.logger.log(`Game ${player1.user.username} Vs ${player2.user.username} Initialized!`);
+    }
+    else {
+      wss.to(client.id).emit('CannotCreateGame');
+    }
   }
 
   disconnectPlayer(wss: Server, client: Socket) {

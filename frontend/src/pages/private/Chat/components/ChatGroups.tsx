@@ -8,13 +8,13 @@ import {
 	IconEyeOff,
 	IconFaceIdError,
 	IconLockOpen,
+	IconPingPong,
 	IconSend2,
 	IconSettings,
 	IconSettings2,
 	IconTrash,
 	IconTrashOff,
 	IconUser,
-	IconUserOff,
 	IconUserPlus,
 	IconVolume,
 	IconVolume3,
@@ -23,7 +23,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { DATA, Group, MESSAGE, NEWCHAT, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -68,7 +67,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		if (data.groupTo) {
 			async function fetchData() {
-				const	res = await fetch("chatAvatarRoom", {
+				const	res = await fetch("/chatAvatarRoom", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -83,7 +82,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				if (Data)
 					setAvatars(Data);
 			}
-			fetchData();
+			if (data.groupTo && userNameRef.current)
+				fetchData();
 		}
 	}, [data.groupTo, data.userData?.groups]);
 	useEffect(() => {
@@ -99,7 +99,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await fetch("chathistoryRoom", {
+				const res = await fetch("/chathistoryRoom", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -121,11 +121,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 				return ;
 			}
 		}
-		fetchData();
+		if (data.groupTo && data.userData?.userName)
+			fetchData();
 	}, [data]);
 	useEffect(() => {
 		async function fetchData() {
-			const	res = await fetch("groupUsers", {
+			const	res = await fetch("/groupUsers", {
 				method: "POST",
 				headers: {
 					"content-type": "application/json"
@@ -140,7 +141,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			if (Data.length)
 				setUsers(Data);
 		}
-		fetchData();
+		if (data.groupTo && userNameRef.current)
+			fetchData();
 	}, [data])
 	useEffect(() => {
 		const	tmp = users.find(x => x.userName == data.userData?.userName)
@@ -151,8 +153,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		resrtartSettings();
 	}, [data.groupTo])
 	async function clickJoinCallBack(state: boolean) {
-		if (!state) {
-			const	res = await fetch("leaveJoin", {
+		if (!state && data.userData?.userName && data.groupTo) {
+			const	res = await fetch("/leaveJoin", {
 				method: "POST",
 				headers: {
 					"content-type": "application/json"
@@ -198,8 +200,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		if (data.password) {
 			if (passwordText == "")
 				setPasswordError(true);
-			else {
-				const	res = await fetch("checkPassword", {
+			else if (data.groupTo && passwordText) {
+				const	res = await fetch("/checkPassword", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -240,7 +242,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		if (trigger) {
 			async function fetchData() {
-				const res0 = await fetch("chatUser", {
+				const res0 = await fetch("/chatUser", {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json'
@@ -264,7 +266,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 						data.socket?.emit("newGroup", data.groupTo)
 					}
 			}
-			fetchData()
+			if (data.userData?.userName)
+				fetchData()
 			setTrigger(false);
 		}
 	}, [trigger])
@@ -306,7 +309,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	function clickBlock(event: React.MouseEvent<HTMLButtonElement>) {
 		async function fetchData() {
-			await fetch(`user/${event.currentTarget.value}`, {
+			await fetch(`/user/${event.currentTarget.value}`, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -318,29 +321,32 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			})
 			await callBackBlock();
 		}
-		fetchData();
+		if (event.currentTarget.name)
+			fetchData();
 	}
 	async function callBackBlock() {
-		const res0 = await fetch("chatUser", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userName: userNameRef.current
-			}),
-			credentials: "include"
-		});
-		const Data = await res0.json();
-		if (Data)
-			setData(prev => setUserData(prev, Data));
+		if (userNameRef.current) {
+			const res0 = await fetch("/chatUser", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					userName: userNameRef.current
+				}),
+				credentials: "include"
+			});
+			const Data = await res0.json();
+			if (Data)
+				setData(prev => setUserData(prev, Data));
+		}
 	}
 	async function clickAdmin(event: React.MouseEvent<HTMLButtonElement>) {
 		const	tmp = event.currentTarget.value;
 		const	tmp1 = event.currentTarget.name;
 
-		if (tmp) {
-			await fetch(`${tmp}`, {
+		if (tmp && data.groupTo && tmp1 && userNameRef.current) {
+			await fetch(`/${tmp}`, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -358,16 +364,6 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 					userName: tmp1,
 					name: data.groupTo
 				});
-			// if (
-			// 	tmp == "addGroupBan" &&
-			// 	tmp1 &&
-			// 	data.groupTo
-			// ) {
-			// 	data.socket?.emit(
-			// 		"ban",
-			// 		{userName: tmp1, name: data.groupTo}
-			// 	);
-			// }
 		}
 	}
 
@@ -389,8 +385,8 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		setInvite(x => !x);
 	}
 	async function submitInvite() {
-		if (userInvite.length) {
-			const	res = await fetch("inviteGroup", {
+		if (userInvite.length && userInvite && data.groupTo && userNameRef.current) {
+			const	res = await fetch("/inviteGroup", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -439,36 +435,44 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			setError("");
 	}
 	async function clickSave() {
-		if (settingsName.length || settingsOld.length || settingsPassword.length) {
-			const	res = await fetch("groupsChage", {
-				method: "POST",
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					name: settingsName,
-					old: settingsOld,
-					password: settingsPassword,
-					oldName: data.groupTo,
-					userName: userNameRef.current
-				}),
-				credentials: "include"
-			});
-			const	Data = await res.text();
-			if (Data == "DONE") {
-				resrtartSettings();
-				await callBackBlock();
-				if (settingsName.length)
-					setData(x => ({
-						...x,
-						groupTo: settingsName
-					}));
+		if (
+			settingsName &&
+			settingsOld &&
+			settingsPassword &&
+			data.groupTo &&
+			userNameRef.current
+		) {
+			if (settingsName.length || settingsOld.length || settingsPassword.length) {
+				const	res = await fetch("/groupsChage", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						name: settingsName,
+						old: settingsOld,
+						password: settingsPassword,
+						oldName: data.groupTo,
+						userName: userNameRef.current
+					}),
+					credentials: "include"
+				});
+				const	Data = await res.text();
+				if (Data == "DONE") {
+					resrtartSettings();
+					await callBackBlock();
+					if (settingsName.length)
+						setData(x => ({
+							...x,
+							groupTo: settingsName
+						}));
+				}
+				else
+					setError(Data);
 			}
 			else
-				setError(Data);
+				setError("changeSomething");
 		}
-		else
-			setError("changeSomething");
 	}
 	function changeSettingsPassword(event: React.ChangeEvent<HTMLInputElement>) {
 		setSettingsPassword(event.target.value);
@@ -563,8 +567,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 												className={
 													`bg-discord1 border-none
 														outline-none w-32 h-10 p-5
-														text-white mr-0 ml-0
-														 z-10
+														text-white mr-0 ml-0 z-10
 														${
 															error.length == 0 ?
 															"" :
@@ -788,13 +791,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 														value="groupKick"
 													>
 														<IconDoorExit />
-														<h1
+														{/* <h1
 															className="mt-2 mr-5
 																hidden
 																group-hover:block"
 														>
 															kick
-														</h1>
+														</h1> */}
 													</button>
 													{
 														data.
@@ -818,14 +821,14 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="addGroupBan"
 															>
 																<IconBan />
-																<h1
+																{/* <h1
 																	className="mt-2
 																		mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	ban
-																</h1>
+																</h1> */}
 															</button> :
 															<button
 																className="flex
@@ -839,14 +842,14 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="removeGroupBan"
 															>
 																<IconLockOpen />
-																<h1
+																{/* <h1
 																	className="mt-2
 																		mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	unban
-																</h1>
+																</h1> */}
 															</button>
 													}
 													{
@@ -871,13 +874,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="addGroupMute"
 															>
 																<IconVolume3 />
-																<h1
+																{/* <h1
 																	className="mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	mute
-																</h1>
+																</h1> */}
 															</button> :
 															<button
 																className="flex
@@ -891,13 +894,13 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 																value="removeGroupMute"
 															>
 																<IconVolume />
-																<h1
+																{/* <h1
 																	className="mr-5
 																		hidden
 																		group-hover:block"
 																>
 																	unmute
-																</h1>
+																</h1> */}
 															</button>
 													}
 													{
@@ -914,12 +917,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															value="addGroupAdmin"
 														>
 															<IconChessBishopFilled />
-															<h1
+															{/* <h1
 																className="mr-5 hidden
 																	group-hover:block"
 															>
 																admin
-															</h1>
+															</h1> */}
 														</button> :
 														<button
 															className="flex
@@ -933,12 +936,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 															value="removeGroupAdmin"
 														>
 															<IconChessFilled />
-															<h1
+															{/* <h1
 																className="mr-5 hidden
 																	group-hover:block"
 															>
 																member
-															</h1>
+															</h1> */}
 														</button>
 													}
 												</div>
@@ -957,12 +960,12 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													value="block"
 												>
 													<IconTrash />
-													<h1
+													{/* <h1
 														className="mt-2 hidden
 															group-hover:block"
 													>
 														block
-													</h1>
+													</h1> */}
 												</button> :
 												<button
 													className="flex justify-center
@@ -974,14 +977,33 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 													value="inblock"
 												>
 													<IconTrashOff/>
-													<h1
+													{/* <h1
 														className="mt-2 mr-5 hidden
 															group-hover:block"
 													>
 														unblock
-													</h1>
-												</button>	
+													</h1> */}
+												</button>
 											}
+											<button
+												className="flex justify-center
+													items-center
+													font-extrabold
+													hover:text-green-500
+													group mx-2"
+												// onClick={clickAdmin}
+												// name={x.userName}
+												// value="groupKick"
+											>
+												<IconPingPong />
+												{/* <h1
+													className="mt-2 mr-5
+														hidden
+														group-hover:block"
+												>
+													kick
+												</h1> */}
+											</button>
 										</div>
 									</div>
 								</li>

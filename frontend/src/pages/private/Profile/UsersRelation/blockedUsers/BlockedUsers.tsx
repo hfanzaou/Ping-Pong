@@ -59,7 +59,7 @@ function BlockedUsers() {
         <div>
             {Object.keys(blockedUsers).length ?
                 blockedUsers :
-                <Blockquote  ta='center' color="white" c='cyan' radius="lg" mt="xl">
+                <Blockquote className="text-xl" ta='center' color="white" c='cyan' radius="lg" mt="xl">
                     No Blocked User
                 </Blockquote>
             }
