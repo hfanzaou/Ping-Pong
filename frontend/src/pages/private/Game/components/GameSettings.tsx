@@ -5,6 +5,7 @@ import { gameConfig } from '../classes/gameConfig';
 import { Text } from '@mantine/core';
 import './loader.css';
 import { userData } from '../Game';
+import { Link } from 'react-router-dom';
 
 interface Props {
   socket: Socket;
@@ -31,6 +32,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [helpDisplay, setHelpDisplay] = useState<boolean>(false);
+  const [loader, setLoader] = useState<boolean>(false);
 
   function handleCreateNewGameClick() {
     setCreatingGame(true);
@@ -44,6 +46,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     setIsLoading(true);
     setLoadingMessage('Waiting for a second player ...');
     setWaitingForPlayer(true);
+    setLoader(true);
     let speed: number;
     switch (ballSpeed) {
       case 'slow':
@@ -120,6 +123,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
 
   function handleJoinGameClick() {
     setIsLoading(true);
+    setLoader(true);
     setLoadingMessage('Looking for games ...');
     setJoinGame(true);
     socket.emit('join_room');
@@ -146,6 +150,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     setWaitingForPlayer(false);
     if (isLoading) {
       setIsLoading(false);
+      setLoader(false);
       socket.emit('cancele');
     }
   }
@@ -155,18 +160,31 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     socket.on('startGame', () => {
       setIsLoading(false);
       setWaitingForPlayer(false);
+      setLoader(false);
       setJoinGame(false);
       setGameStart(true);
     });
+  
     socket.on('NoGames', () => {
       setTimeout(() => {
         setLoadingMessage('No Games Found :(');
-      }, 2000);
+        setLoader(false);
+      }, 2000); 
+    });
+
+    socket.on('CannotStartGame', (err: string) => {
+      setLoader(false);
+      setIsLoading(true);
+      setLoadingMessage('Can not create game! ' + err);
     });
 
     return () => {
       socket.off('startGame');
       socket.off('NoGames');
+      socket.off('CannotStartGame');
+      setLoader(false);
+      setIsLoading(false);
+      setWaitingForPlayer(false);
     }
 
   }, []);
@@ -175,17 +193,17 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     console.log("Opponent: " + opp);
     if (opp) {
         let config =  new gameConfig (
-            1,
-            numGoals,
-            10,
-            ballSize,
-            ballType,
-            boost,
-            0
+          1,
+          numGoals,
+          10,
+          ballSize,
+          ballType,
+          boost,
+          0
         );
+        setLoader(true);
         setIsLoading(true);
         setLoadingMessage('Waiting for ' + opp + ' to accept the challenge ...');
-        // socket.emit('createGame', {userName: user.username, oppName: opp, config: config});
     }
   }, [opp]);
 
@@ -195,115 +213,117 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
     >
       {isLoading ? (
         <div className="row-span-4 col-span-2 flex flex-col justify-center items-center">
-        <div className="loader"></div>
+       {loader &&  <div className="loader"></div>}
           <Text ta='center' mt='xl' c='white' fz='xl' fw={800} >
            {loadingMessage}
           </Text>
+          <Link to={"/Game"}>
           <button
             className="absolute top-0 left-0 m-4 color-white hover:bg-gray-900 p-4 px-4 rounded"
             onClick={handleBackClick}
           >
           <FaArrowLeft size={24} color='white'/>
           </button>
+          </Link>
         </div>
       ) : (
         <>
         {creatingGame && showSettings ? (
         <>
-            <button
-              className="row-span-1 absolute top-0 left-0 m-4 color-white hover:bg-gray-900 p-4 px-4 rounded"
-              onClick={handleBackClick}
-            >
-              <FaArrowLeft size={24} color='white' />
-            </button>
-            <div className="col-span-2 row-span-3 flex flex-col items-center justify-center space-y-4 font-mono font-bold">
-                <label 
-                  className="bg-gray-500 font-mono font-bold text-center text-lg text-slate-300 rounded mb-4"
-                  title="Choose the number of goals (max 20)"
+          <button
+            className="row-span-1 absolute top-0 left-0 m-4 color-white hover:bg-gray-900 p-4 px-4 rounded"
+            onClick={handleBackClick}
+          >
+            <FaArrowLeft size={24} color='white' />
+          </button>
+          <div className="col-span-2 row-span-3 flex flex-col items-center justify-center space-y-4 font-mono font-bold">
+              <label 
+                className="bg-gray-500 font-mono font-bold text-center text-lg text-slate-300 rounded mb-4"
+                title="Choose the number of goals (max 20)"
+              >
+                Number of goals: 
+                <input 
+                  className='bg-slate-700 rounded text-center text-white w-36 h-6 m-2' 
+                  type="number" min="1" max="20" 
+                  value={numGoals} onChange={e => setNumGoals(parseInt(e.target.value))}
+                />
+              </label>
+              <label 
+                className="bg-gray-500 text-lg font-mono font-bold text-slate-300 rounded mb-4" 
+                title="Choose the speed of the ball (slow, normal, fast)"
+              >
+                Ball speed: 
+                <select 
+                  className=" w-36 rounded h-6 text-center font-mono bg-slate-700 text-white m-2" 
+                  value={ballSpeed} 
+                  onChange={e => setBallSpeed(e.target.value)}
                 >
-                  Number of goals: 
-                  <input 
-                    className='bg-slate-700 rounded text-center text-white w-36 h-6 m-2' 
-                    type="number" min="1" max="20" 
-                    value={numGoals} onChange={e => setNumGoals(parseInt(e.target.value))}
-                  />
-                </label>
-                <label 
-                  className="bg-gray-500 text-lg font-mono font-bold text-slate-300 rounded mb-4" 
-                  title="Choose the speed of the ball (slow, normal, fast)"
+                  <option value="slow">Slow</option>
+                  <option value="normal">Normal</option>
+                  <option value="fast">Fast</option>
+                </select>
+              </label>
+              <label 
+                className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
+                title="Choose the speed of the ball (slow, normal, fast)"
                 >
-                  Ball speed: 
-                  <select 
-                    className=" w-36 rounded h-6 text-center font-mono bg-slate-700 text-white m-2" 
-                    value={ballSpeed} 
-                    onChange={e => setBallSpeed(e.target.value)}
+                Ball Type: 
+                <select 
+                  className="mr-2 rounded text-center w-36 h-6 m-2 bg-slate-700 text-white" 
+                  value={ballType} 
+                  onChange={e => setBallType(e.target.value)}
                   >
-                    <option value="slow">Slow</option>
-                    <option value="normal">Normal</option>
-                    <option value="fast">Fast</option>
+                  <option value="circle">Circle</option>
+                  <option value="square">Square</option>
+                  <option value="ghost">Ghost</option>
+                </select>
+              </label>
+              {ballType === 'ghost' && (
+              <label 
+                className="bg-gray-500 text-lg font-mono text-slate-300 rounded mb-4" 
+                title="Choose the size of Ghost ball"
+              >
+                Ball Size: 
+                <select 
+                  className="w-36 rounded text-center h-6 m-2 bg-slate-700 text-white hover:bg-gray-900" 
+                  value={ballSize} 
+                  onChange={e => setBallSize(e.target.value)}
+                >
+                  <option value="smal">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="big">Big</option>
+                </select>
+              </label>
+              )}
+              <label 
+                className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
+                title="Activate the boost (whenever the ball collides with a racket the speed increases)"
+              >
+                Activate boost: 
+                <input 
+                  className="bg-slate-700 ml-24 m-2 size-5 rounded accent-slate-700" 
+                  type="checkbox" checked={boost} 
+                  onChange={e => setBoost(e.target.checked)} 
+                />
+              </label>
+              {playAgainstComputer && (
+                <label 
+                  className="bg-gray-500 text-lg  text-slate-300 rounded mb-4" 
+                  title="Choose the difficulty (Easy, Medium, Hard)"
+                >
+                  Difficulty: 
+                  <select  
+                    className="ml-20 mr-2 rounded text-center bg-slate-700 text-white" 
+                    value={difficulty} 
+                    onChange={e => setDifficulty(e.target.value)}
+                  >
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
                   </select>
                 </label>
-                <label 
-                  className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
-                  title="Choose the speed of the ball (slow, normal, fast)"
-                  >
-                  Ball Type: 
-                  <select 
-                    className="mr-2 rounded text-center w-36 h-6 m-2 bg-slate-700 text-white" 
-                    value={ballType} 
-                    onChange={e => setBallType(e.target.value)}
-                    >
-                    <option value="circle">Circle</option>
-                    <option value="square">Square</option>
-                    <option value="ghost">Ghost</option>
-                  </select>
-                </label>
-                {ballType === 'ghost' && (
-                <label 
-                  className="bg-gray-500 text-lg font-mono text-slate-300 rounded mb-4" 
-                  title="Choose the size of Ghost ball"
-                >
-                  Ball Size: 
-                  <select 
-                    className="w-36 rounded text-center h-6 m-2 bg-slate-700 text-white hover:bg-gray-900" 
-                    value={ballSize} 
-                    onChange={e => setBallSize(e.target.value)}
-                  >
-                    <option value="smal">Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="big">Big</option>
-                  </select>
-                </label>
-                )}
-                <label 
-                  className="bg-gray-500 text-lg text-slate-300 rounded mb-4" 
-                  title="Activate the boost (whenever the ball collides with a racket the speed increases)"
-                >
-                  Activate boost: 
-                  <input 
-                    className="bg-slate-700 ml-24 m-2 size-5 rounded accent-slate-700" 
-                    type="checkbox" checked={boost} 
-                    onChange={e => setBoost(e.target.checked)} 
-                  />
-                </label>
-                {playAgainstComputer && (
-                  <label 
-                    className="bg-gray-500 text-lg  text-slate-300 rounded mb-4" 
-                    title="Choose the difficulty (Easy, Medium, Hard)"
-                  >
-                    Difficulty: 
-                    <select  
-                      className="ml-20 mr-2 rounded text-center bg-slate-700 text-white" 
-                      value={difficulty} 
-                      onChange={e => setDifficulty(e.target.value)}
-                    >
-                      <option value="Easy">Easy</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Hard">Hard</option>
-                    </select>
-                  </label>
-                )}
-              </div>
+              )}
+            </div>
               
             <button
               className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white ml-20"

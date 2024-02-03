@@ -49,9 +49,9 @@ function  Frindes({socket, setUrlName}: {socket: Socket, setUrlName: Function}) 
     };
 
     const friends = friendList.map((item) => (
-        <Table>
+        <Table key={item.name}>
             <Table.Tbody>
-                <Table.Tr key={item.name} m={6}>
+                <Table.Tr m={6}>
                     <Table.Td>
                         <div className='flex justify-between'>
                             <Group gap="md">
