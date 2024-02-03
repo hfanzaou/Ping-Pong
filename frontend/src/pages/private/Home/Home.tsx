@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 import { Card, SimpleGrid } from '@mantine/core';
+import { Socket } from 'socket.io-client';
 import Users  from './Users/Users'
 import UsersInterface from './Users/UsersInterface';
-import { Socket } from 'socket.io-client';
+import image from './assite/bg.gif';
 
 function Home({socket, setUrlName, userList, setUsersList, searchList, setSearchList, handleRequest, avatar}: {socket: Socket, setUrlName: Function, userList: UsersInterface[], setUsersList: Function, searchList: UsersInterface[], setSearchList: Function, handleRequest: any, avatar: string}) {
 
@@ -13,8 +14,7 @@ function Home({socket, setUrlName, userList, setUsersList, searchList, setSearch
                     cols={{ base: 1, sm: 1, lg: 2, xl: 2 }}
                 >
                     <Users socket={socket} setUrlName={setUrlName} userList={userList} searchList={searchList} setUsersList={setUsersList} setSearchList={setSearchList} handleRequest={handleRequest}/>
-                    <img className='object-fill rounded-md w-full h-full' src="https://cdn.dribbble.com/users/159078/screenshots/3020263/output_mrqqb3.gif" />
-
+                    <img className='object-fill rounded-md w-full h-full' src={image}/>
                 </SimpleGrid>
             </Card>
         </div>
@@ -22,4 +22,3 @@ function Home({socket, setUrlName, userList, setUsersList, searchList, setSearch
 }
 
 export default Home
-

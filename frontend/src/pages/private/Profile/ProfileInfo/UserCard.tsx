@@ -61,7 +61,7 @@ function UserCard({setUrlName, avatar} : {setUrlName: Function, avatar: string }
                     size='80%'
                     h='80%'
                     m="auto"
-                    mt={12}
+                    mt={15}
                     src={avatar}
                 />
                 <Menu position='left-start' offset={2}>
