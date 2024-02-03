@@ -3,6 +3,7 @@ import { IconPingPong, IconSend2, IconUser } from "@tabler/icons-react";
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { DATA, MESSAGE, USERDATA } from "../myTypes";
 import { setMessageData, setUserData } from "../utils";
+import { Link } from "react-router-dom";
 
 interface Props {
 	data: DATA,
@@ -166,6 +167,13 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 	{
 		setData(prev => setMessageData(prev, event.target.value))
 	}
+	function clickGame() {
+		data.socket?.emit(
+			"addnotification",
+			{reciever: data.talkingTo, type: "game"}
+		);
+		
+	}
 	return data.talkingTo ? (
 		<form
 			onSubmit={submit}
@@ -216,13 +224,26 @@ const ChatPrivate: React.FC<Props> = ({ data, setData }) => {
 					autoFocus
 					ref={Reference}
 				/>
-				<button
-					className="bg-discord1 w-10 h-10 rounded-md flex
-						justify-center items-center"
-					type="submit"
-				>
-					{ data.message.length ? <IconSend2 /> : <IconPingPong/>}
-				</button>
+				{
+					data.message.length ?
+						<button
+							className="bg-discord1 w-10 h-10 rounded-md flex
+								justify-center items-center"
+							type="submit"
+						>
+							<IconSend2 />
+						</button> :
+						<Link to={`/Game?opp=${data.talkingTo}`}>
+							<button
+								className="bg-discord1 w-10 h-10 rounded-md flex
+									justify-center items-center"
+								onClick={clickGame}
+							>
+								<IconPingPong/>
+							</button>
+						</Link>
+
+				}
 			</div>
 		</form>
 	) : <div></div>;
