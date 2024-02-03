@@ -78,7 +78,6 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
 
     if (user.username == "")
       fetchUserName();
-    setSide(true);
     socket.on('userId', async (id: number) => {
       const res = await axios.get('user/game', {params: {opp: id}})
       .then((res) => {
