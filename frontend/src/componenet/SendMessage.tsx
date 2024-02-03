@@ -9,12 +9,7 @@ function SerndMessage({name, opened, close, socket}: {name: string, opened: bool
 
     nameRef.current = name;
     function callBack() {
-        console.log(nameRef.current);
         socket.emit("newUser", nameRef.current);
-        socket.emit(
-            "addnotification",
-            {reciever: nameRef.current, type: "chat"}
-        );
     }
     useEffect(() => {
         socket.on("DONE", callBack);
@@ -24,6 +19,10 @@ function SerndMessage({name, opened, close, socket}: {name: string, opened: bool
     }, []);
     const handleSentMessage = () => {
         socket.emit("directTmp", { recver: name, message: message });
+        socket.emit(
+            "addnotification",
+            {reciever: nameRef.current, type: "chat"}
+        );
         setDisabled(true);
         close();
     };
