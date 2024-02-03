@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from '@mantine/core';
 import { disconnect } from './gameStates';
+import { Link } from 'react-router-dom';
 
 type GameOverProps = {
     player1Score: number;
@@ -70,11 +71,13 @@ const GameOver: React.FC<GameOverProps> = ({
                         Play Again
                 </button>
             )}
+            <Link to={"/Game"} >
             <button
                 className="transition ease-in-out delay-150 bg-gray-600 hover:-translate-y-1 hover:scale-110 hover:bg-gray-900 duration-300 rounded mb-4 font-bold p-4 px-4 text-white"
                 onClick={handleMainMenu}>
                     Main Menu
             </button>
+            </Link>
         </div>
     );
 };
