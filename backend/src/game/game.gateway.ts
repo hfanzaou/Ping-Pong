@@ -128,13 +128,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         await this.gameService.initGame(this.wss, oppSocket, client, payload.config);
       }
       else {
-        this.wss.to(client.id).emit('CannotStartGame');
-        this.logger.log('Opp socket Not found');
+        this.wss.to(client.id).emit('CannotStartGame', 'Opp socket Not found');
       }
     }
     else {
-      this.wss.to(client.id).emit('CannotStartGame');
-      this.logger.log('User Not found');
+      this.wss.to(client.id).emit('CannotStartGame', 'User Not found');
     }
   }
 
@@ -208,12 +206,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
           this.wss.to(game.player2.user.socket).emit('startGame', game.config);
         }
         else {
-          this.wss.to(client.id).emit('CannotStartGame');
+          this.wss.to(client.id).emit('CannotStartGame', 'Game Not found');
           this.logger.log('Game Not found');
         }
     }
     else {
-        this.wss.to(client.id).emit('CannotStartGame');
+        this.wss.to(client.id).emit('CannotStartGame', 'Player Not found');
         this.logger.log('Player Not found');
     }
 }

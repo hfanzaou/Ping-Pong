@@ -228,8 +228,8 @@ export class GameService {
     if (player) {
       const game = this.games.get(player.roomName);
       client.to(player.roomName).emit('gameOver');
-      this.logger.log(`Game ${game.player1.user.socket} Vs ${game.player2.user.socket} ended!`);
       if (game) {
+        this.logger.log(`Game ${game.player1.user.socket} Vs ${game.player2.user.socket} ended!`);
         this.games.delete(player.roomName);
         this.players.delete(game.player1.user.socket);
         this.players.delete(game.player2.user.socket);
