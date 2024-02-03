@@ -4,6 +4,7 @@ import { useForm } from '@mantine/form';
 import { TextInput, PasswordInput, Text, Paper, Group, PaperProps, Button, Divider, Anchor, Stack, SimpleGrid, Card,} from '@mantine/core';
 import axios from 'axios';
 import LoginWithIntra from './LoginWithIntra';
+import image from './assite/ping-pong.jpg'
 
 function Authentication(props: PaperProps) {
 
@@ -17,6 +18,7 @@ function Authentication(props: PaperProps) {
                 spacing='sm'
             >
                 <Card
+                    radius='lg'
                     style={{backgroundColor: 'rgb(31 41 55)'}}
                 >
                     <Text c='white' size="md" fw={500}>
@@ -26,7 +28,7 @@ function Authentication(props: PaperProps) {
                         <LoginWithIntra/>
                     </Group>
                 </Card>
-                <img className='rounded-lg' src="https://cdn.dribbble.com/users/159078/screenshots/3020263/output_mrqqb3.gif" alt="ping pong image" />
+                <img className='rounded-lg h-[80vh]' src={image} alt="ping pong image" />
             </SimpleGrid>
         </div>
         </>
