@@ -15,7 +15,7 @@ services:
       - dev-db
     restart: always
     volumes: 
-    - /nfs/homes/rarahhal/data/app:/usr/src/app/backend/uploads/
+    - /nfs/homes/hfanzaou/data/app:/usr/src/app/backend/uploads/
     networks:
       - mynet
 
