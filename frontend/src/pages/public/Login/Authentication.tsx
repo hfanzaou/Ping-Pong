@@ -61,9 +61,9 @@ function Authentication(props: PaperProps) {
 //             if (res.status === 201) {
 //                 console.log("res: ", res);
 //                 if(res.data.twofa === true)
-//                     window.location.href = `${import.meta.env.VITE_APP_URL}auth`;
+//                     window.location.href = '/auth';
 //                 else
-//                     window.location.href = `${import.meta.env.VITE_APP_URL}`;
+//                     window.location.href = '';
 //             }
 
 //         })
@@ -79,7 +79,7 @@ function Authentication(props: PaperProps) {
 //         .then((res) => {
 //             if (res.status === 201) {
 //                 console.log("res: ", res);
-//                 window.location.href = `${import.meta.env.VITE_APP_URL}Setting`;
+//                 window.location.href = '/Setting';
 //             }
 //         })
 //         .catch((err) => {

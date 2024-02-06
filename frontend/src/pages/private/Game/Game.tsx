@@ -70,7 +70,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
         setOpp({ username: res.data.username, level: res.data.level, avatar: res.data.avatar });
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -81,7 +81,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
     socket.on('userId', async (id: number) => {
       const res = await axios.get('user/game', {params: {opp: id}})
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setUser({ username: res.data.username, id: id, level: res.data.level, avatar: res.data.avatar });
       });
     });
@@ -110,7 +110,7 @@ const Game: React.FC<Props> = ( {socket, avatar, setUrlName}) => {
     }
   
     socket.on('startGame', (config) => {
-      console.log('Game started!');
+      // console.log('Game started!');
       setGameConfig(config);
       setOppParam(null);
       setGameStart(true);

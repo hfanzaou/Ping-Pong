@@ -67,7 +67,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		if (privateJoin.length) {
 			async function fetchData() {
-				const	res = await fetch("http://localhost:3001/privateJoin", {
+				const	res = await fetch("/privateJoin", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -139,7 +139,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	useEffect(() => {
 		if (createTrigger) {
 			async function fetchData() {
-				const	res = await fetch("http://localhost:3001/createGroup", {
+				const	res = await fetch("/createGroup", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -186,7 +186,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	}, [data.userData?.groups])
 	useEffect(() => {
 		async function fetchData() {
-			const	res = await fetch("http://localhost:3001/searchList", {
+			const	res = await fetch("/searchList", {
 				method: "GET",
 				headers: {
 					"content-type": "application/json"
@@ -214,7 +214,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	}, [data.send]);
 	async function callBackNewGroup() {
 		if (userNameRef && userNameRef.current) {
-			const res0 = await fetch("http://localhost:3001/chatUser", {
+			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -371,7 +371,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	}
 	async function checkGroup(name: string) {
 		if (userNameRef && userNameRef.current) {
-			const	res = await fetch("http://localhost:3001/checkGroup", {
+			const	res = await fetch("/checkGroup", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -414,7 +414,7 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 	}
 	async function leaveJoin() {
 		if (data.userData?.userName) {
-			const	res = await fetch("http://localhost:3001/leaveJoin", {
+			const	res = await fetch("/leaveJoin", {
 				method: "POST",
 				headers: {
 					"content-type": "application/json"
@@ -442,7 +442,6 @@ const Groups: React.FC<Props> = ({ data, setData, privateJoin, setPrivateJoin })
 				setData(x => ({ ...x, groupTo: undefined }));
 		}
 	}
-
 	return (
 		<div className="bg-discord3 w-2/6 text-center p-2 text-white
 			font-Inconsolata font-bold h-full overflow-auto

@@ -176,7 +176,7 @@ const GameSettings: React.FC<Props> = ({ socket, setGameConfig, setGameStart, us
   }, []);
 
   useEffect(() => {
-    console.log("Opponent: " + opp);
+    // console.log("Opponent: " + opp);
     if (opp) {
         let config =  new gameConfig (
           1,

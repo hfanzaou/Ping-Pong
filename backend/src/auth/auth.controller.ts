@@ -1,14 +1,9 @@
 import { Body, Controller, Get, Post, UseGuards, Req, Res, HttpException, HttpStatus, Redirect, HttpCode, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { AuthService} from './auth.service';
-import { GetUser } from './decorator';
-import { User } from '@prisma/client';
-import { FTUser } from './42dto';
 import { FTAuthGuard, JwtGuard } from './guard';
 import { Request, Response } from 'express';
 import { toBuffer, toFileStream } from 'qrcode';
 import JwtTwoFaGuard from './guard/twoFaAuth.guard';
-import { throwError } from 'rxjs';
-import { FTAuth } from './42startegy';
 import { AuthDto, FAuthDto } from './dto';
 import { ConfigService } from "@nestjs/config";
 
@@ -52,7 +47,6 @@ export class AuthController {
 			path:'/',
 			httpOnly: true,
 		});
-		//res.redirect('http://localhost:3000');
 		res.send({"twofa": false});
 	}
 	/////to verify user token////
@@ -100,7 +94,7 @@ export class AuthController {
 					path:'/',
 					httpOnly: true,
 				});
-				res.redirect(this.config.get('HOST') + '/auth');
+				res.redirect(this.config.get('HOST') + 'auth');
 				return;
 			}
 			const token = await this.authService.signin(req.user);
@@ -110,7 +104,7 @@ export class AuthController {
 			});
 			if (!user) ///if user first time login
 			{
-				res.redirect( this.config.get('HOST') + '/Setting');
+				res.redirect( this.config.get('HOST') + 'Setting');
 				return;
 			}
 			res.redirect(this.config.get('HOST'));
@@ -121,7 +115,7 @@ export class AuthController {
 	}
 
 	@Get('logout')
-	@UseGuards(JwtGuard)
+	@UseGuards(JwtTwoFaGuard)
 	async logout(@Req() req, @Res() res)
 	{
 		this.authService.signToken({sub: 0, userID: 0, isTwoFaAuth: false});

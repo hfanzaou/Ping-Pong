@@ -17,7 +17,7 @@ function Buttons({profile, friendShip, handleRequest, socket}: {profile: any, fr
         .then((res) => {
         })
         .catch((err) => {
-            console.error("error when send post request to block friend: ", err);
+            // console.error("error when send post request to block friend: ", err);
         })
     };
 

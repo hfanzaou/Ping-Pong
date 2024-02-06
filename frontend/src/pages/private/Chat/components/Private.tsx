@@ -2,6 +2,7 @@ import { DATA, NEWCHAT } from "../myTypes";
 import React, { useEffect, useRef, useState } from "react";
 import { setUserData } from "../utils";
 import {
+	IconCircleFilled,
 	IconDotsVertical,
 	IconTrash,
 	IconUser,
@@ -32,7 +33,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	userNameRef.current = data.userData?.userName;
 	async function onlineCallback(message: {username: string, state: string}) {
 		if (userNameRef && userNameRef.current) {
-			const res0 = await fetch("http://localhost:3001/chatUser", {
+			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -79,7 +80,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	}, [])
 	async function callBack() {
 		if (userNameRef && userNameRef.current && text.length == 0) {
-			const res0 = await fetch("http://localhost:3001/chatUser", {
+			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -113,7 +114,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		if (blockTrigger) {
 			async function fetchData() {
-				await fetch("http://localhost:3001/user/block", {
+				await fetch("user/block", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -382,7 +383,7 @@ const Private: React.FC<Props> = ({ data, setData }) => {
 					</li>
 					<li>
 						<a
-							href={`http://localhost:3000/UserProfile?name=${settingsXy.login}`}
+							href={`UserProfile?name=${settingsXy.login}`}
 						>
 							<button
 								className="flex justify-center items-center w-[100px]

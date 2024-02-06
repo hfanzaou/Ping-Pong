@@ -19,21 +19,17 @@ export function StateComponent({userName, socket, userstate}: {userstate: string
 
     useEffect(() => {
         socket?.on('online', ({username, state}: stateprops) => {
-            console.log("user name: ", username);
-            console.log("state: ", state);
-                if (username === userName) {
-                    setState(state);
-                }
+            if (username === userName) {
+                setState(state);
+            }
         });
 
         // Clean up the effect
         return () => {
             socket?.off('online', ({username, state}: stateprops) => {
-                console.log("user name: ", username);
-                console.log("state: ", state);
-                    if (username === userName) {
-                        setState(state);
-                    }
+                if (username === userName) {
+                    setState(state);
+                }
             });
         }
 
@@ -80,7 +76,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
             if (err.response.status === 401) {
                 window.location.replace('/login');
             }
-            console.error("Error in fetching Users list: ", err);
+            // console.error("Error in fetching Users list: ", err);
         })
     };
 
@@ -112,7 +108,7 @@ function Users({socket, setUrlName, userList, setUsersList, searchList, setSearc
             }
         })
         .catch((err) => {
-            console.error("error when send post request to block friend: ", err);
+            // console.error("error when send post request to block friend: ", err);
         })
     };
     

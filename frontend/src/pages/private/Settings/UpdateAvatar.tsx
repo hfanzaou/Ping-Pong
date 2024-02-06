@@ -47,12 +47,12 @@ function ChangeAvatar({settAvatar, avatar} : {settAvatar: Function, avatar: stri
     const handleSaveAvatar = async () => {
         await axios.post('settings/avatar',  uploaded)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             setSave(true);
             settAvatar(userimage);
         })
         .catch(err => {
-            console.error("Error in send profile info: ", err);
+            // console.error("Error in send profile info: ", err);
         })
     }
 
@@ -119,7 +119,7 @@ export default ChangeAvatar
 //     console.log("formData: ", formData.get('image'));
 
 //     try {
-//       const response = await axios.post('http://localhost:3001/settings/avatar', formData.get('image'), {
+//       const response = await axios.post('settings/avatar', formData.get('image'), {
 //         headers: {
 //           'Content-Type': 'multipart/form-data',
 //         },

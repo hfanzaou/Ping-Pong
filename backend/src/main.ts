@@ -17,7 +17,7 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   app.use(cookieParser());
   app.use(cors({
-    origin: config.get('HOST'), 
+    origin: [config.get('HOST'), config.get('LOCAL')], 
     credentials: true,
   }));
   app.useWebSocketAdapter(new IoAdapter(app));

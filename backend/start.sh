@@ -6,4 +6,5 @@ npx prisma migrate deploy
 
 npm run start:prod
 
+
 #sleep infinity

@@ -68,7 +68,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		if (data.groupTo) {
 			async function fetchData() {
-				const	res = await fetch("http://localhost:3001/chatAvatarRoom", {
+				const	res = await fetch("/chatAvatarRoom", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -100,7 +100,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await fetch("http://localhost:3001/chathistoryRoom", {
+				const res = await fetch("/chathistoryRoom", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}, [data]);
 	useEffect(() => {
 		async function fetchData() {
-			const	res = await fetch("http://localhost:3001/groupUsers", {
+			const	res = await fetch("/groupUsers", {
 				method: "POST",
 				headers: {
 					"content-type": "application/json"
@@ -155,7 +155,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}, [data.groupTo])
 	async function clickJoinCallBack(state: boolean) {
 		if (!state && data.userData?.userName && data.groupTo) {
-			const	res = await fetch("http://localhost:3001/leaveJoin", {
+			const	res = await fetch("/leaveJoin", {
 				method: "POST",
 				headers: {
 					"content-type": "application/json"
@@ -202,7 +202,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			if (passwordText == "")
 				setPasswordError(true);
 			else if (data.groupTo) {
-				const	res = await fetch("http://localhost:3001/checkPassword", {
+				const	res = await fetch("/checkPassword", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json"
@@ -243,7 +243,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	useEffect(() => {
 		if (trigger) {
 			async function fetchData() {
-				const res0 = await fetch("http://localhost:3001/chatUser", {
+				const res0 = await fetch("/chatUser", {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json'
@@ -310,7 +310,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	function clickBlock(event: React.MouseEvent<HTMLButtonElement>) {
 		async function fetchData() {
-			await fetch(`http://localhost:3001/user/${event.currentTarget.value}`, {
+			await fetch(`/user/${event.currentTarget.value}`, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -326,7 +326,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	async function callBackBlock() {
 		if (userNameRef && userNameRef.current) {
-			const res0 = await fetch("http://localhost:3001/chatUser", {
+			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -346,7 +346,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 		const	tmp1 = event.currentTarget.name;
 
 		if (data.groupTo && userNameRef && userNameRef.current) {
-			await fetch(`http://localhost:3001/${tmp}`, {
+			await fetch(`/${tmp}`, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -386,7 +386,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 	}
 	async function submitInvite() {
 		if (userInvite.length && data.groupTo && userNameRef && userNameRef.current) {
-			const	res = await fetch("http://localhost:3001/inviteGroup", {
+			const	res = await fetch("/inviteGroup", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -441,7 +441,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 			userNameRef.current
 		) {
 			if (settingsName.length || settingsOld.length || settingsPassword.length) {
-				const	res = await fetch("http://localhost:3001/groupsChage", {
+				const	res = await fetch("/groupsChage", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -750,7 +750,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 									>
 										<div className="flex items-center">
 											<a
-												href={`http://localhost:3000/UserProfile?name=${x.userName}`}
+												href={`UserProfile?name=${x.userName}`}
 											>
 												{
 													x.avatar ?
@@ -1025,7 +1025,7 @@ const ChatGroups: React.FC<Props> = ({ data, setData }) => {
 											rounded-md m-2 p-3"
 									>
 										<a
-											href={`http://localhost:3000/UserProfile?name=${x.sender}`}
+											href={`UserProfile?name=${x.sender}`}
 										>
 											{
 												(avatar && avatar.avatar) ?

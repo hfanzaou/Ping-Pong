@@ -11,11 +11,11 @@ function  Achievement() {
     const getAchievements = async () => {
         await axios.get("user/achievements")
         .then((res) => {
-            console.log("Achievement from res: ", res.data);
+            // console.log("Achievement from res: ", res.data);
             setAchievements(res.data);
         })
         .catch((err) => {
-            console.error("error in fetching Matchs History: ", err );
+            // console.error("error in fetching Matchs History: ", err );
         })
     };
 

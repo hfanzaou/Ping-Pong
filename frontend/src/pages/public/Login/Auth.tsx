@@ -8,24 +8,24 @@ function Auth() {
     const [send, setSend] = useState<boolean>(true);
 
     const handleDisableSendCode = async () => {
-        console.log("this is the code was send: ",code);
+        // console.log("this is the code was send: ",code);
         await axios.post("2fa/auth", {AuthCode: code})
         .then((res) => {
             if(res.status == 201)
             {
-                window.location.href = `${import.meta.env.VITE_APP_URL}`;
+                window.location.replace('/');
             } else {
                 setInvalidCode(true);
             }
         })
         .catch((err) => {
             setInvalidCode(true);
-            console.error("Error in sending 2f code In Auth section: ", err);
+            // console.error("Error in sending 2f code In Auth section: ", err);
         })
       };
 
     const handleSaveCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setInvalidCode(false);
         if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) {
             e.target.value.length === 6 ? (setCode(Number(e.target.value)), setSend(false)) : setSend(true)

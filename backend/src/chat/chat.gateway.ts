@@ -19,7 +19,6 @@ import { JwtTwoFaStrategy } from "src/strategy";
 import { UserService } from "src/user/user.service";
 
 @WebSocketGateway({ cors: {
-	origin: 'http://localhost:3000',
     credentials: true
 } })
 export class ChatGateway implements

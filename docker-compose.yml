@@ -8,13 +8,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
+      - "5555:5555"
     env_file:
       - .env
     depends_on:
       - dev-db
     restart: always
     volumes: 
-    - ~/sgoinfre/data/uploads/:/usr/src/app/backend/uploads/
+    - /nfs/homes/rarahhal/data/app:/usr/src/app/backend/uploads/
     networks:
       - mynet
 
@@ -28,7 +29,10 @@ services:
     networks:
       - mynet
     volumes:
-      - ~/sgoinfre/data/sql/:/var/lib/postgresql/data/
+      - db:/var/lib/postgresql/data/
+
 networks:
   mynet:  
 
+volumes:
+  db:

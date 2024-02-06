@@ -35,7 +35,7 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		if (tmp) {
 			setName(tmp);
 			async function fetchData() {
-				const res = await fetch("http://localhost:3001/checkUserGroup", {
+				const res = await fetch("checkUserGroup", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json'
@@ -70,14 +70,14 @@ const ChatApp: React.FC<Props> = ({ socket }) => {
 		async function fetchData() {
 			setData(prev => setSocket(prev, socket));
 			try {
-				const res0 = await fetch("http://localhost:3001/user/name", {
+				const res0 = await fetch("user/name", {
 					credentials: "include"
 				});
 				const Data0 = await res0.json();
 				if (Data0.name)
 				{
 					try {
-						const res = await fetch("http://localhost:3001/chatUser", {
+						const res = await fetch("chatUser", {
 							method: "POST",
 							headers: {
 								'Content-Type': 'application/json'

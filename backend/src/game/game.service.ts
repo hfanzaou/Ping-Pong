@@ -181,7 +181,7 @@ export class GameService {
       wss.to(player1.roomName).emit('gameOver');
       const winner = player1.score == config.maxScore ? player1 : player2;
       const loser = player1.score == config.maxScore ? player2 : player1;
-      console.log(winner);
+      // console.log(winner);
       await this.userService.addMatchHistory(winner.user.id, {
          name: loser.user.username,
          playerScore: winner.score,

@@ -14,7 +14,7 @@ function  MatchHistory() {
             setMatchsHistory(res.data);
         })
         .catch((err) => {
-            console.error("error in fetching Matchs History: ", err );
+            // console.error("error in fetching Matchs History: ", err );
         })
     };
 

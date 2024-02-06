@@ -16,7 +16,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
         .then((res) => {
             setNotificationList(res.data);
         }).catch(err => {
-            console.error("Error in fetching friend requests: ", err);
+            // console.error("Error in fetching friend requests: ", err);
         })
     };
 
@@ -61,7 +61,7 @@ function Notification({socket, handleRequest}: {socket: Socket, handleRequest: F
                 {item.type === "groupInvite" &&
                 <div>
                     <Text c={'white'} > Invite you to a group</Text>
-                    <Link to={`http://localhost:3000/Chat?name=${item.groupname}`}>
+                    <Link to={`Chat?name=${item.groupname}`}>
                         <Button radius='xl' size="xs" color="green" onClick={handleGroupAccept}>
                             <div className='text-lg'>
                                 check it out

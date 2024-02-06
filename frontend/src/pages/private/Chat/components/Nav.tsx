@@ -15,7 +15,7 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 	{
 		setOption("Private");
 		if (data.userData?.userName) {
-			const res0 = await fetch("http://localhost:3001/chatUser", {
+			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ const	Nav: React.FC<Props> = ({ option, setOption, setData, data }) => {
 	{
 		setOption("Rooms");
 		if (data.userData?.userName) {
-			const res0 = await fetch("http://localhost:3001/chatUser", {
+			const res0 = await fetch("/chatUser", {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'

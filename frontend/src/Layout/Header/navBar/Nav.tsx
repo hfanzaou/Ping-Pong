@@ -141,7 +141,7 @@ const LeftSide = ({socket, avatar, handleRequest} : {socket: Socket, avatar: str
                             <Link className="flex items-center"  to={'/setting'}><IconSettings style={{ width: rem(20), height: rem(25) }} /> Settings</Link>
                         </Menu.Item>
                         <Menu.Item className="text-gray-900 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-2  text-base font-medium" onClick={handleLogout} >
-                            <Link className="flex items-center"  to={`${import.meta.env.VITE_API_BASE_URL}logout`}><IconLogout style={{ width: rem(20), height: rem(25) }} />Logout</Link>
+                            <Link className="flex items-center" reloadDocument to={`/logout`}><IconLogout style={{ width: rem(20), height: rem(25) }} />Logout</Link>
                         </Menu.Item>
                     </Menu.Dropdown>
                 </div>

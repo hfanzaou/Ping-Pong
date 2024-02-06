@@ -16,7 +16,7 @@ function PublicProfile({profileName, avatar, handleRequest, usersList, setUsersL
             if (err.response.status === 401) {
                 window.location.replace('/login');
             }
-            console.error("Error in fetching Users list: ", err);
+            // console.error("Error in fetching Users list: ", err);
         })
     };
 
