@@ -1,7 +1,7 @@
 
-# ft_transcendence
+# Ping Pong
 
-ft_transcendence is a project aimed at creating a multiplayer online pong game platform with a focus on real-time gameplay. The project is the last of the 42 school common core projects.
+Ping Pong is a project aimed at creating a multiplayer online pong game platform with a focus on real-time gameplay. The project is the last of the 42 school common core projects.
 
 
 ## Features
